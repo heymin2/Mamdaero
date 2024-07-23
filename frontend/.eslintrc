@@ -1,0 +1,30 @@
+{
+  "env": {
+    "browser": true, // 브라우저 환경을 활성화합니다.
+    "node": true, // Node.js 환경을 활성화합니다. (필요에 따라 추가)
+    "jest": true,
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+  ],
+  "plugins": ["react", "@typescript-eslint", "prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "react/prop-types": "off",
+    "no-console": "warn",
+    "semi": ["error", "always"],
+    "quotes": ["error", "single"],
+    "no-var": "error",
+    "no-duplicate-imports": "error",
+    "comma-dangle": ["error", "always-multiline"], // 콤마 규칙 추가
+    "react/react-in-jsx-scope": "off", // 'React' must be in scope when using JSX 규칙을 비활성화
+  },
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+  },
+}
