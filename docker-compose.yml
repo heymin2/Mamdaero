@@ -16,3 +16,5 @@ services:
       SPRING_REDIS_PORT: 6379
     networks:
       - internal_network
+networks:
+  internal_network:
