@@ -12,7 +12,7 @@
   ],
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
     "react/prop-types": "off",
     "no-console": "warn",
     "semi": ["error", "always"],
@@ -21,6 +21,7 @@
     "no-duplicate-imports": "error",
     "comma-dangle": ["error", "always-multiline"], // 콤마 규칙 추가
     "react/react-in-jsx-scope": "off", // 'React' must be in scope when using JSX 규칙을 비활성화
+    "@typescript-eslint/no-unused-vars": "off",
   },
   "settings": {
     "react": {
