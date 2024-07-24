@@ -4,9 +4,6 @@ services:
     restart: always
     ports:
       - "8080:8080"
-    depends_on:
-      - mysql
-      - redis
     container_name: spring
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mamdaero?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
