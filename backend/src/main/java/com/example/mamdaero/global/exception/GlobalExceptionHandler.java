@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> exception(Exception ex){
-        return new ResponseEntity<>("알 수 없는 에러 발생", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler({CustomException.class})
     public ResponseEntity<?> customExceptionHandler(CustomException e) {
         ExceptionConstants ec = e.getConstants();
