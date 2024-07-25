@@ -23,7 +23,7 @@ public class Counselor extends Member{
     private String license;
     @Column(length = 100)
     private String intro;
-    @Column(length = 5000)
+    @Column(length = 5000, name = "intro_detail")
     private String introDetail;
     @Column(length = 256)
     private String img;

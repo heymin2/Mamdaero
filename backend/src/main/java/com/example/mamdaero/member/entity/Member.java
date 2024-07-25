@@ -1,17 +1,14 @@
 package com.example.mamdaero.member.entity;
 
 import com.example.global.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -21,9 +18,12 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
+@Table(name = "member")
+@DiscriminatorColumn
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "member_id")
     private Integer id;
     @Column(length = 128, nullable = false)
     private String email;
@@ -33,14 +33,14 @@ public class Member extends BaseEntity {
     private String name;
     @Column(length = 20, nullable = false)
     private String nickname;
-    private Date birth;
+    private LocalDate birth;
     @Column(length = 128, nullable = false)
     private String tel;
     @Column(length = 1)
     private String gender;
     @Column(length = 3, nullable = false)
     private String role;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "member_status")
     private Boolean memberStatus;
     @Column(length = 128)
     private String token;
