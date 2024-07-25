@@ -19,7 +19,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
 @Table(name = "member")
-@DiscriminatorColumn
+@DiscriminatorValue("MEMBER")
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)

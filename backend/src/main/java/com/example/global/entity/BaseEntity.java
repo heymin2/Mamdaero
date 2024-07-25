@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @ToString
-@DiscriminatorColumn
+@DiscriminatorColumn(name = "dtype")
 public abstract class BaseEntity {
     @CreatedDate
     @Column(name = "created_at")
