@@ -18,9 +18,6 @@ const Button = ({ label, onClick, size, user }: ButtonProps) => {
     common: 'bg-gray-200 hover:bg-gray-300',
   };
 
-  const fontSize = {
-    bold: 'font-bold',
-  };
   return (
     <button onClick={onClick} className={`rounded-full ${sizeClasses[size]} ${userClasses[user]}`}>
       {label}
