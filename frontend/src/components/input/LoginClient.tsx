@@ -5,7 +5,7 @@ import KakaoLoginButton from '@/components/button/KakaoLoginButton';
 const Login = () => {};
 const LoginForm = () => {
   return (
-    <div className="p-8 max-w-sm w-full bg-gray-100 rounded-lg shadow-lg">
+    <div className="max-w-sm w-full bg-gray-100">
       <label className=" w-full max-w-xs">
         <div className="label">
           <span className="label-text">아이디</span>
@@ -29,10 +29,10 @@ const LoginForm = () => {
       <div className="pt-6">
         <SquareButton label="로그인" onClick={Login} size="full" user="client"></SquareButton>
       </div>
-      <div className="flex pt-6 justify-evenly items-center">
+      <div className="flex pt-4 justify-evenly items-center">
         <GoogleLoginButton />
         <KakaoLoginButton />
-        <SquareButton onClick={Login} label="회원가입" size="md" user="common"></SquareButton>
+        <SquareButton onClick={Login} label="회원가입" size="mdlg" user="common"></SquareButton>
       </div>
     </div>
   );

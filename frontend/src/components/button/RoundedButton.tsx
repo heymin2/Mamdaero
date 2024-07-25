@@ -13,9 +13,9 @@ const Button = ({ label, onClick, size, user }: ButtonProps) => {
   };
 
   const userClasses = {
-    counselor: 'bg-blue-200',
-    client: 'bg-orange-200',
-    common: 'bg-gray-200',
+    counselor: 'bg-blue-200 hover:bg-blue-300',
+    client: 'bg-orange-200 hover:bg-orange-300',
+    common: 'bg-gray-200 hover:bg-gray-300',
   };
 
   return (
