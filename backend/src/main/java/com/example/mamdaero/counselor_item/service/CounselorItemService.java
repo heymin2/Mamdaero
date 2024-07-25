@@ -24,7 +24,7 @@ public class CounselorItemService {
             throw new CounselorItemNotFoundException();
         }
 
-        List<CounselorItem> list = counselorItemRepository.findByCounselorItemId(counselorId);
+        List<CounselorItem> list = counselorItemRepository.findByCounselorId(counselorId);
         return CounselorItemResponse.of(list);
     }
 
