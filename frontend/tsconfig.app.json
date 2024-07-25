@@ -11,7 +11,7 @@
     // URL
     "baseUrl": "src",
     "paths": {
-      "*": ["*"]
+      "@/*": ["*"]
     },
 
     /* Bundler mode */
