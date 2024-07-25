@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum CounselorItemExceptionConstants implements ExceptionConstants {
 
-    COUNSELOR_NOT_FOUND("C001", HttpStatus.NOT_FOUND);
+    COUNSELOR_NOT_FOUND("C001", HttpStatus.NOT_FOUND),
+    COUNSELOR_BAD_REQUEST("C002", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final HttpStatus status;
