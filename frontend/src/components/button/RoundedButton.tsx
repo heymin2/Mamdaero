@@ -1,15 +1,15 @@
 interface ButtonProps {
   label: string;
   onClick: () => void;
-  size: 'sm' | 'md' | 'lg';
+  size: 'sm' | 'md' | 'lg' | 'full';
   user: 'counselor' | 'client' | 'common';
 }
-
 const Button = ({ label, onClick, size, user }: ButtonProps) => {
   const sizeClasses = {
-    sm: 'w-20 h-7 text-base font-bold',
-    md: 'w-24 h-9 text-lg font-bold',
+    sm: 'w-20 h-7 text-sm font-bold',
+    md: 'w-24 h-9 text-base font-bold',
     lg: 'w-40 h-10 text-xl font-bold',
+    full: 'w-full h-10 text-xl font-bold',
   };
 
   const userClasses = {
