@@ -4,7 +4,7 @@ import com.example.mamdaero.counselor_item.dto.request.CounselorItemRequest;
 import com.example.mamdaero.counselor_item.dto.response.CounselorItemResponse;
 import com.example.mamdaero.counselor_item.entity.CounselorItem;
 import com.example.mamdaero.counselor_item.exception.CounselorItemBadRequestException;
-import com.example.mamdaero.counselor_item.exception.CounselorItemNotFoundException;
+import com.example.mamdaero.counselor_item.exception.CounselorNotFoundException;
 import com.example.mamdaero.counselor_item.repository.CounselorItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class CounselorItemService {
 
     public List<CounselorItemResponse> findCounselorItem(long counselorId) {
         if(!counselorItemRepository.existsByCounselorId(counselorId)) {
-            throw new CounselorItemNotFoundException();
+            throw new CounselorNotFoundException();
         }
 
         List<CounselorItem> list = counselorItemRepository.findByCounselorId(counselorId);
