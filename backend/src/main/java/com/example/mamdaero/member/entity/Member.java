@@ -19,12 +19,11 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
 @Table(name = "member")
-@DiscriminatorValue("MEMBER")
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
-    private Integer id;
+    private Long id;
     @Column(length = 128, nullable = false)
     private String email;
     @Column(length = 128, nullable = false)

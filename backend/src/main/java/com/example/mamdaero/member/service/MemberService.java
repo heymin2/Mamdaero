@@ -18,8 +18,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void modifyMember(final Integer id, String nickname, LocalDate birth, String tel) {
-        Optional<Member> optionalMember = memberRepository.findById(1);
+    public void modifyMember(final Long id, String nickname, LocalDate birth, String tel) {
+        Optional<Member> optionalMember = memberRepository.findById(1L);
 
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
