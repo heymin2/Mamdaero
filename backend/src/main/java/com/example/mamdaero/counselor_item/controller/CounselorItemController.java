@@ -23,4 +23,9 @@ public class CounselorItemController {
         counselorItemService.create(request);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/{itemId}")
+    public ResponseEntity<?> update(@PathVariable("itemId") Long id, @RequestBody CounselorItemRequest request) {
+        return ResponseEntity.ok(counselorItemService.update(id, request));
+    }
 }

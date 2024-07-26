@@ -4,8 +4,6 @@ import com.example.mamdaero.counselor_item.entity.CounselorItem;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @Builder
 public class CounselorItemResponse {
@@ -15,14 +13,12 @@ public class CounselorItemResponse {
     private String description;
     private int fee;
 
-    public static List<CounselorItemResponse> of(List<CounselorItem> counselorItems) {
-        return counselorItems.stream()
-                .map(item -> CounselorItemResponse.builder()
-                        .counselorItemId(item.getCounselorItemId())
-                        .name(item.getName())
-                        .description(item.getDescription())
-                        .fee(item.getFee())
-                        .build())
-                .toList();
+    public static CounselorItemResponse of(CounselorItem counselorItem) {
+        return CounselorItemResponse.builder()
+                        .counselorItemId(counselorItem.getCounselorItemId())
+                        .name(counselorItem.getName())
+                        .description(counselorItem.getDescription())
+                        .fee(counselorItem.getFee())
+                        .build();
     }
 }
