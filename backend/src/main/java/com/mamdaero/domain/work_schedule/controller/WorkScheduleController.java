@@ -33,4 +33,9 @@ public class WorkScheduleController {
         System.out.println("id : " + id);
         return ResponseEntity.ok(workScheduleService.update(id, workScheduleRequest));
     }
+
+    @DeleteMapping("/{id}") // 상담사의 근무 일정 삭제
+    public ResponseEntity<Boolean> delete(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.ok(workScheduleService.delete(id));
+    }
 }

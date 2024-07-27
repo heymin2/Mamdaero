@@ -44,4 +44,12 @@ public class WorkScheduleService {
         workSchedule.update(request.getDay(), request.getStartTime(), request.getEndTime());
         return WorkScheduleResponse.toDTO(workSchedule);
     }
+
+    /**
+     * 상담사의 근무 일정 삭제
+     */
+    public Boolean delete(Long id) {
+        workScheduleRepository.deleteById(id);
+        return true;
+    }
 }
