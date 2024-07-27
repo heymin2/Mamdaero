@@ -1,6 +1,6 @@
 package com.example.mamdaero.counselor_item.exception;
 
-import com.example.mamdaero.global.exception.ExceptionConstants;
+import com.example.global.entity.ExceptionConstants;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
