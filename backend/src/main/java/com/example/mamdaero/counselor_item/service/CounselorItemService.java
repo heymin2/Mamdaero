@@ -73,4 +73,19 @@ public class CounselorItemService {
 
         return CounselorItemResponse.of(updatedItem);
     }
+
+    @Transactional
+    public void delete(long counselorItemId) {
+        CounselorItem item = counselorItemRepository.findById(counselorItemId)
+                .orElseThrow(CounselorItemNotFoundException::new);
+
+        // 토큰값 체크해서 counselor 아이디 검사 기능 추가 필요
+        long counselorId = 1;
+
+        if(item.getCounselorId() != counselorId) {
+            throw new CounselorNotFoundException();
+        }
+
+        counselorItemRepository.delete(item);
+    }
 }

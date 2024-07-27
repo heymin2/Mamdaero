@@ -28,4 +28,10 @@ public class CounselorItemController {
     public ResponseEntity<?> update(@PathVariable("itemId") Long id, @RequestBody CounselorItemRequest request) {
         return ResponseEntity.ok(counselorItemService.update(id, request));
     }
+
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<?> delete(@PathVariable("itemId") Long id) {
+        counselorItemService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 }

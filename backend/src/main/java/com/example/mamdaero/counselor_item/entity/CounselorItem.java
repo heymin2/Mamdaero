@@ -5,17 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
+@Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE counselor_item SET is_delete = true WHERE counselor_item_id = ?")
+@Where(clause = "is_delete = false")
 @Table(name = "counselor_item")
-@Entity
 public class CounselorItem {
 
     @Id
-    @Column(name = "counselor_item_id")
+    @Column(name = "counselor_item_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long counselorItemId;
 
@@ -30,4 +35,8 @@ public class CounselorItem {
 
     @Column(nullable = false)
     private int fee;
+
+    @Column(name = "is_delete")
+    @ColumnDefault("false")
+    private boolean isDelete;
 }
