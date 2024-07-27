@@ -25,7 +25,10 @@ public class WorkScheduleService {
     /**
      * 상담사의 근무 일정 등록
      */
-    public boolean create(WorkScheduleRequest workScheduleRequest) {
-        return workScheduleRepository.save(workScheduleRequest.toEntity()) != null;
+    public boolean create(List<WorkScheduleRequest> workScheduleRequestList) {
+        System.out.println(workScheduleRequestList.get(0).getCounselorId());
+        return workScheduleRepository.saveAll(workScheduleRequestList.stream()
+                .map(WorkScheduleRequest::toEntity)
+                .toList()).size() == workScheduleRequestList.size();
     }
 }

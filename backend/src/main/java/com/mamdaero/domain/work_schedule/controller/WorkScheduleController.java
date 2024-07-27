@@ -24,8 +24,8 @@ public class WorkScheduleController {
     }
 
     @PostMapping("") // 상담사의 근무 일정 등록
-    public ResponseEntity<Boolean> create(@RequestBody WorkScheduleRequest workScheduleRequest) {
-        return ResponseEntity.ok(workScheduleService.create(workScheduleRequest));
+    public ResponseEntity<Boolean> create(@RequestBody List<WorkScheduleRequest> workScheduleRequestList) {
+        return ResponseEntity.ok(workScheduleService.create(workScheduleRequestList));
     }
 
 }
