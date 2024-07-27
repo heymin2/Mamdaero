@@ -18,5 +18,11 @@ public class WorkSchedule {
     private Integer startTime;
     private Integer endTime;
 
+
+    public void update(int day, int startTime, int endTime) {
+        this.day = day;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 }
 

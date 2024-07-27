@@ -28,4 +28,9 @@ public class WorkScheduleController {
         return ResponseEntity.ok(workScheduleService.create(workScheduleRequestList));
     }
 
+    @PatchMapping("/{id}") // 상담사의 근무 일정 수정
+    public ResponseEntity<WorkScheduleResponse> update(@PathVariable(name = "id") Long id, @RequestBody WorkScheduleRequest workScheduleRequest) {
+        System.out.println("id : " + id);
+        return ResponseEntity.ok(workScheduleService.update(id, workScheduleRequest));
+    }
 }
