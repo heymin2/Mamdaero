@@ -33,6 +33,20 @@ public class CounselorItemService {
                 .collect(Collectors.toList());
     }
 
+    public List<CounselorItemResponse> findMyItem() {
+        // 토큰값 체크해서 counselor 아이디 검사 기능 추가 필요
+        long counselorId = 1;
+
+        if(!counselorItemRepository.existsByCounselorId(counselorId)) {
+            throw new CounselorNotFoundException();
+        }
+
+        return counselorItemRepository.findByCounselorId(counselorId)
+                .stream()
+                .map(CounselorItemResponse::of)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void create(CounselorItemRequest request) {
         // 토큰값 체크해서 counselor 아이디 검사 기능 추가 필요

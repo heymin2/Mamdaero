@@ -18,6 +18,11 @@ public class CounselorItemController {
         return ResponseEntity.ok(counselorItemService.findCounselorItem(counselorId));
     }
 
+    @GetMapping
+    public ResponseEntity<?> findMyItem() {
+        return ResponseEntity.ok(counselorItemService.findMyItem());
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@RequestBody CounselorItemRequest request) {
         counselorItemService.create(request);
