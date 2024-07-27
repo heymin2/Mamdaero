@@ -1,8 +1,8 @@
-package com.example.mamdaero.work_schedule.service;
+package com.mamdaero.domain.work_schedule.service;
 
-import com.example.mamdaero.work_schedule.dto.response.WorkScheduleResponse;
-import com.example.mamdaero.work_schedule.entity.WorkSchedule;
-import com.example.mamdaero.work_schedule.repository.WorkScheduleRepository;
+import com.mamdaero.domain.work_schedule.dto.request.WorkScheduleRequest;
+import com.mamdaero.domain.work_schedule.dto.response.WorkScheduleResponse;
+import com.mamdaero.domain.work_schedule.repository.WorkScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,4 +22,10 @@ public class WorkScheduleService {
                 .toList();
     }
 
+    /**
+     * 상담사의 근무 일정 등록
+     */
+    public boolean create(WorkScheduleRequest workScheduleRequest) {
+        return workScheduleRepository.save(workScheduleRequest.toEntity()) != null;
+    }
 }
