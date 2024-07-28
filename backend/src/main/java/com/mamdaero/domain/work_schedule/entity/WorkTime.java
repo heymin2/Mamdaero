@@ -19,6 +19,7 @@ public class WorkTime {
     private LocalDate date;
     private Integer time;
     private Boolean isReserved;
+    @Column(name = "is_worktime")
     private Boolean isWorkTime;
 
     public void reserve() {

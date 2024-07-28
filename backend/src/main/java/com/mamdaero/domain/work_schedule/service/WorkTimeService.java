@@ -52,7 +52,7 @@ public class WorkTimeService {
 
 
         // 어제 근무시간을 삭제한다.
-        workTimeRepository.deleteByDateBeforeAndNotReserved(today);
+        workTimeRepository.deleteByDateBeforeAndNotIsReserved(today);
 
         // TODO: 상담사레포지토리에서 모든 상담사ID 가져오기
         List<Long> counselorIds = new ArrayList<>();
