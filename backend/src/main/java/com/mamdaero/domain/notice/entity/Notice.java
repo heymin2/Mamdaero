@@ -1,5 +1,6 @@
 package com.mamdaero.domain.notice.entity;
 
+import com.mamdaero.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ import org.hibernate.annotations.Where;
 @SQLDelete(sql = "UPDATE notice SET is_delete = true WHERE notice_id = ?")
 @Where(clause = "is_delete = false")
 @Table(name = "notice")
-public class Notice {
+public class Notice extends BaseEntity {
 
     @Id
     @Column(name = "notice_id", updatable = false)
@@ -34,9 +35,14 @@ public class Notice {
     private String content;
 
     @Column
+    @ColumnDefault("0")
     private Integer view;
 
-    @Column(name = "is_delete")
+    @Column(name = "is_delete", nullable = false)
     @ColumnDefault("false")
-    private Boolean is_delete;
+    private Boolean isDelete;
+
+    public void clickNotice() {
+        this.view++;
+    }
 }
