@@ -75,8 +75,34 @@ public class WorkScheduleService {
 
     @Transactional
     public WorkScheduleResponse update(Long id, WorkScheduleRequest request) {
-        WorkSchedule workSchedule = workScheduleRepository.findById(id).orElseThrow();
-        workSchedule.update(request.getDay(), request.getStartTime(), request.getEndTime());
+        // TODO: 유효한 상담사인지 확인
+        Optional<WorkSchedule> findWorkSchedule = workScheduleRepository.findById(id);
+
+        // 존재하는 근무 일정인지 확인
+        if (findWorkSchedule.isEmpty()) {
+            throw new WorkScheduleNotFoundException();
+        }
+
+        WorkSchedule workSchedule = findWorkSchedule.get();
+
+        // 유효한 근무 시간인지 확인
+        if (request.getStartTime() < 0 || 23 < request.getStartTime() ||
+                request.getEndTime() < 1 || 24 < request.getEndTime() ||
+                request.getStartTime() >= request.getEndTime()) {
+            throw new InvalidTimeException();
+        }
+
+
+        // 다른 근무 일정과 겹치는지 확인
+        List<WorkSchedule> workSchedules = workScheduleRepository.findByCounselorIdAndDay(request.getCounselorId(), request.getDay());
+        for (WorkSchedule otherSchedule : workSchedules) {
+            if (otherSchedule.getStartTime() < request.getEndTime() &&
+                    request.getStartTime() < otherSchedule.getEndTime()) {
+                throw new ConflictWorkScheduleException();
+            }
+        }
+
+        workSchedule.update(request);
         return WorkScheduleResponse.toDTO(workSchedule);
     }
 
