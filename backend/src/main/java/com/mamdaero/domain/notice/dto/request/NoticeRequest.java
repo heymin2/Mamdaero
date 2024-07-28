@@ -20,8 +20,6 @@ public class NoticeRequest {
                 .memberId(memberId)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .view(0)
-                .isDelete(false)
                 .build();
     }
 }

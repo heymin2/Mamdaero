@@ -12,7 +12,6 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE notice SET is_delete = true WHERE notice_id = ?")
@@ -41,6 +40,15 @@ public class Notice extends BaseEntity {
     @Column(name = "is_delete", nullable = false)
     @ColumnDefault("false")
     private Boolean isDelete;
+
+    @Builder
+    public Notice(Long memberId, String title, String content) {
+        this.memberId = memberId;
+        this.title = title;
+        this.content =content;
+        this.view = 0;
+        this.isDelete = false;
+    }
 
     public void clickNotice() {
         this.view++;
