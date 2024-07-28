@@ -4,8 +4,7 @@ import com.mamdaero.domain.work_schedule.dto.request.WorkScheduleRequest;
 import com.mamdaero.domain.work_schedule.dto.response.WorkScheduleResponse;
 import com.mamdaero.domain.work_schedule.entity.WorkSchedule;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
-import com.mamdaero.domain.work_schedule.exception.CanNotDeleteWorkScheduleException;
-import com.mamdaero.domain.work_schedule.exception.WorkScheduleNotFoundException;
+import com.mamdaero.domain.work_schedule.exception.*;
 import com.mamdaero.domain.work_schedule.repository.WorkScheduleRepository;
 import com.mamdaero.domain.work_schedule.repository.WorkTimeRepository;
 import jakarta.transaction.Transactional;
@@ -33,10 +32,41 @@ public class WorkScheduleService {
      * 상담사의 근무 일정 등록
      */
     public boolean create(List<WorkScheduleRequest> workScheduleRequestList) {
-        System.out.println(workScheduleRequestList.get(0).getCounselorId());
-        return workScheduleRepository.saveAll(workScheduleRequestList.stream()
+
+        // TODO: 유효한 상담사인지 확인
+
+        // 유효한 요일인지 확인
+        for (WorkScheduleRequest request : workScheduleRequestList) {
+            if (request.getDay() < 1 || request.getDay() > 7) {
+                throw new InvalidDayException();
+            }
+        }
+
+        // 유효한 근무 시간인지 확인
+        for (WorkScheduleRequest request : workScheduleRequestList) {
+            if (request.getStartTime() < 0 || 23 < request.getStartTime() ||
+                    request.getEndTime() < 1 || 24 < request.getEndTime() ||
+                    request.getStartTime() >= request.getEndTime()) {
+                throw new InvalidTimeException();
+            }
+        }
+
+        // 다른 근무 일정과 겹치는지 확인
+        for (WorkScheduleRequest request : workScheduleRequestList) {
+            List<WorkSchedule> workSchedules = workScheduleRepository.findByCounselorIdAndDay(request.getCounselorId(), request.getDay());
+            for (WorkSchedule workSchedule : workSchedules) {
+                if (workSchedule.getStartTime() < request.getEndTime() &&
+                        request.getStartTime() < workSchedule.getEndTime()) {
+                    throw new ConflictWorkScheduleException();
+                }
+            }
+        }
+
+
+        workScheduleRepository.saveAll(workScheduleRequestList.stream()
                 .map(WorkScheduleRequest::toEntity)
-                .toList()).size() == workScheduleRequestList.size();
+                .toList());
+        return true;
     }
 
     /**
