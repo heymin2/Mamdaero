@@ -19,6 +19,29 @@ public class WorkTimeService {
     private final WorkTimeRepository workTimeRepository;
     private final WorkScheduleRepository workScheduleRepository;
 
+    
+    /**
+     * 상담사가 처음 등록될 때, 4주치의 근무 시간을 생성한다.
+     */
+    public void createInitialWorkTimes(Long counselorId) {
+        LocalDate today = LocalDate.now();
+        List<WorkTime> workTimes = new ArrayList<>();
+
+        for (int i = 0; i < 28; i++) {
+            LocalDate date = today.plusDays(i);
+            for (int hour = 0; hour < 24; hour++) {
+                workTimes.add(WorkTime.builder()
+                        .counselorId(counselorId)
+                        .date(date)
+                        .time(hour)
+                        .isReserved(false)
+                        .isWorked(false)
+                        .build());
+            }
+        }
+
+        workTimeRepository.saveAll(workTimes);
+    }
 
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
