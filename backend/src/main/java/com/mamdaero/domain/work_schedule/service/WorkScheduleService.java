@@ -19,7 +19,7 @@ public class WorkScheduleService {
      * 상담사의 근무 일정 조회
      */
     public List<WorkScheduleResponse> find(long id, int day) {
-        return workScheduleRepository.findByIdAndDay(id, day).stream()
+        return workScheduleRepository.findByCounselorIdAndDay(id, day).stream()
                 .map(WorkScheduleResponse::toDTO)
                 .toList();
     }
