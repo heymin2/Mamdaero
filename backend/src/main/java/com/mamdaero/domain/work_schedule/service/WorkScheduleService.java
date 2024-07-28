@@ -4,6 +4,8 @@ import com.mamdaero.domain.work_schedule.dto.request.WorkScheduleRequest;
 import com.mamdaero.domain.work_schedule.dto.response.WorkScheduleResponse;
 import com.mamdaero.domain.work_schedule.entity.WorkSchedule;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
+import com.mamdaero.domain.work_schedule.exception.CanNotDeleteWorkScheduleException;
+import com.mamdaero.domain.work_schedule.exception.WorkScheduleNotFoundException;
 import com.mamdaero.domain.work_schedule.repository.WorkScheduleRepository;
 import com.mamdaero.domain.work_schedule.repository.WorkTimeRepository;
 import jakarta.transaction.Transactional;
@@ -53,9 +55,15 @@ public class WorkScheduleService {
      */
     @Transactional
     public Boolean delete(Long id) {
-        //TODO: 존재하는 근무일정인지 확인
+        // 존재하는 근무 일정인지 확인
+        if (!workScheduleRepository.existsById(id)) {
+            throw new WorkScheduleNotFoundException();
+        }
 
-        //TODO: 해당하는 일정에 예약이 있는지 확인
+        // 예약된 근무 시간이 있는지 확인
+        if (hasReservation(workScheduleRepository.findById(id).get())) {
+            throw new CanNotDeleteWorkScheduleException();
+        }
 
         // 해당 일정에 근무 시간 취소
         cancelWork(workScheduleRepository.findById(id).orElseThrow());
@@ -63,6 +71,20 @@ public class WorkScheduleService {
         // 근무 일정 삭제
         workScheduleRepository.deleteById(id);
         return true;
+    }
+
+    private boolean hasReservation(WorkSchedule workSchedule) {
+        List<WorkTime> workTimes = workTimeRepository.findByCounselorId(workSchedule.getCounselorId());
+        for (WorkTime workTime : workTimes) {
+            if (workTime.getDate().getDayOfWeek().getValue() == workSchedule.getDay() &&
+                    workSchedule.getStartTime() <= workTime.getTime() &&
+                    workTime.getTime() < workSchedule.getEndTime()) {
+                if (workTime.getIsReserved()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void cancelWork(WorkSchedule workSchedule) {

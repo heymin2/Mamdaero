@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface WorkTimeRepository extends JpaRepository<WorkTime, Long> {
     @Modifying
@@ -15,4 +16,5 @@ public interface WorkTimeRepository extends JpaRepository<WorkTime, Long> {
     @Query("DELETE FROM WorkTime w WHERE w.date < :date AND w.isReserved = false")
     void deleteByDateBeforeAndNotIsReserved(@Param("date") LocalDate date);
 
+    List<WorkTime> findByCounselorId(Long counselorId);
 }
