@@ -19,7 +19,7 @@ public class NoticeResponse {
     private Integer view;
     private LocalDateTime createdAt;
 
-    public static NoticeResponse of(Notice notice, String writer) {
+    public static NoticeResponse of(Notice notice) {
         return NoticeResponse.builder()
                 .noticeId(notice.getNoticeId())
                 .title(notice.getTitle())

@@ -29,4 +29,9 @@ public class NoticeController {
         noticeService.create(request);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("{noticeId}")
+    public ResponseEntity<?> update(@PathVariable("noticeId") Long id, @RequestBody NoticeRequest request) {
+        return ResponseEntity.ok(noticeService.update(id, request));
+    }
 }

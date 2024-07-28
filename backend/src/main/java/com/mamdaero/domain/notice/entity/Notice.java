@@ -45,4 +45,12 @@ public class Notice extends BaseEntity {
     public void clickNotice() {
         this.view++;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }

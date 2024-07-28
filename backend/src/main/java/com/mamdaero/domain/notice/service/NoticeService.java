@@ -25,7 +25,7 @@ public class NoticeService {
     public List<NoticeResponse> findAll() {
         return noticeRepository.findAll()
                 .stream()
-                .map(notice -> NoticeResponse.of(notice, "관리자"))
+                .map(NoticeResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -50,5 +50,28 @@ public class NoticeService {
         }
 
         noticeRepository.save(NoticeRequest.toEntity(memberId, request));
+    }
+
+    @Transactional
+    public NoticeDetailResponse update(Long id, NoticeRequest request) {
+        // 토큰 확인 후 관리자인지 확인
+        Long memberId = 2L;
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(NoticeNotFoundException::new);
+
+        System.out.println("바꾸기 전" + notice.getCreatedAt());
+
+        if (request.getTitle() != null) {
+            notice.updateTitle(request.getTitle());
+        }
+
+        if (request.getContent() != null) {
+            notice.updateContent(request.getContent());
+        }
+
+        noticeRepository.save(notice);
+
+        return NoticeDetailResponse.of(notice);
     }
 }
