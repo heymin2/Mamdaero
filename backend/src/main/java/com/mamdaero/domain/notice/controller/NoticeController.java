@@ -34,4 +34,10 @@ public class NoticeController {
     public ResponseEntity<?> update(@PathVariable("noticeId") Long id, @RequestBody NoticeRequest request) {
         return ResponseEntity.ok(noticeService.update(id, request));
     }
+
+    @DeleteMapping("{noticeId}")
+    public ResponseEntity<?> delete(@PathVariable("noticeId") Long id) {
+        noticeService.delete(id);
+        return ResponseEntity.ok().build();
+    }
 }

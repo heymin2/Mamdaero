@@ -60,8 +60,6 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(NoticeNotFoundException::new);
 
-        System.out.println("바꾸기 전" + notice.getCreatedAt());
-
         if (request.getTitle() != null) {
             notice.updateTitle(request.getTitle());
         }
@@ -71,7 +69,17 @@ public class NoticeService {
         }
 
         noticeRepository.save(notice);
-
         return NoticeDetailResponse.of(notice);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        // 토큰 확인 후 관리자인지 확인
+        Long memberId = 2L;
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(NoticeNotFoundException::new);
+
+        noticeRepository.delete(notice);
     }
 }
