@@ -37,14 +37,15 @@ public class WorkScheduleService {
 
         // 유효한 요일인지 확인
         for (WorkScheduleRequest request : workScheduleRequestList) {
-            if (request.getDay() < 1 || request.getDay() > 7) {
+            if (request.getDay() == null || request.getDay() < 1 || request.getDay() > 7) {
                 throw new InvalidDayException();
             }
         }
 
         // 유효한 근무 시간인지 확인
         for (WorkScheduleRequest request : workScheduleRequestList) {
-            if (request.getStartTime() < 0 || 23 < request.getStartTime() ||
+            if (request.getStartTime() == null || request.getEndTime() == null ||
+                    request.getStartTime() < 0 || 23 < request.getStartTime() ||
                     request.getEndTime() < 1 || 24 < request.getEndTime() ||
                     request.getStartTime() >= request.getEndTime()) {
                 throw new InvalidTimeException();
@@ -77,7 +78,6 @@ public class WorkScheduleService {
     public WorkScheduleResponse update(Long id, WorkScheduleRequest request) {
         // TODO: 유효한 상담사인지 확인
         Optional<WorkSchedule> findWorkSchedule = workScheduleRepository.findById(id);
-
         // 존재하는 근무 일정인지 확인
         if (findWorkSchedule.isEmpty()) {
             throw new WorkScheduleNotFoundException();
@@ -101,6 +101,7 @@ public class WorkScheduleService {
                 throw new ConflictWorkScheduleException();
             }
         }
+
 
         workSchedule.update(request);
         return WorkScheduleResponse.toDTO(workSchedule);
