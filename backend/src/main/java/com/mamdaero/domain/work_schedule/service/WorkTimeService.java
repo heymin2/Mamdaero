@@ -1,5 +1,6 @@
 package com.mamdaero.domain.work_schedule.service;
 
+import com.mamdaero.domain.work_schedule.dto.request.WorkTimeRequest;
 import com.mamdaero.domain.work_schedule.entity.WorkSchedule;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
 import com.mamdaero.domain.work_schedule.repository.WorkScheduleRepository;
@@ -83,4 +84,16 @@ public class WorkTimeService {
         }
     }
 
+    @Transactional
+    public void update(List<WorkTimeRequest> workTimeRequestList) {
+        for (WorkTimeRequest request : workTimeRequestList) {
+
+            WorkTime workTime = workTimeRepository.findById(request.getWorkTimeId()).orElseThrow();
+            if (request.getIsWorkTime()) {
+                workTime.work();
+            } else {
+                workTime.cancelWork();
+            }
+        }
+    }
 }
