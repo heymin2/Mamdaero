@@ -19,7 +19,7 @@ public class WorkTime {
     private LocalDate date;
     private Integer time;
     private Boolean isReserved;
-    private Boolean isWorked;
+    private Boolean isWorkTime;
 
     public void reserve() {
         this.isReserved = true;
@@ -30,10 +30,10 @@ public class WorkTime {
     }
 
     public void work() {
-        this.isWorked = true;
+        this.isWorkTime = true;
     }
 
     public void cancelWork() {
-        this.isWorked = false;
+        this.isWorkTime = false;
     }
 }

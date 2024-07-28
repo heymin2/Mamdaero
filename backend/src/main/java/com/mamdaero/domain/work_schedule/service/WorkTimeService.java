@@ -19,7 +19,7 @@ public class WorkTimeService {
     private final WorkTimeRepository workTimeRepository;
     private final WorkScheduleRepository workScheduleRepository;
 
-    
+
     /**
      * 상담사가 처음 등록될 때, 4주치의 근무 시간을 생성한다.
      */
@@ -35,7 +35,7 @@ public class WorkTimeService {
                         .date(date)
                         .time(hour)
                         .isReserved(false)
-                        .isWorked(false)
+                        .isWorkTime(false)
                         .build());
             }
         }
@@ -67,7 +67,7 @@ public class WorkTimeService {
                         .date(dayToAdd)
                         .time(hour)
                         .isReserved(false)
-                        .isWorked(false)
+                        .isWorkTime(false)
                         .build();
 
                 for (WorkSchedule schedule : workSchedules) {
