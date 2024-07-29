@@ -27,18 +27,26 @@ public class MemberController {
     }
 
     @PatchMapping(value = "/member", consumes = "application/json")
-    public ResponseEntity<?> patchMemberJson(@RequestBody MemberRequestDto memberRequestDto, MemberResponseDto memberResponseDto) {
+    public ResponseEntity<?> patchMemberJson(@RequestBody MemberRequestDto memberRequestDto) {
 
         memberService.modifyMember(1L, memberRequestDto.getNickname(), memberRequestDto.getBirth(), memberRequestDto.getTel());
 
-        return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/member", consumes = "application/x-www-form-urlencoded")
-    public ResponseEntity<?> patchMemberForm(MemberRequestDto memberRequestDto, MemberResponseDto memberResponseDto) {
+//    @PatchMapping(value = "/member", consumes = "application/json")
+//    public ResponseEntity<?> patchMemberJson(@RequestBody MemberRequestDto memberRequestDto, MemberResponseDto memberResponseDto) {
+//
+//        memberService.modifyMember(1L, memberRequestDto.getNickname(), memberRequestDto.getBirth(), memberRequestDto.getTel());
+//
+//        return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
+//    }
 
-        memberService.modifyMember(1L, memberRequestDto.getNickname(), memberRequestDto.getBirth(), memberRequestDto.getTel());
-
-        return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
-    }
+//    @PatchMapping(value = "/member", consumes = "application/x-www-form-urlencoded")
+//    public ResponseEntity<?> patchMemberForm(MemberRequestDto memberRequestDto, MemberResponseDto memberResponseDto) {
+//
+//        memberService.modifyMember(1L, memberRequestDto.getNickname(), memberRequestDto.getBirth(), memberRequestDto.getTel());
+//
+//        return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
+//    }
 }
