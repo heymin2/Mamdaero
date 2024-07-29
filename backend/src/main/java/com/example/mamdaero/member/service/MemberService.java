@@ -21,11 +21,13 @@ public class MemberService {
     public void modifyMember(final Long id, String nickname, LocalDate birth, String tel) {
         Optional<Member> optionalMember = memberRepository.findById(1L);
 
+
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             member.setNickname(nickname);
             member.setBirth(birth);
             member.setTel(tel);
+
             memberRepository.save(member);
         }
     }

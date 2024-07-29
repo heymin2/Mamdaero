@@ -1,19 +1,19 @@
 package com.example.mamdaero.member.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
-@SuperBuilder(toBuilder = true)
+@SuperBuilder
 @ToString(callSuper = true)
+@AllArgsConstructor
+@Table(name = "Counselor")
 public class Counselor extends Member{
     @Column(length = 128)
     private String address;
