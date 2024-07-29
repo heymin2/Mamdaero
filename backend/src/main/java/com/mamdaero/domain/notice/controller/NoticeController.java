@@ -30,12 +30,12 @@ public class NoticeController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("{noticeId}")
+    @PatchMapping("/{noticeId}")
     public ResponseEntity<?> update(@PathVariable("noticeId") Long id, @RequestBody NoticeRequest request) {
         return ResponseEntity.ok(noticeService.update(id, request));
     }
 
-    @DeleteMapping("{noticeId}")
+    @DeleteMapping("/{noticeId}")
     public ResponseEntity<?> delete(@PathVariable("noticeId") Long id) {
         noticeService.delete(id);
         return ResponseEntity.ok().build();
