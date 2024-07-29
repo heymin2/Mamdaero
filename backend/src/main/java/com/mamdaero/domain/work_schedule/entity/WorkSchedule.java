@@ -1,5 +1,6 @@
 package com.mamdaero.domain.work_schedule.entity;
 
+import com.mamdaero.domain.work_schedule.dto.request.WorkScheduleRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,10 +20,10 @@ public class WorkSchedule {
     private Integer endTime;
 
 
-    public void update(int day, int startTime, int endTime) {
-        this.day = day;
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public void update(WorkScheduleRequest request) {
+        this.day = request.getDay();
+        this.startTime = request.getStartTime();
+        this.endTime = request.getEndTime();
     }
 }
 
