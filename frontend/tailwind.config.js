@@ -9,6 +9,9 @@ export default {
         'apple-sdgothic-bold': ['AppleSDGothicNeoB', 'sans-serif'],
         'apple-sdgothic-extra-bold': ['AppleSDGothicNeoEB', 'sans-serif'],
       },
+      width: {
+        '1.5/12': '12.5%',
+      },
     },
   },
   plugins: [require('daisyui')],
