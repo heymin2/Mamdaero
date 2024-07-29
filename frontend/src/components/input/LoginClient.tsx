@@ -1,6 +1,7 @@
 import SquareButton from '@/components/button/SquareButton.tsx';
 import GoogleLoginButton from '@/components/button/GoogleLoginButton';
 import KakaoLoginButton from '@/components/button/KakaoLoginButton';
+import { Link } from 'react-router-dom';
 
 const Login = () => {};
 const LoginForm = () => {
@@ -32,7 +33,9 @@ const LoginForm = () => {
       <div className="flex pt-4 justify-evenly items-center">
         <GoogleLoginButton />
         <KakaoLoginButton />
-        <SquareButton onClick={Login} label="회원가입" size="mdlg" user="common"></SquareButton>
+        <Link to="/signup/choose">
+          <SquareButton onClick={Login} label="회원가입" size="mdlg" user="common"></SquareButton>
+        </Link>
       </div>
     </div>
   );

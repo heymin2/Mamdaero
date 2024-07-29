@@ -1,9 +1,11 @@
+import { Link } from 'react-router-dom';
+
 const navBar = (
   <div className="navbar bg-base-300 flex-col h-screen w-min">
     {/* 로고 부분 */}
-    <div>
+    <Link to="/">
       <a className="btn btn-ghost text-3xl p-0">맘대로 로고</a>
-    </div>
+    </Link>
     {/* 메뉴 부분 */}
     <div className=" break-keep flex-nowrap">
       <ul
