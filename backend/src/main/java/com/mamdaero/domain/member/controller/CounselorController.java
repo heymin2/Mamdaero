@@ -1,7 +1,9 @@
 package com.mamdaero.domain.member.controller;
 
-import com.mamdaero.domain.member.dto.CounselorDto;
+import com.mamdaero.domain.member.dto.request.CounselorRequestDto;
 import com.mamdaero.domain.member.entity.Counselor;
+import com.mamdaero.domain.member.service.CounselorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,52 +11,45 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CounselorController {
 
+    @Autowired
+    private final CounselorService counselorService;
+
+    public CounselorController(CounselorService counselorService) {
+        this.counselorService = counselorService;
+    }
+
     @GetMapping(value = "/member/counselor")
     public ResponseEntity<?> getCounselor() {
-        Counselor counselor = new Counselor();
+
+        Counselor counselor = counselorService.find(2L);
 
         return new ResponseEntity<>(counselor, HttpStatus.OK);
     }
 
     @PatchMapping(value = "/member/counselor/intro", consumes = "application/json")
-    public ResponseEntity<?> modifyIntroJson(@RequestBody CounselorDto counselorDto) {
-        counselorDto.setIntro(counselorDto.getIntro());
+    public ResponseEntity<?> modifyIntroJson(@RequestBody CounselorRequestDto counselorDto) {
 
-        return new ResponseEntity<>(counselorDto, HttpStatus.OK);
+        counselorService.modifyIntro(2L, counselorDto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/member/counselor/intro", consumes = "application/x-www-form-urlencoded")
-    public ResponseEntity<?> modifyIntroForm(CounselorDto counselorDto) {
-        counselorDto.setIntro(counselorDto.getIntro());
-
-        return new ResponseEntity<>(counselorDto, HttpStatus.OK);
-    }
 
     @PatchMapping(value = "/member/counselor/intro-detail", consumes = "application/json")
-    public ResponseEntity<?> modifyIntroDetailJson(@RequestBody CounselorDto counselorDto) {
-        counselorDto.setIntroDetail(counselorDto.getIntroDetail());
+    public ResponseEntity<?> modifyIntroDetailJson(@RequestBody CounselorRequestDto counselorDto) {
 
-        return new ResponseEntity<>(counselorDto, HttpStatus.OK);
+        counselorService.modifyIntroDetail(2L, counselorDto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/member/counselor/intro-detail", consumes = "application/x-www-form-urlencoded")
-    public ResponseEntity<?> modifyIntroDetailForm(CounselorDto counselorDto) {
-        counselorDto.setIntroDetail(counselorDto.getIntroDetail());
-
-        return new ResponseEntity<>(counselorDto, HttpStatus.OK);
-    }
 
     @PatchMapping(value = "/member/counselor/img", consumes = "application/json")
-    public ResponseEntity<?> modifyIntroImgJson(@RequestBody CounselorDto counselorDto) {
-        counselorDto.setImg(counselorDto.getImg());
+    public ResponseEntity<?> modifyIntroImgJson(@RequestBody CounselorRequestDto counselorDto) {
 
-        return new ResponseEntity<>(counselorDto, HttpStatus.OK);
+        counselorService.modifyImg(2L, counselorDto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/member/counselor/img", consumes = "application/x-www-form-urlencoded")
-    public ResponseEntity<?> modifyIntroImgForm(CounselorDto counselorDto) {
-        counselorDto.setImg(counselorDto.getImg());
-
-        return new ResponseEntity<>(counselorDto, HttpStatus.OK);
-    }
 }
