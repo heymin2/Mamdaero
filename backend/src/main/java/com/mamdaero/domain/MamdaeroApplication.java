@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableJpaAuditing
 @EnableScheduling
+@EnableJpaAuditing
 @SpringBootApplication
 public class MamdaeroApplication {
 
