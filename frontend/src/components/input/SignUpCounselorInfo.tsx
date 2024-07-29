@@ -10,7 +10,7 @@ const SignUpCounselorInfo: React.FC = () => {
     confirmPassword: '',
     address: '',
     intro: '',
-    detail: '',
+    intro_detail: '',
     image: null as File | null,
   });
 
@@ -34,7 +34,7 @@ const SignUpCounselorInfo: React.FC = () => {
     formDataToSubmit.append('confirmPassword', formState.confirmPassword);
     formDataToSubmit.append('address', formState.address);
     formDataToSubmit.append('intro', formState.intro);
-    formDataToSubmit.append('detail', formState.detail);
+    formDataToSubmit.append('intro_detail', formState.intro_detail);
     formDataToSubmit.append('name', formData?.name || '');
     formDataToSubmit.append('license', formData?.license || '');
     formDataToSubmit.append('email', formData?.email || '');
@@ -48,81 +48,58 @@ const SignUpCounselorInfo: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-md">
-      <div className="flex justify-center mb-8">
-        <h2 className="text-3xl font-bold text-blue-500">상담사 가입 페이지</h2>
-      </div>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="flex items-center space-x-6 mb-4">
-          <div className="flex-grow space-y-2">
-            <div className="flex space-x-4">
-              <div className="w-1/3">
-                <label className="block text-gray-700">이름</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData?.name || ''}
-                  readOnly
-                  className="w-full p-2 border rounded"
-                />
+    <div className="w-full max-w-3xl bg-white p-16 rounded-lg shadow-md  text-gray-700">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="flex mb-4">
+          <div className="flex-grow space-y-4 w-1/2 mr-5">
+            <div className="space-y-4">
+              <div className="flex space-x-5 ">
+                <p className="w-1/3 font-bold">이름</p>
+                <p>{formData.name}</p>
               </div>
-              <div className="w-1/3">
-                <label className="block text-gray-700">자격 번호</label>
-                <input
-                  type="text"
-                  name="license"
-                  value={formData?.license || ''}
-                  readOnly
-                  className="w-full p-2 border rounded"
-                />
+              <div className="flex space-x-5 ">
+                <p className="w-1/3 font-bold">자격번호</p>
+                <p>{formData.license}</p>
               </div>
-              <div className="w-1/3">
-                <label className="block text-gray-700">이메일</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData?.email || ''}
-                  readOnly
-                  className="w-full p-2 border rounded"
-                />
+              <div className="flex space-x-5 ">
+                <p className="w-1/3 font-bold">이메일</p>
+                <p>{formData.email}</p>
               </div>
             </div>
-            <div className="flex space-x-4">
-              <div className="w-1/2">
-                <label className="block text-gray-700">비밀번호</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formState.password}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="block text-gray-700">비밀번호 확인</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formState.confirmPassword}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                />
-              </div>
+            <div className="flex space-x-5 items-center">
+              <label className="w-1/3 block font-bold">비밀번호</label>
+              <input
+                type="password"
+                name="password"
+                value={formState.password}
+                onChange={handleInputChange}
+                className="w-3/4 p-2 border rounded"
+              />
             </div>
-            <div>
-              <label className="block text-gray-700">센터 주소</label>
+            <div className="flex space-x-5 items-center ">
+              <label className="w-1/3 block  font-bold">비밀번호 확인</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formState.confirmPassword}
+                onChange={handleInputChange}
+                className="w-3/4 p-2 border rounded"
+              />
+            </div>
+            <div className="flex space-x-5 items-center">
+              <label className="w-1/3 block font-bold">센터 주소</label>
               <input
                 type="text"
                 name="address"
                 value={formState.address}
                 onChange={handleInputChange}
-                className="w-full p-2 border rounded"
+                className="w-3/4 p-2 border rounded"
               />
             </div>
           </div>
-          <div className="w-1/3">
-            <label className="block text-gray-700 mb-2">이미지</label>
-            <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded">
+          <div className="w-2/5">
+            <label className="block font-bold mb-2">이미지</label>
+            <div className="w-full h-3/5 bg-gray-200 flex items-center justify-center rounded">
               {formState.image ? (
                 <img
                   src={URL.createObjectURL(formState.image)}
@@ -133,11 +110,17 @@ const SignUpCounselorInfo: React.FC = () => {
                 <span>이미지</span>
               )}
             </div>
-            <input type="file" accept="image/*" onChange={handleImageChange} className="mt-2" />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="file-input file-input-bordered file-input-xs mt-2 "
+            />
           </div>
         </div>
+
         <div>
-          <label className="block text-gray-700">한줄소개</label>
+          <label className="block font-bold">한줄소개</label>
           <textarea
             name="intro"
             value={formState.intro}
@@ -147,17 +130,17 @@ const SignUpCounselorInfo: React.FC = () => {
           />
         </div>
         <div>
-          <label className="block text-gray-700">상세소개</label>
+          <label className="block font-bold">상세소개</label>
           <textarea
-            name="detail"
-            value={formState.detail}
+            name="intro_detail"
+            value={formState.intro_detail}
             onChange={handleInputChange}
             maxLength={5000}
             className="w-full p-2 border rounded"
           />
         </div>
-        <div className="flex justify-end">
-          <button type="submit" className="p-2 bg-blue-200 rounded">
+        <div className="flex justify-end font-bold">
+          <button type="submit" className="p-2 bg-blue-200 rounded w-full">
             회원가입
           </button>
         </div>
