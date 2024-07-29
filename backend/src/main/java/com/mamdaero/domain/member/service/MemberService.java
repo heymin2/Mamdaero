@@ -32,7 +32,6 @@ public class MemberService {
             Member member = optionalMember.get();
 
             member.update(requestDto);
-
         }
     }
 }

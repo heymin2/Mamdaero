@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class CounselorController {
 
@@ -18,6 +20,22 @@ public class CounselorController {
         this.counselorService = counselorService;
     }
 
+    @GetMapping(value = "/counselor")
+    public ResponseEntity<List<Counselor>> getCounselors() {
+        List<Counselor> counselors = counselorService.findAll();
+
+        return new ResponseEntity<>(counselors, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/counselor/{counselorId}")
+    public ResponseEntity<?> getCounselor(@PathVariable(name = "counselorId") Long id) {
+
+        Counselor counselor = counselorService.find(id);
+
+        return new ResponseEntity<>(counselor, HttpStatus.OK);
+    }
+
+    // Todo id 말고 토큰으로 본인 찾기 추가
     @GetMapping(value = "/member/counselor")
     public ResponseEntity<?> getCounselor() {
 
@@ -26,8 +44,9 @@ public class CounselorController {
         return new ResponseEntity<>(counselor, HttpStatus.OK);
     }
 
+    // Todo id 말고 토큰으로 본인 찾기 추가
     @PatchMapping(value = "/member/counselor/intro", consumes = "application/json")
-    public ResponseEntity<?> modifyIntroJson(@RequestBody CounselorRequestDto counselorDto) {
+    public ResponseEntity<?> modifyIntro(@RequestBody CounselorRequestDto counselorDto) {
 
         counselorService.modifyIntro(2L, counselorDto);
 
@@ -35,8 +54,9 @@ public class CounselorController {
     }
 
 
+    // Todo id 말고 토큰으로 본인 찾기 추가
     @PatchMapping(value = "/member/counselor/intro-detail", consumes = "application/json")
-    public ResponseEntity<?> modifyIntroDetailJson(@RequestBody CounselorRequestDto counselorDto) {
+    public ResponseEntity<?> modifyIntroDetail(@RequestBody CounselorRequestDto counselorDto) {
 
         counselorService.modifyIntroDetail(2L, counselorDto);
 
@@ -44,8 +64,9 @@ public class CounselorController {
     }
 
 
+    // Todo id 말고 토큰으로 본인 찾기 추가
     @PatchMapping(value = "/member/counselor/img", consumes = "application/json")
-    public ResponseEntity<?> modifyIntroImgJson(@RequestBody CounselorRequestDto counselorDto) {
+    public ResponseEntity<?> modifyIntroImg(@RequestBody CounselorRequestDto counselorDto) {
 
         counselorService.modifyImg(2L, counselorDto);
 
