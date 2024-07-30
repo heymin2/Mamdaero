@@ -1,7 +1,7 @@
 interface ButtonProps {
-  label: string;
+  label: React.ReactNode;
   onClick: () => void;
-  size: 'sm' | 'md' | 'mdlg' | 'lg' | 'full';
+  size: 'sm' | 'md' | 'mdlg' | 'lg' | 'xl' | 'full' | '예약하기';
   user: 'counselor' | 'client' | 'common';
 }
 
@@ -11,7 +11,9 @@ const Button = ({ label, onClick, size, user }: ButtonProps) => {
     md: 'w-24 h-9 text-base font-bold',
     mdlg: 'w-40 h-10 text-base font-bold',
     lg: 'w-40 h-10 text-xl font-bold',
+    xl: 'w-full h-12 text-xl font-bold',
     full: 'w-full h-10 text-xl font-bold',
+    예약하기: 'w-full h-12 text-xl font-bold',
   };
 
   const userClasses = {
