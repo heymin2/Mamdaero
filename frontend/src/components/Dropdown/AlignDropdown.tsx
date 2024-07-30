@@ -19,7 +19,7 @@ const Dropdown: React.FC<DropdownProps> = ({ selectedOption, options, onOptionCl
 
   return (
     <details ref={detailsRef} className="dropdown">
-      <summary className="btn m-1 w-32">
+      <summary className="btn m-1 w-32 shadow-md">
         {selectedOption} <IoIosArrowDown className="ml-1" />
       </summary>
       <ul className="menu dropdown-content bg-base-100 rounded-box w-52 p-2 shadow mt-1">
@@ -28,7 +28,7 @@ const Dropdown: React.FC<DropdownProps> = ({ selectedOption, options, onOptionCl
             <a
               href="#"
               onClick={() => handleOptionClick(option)}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
             >
               {option}
             </a>
