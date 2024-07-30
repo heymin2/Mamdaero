@@ -4,7 +4,7 @@ import { ImClock } from 'react-icons/im';
 
 const ReservConfirmCard: React.FC = () => {
   return (
-    <div className="tems-center justify-center bg-white p-6 rounded-lg shadow-md max-w-md h-100 w-50">
+    <div className="tems-center justify-center bg-white p-6 rounded-lg shadow-md max-w-md h-100 w-full">
       <div className="flex items-center justify-center w-full ">
         {/* <img src={alarm} alt="알람" className="w-24" /> */}
         <ImClock size={50} color="gray" />
