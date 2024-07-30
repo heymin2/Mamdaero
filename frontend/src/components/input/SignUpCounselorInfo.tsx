@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import GenderDropdown from '@/components/Dropdown/GenderDropdown';
 
 const SignUpCounselorInfo: React.FC = () => {
   const location = useLocation();
@@ -11,6 +12,7 @@ const SignUpCounselorInfo: React.FC = () => {
     address: '',
     intro: '',
     intro_detail: '',
+    gender: '',
     image: null as File | null,
   });
 
@@ -27,6 +29,10 @@ const SignUpCounselorInfo: React.FC = () => {
     }
   };
 
+  const handleGenderChange = (gender: string) => {
+    setFormState({ ...formState, gender });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formDataToSubmit = new FormData();
@@ -34,6 +40,7 @@ const SignUpCounselorInfo: React.FC = () => {
     formDataToSubmit.append('confirmPassword', formState.confirmPassword);
     formDataToSubmit.append('address', formState.address);
     formDataToSubmit.append('intro', formState.intro);
+    formDataToSubmit.append('gender', formState.gender);
     formDataToSubmit.append('intro_detail', formState.intro_detail);
     formDataToSubmit.append('name', formData?.name || '');
     formDataToSubmit.append('license', formData?.license || '');
@@ -48,9 +55,9 @@ const SignUpCounselorInfo: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-3xl bg-white p-16 rounded-lg shadow-md  text-gray-700">
+    <div className="w-full max-w-3xl bg-white p-16 rounded-lg shadow-md text-gray-700">
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="flex mb-4">
+        <div className="flex">
           <div className="flex-grow space-y-4 w-1/2 mr-5">
             <div className="space-y-4">
               <div className="flex space-x-5 ">
@@ -77,7 +84,7 @@ const SignUpCounselorInfo: React.FC = () => {
               />
             </div>
             <div className="flex space-x-5 items-center ">
-              <label className="w-1/3 block  font-bold">비밀번호 확인</label>
+              <label className="w-1/3 block font-bold">비밀번호 확인</label>
               <input
                 type="password"
                 name="confirmPassword"
@@ -86,18 +93,8 @@ const SignUpCounselorInfo: React.FC = () => {
                 className="w-3/4 p-2 border rounded"
               />
             </div>
-            <div className="flex space-x-5 items-center">
-              <label className="w-1/3 block font-bold">센터 주소</label>
-              <input
-                type="text"
-                name="address"
-                value={formState.address}
-                onChange={handleInputChange}
-                className="w-3/4 p-2 border rounded"
-              />
-            </div>
           </div>
-          <div className="w-2/5">
+          <div className="w-2/5 items-center justify-center">
             <label className="block font-bold mb-2">이미지</label>
             <div className="w-full h-3/5 bg-gray-200 flex items-center justify-center rounded">
               {formState.image ? (
@@ -114,8 +111,25 @@ const SignUpCounselorInfo: React.FC = () => {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="file-input file-input-bordered file-input-xs mt-2 "
+              className="file-input file-input-bordered file-input-xs mt-2 w-full"
             />
+          </div>
+        </div>
+
+        <div className="flex space-x-20 ">
+          <div className="flex w-full items-center">
+            <label className="w-1/3 mr-10 block font-bold">센터 주소</label>
+            <input
+              type="text"
+              name="address"
+              value={formState.address}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="flex w-2/5 items-center">
+            <label className="w-1/3 block font-bold">성별</label>
+            <GenderDropdown gender={formState.gender} onGenderChange={handleGenderChange} />
           </div>
         </div>
 
