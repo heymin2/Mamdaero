@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 public enum NoticeExceptionConstants implements ExceptionConstants {
 
     NOTICE_NOT_FOUND("B001", HttpStatus.NOT_FOUND),
-    NOTICE_BAD_REQUEST("B002", HttpStatus.BAD_REQUEST);
+    NOTICE_BAD_REQUEST("B002", HttpStatus.BAD_REQUEST),
+    COMMENT_NOT_FOUND("B003", HttpStatus.NOT_FOUND);
 
     private final String code;
     private final HttpStatus status;

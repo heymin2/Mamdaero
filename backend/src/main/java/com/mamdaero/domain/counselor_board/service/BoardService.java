@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,18 +27,15 @@ public class BoardService {
 
     public List<BoardResponse> findAll() {
         List<CounselorBoard> counselorBoards = boardRepository.findAll();
-        List<BoardResponse> list = new ArrayList<>();
 
-        for(CounselorBoard counselorBoard : counselorBoards) {
-            String writer = memberRepository.findById(counselorBoard.getMemberId())
-                    .orElseThrow(CounselorNotFoundException::new)
-                    .getName();
-
-            BoardResponse boardResponse = BoardResponse.of(counselorBoard, writer);
-            list.add(boardResponse);
-        }
-
-        return list;
+        return counselorBoards.stream()
+                .map(board -> {
+                    String writer = memberRepository.findById(board.getMemberId())
+                            .orElseThrow(CounselorNotFoundException::new)
+                            .getName();
+                    return BoardResponse.of(board, writer);
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional
