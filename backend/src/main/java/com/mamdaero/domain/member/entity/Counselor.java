@@ -15,7 +15,6 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "counselor")
 @PrimaryKeyJoinColumn(name = "counselor_id")
 public class Counselor extends Member{
->>>>>>> backend/src/main/java/com/mamdaero/domain/member/entity/Counselor.java
     @Column(length = 128)
     private String address;
 
