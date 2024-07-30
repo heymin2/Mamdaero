@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Entity
 public class WorkTime {
     @Id
-    @Column(name = "work_time_id")
+    @Column(name = "worktime_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long counselorId;
