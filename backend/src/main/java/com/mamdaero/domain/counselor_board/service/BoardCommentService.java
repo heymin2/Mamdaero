@@ -7,7 +7,7 @@ import com.mamdaero.domain.counselor_board.repository.BoardCommentRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.notice.exception.CommentNotFoundException;
-import com.mamdaero.domain.notice.exception.NoticeBadRequestException;
+import com.mamdaero.domain.notice.exception.BoardBadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class BoardCommentService {
         Long memberId = 1L;
 
         if(request.getComment() == null) {
-            throw new NoticeBadRequestException();
+            throw new BoardBadRequestException();
         }
 
         boardCommentRepository.save(BoardCommentRequest.toEntity(id, memberId, request));

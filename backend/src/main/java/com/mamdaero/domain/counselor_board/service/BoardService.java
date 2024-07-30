@@ -7,8 +7,8 @@ import com.mamdaero.domain.counselor_board.entity.CounselorBoard;
 import com.mamdaero.domain.counselor_board.repository.BoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
-import com.mamdaero.domain.notice.exception.NoticeBadRequestException;
-import com.mamdaero.domain.notice.exception.NoticeNotFoundException;
+import com.mamdaero.domain.notice.exception.BoardBadRequestException;
+import com.mamdaero.domain.notice.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class BoardService {
     @Transactional
     public BoardDetailResponse findDetail(Long id) {
         CounselorBoard board = boardRepository.findById(id)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(BoardNotFoundException::new);
 
         String writer = memberRepository.findById(board.getMemberId())
                 .orElseThrow(CounselorNotFoundException::new)
@@ -59,7 +59,7 @@ public class BoardService {
         Long memberId = 1L;
 
         if(request.getTitle() == null || request.getContent() == null) {
-            throw new NoticeBadRequestException();
+            throw new BoardBadRequestException();
         }
 
         boardRepository.save(BoardRequest.toEntity(memberId, request));
@@ -71,7 +71,7 @@ public class BoardService {
         Long memberId = 1L;
 
         CounselorBoard board = boardRepository.findById(id)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(BoardNotFoundException::new);
 
         String writer = memberRepository.findById(board.getMemberId())
                 .orElseThrow(CounselorNotFoundException::new)
@@ -95,7 +95,7 @@ public class BoardService {
         Long memberId = 1L;
 
         CounselorBoard board = boardRepository.findById(id)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(BoardNotFoundException::new);
 
         boardRepository.delete(board);
     }
