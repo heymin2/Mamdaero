@@ -1,5 +1,6 @@
 package com.mamdaero.domain.member.entity;
 
+import com.mamdaero.domain.member.dto.request.MemberRequestDto;
 import com.mamdaero.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,21 +8,19 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-import static jakarta.persistence.GenerationType.AUTO;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
 @Table(name = "member")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = AUTO)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
     private Long id;
     @Column(length = 128, nullable = false)
@@ -43,4 +42,10 @@ public class Member extends BaseEntity {
     private Boolean memberStatus;
     @Column(length = 128)
     private String token;
+
+    public void update(MemberRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        this.birth = requestDto.getBirth();
+        this.tel = requestDto.getTel();
+    }
 }
