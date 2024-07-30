@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import GenderDropdown from '@/components/Dropdown/GenderDropdown';
+import GenderDropdown from '@/components/dropdown/GenderDropdown';
 
 const SignUpCounselorInfo: React.FC = () => {
   const location = useLocation();
