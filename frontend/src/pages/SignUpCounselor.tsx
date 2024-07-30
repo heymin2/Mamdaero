@@ -15,7 +15,7 @@ const SignUpCounselor: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-orange-50 w-full">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full">
       <h1 className="text-3xl font-bold mb-8">상담사 회원 가입</h1>
       <ProgressBar currentStep={currentStep} />
       <Routes>

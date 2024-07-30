@@ -5,7 +5,7 @@ import SignUpCard from '@/components/card/SignUpCard';
 
 const SignUpChoose: React.FC = () => {
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-orange-50 w-full py-16">
+    <div className="flex flex-col items-center justify-start min-h-screen  w-full py-16">
       {/* 회원가입 제목과 뒤로가기 버튼을 감싸는 div */}
       <div className="w-full max-w-6xl px-4 mb-12">
         <div className="flex justify-between items-center ml-5 mr-5">

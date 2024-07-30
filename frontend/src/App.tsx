@@ -1,6 +1,8 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import NavClient from '@/components/navigation/NavClient';
 import MainPage from '@/pages/MainPage';
+import MainPageClient from '@/pages/MainPageClient';
+import MainPageCounselor from '@/pages/MainPageCounselor';
 import SignUpChoose from '@/pages/SignUpChoose';
 import SignUpClient from '@/pages/SignUpClient';
 import SignUpCounselor from '@/pages/SignUpCounselor';
@@ -33,7 +35,9 @@ function App() {
         className={`col-start-2 col-span-7 justify-center items-center px-16 py-6 ${backgroundColor}`}
       >
         <Routes>
-          <Route path="/" element={<MainPage />} />
+          {/* <Route path="/" element={<MainPage />} /> */}
+          {/* <Route path="/" element={<MainPageClient />} /> */}
+          <Route path="/" element={<MainPageCounselor />} />
           <Route path="/signup/choose" element={<SignUpChoose />} />
           <Route path="/signup/client" element={<SignUpClient />} />
           <Route path="/signup/counselor/*" element={<SignUpCounselor />} />
