@@ -5,8 +5,8 @@ import SignUpChoose from '@/pages/SignUpChoose';
 import SignUpClient from '@/pages/SignUpClient';
 import SignUpCounselor from '@/pages/SignUpCounselor';
 import SignUpCounselorInfo from '@/components/input/SignUpCounselorInfo';
-import CounselorListPage from './pages/CounselorListPage';
-
+import CounselorListPage from '@/pages/CounselorListPage';
+import CounselorDetailPage from '@/pages/CounselorDetailPage';
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
 };
@@ -38,6 +38,7 @@ function App() {
           <Route path="/signup/client" element={<SignUpClient />} />
           <Route path="/signup/counselor/*" element={<SignUpCounselor />} />
           <Route path="/counselor" element={<CounselorListPage />} />
+          <Route path="/counselor/:counselorID" element={<CounselorDetailPage />} />
         </Routes>
       </div>
     </div>
