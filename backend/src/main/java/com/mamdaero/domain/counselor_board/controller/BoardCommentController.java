@@ -36,4 +36,12 @@ public class BoardCommentController {
         boardCommentService.delete(boardId, commentId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/comment/{commentId}/complaint")
+    public ResponseEntity<?> complaint(@PathVariable("commentId") Long commentId) {
+        if(!boardCommentService.complaint(commentId)){
+            return ResponseEntity.ok("이미 신고한 글입니다.");
+        }
+        return ResponseEntity.ok().build();
+    }
 }

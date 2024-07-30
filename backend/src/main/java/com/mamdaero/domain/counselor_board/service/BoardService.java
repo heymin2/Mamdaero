@@ -1,5 +1,8 @@
 package com.mamdaero.domain.counselor_board.service;
 
+import com.mamdaero.domain.complaint.entity.Complaint;
+import com.mamdaero.domain.complaint.entity.Source;
+import com.mamdaero.domain.complaint.repository.ComplaintRepository;
 import com.mamdaero.domain.counselor_board.dto.request.BoardRequest;
 import com.mamdaero.domain.counselor_board.dto.response.BoardDetailResponse;
 import com.mamdaero.domain.counselor_board.dto.response.BoardResponse;
@@ -24,6 +27,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final ComplaintRepository complaintRepository;
 
     public List<BoardResponse> findAll() {
         List<CounselorBoard> counselorBoards = boardRepository.findAll();
@@ -98,5 +102,22 @@ public class BoardService {
                 .orElseThrow(BoardNotFoundException::new);
 
         boardRepository.delete(board);
+    }
+
+    @Transactional
+    public boolean complaint(Long id) {
+        // 토큰 확인 후 로그인한지 확인
+        Long memberId = 1L;
+
+        if(complaintRepository.existsByMemberIdAndEventSourceAndEventId(memberId, Source.COUNSELOR_BOARD, id)) {
+            return false;
+        }
+
+        complaintRepository.save(Complaint.builder()
+                .eventSource(Source.COUNSELOR_BOARD)
+                .eventId(id)
+                .memberId(memberId)
+                .build());
+        return true;
     }
 }

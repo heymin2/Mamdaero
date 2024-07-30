@@ -40,4 +40,12 @@ public class BoardController {
         boardService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{boardId}/complaint")
+    public ResponseEntity<?> complaint(@PathVariable("boardId") Long id) {
+        if(!boardService.complaint(id)){
+            return ResponseEntity.ok("이미 신고한 글입니다.");
+        }
+        return ResponseEntity.ok().build();
+    }
 }
