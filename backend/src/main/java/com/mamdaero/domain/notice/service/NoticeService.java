@@ -4,8 +4,8 @@ import com.mamdaero.domain.notice.dto.request.NoticeRequest;
 import com.mamdaero.domain.notice.dto.response.NoticeDetailResponse;
 import com.mamdaero.domain.notice.dto.response.NoticeResponse;
 import com.mamdaero.domain.notice.entity.Notice;
-import com.mamdaero.domain.notice.exception.NoticeBadRequestException;
-import com.mamdaero.domain.notice.exception.NoticeNotFoundException;
+import com.mamdaero.domain.notice.exception.BoardBadRequestException;
+import com.mamdaero.domain.notice.exception.BoardNotFoundException;
 import com.mamdaero.domain.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class NoticeService {
     @Transactional
     public NoticeDetailResponse findDetail(Long id) {
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(BoardNotFoundException::new);
 
         notice.clickNotice();
         noticeRepository.save(notice);
@@ -46,7 +46,7 @@ public class NoticeService {
         Long memberId = 2L;
 
         if(request.getTitle() == null || request.getContent() == null) {
-            throw new NoticeBadRequestException();
+            throw new BoardBadRequestException();
         }
 
         noticeRepository.save(NoticeRequest.toEntity(memberId, request));
@@ -58,7 +58,7 @@ public class NoticeService {
         Long memberId = 2L;
 
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(BoardNotFoundException::new);
 
         if (request.getTitle() != null) {
             notice.updateTitle(request.getTitle());
@@ -78,7 +78,7 @@ public class NoticeService {
         Long memberId = 2L;
 
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(NoticeNotFoundException::new);
+                .orElseThrow(BoardNotFoundException::new);
 
         noticeRepository.delete(notice);
     }

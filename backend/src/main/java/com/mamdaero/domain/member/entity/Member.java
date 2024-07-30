@@ -19,25 +19,35 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name = "member")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
     private Long id;
+
     @Column(length = 128, nullable = false)
     private String email;
+
     @Column(length = 128, nullable = false)
     private String password;
+
     @Column(length = 20, nullable = false)
     private String name;
+
     @Column(length = 20, nullable = false)
     private String nickname;
+
     private LocalDate birth;
+
     @Column(length = 128, nullable = false)
     private String tel;
+
     @Column(length = 1)
     private String gender;
+
     @Column(length = 3, nullable = false)
     private String role;
+
     @Column(nullable = false, name = "member_status")
     private Boolean memberStatus;
     @Column(length = 128)
