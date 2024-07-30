@@ -15,19 +15,13 @@ const SignUpCounselor: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-orange-50 w-full pt-28">
-      <div className="w-full max-w-3xl ">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-3">상담사 회원 가입</h1>
-          <ProgressBar currentStep={currentStep} />
-        </div>
-        <div className="flex justify-center">
-          <Routes>
-            <Route path="/" element={<SignUpCounselorInput />} />
-            <Route path="info" element={<SignUpCounselorInfo />} />
-          </Routes>
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-orange-50 w-full">
+      <h1 className="text-3xl font-bold mb-8">상담사 회원 가입</h1>
+      <ProgressBar currentStep={currentStep} />
+      <Routes>
+        <Route path="/" element={<SignUpCounselorInput />} />
+        <Route path="info" element={<SignUpCounselorInfo />} />
+      </Routes>
     </div>
   );
 };
