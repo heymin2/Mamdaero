@@ -19,15 +19,13 @@ export default {
     themes: [
       {
         mytheme: {
-          'primary': '#fb923c',
-          'secondary': '#60a5fa',
-          'accent': '#37cdbe',
+          'primary': '#fb923c', // orange-400
+          'secondary': '#60a5fa', // blue-400
+          'accent': '#37cdbe', // 여기서부터 아직 안건드림
           'neutral': '#3d4451',
           'base-100': '#ffffff',
         },
       },
-      // 'dark',
-      // 'cupcake',
     ],
   },
 };
