@@ -42,4 +42,12 @@ public class ConsultingReportController {
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @PatchMapping("consult-report/{report_id}")
+    public ResponseEntity<ConsultingReport> update(@PathVariable(name = "report_id") Long id, @RequestBody ConsultingReportRequestDto requestDto) {
+
+        consultingReportService.update(id, requestDto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

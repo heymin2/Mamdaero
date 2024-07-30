@@ -6,7 +6,6 @@ import com.mamdaero.domain.consulting_report.repository.ConsultingReportReposito
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,8 +38,15 @@ public class ConsultingReportService {
         consultingReportRepository.save(consultingReport);
     }
 
-    public void update(ConsultingReportRequestDto requestDto){
+    @Transactional
+    public void update(Long id, ConsultingReportRequestDto requestDto){
+        Optional<ConsultingReport> optionalConsultingReport = consultingReportRepository.findById(id);
 
+        if (optionalConsultingReport.isPresent()) {
+            ConsultingReport consultingReport = optionalConsultingReport.get();
+
+            consultingReport.update(requestDto);
+        }
 
     }
 }

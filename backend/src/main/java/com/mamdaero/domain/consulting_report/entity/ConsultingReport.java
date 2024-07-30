@@ -1,25 +1,33 @@
 package com.mamdaero.domain.consulting_report.entity;
 
 import com.mamdaero.domain.consulting_report.dto.ConsultingReportRequestDto;
+import com.mamdaero.domain.reservation.entity.Reservation;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
 public class ConsultingReport {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_id")
     private Long id;
-    @Column(length = 200)
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "report_id")
+    private Reservation reservation;
+
+    @Column(length = 200, nullable = false)
     private String title;
-    @Column(length = 5000)
+    @Column(length = 5000, nullable = false)
     private String detail;
     @Column(length = 3000)
     private String opinion;
