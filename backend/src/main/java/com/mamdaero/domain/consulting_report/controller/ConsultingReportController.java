@@ -20,6 +20,7 @@ public class ConsultingReportController {
         this.consultingReportService = consultingReportService;
     }
 
+    // Todo 본인의 토큰 값으로 본인이 작성한 보고서만 볼 수 있게
     @GetMapping("/consult-report")
     public ResponseEntity<List<ConsultingReport>> findAll() {
         List<ConsultingReport> consultingReportList = consultingReportService.findAll();
