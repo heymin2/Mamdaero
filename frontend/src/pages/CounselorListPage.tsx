@@ -14,10 +14,14 @@ const CounselorListPage: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between my-5">
+      <div className="flex flex-col xl:flex-row justify-between my-5">
         <div>
-          <div className="font-bold text-3xl text-orange-500">맘대로 상담사 조회</div>
-          <div className="my-2">나에게 딱 맞는 상담사를 만나보세요.</div>
+          <div className="font-bold text-xl sm:text-2xl md:text-3xl text-orange-500">
+            맘대로 상담사 조회
+          </div>
+          <div className="my-2 text-sm sm:text-base md:text-lg">
+            나에게 딱 맞는 상담사를 만나보세요.
+          </div>
         </div>
         <div className="flex items-center">
           <AlignDropdown

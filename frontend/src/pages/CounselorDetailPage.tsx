@@ -6,27 +6,34 @@ import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaStar } from 'react-icons/fa6';
 
-interface CounselorDetailProps {
-  name: string;
-  intro: string;
-  introDetail: string;
-  profileImage: string;
-  reviewCount: number;
-}
-const CounselorDetailPage: React.FC<CounselorDetailProps> = ({
-  name = '박민준',
-  intro = '똑똑똑, 당신의 이야기를 경청하며, 내면의 힘을 키워나가는 박민준상담사입니다.',
-  introDetail = ' 상담을 통해 현재의 어려움을 다른 관점으로 바라볼 수 있게 되기도 하고, 문제를 다룰 수 있는 내적인 힘이 생기기도 한답니다. 왜냐하면 머릿속에서 과거와 현재의 경험, 여러 감정들이 서로 복잡하게 엉켜 있어 명료하게 바라볼 수 없었던 것들이 상담 과정에서 하나씩 이해되고 정리되며 어려웠던 감정은 치유될 수 있기 때문이지요. ',
-  profileImage = DefaultProfile,
-  reviewCount = 5,
-}) => {
+// interface CounselorDetailProps {
+//   name: string;
+//   intro: string;
+//   introDetail: string;
+//   profileImage: string;
+//   reviewCount: number;
+// }
+// const CounselorDetailPage: React.FC<CounselorDetailProps> = ({
+//   name = '박민준',
+//   intro = '똑똑똑, 당신의 이야기를 경청하며, 내면의 힘을 키워나가는 박민준 상담사입니다.',
+//   introDetail = ' 상담을 통해 현재의 어려움을 다른 관점으로 바라볼 수 있게 되기도 하고, 문제를 다룰 수 있는 내적인 힘이 생기기도 한답니다. 왜냐하면 머릿속에서 과거와 현재의 경험, 여러 감정들이 서로 복잡하게 엉켜 있어 명료하게 바라볼 수 없었던 것들이 상담 과정에서 하나씩 이해되고 정리되며 어려웠던 감정은 치유될 수 있기 때문이지요. ',
+//   profileImage = DefaultProfile,
+//   reviewCount = 5,
+// }) => {
+const CounselorDetailPage = () => {
   const navigate = useNavigate();
   const backToList = () => {
     navigate('/counselor');
   };
+  const name = '박민준';
+  const intro = '나만의 삶의 의미를 찾는 여정을 함께해요.';
+  const introDetail =
+    ' 상담을 통해 현재의 어려움을 다른 관점으로 바라볼 수 있게 되기도 하고, 문제를 다룰 수 있는 내적인 힘이 생기기도 한답니다. 왜냐하면 머릿속에서 과거와 현재의 경험, 여러 감정들이 서로 복잡하게 엉켜 있어 명료하게 바라볼 수 없었던 것들이 상담 과정에서 하나씩 이해되고 정리되며 어려웠던 감정은 치유될 수 있기 때문이지요. ';
+  const profileImage = DefaultProfile;
+  const reviewCount = 5;
   return (
     <div className="my-3 mx-24">
-      <div className="mb-5">
+      <div className="mb-3">
         <RoundedButton
           label={
             <span className="flex items-center ms-2">
@@ -39,7 +46,7 @@ const CounselorDetailPage: React.FC<CounselorDetailProps> = ({
           user="client"
         ></RoundedButton>
       </div>
-      <div className="grid grid-cols-4 ">
+      <div className="grid grid-cols-4">
         {/* 왼쪽 부분 (상담사 소개) */}
         <div className="col-span-3">
           {/* 한줄 소개 */}
@@ -68,29 +75,32 @@ const CounselorDetailPage: React.FC<CounselorDetailProps> = ({
             <ReviewCard />
             <ReviewCard />
             <ReviewCard />
+            <ReviewCard />
+            <ReviewCard />
           </div>
         </div>
         {/* 오른쪽 부분 (이름, 이미지, 예약하기 버튼) */}
         <div className="col-span-1 mx-2">
-          <div className="flex my-4 justify-around">
-            <div className="flex items-end border-b-4 border-b-orange-400">
-              <div className="text-3xl font-bold">{name}</div>
-              <div className="text-base font-bold ml-2">상담사</div>
-              <div className="flex ms-1">
-                <FaStar size={20} color="orange" className="ms-1" />
-                <div className="text-md font-bold mx-1">4.5</div>
-                <div>(115)</div>
+          <div className="sticky top-20 overflow-auto">
+            <img src={DefaultProfile} className="w-full h-64 object-cover rounded-lg" alt="" />
+            <div className="flex my-4 justify-start">
+              <div className="flex items-end">
+                <div className="text-2xl font-bold">{name}</div>
+                <div className="text-base font-bold ml-2">상담사</div>
+                <div className="flex ms-1">
+                  <FaStar size={20} color="orange" className="ms-1" />
+                  <div className="text-md font-bold mx-1">4.5</div>
+                </div>
               </div>
             </div>
-          </div>
-          <img src={DefaultProfile} className="w-full h-64 object-cover rounded-lg" alt="" />
-          <div className="my-5">
-            <SquareButton
-              label="예약하기"
-              onClick={backToList}
-              size="예약하기"
-              user="client"
-            ></SquareButton>
+            <div>
+              <SquareButton
+                label="예약하기"
+                onClick={backToList}
+                size="예약하기"
+                user="client"
+              ></SquareButton>
+            </div>
           </div>
         </div>
       </div>
