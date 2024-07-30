@@ -1,5 +1,3 @@
-// /mnt/data/src_latest/components/ProgressBar.tsx
-
 import React from 'react';
 
 interface ProgressBarProps {
@@ -13,23 +11,26 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
     { label: '가입 완료', key: 'complete' },
   ];
 
+  const getStepClassName = (stepKey: string) => {
+    if (currentStep === stepKey) return 'step step-secondary';
+    if (
+      steps.findIndex(step => step.key === stepKey) <
+      steps.findIndex(step => step.key === currentStep)
+    ) {
+      return 'step step-secondary';
+    }
+    return 'step';
+  };
+
   return (
-    <div className="flex justify-center items-center mb-8">
-      {steps.map((step, index) => (
-        <div key={step.key} className="flex items-center">
-          <div
-            className={`text-center ${currentStep === step.key ? 'text-blue-500' : 'text-gray-300'} font-h6-regular`}
-          >
+    <div className="mb-8 text-gray-600">
+      <ul className="steps steps-horizontal ">
+        {steps.map(step => (
+          <li key={step.key} className={getStepClassName(step.key)}>
             {step.label}
-          </div>
-          {index < steps.length - 1 && (
-            <div
-              className="mx-2 w-8 h-[2px] bg-gray-300 flex-grow"
-              style={{ backgroundColor: currentStep === step.key ? 'blue' : 'gray' }}
-            ></div>
-          )}
-        </div>
-      ))}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

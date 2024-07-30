@@ -96,22 +96,24 @@ const SignUpCounselorInfo: React.FC = () => {
           </div>
           <div className="w-2/5 items-center justify-center">
             <label className="block font-bold mb-2">이미지</label>
-            <div className="w-full h-3/5 bg-gray-200 flex items-center justify-center rounded">
-              {formState.image ? (
-                <img
-                  src={URL.createObjectURL(formState.image)}
-                  alt="Selected"
-                  className="w-full h-full object-cover rounded"
-                />
-              ) : (
-                <span>이미지</span>
-              )}
+            <div className="flex items-center justify-center">
+              <div className="w-3/5 bg-gray-200 flex items-center justify-center rounded min-h-32 max-h-32">
+                {formState.image ? (
+                  <img
+                    src={URL.createObjectURL(formState.image)}
+                    alt="Selected"
+                    className="w-full h-full min-h-32 max-h-32 object-cover rounded "
+                  />
+                ) : (
+                  <span>이미지</span>
+                )}
+              </div>
             </div>
             <input
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="file-input file-input-bordered file-input-xs mt-2 w-full"
+              className="file-input file-input-bordered file-input-xs mt-2 w-full "
             />
           </div>
         </div>
