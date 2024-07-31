@@ -24,6 +24,9 @@ public class Postit extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "question_id", nullable = false)
+    private Long questionId;
+
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
@@ -35,9 +38,14 @@ public class Postit extends BaseEntity {
     private Boolean isDelete;
 
     @Builder
-    public Postit(Long memberId, String content) {
+    public Postit(Long memberId, Long questionId, String content) {
         this.memberId = memberId;
+        this.questionId = questionId;
         this.content =content;
         this.isDelete = false;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
     }
 }
