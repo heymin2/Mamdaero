@@ -17,7 +17,7 @@ interface SelfTest {
   questions: Question[];
 }
 
-const answerLabels = ['전혀 그렇지 않다', '조금 그렇다', '보통 그렇다', '대단히 그렇다'];
+const answerLabels = ['극히 드물게', '가끔', '자주', '거의 대부분'];
 
 const UnrestPage: React.FC = () => {
   const [selfTest, setSelfTest] = useState<SelfTest | null>(null);
@@ -30,7 +30,9 @@ const UnrestPage: React.FC = () => {
     fetch('/selftests.json')
       .then(response => response.json())
       .then(data => {
-        const unrestTest = data.selftests.find((test: SelfTest) => test.selftest_name === 'unrest');
+        const unrestTest = data.selftests.find(
+          (test: SelfTest) => test.selftest_name === 'depressed'
+        );
         setSelfTest(unrestTest);
         setQuestions(unrestTest.questions);
       })
@@ -47,12 +49,12 @@ const UnrestPage: React.FC = () => {
       return;
     }
     const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
-    navigate('/selftest/unrest/result', { state: { totalScore } });
+    navigate('/selftest/depressed/result', { state: { totalScore } });
   };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen w-full py-16">
-      <NavTest title="불안" subtitle="위험요소가 다 사라졌지만 불안하신가요?" />
+      <NavTest title="우울" subtitle="기분이 늘 울적하고 매사에 의욕이 없나요?" />
 
       <div className="flex text-sm space-x-5 mb-12">
         <FaCheck />
