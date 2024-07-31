@@ -15,7 +15,7 @@ public class PostitResponse {
     private Long id;
     private String writer;
     private String content;
-    private int likeCount;
+    private Integer likeCount;
     private Boolean isLike;
     private Boolean isMine;
 
