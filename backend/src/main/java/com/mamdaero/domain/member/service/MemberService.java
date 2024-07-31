@@ -27,7 +27,6 @@ public class MemberService {
     public void modifyMember(final Long id, MemberRequestDto requestDto) {
         Optional<Member> optionalMember = memberRepository.findById(id);
 
-
         if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
 
