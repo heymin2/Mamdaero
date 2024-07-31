@@ -17,7 +17,7 @@ interface BoardTableProps {
   paginate: (pageNumber: number) => void;
 }
 
-const BoardTableCard: React.FC<BoardTableProps> = ({
+const CommunityListCard: React.FC<BoardTableProps> = ({
   posts,
   currentPage,
   postsPerPage,
@@ -87,4 +87,4 @@ const BoardTableCard: React.FC<BoardTableProps> = ({
   );
 };
 
-export default BoardTableCard;
+export default CommunityListCard;

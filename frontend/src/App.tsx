@@ -8,9 +8,9 @@ import SignUpCounselorInfo from '@/components/input/SignUpCounselorInfo';
 import SelfTestListPage from '@/pages/selftest/SelfTestListPage';
 import UnrestPage from '@/pages/selftest/UnrestPage';
 import UnrestResultPage from '@/pages/selftest/UnrestResultPage';
-import CounselorListPage from '@/pages/CounselorListPage';
-import CounselorDetailPage from '@/pages/CounselorDetailPage';
-import CommunityListPage from '@/pages/CommunityListPage';
+import CounselorListPage from '@/pages/counselor/CounselorListPage';
+import CounselorDetailPage from '@/pages/counselor/CounselorDetailPage';
+import CommunityListPage from '@/pages/community/CommunityListPage';
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
 };

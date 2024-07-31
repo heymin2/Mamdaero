@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import BoardListCard from '@/components/card/BoardListCard';
+import { useState } from 'react';
+import CommunityListCard from '@/components/card/CommunityListCard';
 
 interface Post {
   id: number;
@@ -10,7 +10,7 @@ interface Post {
   date: string;
 }
 
-const BoardList: React.FC = () => {
+const CommunityListPage: React.FC = () => {
   const generateSamplePosts = (): Post[] => {
     return Array.from({ length: 50 }, (_, i) => ({
       id: i + 1,
@@ -39,7 +39,7 @@ const BoardList: React.FC = () => {
           <span className="text-orange-500">맘대로</span> 커뮤니티
         </div>
       </div>
-      <BoardListCard
+      <CommunityListCard
         posts={posts}
         currentPage={currentPage}
         postsPerPage={postsPerPage}
@@ -49,4 +49,4 @@ const BoardList: React.FC = () => {
   );
 };
 
-export default BoardList;
+export default CommunityListPage;
