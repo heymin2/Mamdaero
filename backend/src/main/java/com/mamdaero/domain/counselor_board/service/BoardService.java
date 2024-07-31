@@ -7,6 +7,7 @@ import com.mamdaero.domain.counselor_board.dto.request.BoardRequest;
 import com.mamdaero.domain.counselor_board.dto.response.BoardDetailResponse;
 import com.mamdaero.domain.counselor_board.dto.response.BoardResponse;
 import com.mamdaero.domain.counselor_board.entity.CounselorBoard;
+import com.mamdaero.domain.counselor_board.repository.BoardLikeRepository;
 import com.mamdaero.domain.counselor_board.repository.BoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
@@ -28,6 +29,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
+    private final BoardLikeRepository boardLikeRepository;
 
     public List<BoardResponse> findAll() {
         List<CounselorBoard> counselorBoards = boardRepository.findAll();
@@ -44,6 +46,8 @@ public class BoardService {
 
     @Transactional
     public BoardDetailResponse findDetail(Long id) {
+        Long memberId = null;
+
         CounselorBoard board = boardRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
 
@@ -54,7 +58,11 @@ public class BoardService {
         board.clickCounselorBoard();
         boardRepository.save(board);
 
-        return BoardDetailResponse.of(board, writer);
+        int likeCount = boardLikeRepository.countByBoardId(board.getId());
+        boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
+        boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
+
+        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine);
     }
 
     @Transactional
@@ -90,7 +98,12 @@ public class BoardService {
         }
 
         boardRepository.save(board);
-        return BoardDetailResponse.of(board, writer);
+
+        int likeCount = boardLikeRepository.countByBoardId(board.getId());
+        boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
+        boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
+
+        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine);
     }
 
     @Transactional
