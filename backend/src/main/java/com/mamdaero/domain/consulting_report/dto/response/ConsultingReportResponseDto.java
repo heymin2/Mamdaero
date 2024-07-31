@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class ConsultingReportResponseDto {
+
     private String memberName;
     private Long reservationId;
     private String counselorItemName;

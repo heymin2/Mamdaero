@@ -16,26 +16,21 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString(callSuper = true)
 public class Diary extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_id")
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-
     // emotion_id 필요
     private String content;
-
     private LocalDate date;
-
     @Builder.Default
     private Boolean isOpen = false;
-
     @Builder.Default
     private Boolean isDelete = false;
-
 
     public void update(DiaryRequestDto requestDto) {
         this.content = requestDto.getContent();

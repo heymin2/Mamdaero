@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class DiaryResponseDto {
+
     private String content;
     private LocalDate date;
     private Boolean isOpen;

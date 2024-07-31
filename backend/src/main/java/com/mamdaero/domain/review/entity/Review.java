@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true)
 public class Review extends BaseEntity {
+
     @Id
     @Column(name = "review_id")
     private Long id;

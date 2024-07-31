@@ -20,7 +20,6 @@ public class ConsultingReportService {
     private final ConsultingReportRepository consultingReportRepository;
     private final CounselorRepository counselorRepository;
 
-
     public List<ConsultingReportResponseDto> findAll() {
         return consultingReportRepository.findAll().stream()
                 .map(report -> ConsultingReportResponseDto.toDTO(report, counselorRepository))
@@ -54,6 +53,5 @@ public class ConsultingReportService {
 
             consultingReport.update(requestDto);
         }
-
     }
 }

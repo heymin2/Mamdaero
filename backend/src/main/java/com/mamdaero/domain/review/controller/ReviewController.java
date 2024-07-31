@@ -4,6 +4,7 @@ import com.mamdaero.domain.review.dto.request.ReviewRequestDto;
 import com.mamdaero.domain.review.dto.response.ReviewResponseDto;
 import com.mamdaero.domain.review.entity.Review;
 import com.mamdaero.domain.review.service.ReviewService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,14 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class ReviewController {
 
-    @Autowired
     private final ReviewService reviewService;
-
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
 
     @GetMapping("/counselor/{counselorId}/review")
     public ResponseEntity<List<ReviewResponseDto>> findCounselorReview(@PathVariable(name = "counselorId") Long counselorId) {
