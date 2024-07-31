@@ -457,6 +457,16 @@
           "selftest_questionid": 13,
           "selftest_question_detail": "돈쓰는 문제로 자신이나 가족을 곤경에 빠뜨린 적이 있었다.",
           "options": [1, 0]
+        },
+        {
+          "selftest_questionid": 14,
+          "selftest_question_detail": "만약 위의 질문 중에서 두 개 이상 ‘예’라고 했다면, 그 중 몇 가지는 같은 시기에 벌어진 것입니까?",
+          "options": [1, 0]
+        },
+        {
+          "selftest_questionid": 15,
+          "selftest_question_detail": "이러한 일들로 인해서 어느 정도의 문제가 발생했습니까?",
+          "options": [0,1,2,3]
         }
       ]
     }
