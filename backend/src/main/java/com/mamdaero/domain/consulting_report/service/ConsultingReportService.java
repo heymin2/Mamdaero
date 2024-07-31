@@ -4,8 +4,8 @@ import com.mamdaero.domain.consulting_report.dto.request.ConsultingReportRequest
 import com.mamdaero.domain.consulting_report.dto.response.ConsultingReportResponseDto;
 import com.mamdaero.domain.consulting_report.entity.ConsultingReport;
 import com.mamdaero.domain.consulting_report.exception.ConsultingReportAlreadyException;
-import com.mamdaero.domain.consulting_report.exception.ConsultingReportBadRequestException;
 import com.mamdaero.domain.consulting_report.exception.ConsultingReportNoDetailException;
+import com.mamdaero.domain.consulting_report.exception.ConsultingReportNoTitleException;
 import com.mamdaero.domain.consulting_report.exception.ConsultingReportNotFoundException;
 import com.mamdaero.domain.consulting_report.repository.ConsultingReportRepository;
 import com.mamdaero.domain.member.repository.CounselorRepository;
@@ -52,7 +52,7 @@ public class ConsultingReportService {
         if (consultingReportRepository.findById(id).isEmpty()) {
 
             if (requestDto.getTitle().isEmpty()) {
-                throw new ConsultingReportBadRequestException();
+                throw new ConsultingReportNoTitleException();
             }
             else if (requestDto.getDetail().isEmpty()) {
                 throw new ConsultingReportNoDetailException();
@@ -79,7 +79,7 @@ public class ConsultingReportService {
             ConsultingReport consultingReport = optionalConsultingReport.get();
 
             if (requestDto.getTitle().isEmpty()) {
-                throw new ConsultingReportBadRequestException();
+                throw new ConsultingReportNoTitleException();
             }
             else if (requestDto.getDetail().isEmpty()) {
                 throw new ConsultingReportNoDetailException();
