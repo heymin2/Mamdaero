@@ -18,8 +18,9 @@ interface SelfTest {
 }
 
 const answerLabels = ['예', '아니요'];
+const additionalLabels = ['문제 없었다', '경미한 문제', '중증도의 문제', '심각한 문제'];
 
-const UnrestPage: React.FC = () => {
+const BipolarPage: React.FC = () => {
   const [selfTest, setSelfTest] = useState<SelfTest | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
@@ -30,11 +31,11 @@ const UnrestPage: React.FC = () => {
     fetch('/selftests.json')
       .then(response => response.json())
       .then(data => {
-        const unrestTest = data.selftests.find(
+        const bipolarTest = data.selftests.find(
           (test: SelfTest) => test.selftest_name === 'bipolar'
         );
-        setSelfTest(unrestTest);
-        setQuestions(unrestTest.questions);
+        setSelfTest(bipolarTest);
+        setQuestions(bipolarTest.questions);
       })
       .catch(error => console.error('Error fetching questions:', error));
   }, []);
@@ -48,20 +49,38 @@ const UnrestPage: React.FC = () => {
       setAlertMessage('모든 문항에 답변해 주세요.');
       return;
     }
-    const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
-    navigate('/selftest/bipolar/result', { state: { totalScore } });
+
+    const totalScore = Object.entries(answers)
+      .filter(([questionId]) => Number(questionId) <= 13)
+      .reduce((acc, [_, score]) => acc + score, 0);
+
+    // 답변 데이터를 구조화하여 출력
+    const detailedAnswers = Object.entries(answers).map(([questionId, score]) => ({
+      selftest_id: selfTest?.selftest_id,
+      question_id: Number(questionId),
+      answer: score,
+    }));
+
+    console.log('Detailed Answers:', detailedAnswers);
+
+    navigate('/selftest/bipolar/result', { state: { totalScore, detailedAnswers } });
   };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen w-full py-16">
-      <NavTest title="조울증" subtitle="기분이 지나치게 들뜨거나 가라앉는 경험을 자주 하시나요?" />
-
+      {/* 제목 */}
+      <NavTest
+        title="조울증"
+        subtitle="기분이 지나치게 들뜨거나 가라앉는 경험을 자주 하시나요?"
+        showBackButton={true}
+      />
+      {/* 검사테이블 */}
       <div className="flex text-sm space-x-5 mb-12">
         <FaCheck />
         <div>{selfTest ? selfTest.selftest_info : '정보를 불러오는 중...'}</div>
       </div>
 
-      <div className="w-full max-w-4xl px-4 ">
+      <div className="w-full max-w-4xl px-4">
         <table className="table w-full rounded-lg overflow-hidden">
           <thead>
             <tr>
@@ -84,7 +103,7 @@ const UnrestPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {questions.map((question, qIndex) => (
+            {questions.slice(0, 13).map((question, qIndex) => (
               <tr
                 key={question.selftest_questionid}
                 className={`${
@@ -112,6 +131,60 @@ const UnrestPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+      {/* 추가질문 */}
+      <div className="w-full max-w-4xl px-4 mt-8">
+        <h3 className="text-xl font-bold mb-4">추가 질문</h3>
+        {questions.slice(13, 14).map(question => (
+          <div
+            key={question.selftest_questionid}
+            className="mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
+          >
+            <label className="block text-base font-normal mb-2 ">
+              {question.selftest_questionid}. {question.selftest_question_detail}
+            </label>
+            <div className="flex space-x-4">
+              {question.options.map((option, index) => (
+                <label key={index} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name={`question-${question.selftest_questionid}`}
+                    value={option}
+                    onChange={() => handleAnswerChange(question.selftest_questionid, option)}
+                    className="radio radio-primary"
+                  />
+                  <span className="text-base font-normal">{answerLabels[index]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {questions.slice(14, 15).map(question => (
+          <div
+            key={question.selftest_questionid}
+            className="mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
+          >
+            <label className="block text-base font-normal mb-2 ">
+              {question.selftest_questionid}. {question.selftest_question_detail}
+            </label>
+            <div className="flex space-x-4">
+              {question.options.map((option, index) => (
+                <label key={index} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name={`question-${question.selftest_questionid}`}
+                    value={option}
+                    onChange={() => handleAnswerChange(question.selftest_questionid, option)}
+                    className="radio radio-primary"
+                  />
+                  <span className="text-base font-normal">{additionalLabels[index]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* 경고창 */}
       {alertMessage && (
         <div role="alert" className="alert alert-warning mt-4">
           <svg
@@ -130,11 +203,12 @@ const UnrestPage: React.FC = () => {
           <span>{alertMessage}</span>
         </div>
       )}
+      {/* 다음버튼 */}
       <div className="mt-8">
-        <Button onClick={handleSubmit} label="다음가기" size="md" user="client" />
+        <Button onClick={handleSubmit} label="결과보기" size="md" user="client" />
       </div>
     </div>
   );
 };
 
-export default UnrestPage;
+export default BipolarPage;

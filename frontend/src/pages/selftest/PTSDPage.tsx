@@ -25,7 +25,7 @@ const answerLabels = [
   '아주 많이 그렇다',
 ];
 
-const UnrestPage: React.FC = () => {
+const PTSDPage: React.FC = () => {
   const [selfTest, setSelfTest] = useState<SelfTest | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
@@ -53,13 +53,28 @@ const UnrestPage: React.FC = () => {
       return;
     }
     const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
+    // 답변 데이터를 구조화하여 출력
+    const detailedAnswers = Object.entries(answers).map(([questionId, score]) => {
+      return {
+        selftest_id: selfTest?.selftest_id,
+        question_id: Number(questionId),
+        answer: score,
+      };
+    });
+
+    console.log('Detailed Answers:', detailedAnswers);
     navigate('/selftest/ptsd/result', { state: { totalScore } });
   };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen w-full py-16">
-      <NavTest title="PTSD" subtitle="그 사건 후 지속적인 스트레스와 불안감을 느끼고 계신가요?" />
-
+      {/* 제목 */}
+      <NavTest
+        title="PTSD"
+        subtitle="그 사건 후 지속적인 스트레스와 불안감을 느끼고 계신가요?"
+        showBackButton={true}
+      />
+      {/* 검사테이블 */}
       <div className="flex text-sm space-x-5 mb-12">
         <FaCheck />
         <div>{selfTest ? selfTest.selftest_info : '정보를 불러오는 중...'}</div>
@@ -116,6 +131,7 @@ const UnrestPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+      {/* 경고창 */}
       {alertMessage && (
         <div role="alert" className="alert alert-warning mt-4">
           <svg
@@ -134,11 +150,12 @@ const UnrestPage: React.FC = () => {
           <span>{alertMessage}</span>
         </div>
       )}
+      {/* 다음버튼 */}
       <div className="mt-8">
-        <Button onClick={handleSubmit} label="다음가기" size="md" user="client" />
+        <Button onClick={handleSubmit} label="결과보기" size="md" user="client" />
       </div>
     </div>
   );
 };
 
-export default UnrestPage;
+export default PTSDPage;

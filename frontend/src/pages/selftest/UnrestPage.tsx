@@ -47,13 +47,28 @@ const UnrestPage: React.FC = () => {
       return;
     }
     const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
+    // 답변 데이터를 구조화하여 출력
+    const detailedAnswers = Object.entries(answers).map(([questionId, score]) => {
+      return {
+        selftest_id: selfTest?.selftest_id,
+        question_id: Number(questionId),
+        answer: score,
+      };
+    });
+
+    console.log('Detailed Answers:', detailedAnswers);
     navigate('/selftest/unrest/result', { state: { totalScore } });
   };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen w-full py-16">
-      <NavTest title="불안" subtitle="위험요소가 다 사라졌지만 불안하신가요?" />
-
+      {/* 제목 */}
+      <NavTest
+        title="불안"
+        subtitle="위험요소가 다 사라졌지만 불안하신가요?"
+        showBackButton={true}
+      />
+      {/* 검사테이블 */}
       <div className="flex text-sm space-x-5 mb-12">
         <FaCheck />
         <div>{selfTest ? selfTest.selftest_info : '정보를 불러오는 중...'}</div>
@@ -110,6 +125,7 @@ const UnrestPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+      {/* 경고창 */}
       {alertMessage && (
         <div role="alert" className="alert alert-warning mt-4">
           <svg
@@ -128,8 +144,9 @@ const UnrestPage: React.FC = () => {
           <span>{alertMessage}</span>
         </div>
       )}
+      {/* 다음버튼 */}
       <div className="mt-8">
-        <Button onClick={handleSubmit} label="다음가기" size="md" user="client" />
+        <Button onClick={handleSubmit} label="결과보기" size="md" user="client" />
       </div>
     </div>
   );
