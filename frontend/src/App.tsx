@@ -11,6 +11,12 @@ import UnrestResultPage from '@/pages/selftest/UnrestResultPage';
 import CounselorListPage from '@/pages/counselor/CounselorListPage';
 import CounselorDetailPage from '@/pages/counselor/CounselorDetailPage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
+import ClientMyPage from '@/pages/mypage/ClientMyPage';
+import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
+import CounselorEditProfile from '@/pages/mypage/CounselorEditProfile';
+import CounselorManageProduct from '@/pages/mypage/CounselorManageProduct';
+import CounselorManageTime from '@/pages/mypage/CounselorManageTime';
+import CounselorManageExclude from '@/pages/mypage/CounselorManageExclude';
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
 };
@@ -46,6 +52,12 @@ function App() {
           <Route path="/selftest" element={<SelfTestListPage />} />
           <Route path="/selftest/unrest" element={<UnrestPage />} />
           <Route path="/selftest/unrest/result" element={<UnrestResultPage />} />
+          <Route path="/mypage/client" element={<ClientMyPage />} />
+          <Route path="/mypage/counselor" element={<CounselorMyPage />} />
+          <Route path="/mypage/counselor/edit" element={<CounselorEditProfile />} />
+          <Route path="/mypage/counselor/product" element={<CounselorManageProduct />} />
+          <Route path="/mypage/counselor/time" element={<CounselorManageTime />} />
+          <Route path="/mypage/counselor/exclude" element={<CounselorManageExclude />} />
         </Routes>
       </div>
     </div>
