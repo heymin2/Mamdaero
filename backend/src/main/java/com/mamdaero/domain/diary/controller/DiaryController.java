@@ -7,7 +7,6 @@ import com.mamdaero.domain.diary.service.DiaryService;
 import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +15,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/diary")
 public class DiaryController {
 
     private final DiaryService diaryService;
     private final MemberRepository memberRepository;
 
-    @GetMapping("/diary")
+    @GetMapping("")
     public ResponseEntity<List<DiaryResponseDto>> findAllByMember() {
         Member member = memberRepository.findById(1L).get();
 
@@ -30,14 +30,14 @@ public class DiaryController {
         return new ResponseEntity<>(diaryList, HttpStatus.OK);
     }
 
-    @GetMapping("/diary/{diaryId}")
+    @GetMapping("/{diaryId}")
     public ResponseEntity<DiaryResponseDto> findById(@PathVariable(name = "diaryId") Long diaryId) {
         DiaryResponseDto diary = diaryService.findById(diaryId);
 
         return new ResponseEntity<>(diary, HttpStatus.OK);
     }
 
-    @PostMapping("/diary")
+    @PostMapping("")
     public ResponseEntity<Diary> create(@RequestBody DiaryRequestDto requestDto) {
         Member member = memberRepository.findById(1L).get();
         diaryService.create(requestDto, member);
@@ -45,7 +45,7 @@ public class DiaryController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/diary/{diaryId}")
+    @PatchMapping("{diaryId}")
     public ResponseEntity<Diary> update(@PathVariable(name = "diaryId") Long diaryId, @RequestBody DiaryRequestDto requestDto) {
 
         diaryService.update(diaryId, requestDto);
@@ -53,7 +53,7 @@ public class DiaryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/diary/{diaryId}")
+    @DeleteMapping("/{diaryId}")
     public ResponseEntity<Diary> delete(@PathVariable(name = "diaryId") Long diaryId) {
 
         diaryService.delete(diaryId);
