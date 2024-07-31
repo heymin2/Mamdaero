@@ -4,6 +4,8 @@ import com.mamdaero.domain.review.dto.request.ReviewRequestDto;
 import com.mamdaero.domain.review.dto.response.ReviewResponseDto;
 import com.mamdaero.domain.review.entity.Review;
 import com.mamdaero.domain.review.exception.ReviewAlreadyException;
+import com.mamdaero.domain.review.exception.ReviewNoReviewException;
+import com.mamdaero.domain.review.exception.ReviewNoScoreException;
 import com.mamdaero.domain.review.exception.ReviewNotFoundException;
 import com.mamdaero.domain.review.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
@@ -38,10 +40,10 @@ public class ReviewService {
         if (optionalReview.isEmpty()) {
 
             if (requestDto.getReview().isEmpty()) {
-                throw new ReviewNotFoundException();
+                throw new ReviewNoReviewException();
             }
             else if (requestDto.getScore().isNaN()) {
-                throw new ReviewNotFoundException();
+                throw new ReviewNoScoreException();
             }
 
             Review review = Review.builder()
@@ -66,10 +68,10 @@ public class ReviewService {
             Review review = optionalReview.get();
 
             if (requestDto.getReview().isEmpty()) {
-                throw new ReviewNotFoundException();
+                throw new ReviewNoReviewException();
             }
             else if (requestDto.getScore().isNaN()) {
-                throw new ReviewNotFoundException();
+                throw new ReviewNoScoreException();
             }
 
             review.update(requestDto);
