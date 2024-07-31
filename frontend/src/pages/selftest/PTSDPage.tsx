@@ -17,7 +17,13 @@ interface SelfTest {
   questions: Question[];
 }
 
-const answerLabels = ['전혀 그렇지 않다', '조금 그렇다', '보통 그렇다', '대단히 그렇다'];
+const answerLabels = [
+  '전혀 그렇지 않다',
+  '조금 그렇다',
+  '중간이다',
+  '조금 많이 그렇다',
+  '아주 많이 그렇다',
+];
 
 const UnrestPage: React.FC = () => {
   const [selfTest, setSelfTest] = useState<SelfTest | null>(null);
@@ -30,7 +36,7 @@ const UnrestPage: React.FC = () => {
     fetch('/selftests.json')
       .then(response => response.json())
       .then(data => {
-        const unrestTest = data.selftests.find((test: SelfTest) => test.selftest_name === 'unrest');
+        const unrestTest = data.selftests.find((test: SelfTest) => test.selftest_name === 'ptsd');
         setSelfTest(unrestTest);
         setQuestions(unrestTest.questions);
       })
@@ -47,12 +53,12 @@ const UnrestPage: React.FC = () => {
       return;
     }
     const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
-    navigate('/selftest/unrest/result', { state: { totalScore } });
+    navigate('/selftest/ptsd/result', { state: { totalScore } });
   };
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen w-full py-16">
-      <NavTest title="불안" subtitle="위험요소가 다 사라졌지만 불안하신가요?" />
+      <NavTest title="PTSD" subtitle="그 사건 후 지속적인 스트레스와 불안감을 느끼고 계신가요?" />
 
       <div className="flex text-sm space-x-5 mb-12">
         <FaCheck />
