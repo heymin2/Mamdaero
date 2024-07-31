@@ -3,6 +3,7 @@ package com.mamdaero.domain.diary.service;
 import com.mamdaero.domain.diary.dto.request.DiaryRequestDto;
 import com.mamdaero.domain.diary.dto.response.DiaryResponseDto;
 import com.mamdaero.domain.diary.entity.Diary;
+import com.mamdaero.domain.diary.exception.DiaryNoContentException;
 import com.mamdaero.domain.diary.exception.DiaryNotFoundException;
 import com.mamdaero.domain.diary.repository.DiaryRepository;
 import com.mamdaero.domain.member.entity.Member;
@@ -45,10 +46,10 @@ public class DiaryService {
     public void create(DiaryRequestDto requestDto, Member member) {
 
         if (requestDto.getContent().isEmpty()) {
-            throw new DiaryNotFoundException();
+            throw new DiaryNoContentException();
         }
         else if (requestDto.getDate() == null) {
-            throw new DiaryNotFoundException();
+            throw new DiaryNoContentException();
         }
 
         Diary diary = Diary.builder()
@@ -68,10 +69,10 @@ public class DiaryService {
             Diary diary = optionalDiary.get();
 
             if (requestDto.getContent().isEmpty()) {
-                throw new DiaryNotFoundException();
+                throw new DiaryNoContentException();
             }
             else if (requestDto.getDate() == null) {
-                throw new DiaryNotFoundException();
+                throw new DiaryNoContentException();
             }
 
             diary.update(requestDto);
