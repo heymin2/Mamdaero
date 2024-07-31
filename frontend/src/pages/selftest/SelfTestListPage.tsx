@@ -7,7 +7,10 @@ const SelfTestListPage: React.FC = () => {
     <div className="flex flex-col items-center justify-start min-h-screen w-full py-16">
       <div className="w-full max-w-6xl px-4 mb-12">
         <div className="flex justify-between items-center ml-5 mr-5">
-          <h1 className="text-3xl font-bold">자가 심리 검진</h1>
+          <div className="flex space-x-5 items-center">
+            <div className="font-bold text-4xl text-orange-500">자가 심리 검진</div>
+            <div>맘대로 자가검진을 통해 내 마음건강을 측정해보세요!</div>
+          </div>
           <button
             className="text-gray-600 hover:text-gray-800"
             onClick={() => window.history.back()}

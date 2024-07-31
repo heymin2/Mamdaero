@@ -6,6 +6,8 @@ import SignUpClient from '@/pages/signup/SignUpClient';
 import SignUpCounselor from '@/pages/signup/SignUpCounselor';
 import SignUpCounselorInfo from '@/components/input/SignUpCounselorInfo';
 import SelfTestListPage from '@/pages/selftest/SelfTestListPage';
+import UnrestPage from '@/pages/selftest/UnrestPage';
+import UnrestResultPage from '@/pages/selftest/UnrestResultPage';
 import CounselorListPage from '@/pages/CounselorListPage';
 import CounselorDetailPage from '@/pages/CounselorDetailPage';
 const routeBackgroundColors: { [key: string]: string } = {
@@ -42,6 +44,8 @@ function App() {
           <Route path="/counselor/:counselorID" element={<CounselorDetailPage />} />
 
           <Route path="/selftest" element={<SelfTestListPage />} />
+          <Route path="/selftest/unrest" element={<UnrestPage />} />
+          <Route path="/selftest/unrest/result" element={<UnrestResultPage />} />
         </Routes>
       </div>
     </div>
