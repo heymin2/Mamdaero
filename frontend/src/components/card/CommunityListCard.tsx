@@ -34,14 +34,14 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
       <table className="min-w-full table-fixed">
         <colgroup>
           <col className="w-[10%]" />
-          <col className="w-[30%]" />
-          <col className="w-[20%]" />
-          <col className="w-[10%]" />
-          <col className="w-[10%]" />
+          <col className="w-[40%]" />
+          <col className="w-[16%]" />
+          <col className="w-[7%]" />
+          <col className="w-[7%]" />
           <col className="w-[20%]" />
         </colgroup>
         <thead>
-          <tr className="border-b">
+          <tr className="border-b bg-orange-100">
             <th className="px-4 py-2 text-center">번호</th>
             <th className="px-4 py-2 text-center">제목</th>
             <th className="px-4 py-2 text-center">작성자</th>
@@ -76,7 +76,7 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
             key={i}
             onClick={() => paginate(i + 1)}
             className={`mx-1 px-3 py-1 border rounded ${
-              currentPage === i + 1 ? 'bg-orange-500 text-white' : 'bg-white'
+              currentPage === i + 1 ? 'bg-orange-400 text-white' : 'bg-white'
             }`}
           >
             {i + 1}
