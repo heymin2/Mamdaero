@@ -27,8 +27,8 @@ public class ConsultingReportController {
     }
 
     @GetMapping("/{report_id}")
-    public ResponseEntity<ConsultingReport> findById(@PathVariable(name = "report_id") Long id) {
-        ConsultingReport consultingReport = consultingReportService.find(id);
+    public ResponseEntity<ConsultingReportResponseDto> findById(@PathVariable(name = "report_id") Long id) {
+        ConsultingReportResponseDto consultingReport = consultingReportService.find(id);
 
         return new ResponseEntity<>(consultingReport, HttpStatus.OK);
     }

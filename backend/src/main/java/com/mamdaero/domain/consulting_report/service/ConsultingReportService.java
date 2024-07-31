@@ -35,11 +35,11 @@ public class ConsultingReportService {
                 .collect(Collectors.toList());
     }
 
-    public ConsultingReport find(Long id){
+    public ConsultingReportResponseDto find(Long id){
         Optional<ConsultingReport> consultingReport = consultingReportRepository.findById(id);
 
         if (consultingReport.isPresent()) {
-            return consultingReport.get();
+            return ConsultingReportResponseDto.toDTO(consultingReport.get(), counselorRepository);
         }
         else {
             throw new ConsultingReportNotFoundException();
