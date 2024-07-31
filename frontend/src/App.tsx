@@ -19,12 +19,14 @@ import BipolarResultPage from '@/pages/selftest/BipolarResultPage';
 import CounselorListPage from '@/pages/counselor/CounselorListPage';
 import CounselorDetailPage from '@/pages/counselor/CounselorDetailPage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
+import CommunityDetailPage from '@/pages/community/CommunityDetailPage';
 import ClientMyPage from '@/pages/mypage/ClientMyPage';
 import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
 import CounselorEditProfile from '@/pages/mypage/CounselorEditProfile';
 import CounselorManageProduct from '@/pages/mypage/CounselorManageProduct';
 import CounselorManageTime from '@/pages/mypage/CounselorManageTime';
 import CounselorManageExclude from '@/pages/mypage/CounselorManageExclude';
+
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
 };
@@ -59,12 +61,11 @@ function App() {
           <Route path="/signup/counselor/*" element={<SignUpCounselor />} />
           {/* Counselor Routes */}
           <Route path="/counselor" element={<CounselorListPage />} />
-          <Route path="/counselor/:counselorID" element={<CounselorDetailPage />} />
+          <Route path="/counselor/:counselorId" element={<CounselorDetailPage />} />
           {/* Self Test Routes */}
           <Route path="/selftest" element={<SelfTestListPage />} />
           <Route path="/selftest/unrest" element={<UnrestPage />} />
           <Route path="/selftest/unrest/result" element={<UnrestResultPage />} />
-
           <Route path="/selftest/stress" element={<StressPage />} />
           <Route path="/selftest/stress/result" element={<StressResultPage />} />
           <Route path="/selftest/depressed" element={<DepressedPage />} />
@@ -73,6 +74,10 @@ function App() {
           <Route path="/selftest/ptsd/result" element={<PTSDResultPage />} />
           <Route path="/selftest/bipolar" element={<BipolarPage />} />
           <Route path="/selftest/bipolar/result" element={<BipolarResultPage />} />
+          {/* Community Routes */}
+          <Route path="/community" element={<CommunityListPage />} />
+          <Route path="/community/:communityId" element={<CommunityDetailPage />} />
+          {/* MyPage Routes */}
           <Route path="/mypage/client" element={<ClientMyPage />} />
           <Route path="/mypage/counselor" element={<CounselorMyPage />} />
           <Route path="/mypage/counselor/edit" element={<CounselorEditProfile />} />
