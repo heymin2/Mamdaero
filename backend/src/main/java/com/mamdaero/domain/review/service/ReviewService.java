@@ -1,6 +1,7 @@
 package com.mamdaero.domain.review.service;
 
-import com.mamdaero.domain.review.dto.ReviewRequestDto;
+import com.mamdaero.domain.review.dto.request.ReviewRequestDto;
+import com.mamdaero.domain.review.dto.response.ReviewResponseDto;
 import com.mamdaero.domain.review.entity.Review;
 import com.mamdaero.domain.review.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
@@ -16,8 +17,10 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
 
-    public List<Review> findAll() {
-        return reviewRepository.findAll();
+    public List<ReviewResponseDto> findAllByReservation_CounselorItem_CounselorId(Long id) {
+        return reviewRepository.findAllByReservation_CounselorItem_CounselorId(id).stream()
+                .map(ReviewResponseDto::toDto)
+                .toList();
     }
 
     @Transactional
