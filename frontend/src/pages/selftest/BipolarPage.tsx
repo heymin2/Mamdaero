@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/SquareButton';
-import NavTest from '@/components/navigation/NavTest';
+import TestBar from '@/components/navigation/TestBar';
 import { FaCheck } from 'react-icons/fa';
 
 interface Question {
@@ -67,69 +67,70 @@ const BipolarPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen w-full py-16">
+    <div>
       {/* 제목 */}
-      <NavTest
+      <TestBar
         title="조울증"
         subtitle="기분이 지나치게 들뜨거나 가라앉는 경험을 자주 하시나요?"
         showBackButton={true}
       />
       {/* 검사테이블 */}
-      <div className="flex text-sm space-x-5 mb-12">
+      <div className="flex text-sm space-x-5 m-12 justify-center">
         <FaCheck />
         <div>{selfTest ? selfTest.selftest_info : '정보를 불러오는 중...'}</div>
       </div>
-
-      <div className="w-full max-w-4xl px-4">
-        <table className="table w-full rounded-lg overflow-hidden">
-          <thead>
-            <tr>
-              <th className="bg-orange-300 text-orange-300-content text-base rounded-tl-lg text-center align-middle">
-                번호
-              </th>
-              <th className="bg-orange-300 text-orange-300-content text-base text-center align-middle">
-                질문
-              </th>
-              {answerLabels.map((label, index) => (
-                <th
-                  key={index}
-                  className={`bg-orange-300 text-orange-300-content text-center text-base ${
-                    index === answerLabels.length - 1 ? 'rounded-tr-lg' : ''
-                  }`}
-                >
-                  {label}
+      <div className="flex justify-center w-full">
+        <div className="w-full max-w-4xl px-4">
+          <table className="table w-full rounded-lg overflow-hidden">
+            <thead>
+              <tr>
+                <th className="bg-orange-300 text-orange-300-content text-base rounded-tl-lg text-center align-middle">
+                  번호
                 </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {questions.slice(0, 13).map((question, qIndex) => (
-              <tr
-                key={question.selftest_questionid}
-                className={`${
-                  qIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                } text-center align-middle`}
-              >
-                <td className="font-bold text-base rounded-l">{qIndex + 1}</td>
-                <td className="text-base text-left">{question.selftest_question_detail}</td>
-                {question.options.map((option, index) => (
-                  <td
+                <th className="bg-orange-300 text-orange-300-content text-base text-center align-middle">
+                  질문
+                </th>
+                {answerLabels.map((label, index) => (
+                  <th
                     key={index}
-                    className={`text-center ${index === question.options.length - 1 ? 'rounded-r' : ''}`}
+                    className={`bg-orange-300 text-orange-300-content text-center text-base ${
+                      index === answerLabels.length - 1 ? 'rounded-tr-lg' : ''
+                    }`}
                   >
-                    <input
-                      type="radio"
-                      name={`question-${question.selftest_questionid}`}
-                      value={option}
-                      onChange={() => handleAnswerChange(question.selftest_questionid, option)}
-                      className="radio radio-primary"
-                    />
-                  </td>
+                    {label}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {questions.slice(0, 13).map((question, qIndex) => (
+                <tr
+                  key={question.selftest_questionid}
+                  className={`${
+                    qIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                  } text-center align-middle`}
+                >
+                  <td className="font-bold text-base rounded-l">{qIndex + 1}</td>
+                  <td className="text-base text-left">{question.selftest_question_detail}</td>
+                  {question.options.map((option, index) => (
+                    <td
+                      key={index}
+                      className={`text-center ${index === question.options.length - 1 ? 'rounded-r' : ''}`}
+                    >
+                      <input
+                        type="radio"
+                        name={`question-${question.selftest_questionid}`}
+                        value={option}
+                        onChange={() => handleAnswerChange(question.selftest_questionid, option)}
+                        className="radio radio-primary"
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       {/* 추가질문 */}
       <div className="w-full max-w-4xl px-4 mt-8">
@@ -204,7 +205,7 @@ const BipolarPage: React.FC = () => {
         </div>
       )}
       {/* 다음버튼 */}
-      <div className="mt-8">
+      <div className="flex justify-center w-full mt-8">
         <Button onClick={handleSubmit} label="결과보기" size="md" user="client" />
       </div>
     </div>

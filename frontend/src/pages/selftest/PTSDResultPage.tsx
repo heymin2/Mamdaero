@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import NavTest from '@/components/navigation/NavTest';
+import TestBar from '@/components/navigation/TestBar';
 import lean from '@/assets/lean2.png';
 import Button from '@/components/button/RoundedButton';
 
@@ -33,7 +33,7 @@ const PTSDResultPage: React.FC = () => {
 
   return (
     <div className="min-h-screen py-16">
-      <NavTest
+      <TestBar
         title="PTSD"
         subtitle="그 사건 후 지속적인 스트레스와 불안감을 느끼고 계신가요?"
         showBackButton={false}

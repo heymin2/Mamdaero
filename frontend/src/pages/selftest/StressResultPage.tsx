@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import NavTest from '@/components/navigation/NavTest';
+import TestBar from '@/components/navigation/TestBar';
 import lean from '@/assets/lean2.png';
 import Button from '@/components/button/RoundedButton';
 
@@ -35,7 +35,7 @@ const StressResultPage: React.FC = () => {
 
   return (
     <div className="min-h-screen py-16">
-      <NavTest
+      <TestBar
         title="스트레스"
         subtitle="요즘 스트레스에 시달리고 계신가요?"
         showBackButton={false}

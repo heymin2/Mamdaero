@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import NavTest from '@/components/navigation/NavTest';
+import TestBar from '@/components/navigation/TestBar';
 import lean from '@/assets/lean2.png';
 import Button from '@/components/button/RoundedButton';
 
@@ -31,7 +31,7 @@ const DepressedResultPage: React.FC = () => {
 
   return (
     <div className="min-h-screen py-16">
-      <NavTest
+      <TestBar
         title="우울"
         subtitle="기분이 늘 울적하고 매사에 의욕이 없나요?"
         showBackButton={false}
