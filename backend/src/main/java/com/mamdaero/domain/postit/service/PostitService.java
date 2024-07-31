@@ -1,5 +1,8 @@
 package com.mamdaero.domain.postit.service;
 
+import com.mamdaero.domain.complaint.entity.Complaint;
+import com.mamdaero.domain.complaint.entity.Source;
+import com.mamdaero.domain.complaint.repository.ComplaintRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
@@ -23,6 +26,7 @@ public class PostitService {
     private final PoistitRepository poistitRepository;
     private final PostitLikeRepository postitLikeRepository;
     private final MemberRepository memberRepository;
+    private final ComplaintRepository complaintRepository;
 
     public List<PostitResponse> findPost(Long questionId) {
         Long memberId = 1L;
@@ -86,5 +90,22 @@ public class PostitService {
                 .orElseThrow(CommentNotFoundException::new);
 
         poistitRepository.delete(post);
+    }
+
+    @Transactional
+    public boolean complaint(Long id) {
+        // 토큰 확인 후 로그인한지 확인
+        Long memberId = 1L;
+
+        if(complaintRepository.existsByMemberIdAndEventSourceAndEventId(memberId, Source.POSTIT, id)) {
+            return false;
+        }
+
+        complaintRepository.save(Complaint.builder()
+                .eventSource(Source.POSTIT)
+                .eventId(id)
+                .memberId(memberId)
+                .build());
+        return true;
     }
 }

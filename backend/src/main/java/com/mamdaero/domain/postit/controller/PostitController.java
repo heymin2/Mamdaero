@@ -35,4 +35,12 @@ public class PostitController {
         postitService.delete(questionId, postitId, request);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{postitId}/complaint")
+    public ResponseEntity<?> complaint(@PathVariable("postitId") Long id) {
+        if(!postitService.complaint(id)){
+            return ResponseEntity.ok("이미 신고한 글입니다.");
+        }
+        return ResponseEntity.ok().build();
+    }
 }
