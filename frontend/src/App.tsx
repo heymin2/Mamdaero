@@ -10,6 +10,7 @@ import UnrestPage from '@/pages/selftest/UnrestPage';
 import UnrestResultPage from '@/pages/selftest/UnrestResultPage';
 import CounselorListPage from '@/pages/CounselorListPage';
 import CounselorDetailPage from '@/pages/CounselorDetailPage';
+import CommunityListPage from '@/pages/CommunityListPage';
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
 };
@@ -42,7 +43,6 @@ function App() {
           <Route path="/signup/counselor/*" element={<SignUpCounselor />} />
           <Route path="/counselor" element={<CounselorListPage />} />
           <Route path="/counselor/:counselorID" element={<CounselorDetailPage />} />
-
           <Route path="/selftest" element={<SelfTestListPage />} />
           <Route path="/selftest/unrest" element={<UnrestPage />} />
           <Route path="/selftest/unrest/result" element={<UnrestResultPage />} />
