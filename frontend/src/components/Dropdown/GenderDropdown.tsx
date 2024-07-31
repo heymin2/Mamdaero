@@ -11,12 +11,12 @@ const GenderDropdown: React.FC<GenderDropdownProps> = ({ gender, onGenderChange 
   };
 
   return (
-    <div className="dropdown dropdown-right">
+    <div className="dropdown dropdown-right right-5">
       <div
         tabIndex={0}
         role="button"
-        className="btn"
-        style={{ minWidth: '100px', textAlign: 'center' }}
+        className="btn min-w-20"
+        // style={{ minWidth: '100px', textAlign: 'center' }}
       >
         {gender ? gender : '선택'}
       </div>

@@ -1,11 +1,12 @@
 interface ButtonProps {
   label: React.ReactNode;
   onClick: () => void;
-  size: 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기';
+  size: 'xs' | 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기';
   user: 'counselor' | 'client' | 'common';
 }
 const Button = ({ label, onClick, size, user }: ButtonProps) => {
   const sizeClasses = {
+    xs: 'w-16 h-5 text-xs font-bold',
     sm: 'w-20 h-7 text-sm font-bold',
     md: 'w-24 h-9 text-base font-bold',
     lg: 'w-40 h-10 text-xl font-bold',

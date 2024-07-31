@@ -118,9 +118,9 @@ const SignUpCounselorInfo: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex space-x-20 ">
+        <div className="flex space-x-7 ">
           <div className="flex w-full items-center">
-            <label className="w-1/3 mr-10 block font-bold">센터 주소</label>
+            <label className="w-1/4 mr-12 block font-bold">센터 주소</label>
             <input
               type="text"
               name="address"
