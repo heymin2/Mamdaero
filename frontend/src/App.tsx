@@ -54,7 +54,7 @@ function App() {
           <Route path="/signup/counselor/*" element={<SignUpCounselor />} />
           {/* Counselor Routes */}
           <Route path="/counselor" element={<CounselorListPage />} />
-          <Route path="/counselor/:counselorID" element={<CounselorDetailPage />} />
+          <Route path="/counselor/:counselorId" element={<CounselorDetailPage />} />
           {/* Self Test Routes */}
           <Route path="/selftest" element={<SelfTestListPage />} />
           <Route path="/selftest/unrest" element={<UnrestPage />} />
@@ -67,6 +67,9 @@ function App() {
           <Route path="/selftest/ptsd/result" element={<PTSDResultPage />} />
           <Route path="/selftest/bipolar" element={<BipolarPage />} />
           <Route path="/selftest/bipolar/result" element={<BipolarResultPage />} />
+          {/* Community Routes */}
+          <Route path="/community" element={<CommunityListPage />} />
+          <Route path="/community/:communityId" element={<CommunityDetailPage />} />
         </Routes>
       </div>
     </div>
