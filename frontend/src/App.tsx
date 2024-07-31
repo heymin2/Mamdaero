@@ -19,6 +19,7 @@ import BipolarResultPage from '@/pages/selftest/BipolarResultPage';
 import CounselorListPage from '@/pages/counselor/CounselorListPage';
 import CounselorDetailPage from '@/pages/counselor/CounselorDetailPage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
+import CommunityDetailPage from '@/pages/community/CommunityDetailPage';
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
 };
