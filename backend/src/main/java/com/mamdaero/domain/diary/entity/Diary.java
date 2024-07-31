@@ -1,6 +1,6 @@
 package com.mamdaero.domain.diary.entity;
 
-import com.mamdaero.domain.diary.dto.DiaryRequestDto;
+import com.mamdaero.domain.diary.dto.request.DiaryRequestDto;
 import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -31,14 +31,15 @@ public class Diary extends BaseEntity {
     private LocalDate date;
 
     @Builder.Default
-    private Boolean is_open = true;
+    private Boolean isOpen = false;
 
     @Builder.Default
-    private Boolean is_delete = false;
+    private Boolean isDelete = false;
 
 
     public void update(DiaryRequestDto requestDto) {
         this.content = requestDto.getContent();
         this.date = requestDto.getDate();
+        this.isOpen = requestDto.getIsOpen();
     }
 }

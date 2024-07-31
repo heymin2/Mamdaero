@@ -1,7 +1,7 @@
 package com.mamdaero.domain.diary.service;
 
-import com.mamdaero.domain.diary.dto.DiaryRequestDto;
-import com.mamdaero.domain.diary.dto.DiaryResponseDto;
+import com.mamdaero.domain.diary.dto.request.DiaryRequestDto;
+import com.mamdaero.domain.diary.dto.response.DiaryResponseDto;
 import com.mamdaero.domain.diary.entity.Diary;
 import com.mamdaero.domain.diary.repository.DiaryRepository;
 import com.mamdaero.domain.member.entity.Member;
