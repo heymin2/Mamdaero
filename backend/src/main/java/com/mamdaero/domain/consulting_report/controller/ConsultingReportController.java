@@ -1,6 +1,7 @@
 package com.mamdaero.domain.consulting_report.controller;
 
-import com.mamdaero.domain.consulting_report.dto.ConsultingReportRequestDto;
+import com.mamdaero.domain.consulting_report.dto.request.ConsultingReportRequestDto;
+import com.mamdaero.domain.consulting_report.dto.response.ConsultingReportResponseDto;
 import com.mamdaero.domain.consulting_report.entity.ConsultingReport;
 import com.mamdaero.domain.consulting_report.service.ConsultingReportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class ConsultingReportController {
 
     // Todo 본인의 토큰 값으로 본인이 작성한 보고서만 볼 수 있게
     @GetMapping("/consult-report")
-    public ResponseEntity<List<ConsultingReport>> findAll() {
-        List<ConsultingReport> consultingReportList = consultingReportService.findAll();
+    public ResponseEntity<List<ConsultingReportResponseDto>> findAll() {
+        List<ConsultingReportResponseDto> consultingReportList = consultingReportService.findAll();
 
         return new ResponseEntity<>(consultingReportList, HttpStatus.OK);
     }

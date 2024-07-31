@@ -1,6 +1,6 @@
 package com.mamdaero.domain.consulting_report.entity;
 
-import com.mamdaero.domain.consulting_report.dto.ConsultingReportRequestDto;
+import com.mamdaero.domain.consulting_report.dto.request.ConsultingReportRequestDto;
 import com.mamdaero.domain.reservation.entity.Reservation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
