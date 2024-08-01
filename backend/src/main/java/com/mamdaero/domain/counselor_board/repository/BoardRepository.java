@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface BoardRepository extends JpaRepository<CounselorBoard, Long> {
     boolean existsByIdAndMemberId(Long id, Long memberId);
@@ -22,4 +23,17 @@ public interface BoardRepository extends JpaRepository<CounselorBoard, Long> {
             "GROUP BY b.id " +
             "ORDER BY COUNT(l.id) DESC, b.createdAt DESC")
     Page<CounselorBoard> findAllOrderedByComment(Pageable pageable);
+
+    @Query("SELECT b FROM CounselorBoard b " +
+            "WHERE b.title LIKE %:search%")
+    Page<CounselorBoard> findByTitle(@Param("search") String search, Pageable pageable);
+
+    @Query("SELECT b FROM CounselorBoard b " +
+            "WHERE b.content LIKE %:search%")
+    Page<CounselorBoard> findByContent(@Param("search") String search, Pageable pageable);
+
+    @Query("SELECT b FROM CounselorBoard b " +
+            "LEFT JOIN Member m ON b.memberId = m.id " +
+            "WHERE m.name LIKE %:search%")
+    Page<CounselorBoard> findByMemberName(@Param("search") String search, Pageable pageable);
 }

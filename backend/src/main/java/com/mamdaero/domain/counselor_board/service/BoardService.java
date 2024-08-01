@@ -34,12 +34,26 @@ public class BoardService {
     private final ComplaintRepository complaintRepository;
     private final BoardLikeRepository boardLikeRepository;
 
-    public List<BoardResponse> findAll(int page, int size, String condition) {
+    public List<BoardResponse> findAll(int page, int size, String condition, String searchField, String searchValue) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<CounselorBoard> boardPage = findBoardsByCondition(condition, pageable);
+        Page<CounselorBoard> boardPage;
+        if(searchField  != null && searchValue != null) {
+            boardPage = findBoardsBySearch(searchField, searchValue, pageable);
+        } else {
+            boardPage = findBoardsByCondition(condition, pageable);
+        }
 
         return convertToBoardResponses(boardPage.getContent());
+    }
+
+    private Page<CounselorBoard> findBoardsBySearch(String searchField, String searchValue, Pageable pageable) {
+        return switch (searchField) {
+            case "title" -> boardRepository.findByTitle(searchValue, pageable);
+            case "content" -> boardRepository.findByContent(searchValue, pageable);
+            case "name" -> boardRepository.findByMemberName(searchValue, pageable);
+            default -> throw new BoardBadRequestException();
+        };
     }
 
     private Page<CounselorBoard> findBoardsByCondition(String condition, Pageable pageable) {

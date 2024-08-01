@@ -16,8 +16,10 @@ public class BoardController {
     @GetMapping("/ca/counselor-board")
     public ResponseEntity<?> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
                                      @RequestParam(name = "size", defaultValue = "10") int size,
-                                     @RequestParam(name = "condition", defaultValue = "new") String condition) {
-        return ResponseEntity.ok(boardService.findAll(page, size, condition));
+                                     @RequestParam(name = "condition", defaultValue = "new") String condition,
+                                     @RequestParam(name = "searchField", required = false) String searchField,
+                                     @RequestParam(name = "searchValue", required = false) String searchValue) {
+        return ResponseEntity.ok(boardService.findAll(page, size, condition, searchField, searchValue));
     }
 
     @GetMapping("/ca/counselor-board/{boardId}")
