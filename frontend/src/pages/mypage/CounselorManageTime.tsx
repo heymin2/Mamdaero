@@ -19,9 +19,9 @@ const CounselorManageTime = () => {
 
   return (
     <div>
-      <header className="flex justify-between">
+      <header className="flex justify-between py-10">
         <h1 className="text-black text-5xl font-bold">상담 일정 관리</h1>
-        <Button label=" 뒤로가기" size="xs" onClick={backToList} user="counselor" />
+        <Button label=" 뒤로가기" size="lg" onClick={backToList} user="counselor" />
       </header>
       <div className="divider"></div>
       <main className="flex justify-around">
