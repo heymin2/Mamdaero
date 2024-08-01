@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import CommunityListCard from '@/components/card/CommunityListCard';
-import CommunityBar from '@/components/navigation/CommunityBar';
+import SupervisionListCard from '@/components/card/SupervisionListCard';
+import SupervisionBar from '@/components/navigation/SupervisionBar';
 import WriteButton from '@/components/button/WriteButton';
 interface Post {
   id: number;
@@ -11,7 +11,7 @@ interface Post {
   date: string;
 }
 
-const CommunityListPage: React.FC = () => {
+const SupervisionListPage: React.FC = () => {
   const generateSamplePosts = (): Post[] => {
     return Array.from({ length: 50 }, (_, i) => ({
       id: i + 1,
@@ -31,9 +31,9 @@ const CommunityListPage: React.FC = () => {
 
   return (
     <div>
-      <CommunityBar />
-      <WriteButton color="orange" />
-      <CommunityListCard
+      <SupervisionBar />
+      <WriteButton color="blue" />
+      <SupervisionListCard
         posts={posts}
         currentPage={currentPage}
         postsPerPage={postsPerPage}
@@ -43,4 +43,4 @@ const CommunityListPage: React.FC = () => {
   );
 };
 
-export default CommunityListPage;
+export default SupervisionListPage;

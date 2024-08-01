@@ -17,7 +17,7 @@ interface BoardTableProps {
   paginate: (pageNumber: number) => void;
 }
 
-const CommunityListCard: React.FC<BoardTableProps> = ({
+const SupervisionListCard: React.FC<BoardTableProps> = ({
   posts,
   currentPage,
   postsPerPage,
@@ -41,7 +41,7 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
           <col className="w-[20%]" />
         </colgroup>
         <thead>
-          <tr className="border-b bg-orange-100">
+          <tr className="border-b bg-blue-100">
             <th className="px-4 py-2 text-center">번호</th>
             <th className="px-4 py-2 text-center">제목</th>
             <th className="px-4 py-2 text-center">작성자</th>
@@ -52,13 +52,10 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
         </thead>
         <tbody>
           {currentPosts.map(post => (
-            <tr
-              key={post.id}
-              className="border-b hover:bg-orange-100 transition-colors duration-200"
-            >
+            <tr key={post.id} className="border-b hover:bg-blue-100 transition-colors duration-200">
               <td className="px-4 py-2 text-center truncate">{post.id}</td>
               <td className="px-4 py-2 text-center truncate">
-                <Link to={`/community/${post.id}`} className="hover:underline">
+                <Link to={`/supervision/${post.id}`} className="hover:underline">
                   {post.title}
                 </Link>
               </td>
@@ -76,7 +73,7 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
             key={i}
             onClick={() => paginate(i + 1)}
             className={`mx-1 px-3 py-1 border rounded ${
-              currentPage === i + 1 ? 'bg-orange-400 text-white' : 'bg-white'
+              currentPage === i + 1 ? 'bg-blue-400 text-white' : 'bg-white'
             }`}
           >
             {i + 1}
@@ -87,4 +84,4 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
   );
 };
 
-export default CommunityListCard;
+export default SupervisionListCard;

@@ -35,7 +35,11 @@ const UnrestResultPage: React.FC = () => {
 
   return (
     <div className="min-h-screen py-16">
-      <NavTest title="불안" subtitle="위험요소가 다 사라졌지만 불안하신가요?" />
+      <NavTest
+        title="불안"
+        subtitle="위험요소가 다 사라졌지만 불안하신가요?"
+        showBackButton={false}
+      />
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
           <div className="card bg-base-100 shadow-xl w-full md:w-1/2 max-w-md">

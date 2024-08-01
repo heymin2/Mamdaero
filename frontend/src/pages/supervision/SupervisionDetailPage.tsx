@@ -1,19 +1,19 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import CommunityPostCard from '@/components/card/CommunityPostCard';
+import SupervisionPostCard from '@/components/card/SupervisionPostCard';
 import RoundedButton from '@/components/button/RoundedButton';
 import { IoIosArrowBack } from 'react-icons/io';
-import CommunityCommentCard from '@/components/card/CommunityCommentCard';
+import SupervisionCommentCard from '@/components/card/SupervisionCommentCard';
 
-const CommunityDetailPage: React.FC = () => {
+const SupervisionDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
   const backToList = () => {
-    navigate('/community');
+    navigate('/supervision');
   };
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="sticky bg-orange-50 top-0 z-10">
+      <div className="sticky bg-blue-50 top-0 z-10">
         <div className="flex justify-between items-end mx-16">
           <div className="mb-3">
             <RoundedButton
@@ -25,28 +25,28 @@ const CommunityDetailPage: React.FC = () => {
               }
               onClick={backToList}
               size="상담사목록보기"
-              user="client"
+              user="counselor"
             ></RoundedButton>
           </div>
           <div className="flex my-6">
             <div className="text-right text-gray-500">
-              <div>털어놓고 싶은 고민이나 일상, 어떤 이야기든 자유롭게 나눌 수 있어요.</div>
-              <div>맘대로의 회원들과 다양한 정보를 이야기를 공유해보세요.</div>
+              <div>편안한 온라인 상담 슈퍼비전을 통해</div>
+              <div>다양한 사례를 간접 경험하며 전문성 향상을 돕습니다.</div>
             </div>
             <div className="text-4xl font-bold ms-8">
-              <span className="text-orange-500">맘대로</span> 커뮤니티
+              <span className="text-blue-500">슈퍼비전</span> 커뮤니티
             </div>
           </div>
         </div>
       </div>
       {/* 게시물 내용 */}
       <div className="flex-grow py-5 px-16">
-        <CommunityPostCard />
-        <CommunityCommentCard />
-        <CommunityCommentCard />
+        <SupervisionPostCard />
+        <SupervisionCommentCard />
+        <SupervisionCommentCard />
       </div>
     </div>
   );
 };
 
-export default CommunityDetailPage;
+export default SupervisionDetailPage;

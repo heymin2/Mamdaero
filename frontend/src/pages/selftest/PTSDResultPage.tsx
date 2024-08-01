@@ -18,7 +18,7 @@ const getResultMessage = (score: number): string => {
   }
 };
 
-const UnrestResultPage: React.FC = () => {
+const PTSDResultPage: React.FC = () => {
   const location = useLocation();
   const { totalScore = 0 } = (location.state as LocationState) || {};
   const resultMessage = getResultMessage(totalScore);
@@ -33,7 +33,11 @@ const UnrestResultPage: React.FC = () => {
 
   return (
     <div className="min-h-screen py-16">
-      <NavTest title="PTSD" subtitle="그 사건 후 지속적인 스트레스와 불안감을 느끼고 계신가요?" />
+      <NavTest
+        title="PTSD"
+        subtitle="그 사건 후 지속적인 스트레스와 불안감을 느끼고 계신가요?"
+        showBackButton={false}
+      />
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
           <div className="card bg-base-100 shadow-xl w-full md:w-1/2 max-w-md">
@@ -70,4 +74,4 @@ const UnrestResultPage: React.FC = () => {
   );
 };
 
-export default UnrestResultPage;
+export default PTSDResultPage;
