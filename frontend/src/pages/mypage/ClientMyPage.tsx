@@ -50,6 +50,7 @@ const ClientMyPage: React.FC = () => {
                 user="client"
               ></SquareButton>
             </span>
+
             {/* modal 창 */}
             <dialog className="modal" id="changePwdModal">
               <div className="modal-box">
@@ -68,23 +69,26 @@ const ClientMyPage: React.FC = () => {
                   <input type="text" id="reNewPwd" className="border w-1/2" />
                 </form>
                 <div className="modal-action justify-center">
+                  {/* 모달 창 끄는 form */}
                   <form method="dialog">
-                    {/* if there is a button in form, it will close the modal */}
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                       ✕
                     </button>
+                  </form>
+                  {/* 비밀번호 변경 form */}
+                  <form method="dialog">
                     <SquareButton
                       label="비밀번호 변경"
                       onClick={changePwd}
                       size="md"
                       user="client"
-                    ></SquareButton>
+                    />
                   </form>
                 </div>
               </div>
-              <label className="modal-backdrop" htmlFor="changePwd">
-                Close
-              </label>
+              <form method="dialog" className="modal-backdrop">
+                <button>close</button>
+              </form>
             </dialog>
             <div className="divider"></div>
           </li>
