@@ -30,6 +30,7 @@ import CounselorEditProfile from '@/pages/mypage/CounselorEditProfile';
 import CounselorManageProduct from '@/pages/mypage/CounselorManageProduct';
 import CounselorManageTime from '@/pages/mypage/CounselorManageTime';
 import CounselorManageExclude from '@/pages/mypage/CounselorManageExclude';
+import EmotionDiaryPage from '@/pages/emotiondiary/EmotionDiaryPage';
 
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
@@ -95,6 +96,8 @@ function App() {
           <Route path="/mypage/counselor/product" element={<CounselorManageProduct />} />
           <Route path="/mypage/counselor/time" element={<CounselorManageTime />} />
           <Route path="/mypage/counselor/exclude" element={<CounselorManageExclude />} />
+          {/* EmotionDiary Routes */}
+          <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
         </Routes>
       </div>
     </div>
