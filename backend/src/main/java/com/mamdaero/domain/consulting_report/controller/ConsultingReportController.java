@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/consult-report")
+@RequestMapping("/c/consult-report")
 public class ConsultingReportController {
 
     private final ConsultingReportService consultingReportService;
