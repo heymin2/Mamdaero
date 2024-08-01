@@ -20,6 +20,8 @@ import CounselorListPage from '@/pages/counselor/CounselorListPage';
 import CounselorDetailPage from '@/pages/counselor/CounselorDetailPage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
 import CommunityDetailPage from '@/pages/community/CommunityDetailPage';
+import SupervisionListPage from '@/pages/supervision/SupervisionListPage';
+import SupervisionDetailPage from '@/pages/supervision/SupervisionDetailPage';
 import ClientMyPage from '@/pages/mypage/ClientMyPage';
 import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
 import CounselorEditProfile from '@/pages/mypage/CounselorEditProfile';
@@ -29,6 +31,8 @@ import CounselorManageExclude from '@/pages/mypage/CounselorManageExclude';
 
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
+  '/supervision': 'bg-blue-50',
+  '/supervision/:supervisionId': 'bg-blue-50',
 };
 
 function getBackgroundColor(pathname: string): string {
@@ -77,6 +81,9 @@ function App() {
           {/* Community Routes */}
           <Route path="/community" element={<CommunityListPage />} />
           <Route path="/community/:communityId" element={<CommunityDetailPage />} />
+          {/* Supervision Routes */}
+          <Route path="/supervision" element={<SupervisionListPage />} />
+          <Route path="/supervision/:supervisionId" element={<SupervisionDetailPage />} />
           {/* MyPage Routes */}
           <Route path="/mypage/client" element={<ClientMyPage />} />
           <Route path="/mypage/counselor" element={<CounselorMyPage />} />

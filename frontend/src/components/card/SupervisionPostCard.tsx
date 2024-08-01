@@ -1,11 +1,8 @@
-import React from 'react';
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
-import WriteButton from '@/components/button/WriteButton';
-import ReportButton from '../button/ReportButton';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
-const CommunityPostCard = () => {
+const SupervisionPostCard = () => {
   const title = '최근의 기분 변화와 그에 대한 고민';
   const author = '미래의 꿈';
   const date = '2024.7.21 (토) 12:24';
@@ -37,7 +34,7 @@ const CommunityPostCard = () => {
   return (
     <div className="space-y-3">
       {/* 게시글 제목 헤더 */}
-      <div className=" border-y-2 border-orange-300 p-5">
+      <div className=" border-y-2 border-blue-300 p-5">
         <h1 className="font-bold text-3xl">{title}</h1>
         <div className="flex justify-between items-end mt-3">
           <div className="flex flex-col">
@@ -54,14 +51,14 @@ const CommunityPostCard = () => {
           </div>
           <div className="justify-end">
             <div className="flex  gap-2">
-              <EditButton color="orange" />
+              <EditButton color="blue" />
               <DeleteButton />
             </div>
           </div>
         </div>
       </div>
       {/* 게시글 내용 */}
-      <div className="relative border-y-2 border-orange-300 p-10">
+      <div className="relative border-y-2 border-blue-300 p-10">
         <div className="whitespace-pre-wrap">{content}</div>
         <div className="absolute bottom-3 right-5 flex text-base gap-1 p-2">
           <IoMdHeartEmpty size={24} color="red" />
@@ -70,12 +67,12 @@ const CommunityPostCard = () => {
           <div className="font-bold">{likeCount}</div>
         </div>
       </div>
-      <div className="border-y-2 border-orange-300 px-10 py-2">
-        <span className="text-orange-500 font-bold text-xl">{commentCount}</span>
+      <div className="border-y-2 border-blue-300 px-10 py-2">
+        <span className="text-blue-500 font-bold text-xl">{commentCount}</span>
         <span className="font-bold text-base">개의 댓글이 있습니다.</span>
       </div>
     </div>
   );
 };
 
-export default CommunityPostCard;
+export default SupervisionPostCard;
