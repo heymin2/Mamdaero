@@ -1,6 +1,7 @@
 package com.mamdaero.domain.counselor_board.controller;
 
 import com.mamdaero.domain.counselor_board.dto.request.BoardRequest;
+import com.mamdaero.domain.counselor_board.service.BoardFindService;
 import com.mamdaero.domain.counselor_board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class BoardController {
 
     private final BoardService boardService;
+    private final BoardFindService boardFindService;
 
     @GetMapping("/ca/counselor-board")
     public ResponseEntity<?> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -19,7 +21,7 @@ public class BoardController {
                                      @RequestParam(name = "condition", defaultValue = "new") String condition,
                                      @RequestParam(name = "searchField", required = false) String searchField,
                                      @RequestParam(name = "searchValue", required = false) String searchValue) {
-        return ResponseEntity.ok(boardService.findAll(page, size, condition, searchField, searchValue));
+        return ResponseEntity.ok(boardFindService.findAll(page, size, condition, searchField, searchValue));
     }
 
     @GetMapping("/ca/counselor-board/{boardId}")
