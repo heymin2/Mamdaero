@@ -1,8 +1,6 @@
 package com.mamdaero.domain.reservation.entity;
 
-import com.mamdaero.domain.counselor_item.entity.CounselorItem;
-import com.mamdaero.domain.member.entity.Member;
-import com.mamdaero.domain.work_schedule.entity.WorkTime;
+import com.mamdaero.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,23 +15,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "reservation")
-public class Reservation {
+public class Reservation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
-    @ManyToOne
-    @JoinColumn(name = "counselor_item_id", nullable = false)
-    private CounselorItem counselorItem;
-    @ManyToOne
-    @JoinColumn(name = "worktime_id", nullable = false)
-    private WorkTime workTime;
-//    @ManyToOne
-//    @JoinColumn(name = "symptom_id")
-//    private Code symptom;
+    private Long memberId;
+    private Long counselorItemId;
+    @Column(name = "worktime_id")
+    private Long workTimeId;
     @Column(name = "status", nullable = false)
     private String status;
     @Column(name = "item_name", nullable = false)
