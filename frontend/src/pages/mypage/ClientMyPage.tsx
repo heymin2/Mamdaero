@@ -5,9 +5,19 @@ import SquareButton from '@/components/button/SquareButton';
 
 const myPageKey = 'min-w-32 inline-block font-bold';
 const myPageValue = 'font-bold';
-const ClientMyPage = () => {
+
+const ClientMyPage: React.FC = () => {
+  const openModal = () => {
+    const modal = document.getElementById('changePwdModal');
+    if (modal instanceof HTMLDialogElement) {
+      modal.showModal();
+    }
+  };
+  const changePwd = () => {
+    console.log('비밀번호 변경');
+  };
   return (
-    <div>
+    <>
       <header className="flex gap-7">
         <h1 className="text-black text-5xl font-bold">마이페이지</h1>
         <FiEdit className="w-7 h-7" />
@@ -35,13 +45,14 @@ const ClientMyPage = () => {
             <span className={myPageValue}>
               <SquareButton
                 label="비밀번호 변경하기"
-                onClick={() => document.getElementById('changePwd').showModal()}
+                onClick={openModal}
                 size="mdlg"
                 user="client"
               ></SquareButton>
             </span>
+
             {/* modal 창 */}
-            <dialog className="modal" id="changePwd">
+            <dialog className="modal" id="changePwdModal">
               <div className="modal-box">
                 <form className="flex flex-wrap pt-20 pb-5 px-10">
                   <label htmlFor="currentPwd" className="w-1/3">
@@ -58,23 +69,26 @@ const ClientMyPage = () => {
                   <input type="text" id="reNewPwd" className="border w-1/2" />
                 </form>
                 <div className="modal-action justify-center">
+                  {/* 모달 창 끄는 form */}
                   <form method="dialog">
-                    {/* if there is a button in form, it will close the modal */}
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                       ✕
                     </button>
+                  </form>
+                  {/* 비밀번호 변경 form */}
+                  <form method="dialog">
                     <SquareButton
                       label="비밀번호 변경"
-                      onClick={onclick}
+                      onClick={changePwd}
                       size="md"
                       user="client"
-                    ></SquareButton>
+                    />
                   </form>
                 </div>
               </div>
-              <label className="modal-backdrop" htmlFor="changePwd">
-                Close
-              </label>
+              <form method="dialog" className="modal-backdrop">
+                <button>close</button>
+              </form>
             </dialog>
             <div className="divider"></div>
           </li>
@@ -95,7 +109,7 @@ const ClientMyPage = () => {
           </li>
         </ul>
       </div>
-    </div>
+    </>
   );
 };
 
