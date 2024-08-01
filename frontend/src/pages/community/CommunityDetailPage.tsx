@@ -1,9 +1,9 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import CommunityPostCard from '@/components/card/CommunityPostCard';
+import CommunityPostCard from '@/components/card/community/CommunityPostCard';
 import RoundedButton from '@/components/button/RoundedButton';
 import { IoIosArrowBack } from 'react-icons/io';
-import CommunityCommentCard from '@/components/card/CommunityCommentCard';
+import CommunityCommentCard from '@/components/card/community/CommunityCommentCard';
 
 const CommunityDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();

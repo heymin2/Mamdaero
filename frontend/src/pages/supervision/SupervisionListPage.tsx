@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import SupervisionListCard from '@/components/card/SupervisionListCard';
+import SupervisionListCard from '@/components/card/supervision/SupervisionListCard';
 import SupervisionBar from '@/components/navigation/SupervisionBar';
 import WriteButton from '@/components/button/WriteButton';
 interface Post {

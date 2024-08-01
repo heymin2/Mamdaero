@@ -1,9 +1,9 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import SupervisionPostCard from '@/components/card/SupervisionPostCard';
+import SupervisionPostCard from '@/components/card/supervision/SupervisionPostCard';
 import RoundedButton from '@/components/button/RoundedButton';
 import { IoIosArrowBack } from 'react-icons/io';
-import SupervisionCommentCard from '@/components/card/SupervisionCommentCard';
+import SupervisionCommentCard from '@/components/card/supervision/SupervisionCommentCard';
 
 const SupervisionDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
