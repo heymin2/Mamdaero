@@ -1,9 +1,10 @@
 package com.mamdaero.domain.review.controller;
 
-import com.mamdaero.domain.review.dto.ReviewRequestDto;
+import com.mamdaero.domain.review.dto.request.ReviewRequestDto;
+import com.mamdaero.domain.review.dto.response.ReviewResponseDto;
 import com.mamdaero.domain.review.entity.Review;
 import com.mamdaero.domain.review.service.ReviewService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,30 +12,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class ReviewController {
 
-    @Autowired
     private final ReviewService reviewService;
 
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
+    @GetMapping("/p/counselor/{counselorId}/review")
+    public ResponseEntity<List<ReviewResponseDto>> findCounselorReview(@PathVariable(name = "counselorId") Long counselorId) {
 
-    @GetMapping("/counselor/{counselorId}/review")
-    public ResponseEntity<List<Review>> findCounselorReview(@PathVariable(name = "counselorId") Long counselorId) {
-
-        List<Review> reviewList = reviewService.findAll();
+        List<ReviewResponseDto> reviewList = reviewService.findAllByReservation_CounselorItem_CounselorId(counselorId);
 
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
 
-    @GetMapping("/review")
+    @GetMapping("/m/review")
     public ResponseEntity<List<Review>> findMyReview() {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/review/{reviewId}")
+    @PostMapping("/m/review/{reviewId}")
     public ResponseEntity<Review> create(@PathVariable(name = "reviewId") Long reviewId, @RequestBody ReviewRequestDto requestDto) {
 
         reviewService.create(reviewId, requestDto);
@@ -42,7 +39,7 @@ public class ReviewController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("/review/{reviewId}")
+    @PatchMapping("/m/review/{reviewId}")
     public ResponseEntity<Review> update(@PathVariable(name = "reviewId") Long reviewId, @RequestBody ReviewRequestDto requestDto) {
 
         reviewService.update(reviewId, requestDto);
@@ -50,7 +47,7 @@ public class ReviewController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/review/{reviewId}")
+    @DeleteMapping("/m/review/{reviewId}")
     public ResponseEntity<Review> delete(@PathVariable(name = "reviewId") Long reviewId) {
 
         reviewService.delete(reviewId);

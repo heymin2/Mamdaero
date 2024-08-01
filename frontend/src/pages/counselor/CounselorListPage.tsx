@@ -47,21 +47,21 @@ const CounselorListPage: React.FC = () => {
       </div>
       <div className="grid grid-cols-2 gap-6">
         <CounselorCard
-          counselorID="1234"
+          counselorId="1234"
           counselorName="박민준"
           counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."
           reviewAvgScore={4.5}
           reviewCount={12}
         />
         <CounselorCard
-          counselorID="1234"
+          counselorId="1234"
           counselorName="박민준"
           counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."
           reviewAvgScore={4.5}
           reviewCount={12}
         />
         <CounselorCard
-          counselorID="1234"
+          counselorId="1234"
           counselorName="박민준"
           counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."
           reviewAvgScore={4.5}

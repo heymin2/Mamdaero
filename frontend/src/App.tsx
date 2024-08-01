@@ -19,8 +19,23 @@ import BipolarResultPage from '@/pages/selftest/BipolarResultPage';
 import CounselorListPage from '@/pages/counselor/CounselorListPage';
 import CounselorDetailPage from '@/pages/counselor/CounselorDetailPage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
+import CommunityDetailPage from '@/pages/community/CommunityDetailPage';
+import CommunityWritePostPage from '@/pages/community/CommunityWritePostPage';
+import SupervisionListPage from '@/pages/supervision/SupervisionListPage';
+import SupervisionDetailPage from '@/pages/supervision/SupervisionDetailPage';
+import SupervisionWritePostPage from '@/pages/supervision/SupervisionWritePostPage';
+import ClientMyPage from '@/pages/mypage/ClientMyPage';
+import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
+import CounselorEditProfile from '@/pages/mypage/CounselorEditProfile';
+import CounselorManageProduct from '@/pages/mypage/CounselorManageProduct';
+import CounselorManageTime from '@/pages/mypage/CounselorManageTime';
+import CounselorManageExclude from '@/pages/mypage/CounselorManageExclude';
+import EmotionDiaryPage from '@/pages/emotiondiary/EmotionDiaryPage';
+
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
+  '/supervision': 'bg-blue-50',
+  '/supervision/:supervisionId': 'bg-blue-50',
 };
 
 function getBackgroundColor(pathname: string): string {
@@ -53,7 +68,7 @@ function App() {
           <Route path="/signup/counselor/*" element={<SignUpCounselor />} />
           {/* Counselor Routes */}
           <Route path="/counselor" element={<CounselorListPage />} />
-          <Route path="/counselor/:counselorID" element={<CounselorDetailPage />} />
+          <Route path="/counselor/:counselorId" element={<CounselorDetailPage />} />
           {/* Self Test Routes */}
           <Route path="/selftest" element={<SelfTestListPage />} />
           <Route path="/selftest/unrest" element={<UnrestPage />} />
@@ -66,6 +81,23 @@ function App() {
           <Route path="/selftest/ptsd/result" element={<PTSDResultPage />} />
           <Route path="/selftest/bipolar" element={<BipolarPage />} />
           <Route path="/selftest/bipolar/result" element={<BipolarResultPage />} />
+          {/* Community Routes */}
+          <Route path="/community" element={<CommunityListPage />} />
+          <Route path="/community/:communityId" element={<CommunityDetailPage />} />
+          <Route path="/community/write/post" element={<CommunityWritePostPage />} />
+          {/* Supervision Routes */}
+          <Route path="/supervision" element={<SupervisionListPage />} />
+          <Route path="/supervision/:supervisionId" element={<SupervisionDetailPage />} />
+          <Route path="/supervision/write/post" element={<SupervisionWritePostPage />} />
+          {/* MyPage Routes */}
+          <Route path="/mypage/client" element={<ClientMyPage />} />
+          <Route path="/mypage/counselor" element={<CounselorMyPage />} />
+          <Route path="/mypage/counselor/edit" element={<CounselorEditProfile />} />
+          <Route path="/mypage/counselor/product" element={<CounselorManageProduct />} />
+          <Route path="/mypage/counselor/time" element={<CounselorManageTime />} />
+          <Route path="/mypage/counselor/exclude" element={<CounselorManageExclude />} />
+          {/* EmotionDiary Routes */}
+          <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
         </Routes>
       </div>
     </div>

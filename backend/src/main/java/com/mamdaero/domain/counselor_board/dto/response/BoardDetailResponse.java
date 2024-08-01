@@ -20,8 +20,11 @@ public class BoardDetailResponse {
     private String content;
     private Integer view;
     private LocalDateTime createdAt;
+    private Integer likeCount;
+    private Boolean isLike;
+    private Boolean isMine;
 
-    public static BoardDetailResponse of(CounselorBoard board, String writer) {
+    public static BoardDetailResponse of(CounselorBoard board, String writer, int likeCount, boolean isLike, boolean isMine) {
         return BoardDetailResponse.builder()
                 .id(board.getId())
                 .writer(writer)
@@ -29,6 +32,9 @@ public class BoardDetailResponse {
                 .content(board.getContent())
                 .view(board.getView())
                 .createdAt(board.getCreatedAt())
+                .likeCount(likeCount)
+                .isLike(isLike)
+                .isMine(isMine)
                 .build();
     }
 }

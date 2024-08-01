@@ -64,7 +64,7 @@ const NavClient = () => {
         <Link to="/alarm">
           <LuBellRing size={24} />
         </Link>
-        <Link to="/mypage">
+        <Link to="/mypage/client">
           <CgProfile size={24} />
         </Link>
       </div>
