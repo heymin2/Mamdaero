@@ -7,16 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/counselor-item")
+@RequestMapping("/c/counselor-item")
 @RequiredArgsConstructor
 public class CounselorItemController {
 
     private final CounselorItemService counselorItemService;
-
-    @GetMapping("/{counselorId}")
-    public ResponseEntity<?> findCounselorItem(@PathVariable("counselorId") Long counselorId) {
-        return ResponseEntity.ok(counselorItemService.findCounselorItem(counselorId));
-    }
 
     @GetMapping
     public ResponseEntity<?> findMyItem() {

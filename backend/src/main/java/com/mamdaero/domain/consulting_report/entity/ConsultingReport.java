@@ -1,6 +1,6 @@
 package com.mamdaero.domain.consulting_report.entity;
 
-import com.mamdaero.domain.consulting_report.dto.ConsultingReportRequestDto;
+import com.mamdaero.domain.consulting_report.dto.request.ConsultingReportRequestDto;
 import com.mamdaero.domain.reservation.entity.Reservation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,15 +16,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString(callSuper = true)
 public class ConsultingReport {
+
     @Id
     @Column(name = "report_id")
     private Long id;
-
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "report_id")
     private Reservation reservation;
-
     @Column(length = 200, nullable = false)
     private String title;
     @Column(length = 5000, nullable = false)

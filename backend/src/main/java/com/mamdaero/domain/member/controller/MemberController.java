@@ -3,20 +3,17 @@ package com.mamdaero.domain.member.controller;
 import com.mamdaero.domain.member.dto.request.MemberRequestDto;
 import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 public class MemberController {
 
-    @Autowired
     private final MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     // Todo id 말고 토큰으로 본인 찾기 추가
     @GetMapping(value = "/member")
