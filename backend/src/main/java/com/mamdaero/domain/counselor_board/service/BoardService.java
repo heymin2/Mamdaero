@@ -15,6 +15,9 @@ import com.mamdaero.domain.notice.exception.BoardBadRequestException;
 import com.mamdaero.domain.notice.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,10 +34,26 @@ public class BoardService {
     private final ComplaintRepository complaintRepository;
     private final BoardLikeRepository boardLikeRepository;
 
-    public List<BoardResponse> findAll() {
-        List<CounselorBoard> counselorBoards = boardRepository.findAll();
+    public List<BoardResponse> findAll(int page, int size, String condition) {
+        Pageable pageable = PageRequest.of(page, size);
 
-        return counselorBoards.stream()
+        Page<CounselorBoard> boardPage = findBoardsByCondition(condition, pageable);
+
+        return convertToBoardResponses(boardPage.getContent());
+    }
+
+    private Page<CounselorBoard> findBoardsByCondition(String condition, Pageable pageable) {
+        return switch (condition) {
+            case "new" -> boardRepository.findAllByOrderByCreatedAtDesc(pageable);
+            case "old" -> boardRepository.findAllByOrderByCreatedAt(pageable);
+            case "best" -> boardRepository.findAllOrderedByLikes(pageable);
+            case "comment" -> boardRepository.findAllOrderedByComment(pageable);
+            default -> throw new BoardBadRequestException();
+        };
+    }
+
+    private List<BoardResponse> convertToBoardResponses(List<CounselorBoard> boards) {
+        return boards.stream()
                 .map(board -> {
                     String writer = memberRepository.findById(board.getMemberId())
                             .orElseThrow(CounselorNotFoundException::new)
@@ -56,7 +75,6 @@ public class BoardService {
                 .getName();
 
         board.clickCounselorBoard();
-        boardRepository.save(board);
 
         int likeCount = boardLikeRepository.countByBoardId(board.getId());
         boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
@@ -96,8 +114,6 @@ public class BoardService {
         if (request.getContent() != null) {
             board.updateContent(request.getContent());
         }
-
-        boardRepository.save(board);
 
         int likeCount = boardLikeRepository.countByBoardId(board.getId());
         boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);

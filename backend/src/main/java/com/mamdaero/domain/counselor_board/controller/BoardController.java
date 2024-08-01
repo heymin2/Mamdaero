@@ -14,8 +14,10 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/ca/counselor-board")
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok(boardService.findAll());
+    public ResponseEntity<?> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
+                                     @RequestParam(name = "size", defaultValue = "10") int size,
+                                     @RequestParam(name = "condition", defaultValue = "new") String condition) {
+        return ResponseEntity.ok(boardService.findAll(page, size, condition));
     }
 
     @GetMapping("/ca/counselor-board/{boardId}")
