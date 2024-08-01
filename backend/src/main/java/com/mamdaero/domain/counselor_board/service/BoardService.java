@@ -5,8 +5,8 @@ import com.mamdaero.domain.complaint.entity.Source;
 import com.mamdaero.domain.complaint.repository.ComplaintRepository;
 import com.mamdaero.domain.counselor_board.dto.request.BoardRequest;
 import com.mamdaero.domain.counselor_board.dto.response.BoardDetailResponse;
-import com.mamdaero.domain.counselor_board.dto.response.BoardResponse;
 import com.mamdaero.domain.counselor_board.entity.CounselorBoard;
+import com.mamdaero.domain.counselor_board.repository.BoardLikeRepository;
 import com.mamdaero.domain.counselor_board.repository.BoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
@@ -17,9 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -28,22 +25,12 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
-
-    public List<BoardResponse> findAll() {
-        List<CounselorBoard> counselorBoards = boardRepository.findAll();
-
-        return counselorBoards.stream()
-                .map(board -> {
-                    String writer = memberRepository.findById(board.getMemberId())
-                            .orElseThrow(CounselorNotFoundException::new)
-                            .getName();
-                    return BoardResponse.of(board, writer);
-                })
-                .collect(Collectors.toList());
-    }
+    private final BoardLikeRepository boardLikeRepository;
 
     @Transactional
     public BoardDetailResponse findDetail(Long id) {
+        Long memberId = null;
+
         CounselorBoard board = boardRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
 
@@ -52,9 +39,12 @@ public class BoardService {
                 .getName();
 
         board.clickCounselorBoard();
-        boardRepository.save(board);
 
-        return BoardDetailResponse.of(board, writer);
+        int likeCount = boardLikeRepository.countByBoardId(board.getId());
+        boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
+        boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
+
+        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine);
     }
 
     @Transactional
@@ -89,8 +79,11 @@ public class BoardService {
             board.updateContent(request.getContent());
         }
 
-        boardRepository.save(board);
-        return BoardDetailResponse.of(board, writer);
+        int likeCount = boardLikeRepository.countByBoardId(board.getId());
+        boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
+        boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
+
+        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine);
     }
 
     @Transactional

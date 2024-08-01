@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import LoginClient from '@/components/input/LoginClient.tsx';
 import LoginCounselor from '@/components/input/LoginCounselor.tsx';
 import SquareButton from '@/components/button/SquareButton.tsx';
-const MainPage: React.FC = () => {
+const LoginCard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'client' | 'counselor'>('client');
 
   const clientLogin = () => {
@@ -35,4 +35,4 @@ const MainPage: React.FC = () => {
   );
 };
 
-export default MainPage;
+export default LoginCard;

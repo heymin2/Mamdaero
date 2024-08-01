@@ -9,7 +9,23 @@ export default {
         'apple-sdgothic-bold': ['AppleSDGothicNeoB', 'sans-serif'],
         'apple-sdgothic-extra-bold': ['AppleSDGothicNeoEB', 'sans-serif'],
       },
+      width: {
+        '1.5/12': '12.5%',
+      },
     },
   },
   plugins: [require('daisyui')],
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          'primary': '#fb923c', // orange-400
+          'secondary': '#60a5fa', // blue-400
+          'accent': '#37cdbe', // 여기서부터 아직 안건드림
+          'neutral': '#3d4451',
+          'base-100': '#ffffff',
+        },
+      },
+    ],
+  },
 };
