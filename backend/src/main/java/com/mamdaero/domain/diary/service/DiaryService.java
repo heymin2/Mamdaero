@@ -8,6 +8,7 @@ import com.mamdaero.domain.diary.exception.DiaryNoDateException;
 import com.mamdaero.domain.diary.exception.DiaryNotFoundException;
 import com.mamdaero.domain.diary.repository.DiaryRepository;
 import com.mamdaero.domain.member.entity.Member;
+import com.mamdaero.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,14 +21,30 @@ import java.util.Optional;
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
+    private final MemberRepository memberRepository;
 
-    public List<DiaryResponseDto> findAllByMember(Member member) {
+    public List<DiaryResponseDto> findAllByMember() {
+
+        Member member = memberRepository.findById(1L).get();
 
         if (diaryRepository.findDiaryByMember(member).isEmpty()) {
             throw new DiaryNotFoundException();
         }
 
         return diaryRepository.findDiaryByMember(member).stream()
+                .map(DiaryResponseDto::toDTO)
+                .toList();
+    }
+
+    public List<DiaryResponseDto> findAllByMemberAndIsOpen(Boolean isOpen) {
+
+        Member member = memberRepository.findById(1L).get();
+
+        if (diaryRepository.findAllByMemberAndIsOpen(member, isOpen).isEmpty()) {
+            throw new DiaryNotFoundException();
+        }
+
+        return diaryRepository.findAllByMemberAndIsOpen(member, isOpen).stream()
                 .map(DiaryResponseDto::toDTO)
                 .toList();
     }
@@ -44,7 +61,9 @@ public class DiaryService {
     }
 
     @Transactional
-    public void create(DiaryRequestDto requestDto, Member member) {
+    public void create(DiaryRequestDto requestDto) {
+
+        Member member = memberRepository.findById(1L).get();
 
         if (requestDto.getContent().isEmpty()) {
             throw new DiaryNoContentException();
