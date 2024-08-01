@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
 import SquareButton from '@/components/button/SquareButton';
 import RoundedButton from '@/components/button/RoundedButton';
+
 const myPageKey = 'min-w-32 inline-block font-bold';
 const myPageValue = 'font-bold';
 const CouselorMyPage = () => {
