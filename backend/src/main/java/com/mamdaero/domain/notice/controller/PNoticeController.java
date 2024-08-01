@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,8 +17,11 @@ public class PNoticeController {
     private final PNoticeService noticeService;
 
     @GetMapping
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok(noticeService.findAll());
+    public ResponseEntity<?> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
+                                     @RequestParam(name = "size", defaultValue = "10") int size,
+                                     @RequestParam(name = "searchField", required = false) String searchField,
+                                     @RequestParam(name = "searchValue", required = false) String searchValue) {
+        return ResponseEntity.ok(noticeService.findAll(page, size, searchField, searchValue));
     }
 
     @GetMapping("/{noticeId}")
