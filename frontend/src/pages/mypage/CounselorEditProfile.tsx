@@ -1,21 +1,33 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FiX } from 'react-icons/fi';
 import defaultImage from '@/assets/DefaultProfile.jpg';
 import RoundedButton from '@/components/button/RoundedButton';
 const profileLabel = 'text-3xl font-bold ml-5';
 const profileLabelSpan = 'text-base font-normal ml-10';
-const profileContent = 'bg-white min-h-32 border border-blue-300 relative';
+const profileContent = 'bg-white min-h-32 border border-blue-300 relative rounded-xl pt-3 pl-3';
 const fixCss = 'absolute bottom-0 right-0 w-7 h-7';
+const changePhoto = () => {
+  console.log('사진 변경');
+};
+const deletePhoto = () => {
+  console.log('사진 삭제');
+};
 const CounselorEditProfile = () => {
+  const navigate = useNavigate();
+  const backToList = () => {
+    navigate('/mypage/counselor');
+  };
   return (
     <div>
-      <header className="flex gap-7">
+      <header className="flex justify-between">
         <h1 className="text-black text-5xl font-bold">상담사 프로필 수정</h1>
+        <RoundedButton label=" 뒤로가기" size="xs" onClick={backToList} user="counselor" />
       </header>
       <div className="divider"></div>
-      <div className="flex gap-9 ">
+      <div className="flex justify-evenly min-h-screen">
         {/* 상담사 프로필 내용 */}
-        <div className="bg-blue-50 h-screen flex flex-col p-10 border border-blue-200 gap-10 rounded-xl">
+        <div className="bg-blue-50 flex flex-col p-10 border border-blue-200 gap-10 rounded-xl">
           <div>
             <h1 className={profileLabel}>
               한 줄 소개<span className={profileLabelSpan}>30자 이내</span>
@@ -54,8 +66,8 @@ const CounselorEditProfile = () => {
         <div className="bg-white h-fit p-10 rounded-badge border">
           <img src={defaultImage} alt="사진" />
           <div className="flex justify-evenly pt-3">
-            <RoundedButton label="사진 변경" user="counselor" onClick={onclick} size="xs" />
-            <RoundedButton label="삭제" user="counselor" onClick={onclick} size="xs" />
+            <RoundedButton label="사진 변경" user="counselor" onClick={changePhoto} size="xs" />
+            <RoundedButton label="삭제" user="counselor" onClick={deletePhoto} size="xs" />
           </div>
         </div>
       </div>

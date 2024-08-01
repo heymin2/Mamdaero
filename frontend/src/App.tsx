@@ -73,6 +73,7 @@ function App() {
           <Route path="/selftest/ptsd/result" element={<PTSDResultPage />} />
           <Route path="/selftest/bipolar" element={<BipolarPage />} />
           <Route path="/selftest/bipolar/result" element={<BipolarResultPage />} />
+          {/* My Pages Route */}
           <Route path="/mypage/client" element={<ClientMyPage />} />
           <Route path="/mypage/counselor" element={<CounselorMyPage />} />
           <Route path="/mypage/counselor/edit" element={<CounselorEditProfile />} />
