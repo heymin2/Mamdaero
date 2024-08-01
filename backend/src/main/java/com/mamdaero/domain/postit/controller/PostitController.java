@@ -9,34 +9,33 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/postit")
 public class PostitController {
 
     private final PostitService postitService;
 
-    @GetMapping("/{questionId}")
+    @GetMapping("/p/postit/{questionId}")
     public ResponseEntity<?> findPost(@PathVariable("questionId") Long questionId) {
         return ResponseEntity.ok(postitService.findPost(questionId));
     }
 
-    @PostMapping("/{questionId}")
+    @PostMapping("/cm/postit/{questionId}")
     public ResponseEntity<?> create(@PathVariable("questionId") Long questionId, @RequestBody PostitRequest request) {
         postitService.create(questionId, request);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{questionId}/{postitId}")
+    @PatchMapping("/cm/postit/{questionId}/{postitId}")
     public ResponseEntity<?> update(@PathVariable("questionId") Long questionId, @PathVariable("postitId") Long postitId, @RequestBody PostitRequest request) {
         return ResponseEntity.ok(postitService.update(questionId, postitId, request));
     }
 
-    @DeleteMapping("/{questionId}/{postitId}")
+    @DeleteMapping("/cma/postit/{questionId}/{postitId}")
     public ResponseEntity<?> delete(@PathVariable("questionId") Long questionId, @PathVariable("postitId") Long postitId, @RequestBody PostitRequest request) {
         postitService.delete(questionId, postitId, request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{postitId}/complaint")
+    @PostMapping("/cm/postit/{postitId}/complaint")
     public ResponseEntity<?> complaint(@PathVariable("postitId") Long id) {
         if(!postitService.complaint(id)){
             return ResponseEntity.ok("이미 신고한 글입니다.");

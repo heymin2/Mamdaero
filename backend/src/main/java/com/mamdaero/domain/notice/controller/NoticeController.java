@@ -9,20 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/notice")
+@RequestMapping("/a/notice")
 public class NoticeController {
 
     private final NoticeService noticeService;
-
-    @GetMapping
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok(noticeService.findAll());
-    }
-
-    @GetMapping("/{noticeId}")
-    public ResponseEntity<?> findDetail(@PathVariable("noticeId") Long id) {
-        return ResponseEntity.ok(noticeService.findDetail(id));
-    }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody NoticeRequest request) {

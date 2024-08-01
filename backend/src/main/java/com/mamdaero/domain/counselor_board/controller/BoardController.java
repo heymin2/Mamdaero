@@ -9,39 +9,38 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/counselor-board")
 public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping
+    @GetMapping("/ca/counselor-board")
     public ResponseEntity<?> findAll() {
         return ResponseEntity.ok(boardService.findAll());
     }
 
-    @GetMapping("/{boardId}")
+    @GetMapping("/ca/counselor-board/{boardId}")
     public ResponseEntity<?> findDetail(@PathVariable("boardId") Long id) {
         return ResponseEntity.ok(boardService.findDetail(id));
     }
 
-    @PostMapping
+    @PostMapping("/c/counselor-board")
     public ResponseEntity<?> create(@RequestBody BoardRequest request) {
         boardService.create(request);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{boardId}")
+    @PatchMapping("/c/counselor-board/{boardId}")
     public ResponseEntity<?> update(@PathVariable("boardId") Long id, @RequestBody BoardRequest request) {
         return ResponseEntity.ok(boardService.update(id, request));
     }
 
-    @DeleteMapping("/{boardId}")
+    @DeleteMapping("/ca/counselor-board/{boardId}")
     public ResponseEntity<?> delete(@PathVariable("boardId") Long id) {
         boardService.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{boardId}/complaint")
+    @PostMapping("/c/counselor-board/{boardId}/complaint")
     public ResponseEntity<?> complaint(@PathVariable("boardId") Long id) {
         if(!boardService.complaint(id)){
             return ResponseEntity.ok("이미 신고한 글입니다.");
