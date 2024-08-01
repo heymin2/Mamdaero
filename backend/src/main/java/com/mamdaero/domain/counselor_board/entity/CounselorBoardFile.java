@@ -22,7 +22,6 @@ public class CounselorBoardFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Id
     @Column(name = "counselor_board_id")
     private Long boardId;
 
