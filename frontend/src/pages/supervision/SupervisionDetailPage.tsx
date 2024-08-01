@@ -4,6 +4,7 @@ import SupervisionPostCard from '@/components/card/supervision/SupervisionPostCa
 import RoundedButton from '@/components/button/RoundedButton';
 import { IoIosArrowBack } from 'react-icons/io';
 import SupervisionCommentCard from '@/components/card/supervision/SupervisionCommentCard';
+import SupervisionBar from '@/components/navigation/SupervisionBar';
 
 const SupervisionDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -13,8 +14,9 @@ const SupervisionDetailPage: React.FC = () => {
   };
   return (
     <div className="flex flex-col min-h-screen">
+      {/* 슈퍼비전 상단바 */}
       <div className="sticky bg-blue-50 top-0 z-10">
-        <div className="flex justify-between items-end mx-16">
+        <div className="flex justify-between items-end ms-16">
           <div className="mb-3">
             <RoundedButton
               label={
@@ -28,15 +30,7 @@ const SupervisionDetailPage: React.FC = () => {
               user="counselor"
             ></RoundedButton>
           </div>
-          <div className="flex my-6">
-            <div className="text-right text-gray-500">
-              <div>편안한 온라인 상담 슈퍼비전을 통해</div>
-              <div>다양한 사례를 간접 경험하며 전문성 향상을 돕습니다.</div>
-            </div>
-            <div className="text-4xl font-bold ms-8">
-              <span className="text-blue-500">슈퍼비전</span> 커뮤니티
-            </div>
-          </div>
+          <SupervisionBar />
         </div>
       </div>
       {/* 게시물 내용 */}

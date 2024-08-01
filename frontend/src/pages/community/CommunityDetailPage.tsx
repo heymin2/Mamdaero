@@ -4,6 +4,8 @@ import CommunityPostCard from '@/components/card/community/CommunityPostCard';
 import RoundedButton from '@/components/button/RoundedButton';
 import { IoIosArrowBack } from 'react-icons/io';
 import CommunityCommentCard from '@/components/card/community/CommunityCommentCard';
+import CommunityBar from '@/components/navigation/CommunityBar';
+import CommunityWriteCommentCard from '@/components/card/community/CommunityWriteCommentCard';
 
 const CommunityDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -14,7 +16,7 @@ const CommunityDetailPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="sticky bg-orange-50 top-0 z-10">
-        <div className="flex justify-between items-end mx-16">
+        <div className="flex justify-between items-end ms-16">
           <div className="mb-3">
             <RoundedButton
               label={
@@ -28,15 +30,7 @@ const CommunityDetailPage: React.FC = () => {
               user="client"
             ></RoundedButton>
           </div>
-          <div className="flex my-6">
-            <div className="text-right text-gray-500">
-              <div>털어놓고 싶은 고민이나 일상, 어떤 이야기든 자유롭게 나눌 수 있어요.</div>
-              <div>맘대로의 회원들과 다양한 정보를 이야기를 공유해보세요.</div>
-            </div>
-            <div className="text-4xl font-bold ms-8">
-              <span className="text-orange-500">맘대로</span> 커뮤니티
-            </div>
-          </div>
+          <CommunityBar />
         </div>
       </div>
       {/* 게시물 내용 */}
@@ -44,6 +38,7 @@ const CommunityDetailPage: React.FC = () => {
         <CommunityPostCard />
         <CommunityCommentCard />
         <CommunityCommentCard />
+        <CommunityWriteCommentCard />
       </div>
     </div>
   );

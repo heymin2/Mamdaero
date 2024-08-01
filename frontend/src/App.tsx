@@ -20,8 +20,10 @@ import CounselorListPage from '@/pages/counselor/CounselorListPage';
 import CounselorDetailPage from '@/pages/counselor/CounselorDetailPage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
 import CommunityDetailPage from '@/pages/community/CommunityDetailPage';
+import CommunityWritePostPage from '@/pages/community/CommunityWritePostPage';
 import SupervisionListPage from '@/pages/supervision/SupervisionListPage';
 import SupervisionDetailPage from '@/pages/supervision/SupervisionDetailPage';
+import SupervisionWritePostPage from '@/pages/supervision/SupervisionWritePostPage';
 import ClientMyPage from '@/pages/mypage/ClientMyPage';
 import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
 import CounselorEditProfile from '@/pages/mypage/CounselorEditProfile';
@@ -81,9 +83,11 @@ function App() {
           {/* Community Routes */}
           <Route path="/community" element={<CommunityListPage />} />
           <Route path="/community/:communityId" element={<CommunityDetailPage />} />
+          <Route path="/community/write/post" element={<CommunityWritePostPage />} />
           {/* Supervision Routes */}
           <Route path="/supervision" element={<SupervisionListPage />} />
           <Route path="/supervision/:supervisionId" element={<SupervisionDetailPage />} />
+          <Route path="/supervision/write/post" element={<SupervisionWritePostPage />} />
           {/* MyPage Routes */}
           <Route path="/mypage/client" element={<ClientMyPage />} />
           <Route path="/mypage/counselor" element={<CounselorMyPage />} />

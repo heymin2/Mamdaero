@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SupervisionListCard from '@/components/card/supervision/SupervisionListCard';
 import SupervisionBar from '@/components/navigation/SupervisionBar';
 import WriteButton from '@/components/button/WriteButton';
@@ -28,17 +29,24 @@ const SupervisionListPage: React.FC = () => {
   const postsPerPage = 10;
 
   const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
-
+  const navigate = useNavigate();
+  const writePost = () => {
+    navigate('/supervision/write/post');
+  };
   return (
     <div>
       <SupervisionBar />
-      <WriteButton color="blue" />
-      <SupervisionListCard
-        posts={posts}
-        currentPage={currentPage}
-        postsPerPage={postsPerPage}
-        paginate={paginate}
-      />
+      <div className="mx-4">
+        <div className="text-right mr-20">
+          <WriteButton onClick={writePost} color="blue" />
+        </div>
+        <SupervisionListCard
+          posts={posts}
+          currentPage={currentPage}
+          postsPerPage={postsPerPage}
+          paginate={paginate}
+        />
+      </div>
     </div>
   );
 };

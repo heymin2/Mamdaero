@@ -5,7 +5,7 @@ interface ButtonProps {
   color: 'blue' | 'orange' | 'gray';
 }
 
-const WriteButton = ({ onClick, color }: ButtonProps) => {
+const RegisterBUtton = ({ onClick, color }: ButtonProps) => {
   const colorClasses = {
     blue: 'bg-blue-200 hover:bg-blue-300',
     orange: 'bg-orange-200 hover:bg-orange-300',
@@ -14,13 +14,10 @@ const WriteButton = ({ onClick, color }: ButtonProps) => {
   return (
     <div>
       <button onClick={onClick} className={`rounded-md ${colorClasses[color]}`}>
-        <div className="flex font-bold text-sm items-center my-1 mx-3 gap-2">
-          <FiEdit3 size={18} />
-          글쓰기
-        </div>
+        <div className="flex font-bold text-sm items-center my-1 mx-3 gap-2">등록하기</div>
       </button>
     </div>
   );
 };
 
-export default WriteButton;
+export default RegisterBUtton;
