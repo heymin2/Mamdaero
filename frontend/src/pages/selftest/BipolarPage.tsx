@@ -67,7 +67,7 @@ const BipolarPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       {/* 제목 */}
       <TestBar
         title="조울증"
@@ -133,12 +133,12 @@ const BipolarPage: React.FC = () => {
         </div>
       </div>
       {/* 추가질문 */}
-      <div className="w-full max-w-4xl px-4 mt-8">
+      <div className="flex flex-col justify-center items-center w-5/6 mt-8">
         <h3 className="text-xl font-bold mb-4">추가 질문</h3>
         {questions.slice(13, 14).map(question => (
           <div
             key={question.selftest_questionid}
-            className="mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
+            className="w-full mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
           >
             <label className="block text-base font-normal mb-2 ">
               {question.selftest_questionid}. {question.selftest_question_detail}
@@ -163,7 +163,7 @@ const BipolarPage: React.FC = () => {
         {questions.slice(14, 15).map(question => (
           <div
             key={question.selftest_questionid}
-            className="mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
+            className="w-full mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
           >
             <label className="block text-base font-normal mb-2 ">
               {question.selftest_questionid}. {question.selftest_question_detail}
