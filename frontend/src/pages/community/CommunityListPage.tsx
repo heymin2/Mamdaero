@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import CommunityListCard from '@/components/card/CommunityListCard';
+import CommunityListCard from '@/components/card/community/CommunityListCard';
 import CommunityBar from '@/components/navigation/CommunityBar';
 import WriteButton from '@/components/button/WriteButton';
 interface Post {

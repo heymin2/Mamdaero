@@ -2,7 +2,7 @@ import React from 'react';
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
 import WriteButton from '@/components/button/WriteButton';
-import ReportButton from '../button/ReportButton';
+import ReportButton from '../../button/ReportButton';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
 const CommunityPostCard = () => {
