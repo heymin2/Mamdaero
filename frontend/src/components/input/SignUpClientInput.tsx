@@ -15,6 +15,8 @@ const SignUpClientInput: React.FC = () => {
     role: 'client',
   });
   const [error, setError] = useState<string | null>(null);
+  const [emailConfirmation, setEmailConfirmation] = useState<string | null>(null);
+  const [nicknameConfirmation, setNicknameConfirmation] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +59,14 @@ const SignUpClientInput: React.FC = () => {
     navigate('/');
   };
 
+  const checkEmailDuplicate = () => {
+    setEmailConfirmation('사용가능한 이메일입니다.');
+  };
+
+  const checkNicknameDuplicate = () => {
+    setNicknameConfirmation('사용가능한 닉네임입니다.');
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -65,6 +75,16 @@ const SignUpClientInput: React.FC = () => {
       {error && (
         <div className="absolute w-[363px] top-8 left-[54px] bg-red-200 text-xs text-red-700 p-2 rounded">
           {error}
+        </div>
+      )}
+      {emailConfirmation && (
+        <div className="absolute w-[363px] top-8 left-[54px] bg-green-200 text-xs text-green-700 p-2 rounded">
+          {emailConfirmation}
+        </div>
+      )}
+      {nicknameConfirmation && (
+        <div className="absolute w-[363px] top-8 left-[54px] bg-green-200 text-xs text-green-700 p-2 rounded">
+          {nicknameConfirmation}
         </div>
       )}
       <div className="absolute w-[363px] h-[108px] top-[79px] left-[54px] bg-[#ffffff] rounded-[5px] overflow-hidden border border-solid border-gray-300">
@@ -78,7 +98,12 @@ const SignUpClientInput: React.FC = () => {
             className="absolute top-1.5 left-3 text-gray-400 w-2/3"
           />
           <div className="absolute top-1/2 transform -translate-y-1/2 right-3 bg-orange-200 rounded px-2 text-xs">
-            <Button label={'중복 확인'} onClick={() => {}} size="xs" user="client"></Button>
+            <Button
+              label={'중복 확인'}
+              onClick={checkEmailDuplicate}
+              size="xs"
+              user="client"
+            ></Button>
           </div>
         </div>
         <div className="relative w-full h-9 border-b border-gray-300">
@@ -123,7 +148,12 @@ const SignUpClientInput: React.FC = () => {
             className="absolute top-1.5 left-3 text-gray-400 w-2/3"
           />
           <div className="absolute top-1/2 transform -translate-y-1/2 right-3 bg-orange-200 rounded px-2 text-xs">
-            <Button label={'중복 확인'} onClick={() => {}} size="xs" user="client"></Button>
+            <Button
+              label={'중복 확인'}
+              onClick={checkNicknameDuplicate}
+              size="xs"
+              user="client"
+            ></Button>
           </div>
         </div>
         <div className="relative w-full h-9 border-b border-gray-300">
