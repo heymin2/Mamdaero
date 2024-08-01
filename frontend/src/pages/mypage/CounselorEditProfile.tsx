@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiX } from 'react-icons/fi';
 import defaultImage from '@/assets/DefaultProfile.jpg';
 import RoundedButton from '@/components/button/RoundedButton';
+import Editor from '@/components/Editor';
 const profileLabel = 'text-3xl font-bold ml-5';
 const profileLabelSpan = 'text-base font-normal ml-10';
 const profileContent = 'bg-white min-h-32 border border-blue-300 relative rounded-xl pt-3 pl-3';
@@ -12,6 +13,9 @@ const changePhoto = () => {
 };
 const deletePhoto = () => {
   console.log('사진 삭제');
+};
+const clearContent = () => {
+  console.log('내용 비우기');
 };
 const CounselorEditProfile = () => {
   const navigate = useNavigate();
@@ -35,21 +39,27 @@ const CounselorEditProfile = () => {
             <div className={profileContent}>
               자신을 비춰보며 따뜻하게 어루만져 줄 수 있는 시간을 만들어드리고 싶은 상담사
               백소림입니다.
-              <FiX className={fixCss} />
+              <button className={fixCss} onClick={clearContent}>
+                <FiX />
+              </button>
             </div>
           </div>
           <div>
             <h1 className={profileLabel}>자격증</h1>
             <div className={profileContent}>
               상담심리사 3급
-              <FiX className={fixCss} />
+              <button className={fixCss} onClick={clearContent}>
+                <FiX />
+              </button>
             </div>
           </div>
           <div>
             <h1 className={profileLabel}>주소</h1>
             <div className={profileContent}>
               주소입력해버리기
-              <FiX className={fixCss} />
+              <button className={fixCss} onClick={clearContent}>
+                <FiX />
+              </button>
             </div>
           </div>
           <div>
@@ -58,7 +68,9 @@ const CounselorEditProfile = () => {
             </h1>
             <div className={profileContent}>
               여기는 에디터 쓰면 좋겠다아
-              <FiX className={fixCss} />
+              <button className={fixCss} onClick={clearContent}>
+                <FiX />
+              </button>
             </div>
           </div>
         </div>
