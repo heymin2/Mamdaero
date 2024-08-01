@@ -14,7 +14,8 @@ public class SelftestQuestionOption {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "selftest_question_option_id")
     private Integer id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "selftest_question_id")
     private SelftestQuestion selftestQuestion;
     private String selftestQuestionOptionDetail;
     private Integer selftestQuestionOptionScore;
