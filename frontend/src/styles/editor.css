@@ -1,0 +1,17 @@
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='sans-serif']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='sans-serif']::before {
+  content: 'Sans Serif';
+  font-family: 'sans-serif';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='serif']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='serif']::before {
+  content: 'Serif';
+  font-family: 'serif';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value='monospace']::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value='monospace']::before {
+  content: 'Monospace';
+  font-family: 'monospace';
+}
