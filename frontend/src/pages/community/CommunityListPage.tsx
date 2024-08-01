@@ -2,6 +2,7 @@ import { useState } from 'react';
 import CommunityListCard from '@/components/card/CommunityListCard';
 import CommunityBar from '@/components/navigation/CommunityBar';
 import WriteButton from '@/components/button/WriteButton';
+import Editor from '@/components/Editor';
 interface Post {
   id: number;
   title: string;
@@ -39,6 +40,7 @@ const CommunityListPage: React.FC = () => {
         postsPerPage={postsPerPage}
         paginate={paginate}
       />
+      <Editor />
     </div>
   );
 };

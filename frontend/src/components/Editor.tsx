@@ -11,7 +11,7 @@ const Editor: React.FC = () => {
       ['bold', 'italic', 'underline', 'strike', 'blockquote'],
       [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
       ['link', 'image'],
-      [{ color: [] }, { background: [] }], // 색상 옵션 추가
+      [{ color: [] }, { background: [] }],
       ['clean'],
     ],
   };
@@ -29,7 +29,7 @@ const Editor: React.FC = () => {
     'link',
     'image',
     'color',
-    'background', // 색상 포맷 추가
+    'background',
   ];
 
   const handleChange = (content: string) => {
@@ -37,13 +37,14 @@ const Editor: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: 'white' }}>
       <ReactQuill
         theme="snow"
         modules={modules}
         formats={formats}
         value={value}
         onChange={handleChange}
+        style={{ backgroundColor: 'white', height: '300px' }}
       />
     </div>
   );
