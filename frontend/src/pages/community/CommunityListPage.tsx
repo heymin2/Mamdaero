@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CommunityListCard from '@/components/card/community/CommunityListCard';
 import CommunityBar from '@/components/navigation/CommunityBar';
 import WriteButton from '@/components/button/WriteButton';
@@ -28,17 +29,24 @@ const CommunityListPage: React.FC = () => {
   const postsPerPage = 10;
 
   const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
-
+  const navigate = useNavigate();
+  const writePost = () => {
+    navigate('/community/write/post');
+  };
   return (
     <div>
       <CommunityBar />
-      <WriteButton color="orange" />
-      <CommunityListCard
-        posts={posts}
-        currentPage={currentPage}
-        postsPerPage={postsPerPage}
-        paginate={paginate}
-      />
+      <div className="mx-4">
+        <div className="text-right mr-20">
+          <WriteButton onClick={writePost} color="orange" />
+        </div>
+        <CommunityListCard
+          posts={posts}
+          currentPage={currentPage}
+          postsPerPage={postsPerPage}
+          paginate={paginate}
+        />
+      </div>
     </div>
   );
 };

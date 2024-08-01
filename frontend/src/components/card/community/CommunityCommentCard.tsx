@@ -42,7 +42,7 @@ const CommunityCommentCard: React.FC<CommunityCommentCardProps> = () => {
   }, []);
 
   return (
-    <div className="border-b-2 border-orange-300 px-10 py-3">
+    <div className="border-b-2 border-orange-300 px-10 pt-4 pb-2">
       <div className="flex justify-between items-center">
         <div className="text-xl font-bold">{nickname}</div>
         <div className="flex items-center">
