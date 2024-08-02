@@ -17,9 +17,14 @@ public class CounselorController {
     private final CounselorService counselorService;
 
     @GetMapping(value = "/counselor")
-    public ResponseEntity<List<Counselor>> getCounselors() {
-        List<Counselor> counselors = counselorService.findAll();
-
+    public ResponseEntity<List<Counselor>> getCounselors(@RequestParam(name = "counselorName", required = false) String counselorName) {
+        List<Counselor> counselors;
+        if (counselorName == null || counselorName.isEmpty()) {
+            counselors = counselorService.findAll();
+        }
+        else {
+            counselors = counselorService.findAllByName(counselorName);
+        }
         return new ResponseEntity<>(counselors, HttpStatus.OK);
     }
 

@@ -6,7 +6,6 @@ import com.mamdaero.domain.member.repository.CounselorRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +18,10 @@ public class CounselorService {
 
     public List<Counselor> findAll(){
         return counselorRepository.findAll();
+    }
+
+    public List<Counselor> findAllByName(String name){
+        return counselorRepository.findAllByNameContains(name);
     }
 
     // Todo id 말고 토큰으로 본인 찾기 추가
