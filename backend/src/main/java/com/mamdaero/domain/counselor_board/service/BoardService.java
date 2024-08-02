@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,8 +53,16 @@ public class BoardService {
         int likeCount = boardLikeRepository.countByBoardId(board.getId());
         boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
         boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
+        List<CounselorBoardFile> files = boardFileRepository.findByBoardId(board.getId());
 
-        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine);
+        List<String> list = new ArrayList<>();
+
+        for (CounselorBoardFile file : files) {
+            list.add(file.getUrl());
+        }
+
+
+        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine, list);
     }
 
     @Transactional
@@ -103,7 +112,7 @@ public class BoardService {
         boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
         boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
 
-        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine);
+        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine, null);
     }
 
     @Transactional

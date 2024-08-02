@@ -26,8 +26,11 @@ public class FileService {
     @Value("${cloud.aws.s3.bucketName}")
     private String bucket;
 
-    private String PROFILE_IMG_DIR = "profile/";
-    private String BOARD_IMG_DIR = "board/";
+    @Value("${cloud.aws.s3.path.profile}")
+    private String PROFILE_IMG_DIR;
+
+    @Value("${cloud.aws.s3.path.board}")
+    private String BOARD_IMG_DIR;
 
     public String saveProfile(MultipartFile multipartFile, Long memberId) throws IOException {
         if(multipartFile.isEmpty()) {
