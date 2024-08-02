@@ -4,11 +4,12 @@ import com.mamdaero.domain.member.dto.request.CounselorRequestDto;
 import com.mamdaero.domain.member.entity.Counselor;
 import com.mamdaero.domain.member.service.CounselorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -60,10 +61,10 @@ public class CounselorController {
     }
 
     // Todo id 말고 토큰으로 본인 찾기 추가
-    @PatchMapping(value = "/member/counselor/img", consumes = "application/json")
-    public ResponseEntity<?> modifyIntroImg(@RequestBody CounselorRequestDto counselorDto) {
+    @PatchMapping(value = "/c/member/counselor/img")
+    public ResponseEntity<?> modifyIntroImg(@RequestPart(name = "file", required = false) MultipartFile file) throws IOException {
 
-        counselorService.modifyImg(2L, counselorDto);
+        counselorService.modifyImg(file);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
