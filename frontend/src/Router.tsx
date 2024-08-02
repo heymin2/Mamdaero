@@ -26,10 +26,10 @@ import SupervisionDetailPage from '@/pages/supervision/SupervisionDetailPage';
 import SupervisionWritePostPage from '@/pages/supervision/SupervisionWritePostPage';
 import ClientMyPage from '@/pages/mypage/ClientMyPage';
 import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
-import CounselorEditProfile from '@/pages/mypage/CounselorEditProfile';
-import CounselorManageProduct from '@/pages/mypage/CounselorManageProduct';
-import CounselorManageTime from '@/pages/mypage/CounselorManageTime';
-import CounselorManageExclude from '@/pages/mypage/CounselorManageExclude';
+import CounselorEditInfomationPage from '@/pages/mypage/CounselorEditInfomationPage';
+import CounselorManageProductPage from '@/pages/mypage/CounselorManageProductPage';
+import CounselorManageTimePage from '@/pages/mypage/CounselorManageTimePage';
+import CounselorManageExcludePage from '@/pages/mypage/CounselorManageExcludePage';
 import EmotionDiaryPage from '@/pages/emotiondiary/EmotionDiaryPage';
 
 const Router = () => (
@@ -66,10 +66,10 @@ const Router = () => (
     {/* MyPage Routes */}
     <Route path="/mypage/client" element={<ClientMyPage />} />
     <Route path="/mypage/counselor" element={<CounselorMyPage />} />
-    <Route path="/mypage/counselor/edit" element={<CounselorEditProfile />} />
-    <Route path="/mypage/counselor/product" element={<CounselorManageProduct />} />
-    <Route path="/mypage/counselor/time" element={<CounselorManageTime />} />
-    <Route path="/mypage/counselor/exclude" element={<CounselorManageExclude />} />
+    <Route path="/mypage/counselor/edit" element={<CounselorEditInfomationPage />} />
+    <Route path="/mypage/counselor/product" element={<CounselorManageProductPage />} />
+    <Route path="/mypage/counselor/time" element={<CounselorManageTimePage />} />
+    <Route path="/mypage/counselor/exclude" element={<CounselorManageExcludePage />} />
     {/* EmotionDiary Routes */}
     <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
   </Routes>
