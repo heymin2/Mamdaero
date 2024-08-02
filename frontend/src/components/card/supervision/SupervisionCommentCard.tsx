@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import ReportButton from '@/components/button/ReportButton';
+import { FaRegComments } from 'react-icons/fa6';
 
 interface SupervisionCommentCardProps {
   // You can add props here if needed in the future
@@ -42,9 +43,12 @@ const SupervisionCommentCard: React.FC<SupervisionCommentCardProps> = () => {
   }, []);
 
   return (
-    <div className="border-b-2 border-blue-300 px-10 py-3">
+    <div className="border-b-2 border-blue-300 px-10 pt-4 pb-2">
       <div className="flex justify-between items-center">
-        <div className="text-xl font-bold">{nickname}</div>
+        <div className="flex gap-2 items-center text-lg font-bold">
+          <FaRegComments />
+          {nickname}
+        </div>{' '}
         <div className="flex items-center">
           <span className="mr-2">{date}</span>
           <div className="relative" ref={reportButtonRef}>
@@ -59,7 +63,7 @@ const SupervisionCommentCard: React.FC<SupervisionCommentCardProps> = () => {
           </div>
         </div>
       </div>
-      <div className="mx-5 my-2">{content}</div>
+      <div className="mx-8 my-2">{content}</div>
     </div>
   );
 };

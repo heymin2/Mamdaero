@@ -5,7 +5,7 @@ import RoundedButton from '@/components/button/RoundedButton';
 import { IoIosArrowBack } from 'react-icons/io';
 import SupervisionCommentCard from '@/components/card/supervision/SupervisionCommentCard';
 import SupervisionBar from '@/components/navigation/SupervisionBar';
-
+import SupervisionWriteCommentCard from '@/components/card/supervision/SupervisionWriteCommentCard';
 const SupervisionDetailPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>();
   const navigate = useNavigate();
@@ -38,6 +38,7 @@ const SupervisionDetailPage: React.FC = () => {
         <SupervisionPostCard />
         <SupervisionCommentCard />
         <SupervisionCommentCard />
+        <SupervisionWriteCommentCard />
       </div>
     </div>
   );
