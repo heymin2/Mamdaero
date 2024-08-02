@@ -30,7 +30,9 @@ public class FileService {
     private String BOARD_IMG_DIR = "board/";
 
     public String saveProfile(MultipartFile multipartFile, Long memberId) throws IOException {
-        log.info("저장 시작");
+        if(multipartFile.isEmpty()) {
+            return null;
+        }
         return upload(multipartFile, PROFILE_IMG_DIR, memberId);
     }
 
