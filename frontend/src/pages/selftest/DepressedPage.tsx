@@ -17,9 +17,9 @@ interface SelfTest {
   questions: Question[];
 }
 
-const answerLabels = ['전혀 그렇지 않다', '조금 그렇다', '보통 그렇다', '대단히 그렇다'];
+const answerLabels = ['극히 드물게', '가끔', '자주', '거의 대부분'];
 
-const UnrestPage: React.FC = () => {
+const DepressedPage: React.FC = () => {
   const [selfTest, setSelfTest] = useState<SelfTest | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
@@ -30,7 +30,9 @@ const UnrestPage: React.FC = () => {
     fetch('/selftests.json')
       .then(response => response.json())
       .then(data => {
-        const unrestTest = data.selftests.find((test: SelfTest) => test.selftest_name === 'unrest');
+        const unrestTest = data.selftests.find(
+          (test: SelfTest) => test.selftest_name === 'depressed'
+        );
         setSelfTest(unrestTest);
         setQuestions(unrestTest.questions);
       })
@@ -57,15 +59,15 @@ const UnrestPage: React.FC = () => {
     });
 
     console.log('Detailed Answers:', detailedAnswers);
-    navigate('/selftest/unrest/result', { state: { totalScore } });
+    navigate('/selftest/depressed/result', { state: { totalScore } });
   };
 
   return (
     <div>
       {/* 제목 */}
       <TestBar
-        title="불안"
-        subtitle="위험요소가 다 사라졌지만 불안하신가요?"
+        title="우울"
+        subtitle="기분이 늘 울적하고 매사에 의욕이 없나요?"
         showBackButton={true}
       />
       {/* 검사테이블 */}
@@ -74,7 +76,7 @@ const UnrestPage: React.FC = () => {
         <div>{selfTest ? selfTest.selftest_info : '정보를 불러오는 중...'}</div>
       </div>
       <div className="flex justify-center w-full">
-        <div className="w-full max-w-4xl px-4 ">
+        <div className="w-full max-w-4xl px-4">
           <table className="table w-full rounded-lg overflow-hidden">
             <thead>
               <tr>
@@ -153,4 +155,4 @@ const UnrestPage: React.FC = () => {
   );
 };
 
-export default UnrestPage;
+export default DepressedPage;

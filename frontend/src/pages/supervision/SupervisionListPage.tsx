@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CommunityListCard from '@/components/card/community/CommunityListCard';
-import CommunityBar from '@/components/navigation/CommunityBar';
+import SupervisionListCard from '@/components/card/supervision/SupervisionListCard';
+import SupervisionBar from '@/components/navigation/SupervisionBar';
 import WriteButton from '@/components/button/WriteButton';
 interface Post {
   id: number;
@@ -12,7 +12,7 @@ interface Post {
   date: string;
 }
 
-const CommunityListPage: React.FC = () => {
+const SupervisionListPage: React.FC = () => {
   const generateSamplePosts = (): Post[] => {
     return Array.from({ length: 50 }, (_, i) => ({
       id: i + 1,
@@ -31,16 +31,16 @@ const CommunityListPage: React.FC = () => {
   const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
   const navigate = useNavigate();
   const writePost = () => {
-    navigate('/community/write/post');
+    navigate('/supervision/write/post');
   };
   return (
     <div>
-      <CommunityBar />
+      <SupervisionBar />
       <div className="mx-4">
         <div className="text-right mr-20">
-          <WriteButton onClick={writePost} color="orange" />
+          <WriteButton onClick={writePost} color="blue" />
         </div>
-        <CommunityListCard
+        <SupervisionListCard
           posts={posts}
           currentPage={currentPage}
           postsPerPage={postsPerPage}
@@ -51,4 +51,4 @@ const CommunityListPage: React.FC = () => {
   );
 };
 
-export default CommunityListPage;
+export default SupervisionListPage;
