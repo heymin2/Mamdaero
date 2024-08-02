@@ -4,7 +4,6 @@ import com.mamdaero.domain.member.dto.request.CounselorRequestDto;
 import com.mamdaero.domain.member.entity.Counselor;
 import com.mamdaero.domain.member.service.CounselorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +35,7 @@ public class CounselorController {
     @GetMapping(value = "/member/counselor")
     public ResponseEntity<?> getCounselor() {
 
-        Counselor counselor = counselorService.find(2L);
+        Counselor counselor = counselorService.find(16L);
 
         return new ResponseEntity<>(counselor, HttpStatus.OK);
     }
@@ -45,7 +44,7 @@ public class CounselorController {
     @PatchMapping(value = "/member/counselor/intro", consumes = "application/json")
     public ResponseEntity<?> modifyIntro(@RequestBody CounselorRequestDto counselorDto) {
 
-        counselorService.modifyIntro(2L, counselorDto);
+        counselorService.modifyIntro(16L, counselorDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -54,7 +53,7 @@ public class CounselorController {
     @PatchMapping(value = "/member/counselor/intro-detail", consumes = "application/json")
     public ResponseEntity<?> modifyIntroDetail(@RequestBody CounselorRequestDto counselorDto) {
 
-        counselorService.modifyIntroDetail(2L, counselorDto);
+        counselorService.modifyIntroDetail(16L, counselorDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -63,7 +62,7 @@ public class CounselorController {
     @PatchMapping(value = "/member/counselor/img", consumes = "application/json")
     public ResponseEntity<?> modifyIntroImg(@RequestBody CounselorRequestDto counselorDto) {
 
-        counselorService.modifyImg(2L, counselorDto);
+        counselorService.modifyImg(16L, counselorDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

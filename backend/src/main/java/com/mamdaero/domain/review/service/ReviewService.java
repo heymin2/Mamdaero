@@ -1,5 +1,7 @@
 package com.mamdaero.domain.review.service;
 
+import com.mamdaero.domain.reservation.entity.Reservation;
+import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.domain.review.dto.request.ReviewRequestDto;
 import com.mamdaero.domain.review.dto.response.ReviewResponseDto;
 import com.mamdaero.domain.review.entity.Review;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ReservationRepository reservationRepository;
 
     public List<ReviewResponseDto> findAllByReservation_CounselorItem_CounselorId(Long id) {
 
@@ -36,23 +39,25 @@ public class ReviewService {
     public void create(Long id, ReviewRequestDto requestDto) {
 
         Optional<Review> optionalReview = reviewRepository.findById(id);
+        Optional<Reservation> optionalReservation = reservationRepository.findById(id);
 
         if (optionalReview.isEmpty()) {
 
             if (requestDto.getReview().isEmpty()) {
                 throw new ReviewNoReviewException();
-            }
-            else if (requestDto.getScore().isNaN()) {
+            } else if (requestDto.getScore().isNaN()) {
                 throw new ReviewNoScoreException();
             }
+            if (optionalReservation.isPresent()) {
 
-            Review review = Review.builder()
-                    .id(id)
-                    .review(requestDto.getReview())
-                    .score(requestDto.getScore())
-                    .build();
+                Review review = Review.builder()
+                        .reservation(optionalReservation.get())
+                        .review(requestDto.getReview())
+                        .score(requestDto.getScore())
+                        .build();
 
-            reviewRepository.save(review);
+                reviewRepository.save(review);
+            }
         }
         else {
             throw new ReviewAlreadyException();
