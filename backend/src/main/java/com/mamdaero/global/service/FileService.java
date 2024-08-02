@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 @Service
@@ -34,6 +35,9 @@ public class FileService {
     }
 
     public String saveBoard(MultipartFile multipartFile, Long memberId) throws IOException {
+        if(multipartFile.isEmpty()) {
+            return null;
+        }
         return upload(multipartFile, BOARD_IMG_DIR, memberId);
     }
 

@@ -70,6 +70,10 @@ public class BoardService {
 
         for (MultipartFile file : files) {
             String fileUrl = fileService.saveBoard(file, memberId);  // 파일 URL 저장
+
+            if(fileUrl == null) {
+                break;
+            }
             CounselorBoardFile boardFile = new CounselorBoardFile(null, board.getId(), fileUrl, false);
             boardFileRepository.save(boardFile);
         }
