@@ -4,10 +4,10 @@ import com.mamdaero.domain.counselor_item.entity.CounselorItem;
 import com.mamdaero.domain.counselor_item.exception.CounselorItemNotFoundException;
 import com.mamdaero.domain.counselor_item.repository.CounselorItemRepository;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
+import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
 import com.mamdaero.domain.reservation.entity.Reservation;
 import com.mamdaero.domain.reservation.entity.ReservationSituation;
 import com.mamdaero.domain.reservation.entity.ReservationSymptom;
-import com.mamdaero.domain.reservation.exception.CanNotMakeReservationException;
 import com.mamdaero.domain.reservation.exception.ReservationNotFoundException;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -45,10 +46,11 @@ public class ReservationService {
 
         WorkTime workTime = workTimeRepository.findById(request.getWorkTimeId()).get();
 
+        System.out.println(workTime.getIsReserved());
         // 이미 예약된 시간이거나 근무시간이 아니라면 예약할 수 없다.
-        if (workTime.getIsReserved() || !workTime.getIsWorkTime()) {
-            throw new CanNotMakeReservationException();
-        }
+//        if (workTime.getIsReserved() || !workTime.getIsWorkTime()) {
+//            throw new CanNotMakeReservationException();
+//        }
 
         workTime.reserve();
 
@@ -99,4 +101,19 @@ public class ReservationService {
 
         reservationRepository.deleteById(reservationId);
     }
+
+    public List<ReservationListResponse> getReservationList() {
+        // TODO: 토큰에서 호출한사람 정보 가져와서 바꾸기
+        String caller = "상담사";
+
+        if ("내담자".equals(caller)) {
+            return reservationRepository.findByMemberId(1L);
+        } else if ("상담사".equals(caller)) {
+            return reservationRepository.findByCounselorId(16L);
+        } else {
+            throw new RuntimeException("예약 목록 조회 권한이 없습니다.");
+        }
+    }
+
+
 }
