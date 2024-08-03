@@ -6,16 +6,24 @@ import com.mamdaero.domain.complaint.repository.ComplaintRepository;
 import com.mamdaero.domain.counselor_board.dto.request.BoardRequest;
 import com.mamdaero.domain.counselor_board.dto.response.BoardDetailResponse;
 import com.mamdaero.domain.counselor_board.entity.CounselorBoard;
+import com.mamdaero.domain.counselor_board.entity.CounselorBoardFile;
+import com.mamdaero.domain.counselor_board.repository.BoardFileRepository;
 import com.mamdaero.domain.counselor_board.repository.BoardLikeRepository;
 import com.mamdaero.domain.counselor_board.repository.BoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
 import com.mamdaero.domain.notice.exception.BoardNotFoundException;
+import com.mamdaero.global.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -26,6 +34,8 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final BoardFileRepository boardFileRepository;
+    private final FileService fileService;
 
     @Transactional
     public BoardDetailResponse findDetail(Long id) {
@@ -43,12 +53,20 @@ public class BoardService {
         int likeCount = boardLikeRepository.countByBoardId(board.getId());
         boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
         boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
+        List<CounselorBoardFile> files = boardFileRepository.findByBoardId(board.getId());
 
-        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine);
+        List<String> list = new ArrayList<>();
+
+        for (CounselorBoardFile file : files) {
+            list.add(file.getUrl());
+        }
+
+
+        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine, list);
     }
 
     @Transactional
-    public void create(BoardRequest request) {
+    public void create(BoardRequest request, List<MultipartFile> files) throws IOException {
         // 토큰 확인 후 상담사인지 확인
         Long memberId = 1L;
 
@@ -56,7 +74,18 @@ public class BoardService {
             throw new BoardBadRequestException();
         }
 
-        boardRepository.save(BoardRequest.toEntity(memberId, request));
+        CounselorBoard board = BoardRequest.toEntity(memberId, request);
+        boardRepository.save(board);
+
+        for (MultipartFile file : files) {
+            String fileUrl = fileService.saveBoard(file, memberId);  // 파일 URL 저장
+
+            if(fileUrl == null) {
+                break;
+            }
+            CounselorBoardFile boardFile = new CounselorBoardFile(null, board.getId(), fileUrl, false);
+            boardFileRepository.save(boardFile);
+        }
     }
 
     @Transactional
@@ -83,7 +112,7 @@ public class BoardService {
         boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
         boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
 
-        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine);
+        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine, null);
     }
 
     @Transactional
