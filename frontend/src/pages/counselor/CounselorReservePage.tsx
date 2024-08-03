@@ -107,7 +107,7 @@ const CounselorReservePage: React.FC = () => {
 
   const renderEventContent = (eventInfo: EventContentArg) => (
     <div className="flex justify-center items-center h-full">
-      <button className="btn btn-primary">{eventInfo.event.title}</button>
+      <button className="btn btn-xs btn-primary text-xs p-1">{eventInfo.event.title}</button>
     </div>
   );
 
@@ -214,6 +214,8 @@ const CounselorReservePage: React.FC = () => {
                 }}
                 eventColor="#fff7ed" // 이벤트 컬러 변경
                 titleFormat={{ year: 'numeric', month: 'numeric' }}
+                height="auto"
+                contentHeight="auto"
               />
             </div>
             {selectedDate && (
@@ -410,28 +412,32 @@ const CounselorReservePage: React.FC = () => {
                   description:
                     '우울증 극복을 위한 상담은 우울증의 원인을 분석하고 효과적인 치료 방법을 제공하여 우울증을 극복할 수 있도록 돕는 심리 상담 서비스입니다.',
                 },
-              ].map((product, index) => (
+              ].map(product => (
                 <div
                   key={product.name}
-                  className="mb-2 collapse collapse-plus rounded-lg bg-blue-50"
+                  className="mb-3 collapse collapse-plus bg-orange-100 shadow-sm rounded-lg "
                 >
                   <input
-                    type="radio"
-                    name="product-accordion"
-                    id={`product-${index}`}
-                    defaultChecked={index === 0}
+                    type="checkbox"
+                    className="peer"
+                    checked={expandedProduct === product.name}
+                    onChange={() =>
+                      setExpandedProduct(expandedProduct === product.name ? null : product.name)
+                    }
                   />
-                  <div className="collapse-title text-md font-bold pb-2">
-                    {product.name} {product.price}
+                  <div className="collapse-title text-base font-medium">
+                    <span className="font-bold">{product.name}</span> - {product.price}
                   </div>
-                  <div className="collapse-content p-4 border-t  bg-gray-50 rounded-lg">
-                    <p className="text-sm mb-4">{product.description}</p>
-                    <SquareButton
-                      label="예약하기"
-                      onClick={handleReservation}
-                      size="예약하기"
-                      user="client"
-                    />
+                  <div className="collapse-content">
+                    <p className="mb-4">{product.description}</p>
+                    <div className="flex justify-center">
+                      <SquareButton
+                        label="예약하기"
+                        onClick={handleReservation}
+                        size="md"
+                        user="client"
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
