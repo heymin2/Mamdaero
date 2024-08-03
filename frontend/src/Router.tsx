@@ -39,12 +39,13 @@ const Router = () => (
     <Route path="/" element={<MainPage />} />
     {/* SignUp Routes */}
     <Route path="/signup/choose" element={<SignUpChoose />} />
-    <Route path="/signup/client" element={<SignUpClient />} />
+    <Route path="/signup/client/*" element={<SignUpClient />} />
     <Route path="/signup/counselor/*" element={<SignUpCounselor />} />
     {/* Counselor Routes */}
     <Route path="/counselor" element={<CounselorListPage />} />
     <Route path="/counselor/:counselorId" element={<CounselorDetailPage />} />
     <Route path="/counselor/:counselorId/reservation" element={<CounselorReservePage />} />
+
     {/* Self Test Routes */}
     <Route path="/selftest" element={<SelfTestListPage />} />
     <Route path="/selftest/unrest" element={<UnrestPage />} />

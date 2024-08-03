@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import GenderDropdown from '@/components/dropdown/GenderDropdown';
 
 const SignUpCounselorInfo: React.FC = () => {
   const location = useLocation();
@@ -15,6 +14,7 @@ const SignUpCounselorInfo: React.FC = () => {
     gender: '',
     image: null as File | null,
   });
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -35,23 +35,29 @@ const SignUpCounselorInfo: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formDataToSubmit = new FormData();
-    formDataToSubmit.append('password', formState.password);
-    formDataToSubmit.append('confirmPassword', formState.confirmPassword);
-    formDataToSubmit.append('address', formState.address);
-    formDataToSubmit.append('intro', formState.intro);
-    formDataToSubmit.append('gender', formState.gender);
-    formDataToSubmit.append('intro_detail', formState.intro_detail);
-    formDataToSubmit.append('name', formData?.name || '');
-    formDataToSubmit.append('license', formData?.license || '');
-    formDataToSubmit.append('email', formData?.email || '');
-    if (formState.image) {
-      formDataToSubmit.append('image', formState.image);
+    setError(null);
+
+    if (!formState.password || !formState.confirmPassword || !formState.gender) {
+      setError('모든 필드를 입력해주세요.');
+      return;
     }
 
-    console.log('Form submitted:', { ...formData, ...formState });
-    alert('회원가입이 완료되었습니다!');
-    navigate('/');
+    if (formData.password !== formData.confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
+      return;
+    }
+
+    const dataToSubmit = {
+      name: formData?.name || '',
+      license: formData?.license || '',
+      email: formData?.email || '',
+      gender: formState.gender,
+      level: formData?.license ? formData.license.charAt(0) : '',
+      password: formState.password,
+    };
+
+    console.log('Form submitted:', dataToSubmit);
+    navigate('/signup/counselor/complete');
   };
 
   return (
@@ -60,15 +66,15 @@ const SignUpCounselorInfo: React.FC = () => {
         <div className="flex">
           <div className="flex-grow space-y-4 w-1/2 mr-5">
             <div className="space-y-4">
-              <div className="flex space-x-5 ">
+              <div className="flex space-x-5">
                 <p className="w-1/3 font-bold">이름</p>
                 <p>{formData.name}</p>
               </div>
-              <div className="flex space-x-5 ">
+              <div className="flex space-x-5">
                 <p className="w-1/3 font-bold">자격번호</p>
                 <p>{formData.license}</p>
               </div>
-              <div className="flex space-x-5 ">
+              <div className="flex space-x-5">
                 <p className="w-1/3 font-bold">이메일</p>
                 <p>{formData.email}</p>
               </div>
@@ -83,7 +89,7 @@ const SignUpCounselorInfo: React.FC = () => {
                 className="w-3/4 p-2 border rounded"
               />
             </div>
-            <div className="flex space-x-5 items-center ">
+            <div className="flex space-x-5 items-center">
               <label className="w-1/3 block font-bold">비밀번호 확인</label>
               <input
                 type="password"
@@ -93,16 +99,39 @@ const SignUpCounselorInfo: React.FC = () => {
                 className="w-3/4 p-2 border rounded"
               />
             </div>
+            <div className="flex space-x-5 items-center">
+              <label className="w-1/3 block font-bold">성별</label>
+              <div className="flex justify-between w-3/4">
+                <button
+                  type="button"
+                  className={`flex-1 p-3 mx-1 rounded-md font-bold ${
+                    formState.gender === 'M' ? 'bg-blue-200' : 'bg-gray-200'
+                  }`}
+                  onClick={() => handleGenderChange('M')}
+                >
+                  남
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 p-3 mx-1 rounded-md font-bold ${
+                    formState.gender === 'F' ? 'bg-blue-200' : 'bg-gray-200'
+                  }`}
+                  onClick={() => handleGenderChange('F')}
+                >
+                  여
+                </button>
+              </div>
+            </div>
           </div>
           <div className="w-2/5 items-center justify-center">
             <label className="block font-bold mb-2">이미지</label>
             <div className="flex items-center justify-center">
-              <div className="w-3/5 bg-gray-200 flex items-center justify-center rounded min-h-32 max-h-32">
+              <div className="w-full bg-gray-200 flex items-center justify-center rounded min-h-48 max-h-64">
                 {formState.image ? (
                   <img
                     src={URL.createObjectURL(formState.image)}
                     alt="Selected"
-                    className="w-full h-full min-h-32 max-h-32 object-cover rounded "
+                    className="w-full h-full min-h-48 max-h-64 object-cover rounded"
                   />
                 ) : (
                   <span>이미지</span>
@@ -113,38 +142,34 @@ const SignUpCounselorInfo: React.FC = () => {
               type="file"
               accept="image/*"
               onChange={handleImageChange}
-              className="file-input file-input-bordered file-input-xs mt-2 w-full "
+              className="file-input file-input-bordered file-input-xs mt-2 w-full"
             />
           </div>
         </div>
 
-        <div className="flex space-x-7 ">
-          <div className="flex w-full items-center">
-            <label className="w-1/4 mr-12 block font-bold">센터 주소</label>
+        <div className="space-y-5">
+          <div className="flex items-center">
+            <label className="w-1/5 block font-bold">센터 주소</label>
             <input
               type="text"
               name="address"
               value={formState.address}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              className="flex-1 p-2 border rounded"
             />
           </div>
-          <div className="flex w-2/5 items-center">
-            <label className="w-1/3 block font-bold">성별</label>
-            <GenderDropdown gender={formState.gender} onGenderChange={handleGenderChange} />
+          <div className="flex items-center">
+            <label className="w-1/5 block font-bold">한줄소개</label>
+            <textarea
+              name="intro"
+              value={formState.intro}
+              onChange={handleInputChange}
+              maxLength={100}
+              className="flex-1 p-2 border rounded"
+            />
           </div>
         </div>
 
-        <div>
-          <label className="block font-bold">한줄소개</label>
-          <textarea
-            name="intro"
-            value={formState.intro}
-            onChange={handleInputChange}
-            maxLength={100}
-            className="w-full p-2 border rounded"
-          />
-        </div>
         <div>
           <label className="block font-bold">상세소개</label>
           <textarea
@@ -155,6 +180,9 @@ const SignUpCounselorInfo: React.FC = () => {
             className="w-full p-2 border rounded"
           />
         </div>
+        {error && (
+          <div className="w-full bg-red-200 text-xs text-red-700 p-2 rounded mb-4">{error}</div>
+        )}
         <div className="flex justify-end font-bold">
           <button type="submit" className="p-2 bg-blue-200 rounded w-full">
             회원가입
