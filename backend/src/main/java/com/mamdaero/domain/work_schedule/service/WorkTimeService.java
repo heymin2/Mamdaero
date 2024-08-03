@@ -1,6 +1,7 @@
 package com.mamdaero.domain.work_schedule.service;
 
 import com.mamdaero.domain.work_schedule.dto.request.WorkTimeRequest;
+import com.mamdaero.domain.work_schedule.dto.response.WorkTimeResponse;
 import com.mamdaero.domain.work_schedule.entity.WorkSchedule;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
 import com.mamdaero.domain.work_schedule.repository.WorkScheduleRepository;
@@ -44,7 +45,7 @@ public class WorkTimeService {
         workTimeRepository.saveAll(workTimes);
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 41 14 * * *")
     @Transactional
     public void updateWorkTimes() {
         LocalDate today = LocalDate.now();
@@ -56,6 +57,9 @@ public class WorkTimeService {
 
         // TODO: 상담사레포지토리에서 모든 상담사ID 가져오기
         List<Long> counselorIds = new ArrayList<>();
+        for (int i = 16; i <= 22; i++) {
+            counselorIds.add((long) i);
+        }
 
         int dayOfWeek = dayToAdd.getDayOfWeek().getValue();
         for (Long counselorId : counselorIds) {
@@ -95,5 +99,9 @@ public class WorkTimeService {
                 workTime.cancelWork();
             }
         }
+    }
+
+    public List<WorkTimeResponse> getWorkTime(Long counselorId, LocalDate date) {
+        return workTimeRepository.findByCounselorIdAndDate(counselorId, date);
     }
 }
