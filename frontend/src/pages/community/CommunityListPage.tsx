@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import CommunityListCard from '@/components/card/CommunityListCard';
-
+import { useNavigate } from 'react-router-dom';
+import CommunityListCard from '@/components/card/community/CommunityListCard';
+import CommunityBar from '@/components/navigation/CommunityBar';
+import WriteButton from '@/components/button/WriteButton';
 interface Post {
   id: number;
   title: string;
@@ -27,24 +29,24 @@ const CommunityListPage: React.FC = () => {
   const postsPerPage = 10;
 
   const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
-
+  const navigate = useNavigate();
+  const writePost = () => {
+    navigate('/community/write/post');
+  };
   return (
     <div>
-      <div className="flex my-6 justify-end">
-        <div className="text-right text-gray-500">
-          <div>털어놓고 싶은 고민이나 일상, 어떤 이야기든 자유롭게 나눌 수 있어요.</div>
-          <div>맘대로의 회원들과 다양한 정보를 이야기를 공유해보세요.</div>
+      <CommunityBar />
+      <div className="mx-4">
+        <div className="text-right mr-20">
+          <WriteButton onClick={writePost} color="orange" />
         </div>
-        <div className="text-4xl font-bold ms-8">
-          <span className="text-orange-500">맘대로</span> 커뮤니티
-        </div>
+        <CommunityListCard
+          posts={posts}
+          currentPage={currentPage}
+          postsPerPage={postsPerPage}
+          paginate={paginate}
+        />
       </div>
-      <CommunityListCard
-        posts={posts}
-        currentPage={currentPage}
-        postsPerPage={postsPerPage}
-        paginate={paginate}
-      />
     </div>
   );
 };

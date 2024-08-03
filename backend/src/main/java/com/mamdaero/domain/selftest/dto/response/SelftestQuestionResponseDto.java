@@ -1,4 +1,4 @@
-package com.mamdaero.domain.selftest.dto;
+package com.mamdaero.domain.selftest.dto.response;
 
 import com.mamdaero.domain.selftest.entity.SelftestQuestion;
 import lombok.Builder;

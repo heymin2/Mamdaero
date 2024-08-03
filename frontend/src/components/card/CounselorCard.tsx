@@ -3,7 +3,7 @@ import DefaultProfile from '@/assets/DefaultProfile.jpg';
 import { FaStar } from 'react-icons/fa6';
 
 interface CounselorCardProps {
-  counselorID: string;
+  counselorId: string;
   counselorName: string;
   counselorIntro: string;
   counselorImage?: string; // 이미지가 선택적이라면 optional로 설정
@@ -11,7 +11,7 @@ interface CounselorCardProps {
   reviewCount: number;
 }
 const CounselorCard: React.FC<CounselorCardProps> = ({
-  counselorID,
+  counselorId,
   counselorName,
   counselorIntro,
   counselorImage = DefaultProfile, // 기본 이미지를 제공
@@ -32,7 +32,7 @@ const CounselorCard: React.FC<CounselorCardProps> = ({
           </div>
           <div className="text-md mt-3">{counselorIntro}</div>
           <div className="mt-auto transition-transform transform hover:-translate-y-1">
-            <Link to={`/counselor/${counselorID}`} className="text-orange-400 font-bold ">
+            <Link to={`/counselor/${counselorId}`} className="text-orange-400 font-bold ">
               상담사 프로필 보기
             </Link>
           </div>

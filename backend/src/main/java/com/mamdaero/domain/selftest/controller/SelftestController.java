@@ -1,14 +1,14 @@
 package com.mamdaero.domain.selftest.controller;
 
-import com.mamdaero.domain.selftest.dto.SelftestQuestionResponseDto;
-import com.mamdaero.domain.selftest.dto.SelftestResponseDto;
+import com.mamdaero.domain.selftest.dto.request.TestRequestDto;
+import com.mamdaero.domain.selftest.dto.response.SelftestQuestionResponseDto;
+import com.mamdaero.domain.selftest.dto.response.SelftestResponseDto;
+import com.mamdaero.domain.selftest.entity.MemberSelftestList;
 import com.mamdaero.domain.selftest.service.SelftestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,5 +32,13 @@ public class SelftestController {
         List<SelftestQuestionResponseDto> selftestQuestionList = selftestService.getQuestionsWithOptionsByTestId(testId);
 
         return new ResponseEntity<>(selftestQuestionList, HttpStatus.OK);
+    }
+
+    @PostMapping("/m/selftest/{testId}")
+    public ResponseEntity<MemberSelftestList> createByTestId(@PathVariable(name = "testId") Integer testId, @RequestBody TestRequestDto requestDto) {
+
+        selftestService.createByTestId(testId, requestDto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

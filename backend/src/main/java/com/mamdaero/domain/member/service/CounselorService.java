@@ -26,6 +26,10 @@ public class CounselorService {
         return counselorRepository.findAll();
     }
 
+    public List<Counselor> findAllByName(String name){
+        return counselorRepository.findAllByNameContains(name);
+    }
+
     // Todo id 말고 토큰으로 본인 찾기 추가
     public Counselor find(final Long id){
         Optional<Counselor> optionalCounselor = counselorRepository.findById(id);
