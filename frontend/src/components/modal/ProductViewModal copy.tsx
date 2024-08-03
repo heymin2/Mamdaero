@@ -1,4 +1,4 @@
-// 현재(24.08.02)기준 사용 X
+// 현재(24.08.02)기준 사용 X LJB
 import React from 'react';
 import ModalWrapper from '@/components/modal/ModalWrapper';
 
