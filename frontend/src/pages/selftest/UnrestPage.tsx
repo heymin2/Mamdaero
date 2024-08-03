@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/SquareButton';
+import TestBar from '@/components/navigation/TestBar';
+import { FaCheck } from 'react-icons/fa';
 
 interface Question {
   selftest_questionid: number;
@@ -8,16 +10,30 @@ interface Question {
   options: number[];
 }
 
+interface SelfTest {
+  selftest_id: number;
+  selftest_name: string;
+  selftest_info: string;
+  questions: Question[];
+}
+
+const answerLabels = ['전혀 그렇지 않다', '조금 그렇다', '보통 그렇다', '대단히 그렇다'];
+
 const UnrestPage: React.FC = () => {
+  const [selfTest, setSelfTest] = useState<SelfTest | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/unrest.json')
+    fetch('/selftests.json')
       .then(response => response.json())
-      .then(data => setQuestions(data.questions))
+      .then(data => {
+        const unrestTest = data.selftests.find((test: SelfTest) => test.selftest_name === 'unrest');
+        setSelfTest(unrestTest);
+        setQuestions(unrestTest.questions);
+      })
       .catch(error => console.error('Error fetching questions:', error));
   }, []);
 
@@ -31,48 +47,88 @@ const UnrestPage: React.FC = () => {
       return;
     }
     const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
+    // 답변 데이터를 구조화하여 출력
+    const detailedAnswers = Object.entries(answers).map(([questionId, score]) => {
+      return {
+        selftest_id: selfTest?.selftest_id,
+        question_id: Number(questionId),
+        answer: score,
+      };
+    });
+
+    console.log('Detailed Answers:', detailedAnswers);
     navigate('/selftest/unrest/result', { state: { totalScore } });
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen w-full py-16">
-      <div className="w-full max-w-6xl px-4 mb-12">
-        <div className="flex justify-between items-center ml-5 mr-5">
-          <div className="flex space-x-5 items-center">
-            <div className="font-bold text-4xl text-orange-500">불안 자가 심리 검진</div>
-            <div>맘대로 자가검진을 통해 내 마음건강을 측정해보세요!</div>
-          </div>
-          <button
-            className="text-gray-600 hover:text-gray-800"
-            onClick={() => window.history.back()}
-          >
-            뒤로가기
-          </button>
-        </div>
-        <div className="border-t-2 border-gray-300 mt-2"></div>
+    <div>
+      {/* 제목 */}
+      <TestBar
+        title="불안"
+        subtitle="위험요소가 다 사라졌지만 불안하신가요?"
+        showBackButton={true}
+      />
+      {/* 검사테이블 */}
+      <div className="flex text-sm space-x-5 m-12 justify-center">
+        <FaCheck />
+        <div>{selfTest ? selfTest.selftest_info : '정보를 불러오는 중...'}</div>
       </div>
-      {questions.map(question => (
-        <div key={question.selftest_questionid} className="mb-4 w-full max-w-md px-4">
-          <p>{question.selftest_question_detail}</p>
-          <div className="flex space-x-4">
-            {question.options.map((option, index) => (
-              <label key={index}>
-                <input
-                  type="radio"
-                  name={`question-${question.selftest_questionid}`}
-                  value={option}
-                  onChange={() => handleAnswerChange(question.selftest_questionid, option)}
-                  className="mr-2"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
+      <div className="flex justify-center w-full">
+        <div className="w-full max-w-4xl px-4 ">
+          <table className="table w-full rounded-lg overflow-hidden">
+            <thead>
+              <tr>
+                <th className="bg-orange-300 text-orange-300-content text-base rounded-tl-lg text-center align-middle">
+                  번호
+                </th>
+                <th className="bg-orange-300 text-orange-300-content text-base text-center align-middle">
+                  질문
+                </th>
+                {answerLabels.map((label, index) => (
+                  <th
+                    key={index}
+                    className={`bg-orange-300 text-orange-300-content text-center text-base ${
+                      index === answerLabels.length - 1 ? 'rounded-tr-lg' : ''
+                    }`}
+                  >
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {questions.map((question, qIndex) => (
+                <tr
+                  key={question.selftest_questionid}
+                  className={`${
+                    qIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                  } text-center align-middle`}
+                >
+                  <td className="font-bold text-base rounded-l">{qIndex + 1}</td>
+                  <td className="text-base text-left">{question.selftest_question_detail}</td>
+                  {question.options.map((option, index) => (
+                    <td
+                      key={index}
+                      className={`text-center ${index === question.options.length - 1 ? 'rounded-r' : ''}`}
+                    >
+                      <input
+                        type="radio"
+                        name={`question-${question.selftest_questionid}`}
+                        value={option}
+                        onChange={() => handleAnswerChange(question.selftest_questionid, option)}
+                        className="radio radio-primary"
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      ))}
-      <Button onClick={handleSubmit} label="다음가기" size="sm" user="client" />
+      </div>
+      {/* 경고창 */}
       {alertMessage && (
-        <div role="alert" className="alert alert-warning">
+        <div role="alert" className="alert alert-warning mt-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 shrink-0 stroke-current"
@@ -89,6 +145,10 @@ const UnrestPage: React.FC = () => {
           <span>{alertMessage}</span>
         </div>
       )}
+      {/* 다음버튼 */}
+      <div className="flex justify-center w-full mt-8">
+        <Button onClick={handleSubmit} label="결과보기" size="md" user="client" />
+      </div>
     </div>
   );
 };

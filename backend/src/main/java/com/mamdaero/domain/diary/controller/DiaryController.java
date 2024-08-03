@@ -4,8 +4,6 @@ import com.mamdaero.domain.diary.dto.request.DiaryRequestDto;
 import com.mamdaero.domain.diary.dto.response.DiaryResponseDto;
 import com.mamdaero.domain.diary.entity.Diary;
 import com.mamdaero.domain.diary.service.DiaryService;
-import com.mamdaero.domain.member.entity.Member;
-import com.mamdaero.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,37 +13,42 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/diary")
 public class DiaryController {
 
     private final DiaryService diaryService;
-    private final MemberRepository memberRepository;
 
-    @GetMapping("")
+    @GetMapping("/m/diary")
     public ResponseEntity<List<DiaryResponseDto>> findAllByMember() {
-        Member member = memberRepository.findById(1L).get();
 
-        List<DiaryResponseDto> diaryList = diaryService.findAllByMember(member);
+        List<DiaryResponseDto> diaryList = diaryService.findAllByMember();
 
         return new ResponseEntity<>(diaryList, HttpStatus.OK);
     }
 
-    @GetMapping("/{diaryId}")
+    @GetMapping("/c/diary")
+    public ResponseEntity<List<DiaryResponseDto>> findAllByDiary() {
+
+        List<DiaryResponseDto> diaryList = diaryService.findAllByMemberAndIsOpen(true);
+
+        return new ResponseEntity<>(diaryList, HttpStatus.OK);
+    }
+
+    @GetMapping("/m/diary/{diaryId}")
     public ResponseEntity<DiaryResponseDto> findById(@PathVariable(name = "diaryId") Long diaryId) {
         DiaryResponseDto diary = diaryService.findById(diaryId);
 
         return new ResponseEntity<>(diary, HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping("/m/diary")
     public ResponseEntity<Diary> create(@RequestBody DiaryRequestDto requestDto) {
-        Member member = memberRepository.findById(1L).get();
-        diaryService.create(requestDto, member);
+
+        diaryService.create(requestDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PatchMapping("{diaryId}")
+    @PatchMapping("/m/diary/{diaryId}")
     public ResponseEntity<Diary> update(@PathVariable(name = "diaryId") Long diaryId, @RequestBody DiaryRequestDto requestDto) {
 
         diaryService.update(diaryId, requestDto);
@@ -53,7 +56,7 @@ public class DiaryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{diaryId}")
+    @DeleteMapping("/m/diary/{diaryId}")
     public ResponseEntity<Diary> delete(@PathVariable(name = "diaryId") Long diaryId) {
 
         diaryService.delete(diaryId);

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -23,8 +24,9 @@ public class BoardDetailResponse {
     private Integer likeCount;
     private Boolean isLike;
     private Boolean isMine;
+    private List<String> file;
 
-    public static BoardDetailResponse of(CounselorBoard board, String writer, int likeCount, boolean isLike, boolean isMine) {
+    public static BoardDetailResponse of(CounselorBoard board, String writer, int likeCount, boolean isLike, boolean isMine, List<String> file) {
         return BoardDetailResponse.builder()
                 .id(board.getId())
                 .writer(writer)
@@ -35,6 +37,7 @@ public class BoardDetailResponse {
                 .likeCount(likeCount)
                 .isLike(isLike)
                 .isMine(isMine)
+                .file(file)
                 .build();
     }
 }
