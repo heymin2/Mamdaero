@@ -5,7 +5,7 @@ import defaultImage from '@/assets/DefaultProfile.jpg';
 import RoundedButton from '@/components/button/RoundedButton';
 import Editor from '@/components/Editor';
 
-const CounselorEditInfomationPage = () => {
+const CounselorEditInformationPage = () => {
   const navigate = useNavigate();
   // style variants
   const profileLabel = 'ml-2 text-md font-bold ';
@@ -110,4 +110,4 @@ const CounselorEditInfomationPage = () => {
     </>
   );
 };
-export default CounselorEditInfomationPage;
+export default CounselorEditInformationPage;
