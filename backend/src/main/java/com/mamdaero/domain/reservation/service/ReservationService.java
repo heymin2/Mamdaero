@@ -8,6 +8,7 @@ import com.mamdaero.domain.reservation.entity.Reservation;
 import com.mamdaero.domain.reservation.entity.ReservationSituation;
 import com.mamdaero.domain.reservation.entity.ReservationSymptom;
 import com.mamdaero.domain.reservation.exception.CanNotMakeReservationException;
+import com.mamdaero.domain.reservation.exception.ReservationNotFoundException;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
 import com.mamdaero.domain.work_schedule.exception.WorkTimeNotfoundException;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -76,5 +78,25 @@ public class ReservationService {
         }
 
         reservationRepository.save(reservation);
+    }
+
+    @Transactional
+    public void cancelReservation(Long reservationId) {
+        Optional<Reservation> findReservation = reservationRepository.findById(reservationId);
+
+        if (findReservation.isEmpty()) {
+            throw new ReservationNotFoundException();
+        }
+
+        Reservation reservation = findReservation.get();
+
+        WorkTime workTime = workTimeRepository.findById(reservation.getWorkTimeId()).get();
+
+
+        // TODO: 토큰 확인해서 내담자인지 상담사 인지 확인 후  cancel() 메소드의 인자로 넣기
+        reservation.cancel("내담자");
+        workTime.cancelReserve();
+
+        reservationRepository.deleteById(reservationId);
     }
 }

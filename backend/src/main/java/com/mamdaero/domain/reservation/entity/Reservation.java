@@ -65,6 +65,17 @@ public class Reservation extends BaseEntity {
         this.symptoms = symptoms;
     }
 
+    /**
+     * 예약 취소
+     *
+     * @param canceler 내담자, 상담사
+     */
+    public void cancel(String canceler) {
+        this.status = "예약취소";
+        this.canceler = canceler;
+        this.canceledAt = LocalDateTime.now();
+    }
+
     public void addSymptom(ReservationSymptom symptom) {
         symptoms.add(symptom);
         symptom.setReservation(this);
