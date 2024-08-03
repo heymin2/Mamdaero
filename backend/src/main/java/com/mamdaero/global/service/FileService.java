@@ -1,5 +1,6 @@
 package com.mamdaero.global.service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -47,7 +48,7 @@ public class FileService {
     }
 
     private String upload(MultipartFile multipartFile, String dirName, Long memberId) throws IOException {
-        String fileName = dirName + memberId + "/" + UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
+        String fileName = dirName + memberId + "/" + UUID.randomUUID();
         try (InputStream inputStream = multipartFile.getInputStream()) {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(multipartFile.getSize());
@@ -58,5 +59,17 @@ public class FileService {
         System.out.println(amazonS3.getUrl(bucket, fileName).toString());
 
         return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    public void delete(String fileName) throws IOException {
+        try {
+            System.out.println("삭제할 파일 이름" + fileName);
+            String splitStr = ".com/";
+            String file = fileName.substring(fileName.lastIndexOf(splitStr) + splitStr.length());
+            System.out.println("삭제할 파일 이름2" + file);
+            amazonS3.deleteObject(bucket, file);
+        } catch (SdkClientException e) {
+            throw new IOException("Error delete file from S3", e);
+        }
     }
 }

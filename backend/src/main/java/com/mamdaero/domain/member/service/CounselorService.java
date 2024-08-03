@@ -74,7 +74,7 @@ public class CounselorService {
                 counselor.updateImg(fileService.saveProfile(file, memberId));
                 return;
             }
-            // 파일 삭제 후 추가하는 기능 추가해야함
+            fileService.delete(counselor.getImg());
             counselor.updateImg(fileService.saveProfile(file, memberId));
         }
     }
