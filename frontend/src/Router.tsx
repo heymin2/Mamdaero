@@ -18,6 +18,7 @@ import BipolarPage from '@/pages/selftest/BipolarPage';
 import BipolarResultPage from '@/pages/selftest/BipolarResultPage';
 import CounselorListPage from '@/pages/counselor/CounselorListPage';
 import CounselorDetailPage from '@/pages/counselor/CounselorDetailPage';
+import CounselorReservePage from '@/pages/counselor/CounselorReservePage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
 import CommunityDetailPage from '@/pages/community/CommunityDetailPage';
 import CommunityWritePostPage from '@/pages/community/CommunityWritePostPage';
@@ -43,6 +44,7 @@ const Router = () => (
     {/* Counselor Routes */}
     <Route path="/counselor" element={<CounselorListPage />} />
     <Route path="/counselor/:counselorId" element={<CounselorDetailPage />} />
+    <Route path="/counselor/:counselorId/reservation" element={<CounselorReservePage />} />
     {/* Self Test Routes */}
     <Route path="/selftest" element={<SelfTestListPage />} />
     <Route path="/selftest/unrest" element={<UnrestPage />} />
