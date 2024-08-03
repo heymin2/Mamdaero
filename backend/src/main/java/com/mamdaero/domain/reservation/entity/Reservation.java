@@ -8,12 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "reservation")
 public class Reservation extends BaseEntity {
     @Id
@@ -30,8 +30,6 @@ public class Reservation extends BaseEntity {
     private String itemName;
     @Column(name = "item_fee", nullable = false)
     private Integer itemFee;
-    @Column(name = "requested_at", nullable = false)
-    private LocalDateTime requestedAt;
     @Column(name = "canceler")
     private String canceler;
     @Column(name = "canceled_at")
@@ -44,4 +42,47 @@ public class Reservation extends BaseEntity {
 
     @Column(name = "is_delete", nullable = false)
     private Boolean isDelete;
+
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservationSymptom> symptoms;
+
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReservationSituation> situations;
+
+
+    @Builder
+    public Reservation(Long memberId, Long counselorItemId, Long workTimeId, String itemName, Integer itemFee, String requirement, Boolean isDiaryShared, List<ReservationSituation> situations, List<ReservationSymptom> symptoms) {
+        this.memberId = memberId;
+        this.counselorItemId = counselorItemId;
+        this.workTimeId = workTimeId;
+        this.itemName = itemName;
+        this.itemFee = itemFee;
+        this.requirement = requirement;
+        this.isDiaryShared = isDiaryShared;
+        this.status = "예약완료";
+        this.isDelete = false;
+        this.situations = situations;
+        this.symptoms = symptoms;
+    }
+
+    public void addSymptom(ReservationSymptom symptom) {
+        symptoms.add(symptom);
+        symptom.setReservation(this);
+    }
+
+
+    public void removeSymptom(ReservationSymptom symptom) {
+        symptoms.remove(symptom);
+        symptom.setReservation(null);
+    }
+
+    public void addSituation(ReservationSituation situation) {
+        situations.add(situation);
+        situation.setReservation(this);
+    }
+
+    public void removeSituation(ReservationSituation situation) {
+        situations.remove(situation);
+        situation.setReservation(null);
+    }
 }
