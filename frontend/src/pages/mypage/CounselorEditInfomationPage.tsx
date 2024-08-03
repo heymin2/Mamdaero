@@ -5,23 +5,25 @@ import defaultImage from '@/assets/DefaultProfile.jpg';
 import RoundedButton from '@/components/button/RoundedButton';
 import Editor from '@/components/Editor';
 
-const CounselorEditProfile = () => {
+const CounselorEditInfomationPage = () => {
   const navigate = useNavigate();
   // style variants
-  const profileLabel = 'ml-5 text-3xl font-bold ';
-  const profileLabelSpan = 'ml-10 text-base font-normal ';
-  const profileContent =
-    'text-start pt-3 pl-3 w-full min-h-32 bg-white border border-blue-300 rounded-xl ';
-  const fixCss = 'absolute bottom-4 right-4 w-7 h-7';
+  const profileLabel = 'ml-2 text-md font-bold ';
+  const profileLabelSpan = 'ml-2 text-sm font-normal ';
+  const profileContent = 'text-start pt-3 pl-3 w-full bg-white border border-blue-300 rounded-xl ';
+  const fixCss = 'absolute bottom-1 right-1 w-5 h-5';
 
   // methods
-  const changePhoto = () => {
+  const handleChangePhoto = () => {
     console.log('사진 변경');
   };
-  const deletePhoto = () => {
+  const handleDeletePhoto = () => {
     console.log('사진 삭제');
   };
-
+  //handler
+  const handleSaveProfile = () => {
+    console.log('저장하기');
+  };
   // 공통 유틸리티 함수로 clearContent 정의
   const clearContent = (setter: React.Dispatch<React.SetStateAction<string>>) => {
     console.log('내용 비우기');
@@ -32,26 +34,25 @@ const CounselorEditProfile = () => {
   };
   // 내부 state들
   const [introduction, setIntroduction] = useState('');
-  const [certificate, setCertificate] = useState('');
   const [address, setAddress] = useState('');
   const [detail, setDetail] = useState('');
 
   return (
     <>
-      <header className="flex justify-between py-10">
-        <h1 className="text-black text-5xl font-bold">상담사 프로필 수정</h1>
-        <RoundedButton label=" 뒤로가기" size="lg" onClick={backToList} user="counselor" />
+      <header className="flex justify-between items-center">
+        <h1 className="text-black text-xl font-bold">상담사 조회 정보 수정 페이지</h1>
+        <RoundedButton label=" 뒤로가기" size="md" onClick={backToList} user="counselor" />
       </header>
       <div className="divider"></div>
       <main className="flex gap-10 justify-around">
         {/* 상담사 프로필 내용 */}
-        <section className="flex-grow-[6.5] flex flex-col gap-10 p-10 bg-blue-50 border border-blue-200 rounded-xl">
+        <section className="flex-grow-[6.5] flex flex-col gap-3 p-10 bg-blue-50 border border-blue-200 rounded-xl">
           <>
             <h1 className={profileLabel}>
               한 줄 소개<span className={profileLabelSpan}>30자 이내</span>
             </h1>
             <div className="relative flex-1">
-              <textarea
+              <input
                 className={profileContent}
                 value={introduction}
                 onChange={e => setIntroduction(e.target.value)}
@@ -60,18 +61,7 @@ const CounselorEditProfile = () => {
             </div>
           </>
           <>
-            <h1 className={profileLabel}>자격증</h1>
-            <div className="relative flex-1">
-              <textarea
-                className={profileContent}
-                value={certificate}
-                onChange={e => setCertificate(e.target.value)}
-              />
-              <FiX className={fixCss} onClick={() => clearContent(setCertificate)} />
-            </div>
-          </>
-          <>
-            <h1 className={profileLabel}>주소</h1>
+            <h1 className={profileLabel}>상담소 주소</h1>
             <div className="relative flex-1">
               <textarea
                 className={profileContent}
@@ -94,17 +84,30 @@ const CounselorEditProfile = () => {
               <FiX className={fixCss} onClick={() => clearContent(setDetail)} />
             </div>
           </>
+          <>
+            <RoundedButton
+              label="저장하기"
+              size="full"
+              user="counselor"
+              onClick={handleSaveProfile}
+            />
+          </>
         </section>
         {/* 상담사 사진 */}
         <section className="flex-grow-[1.5] py-10 align-center bg-white h-fit rounded-badge border">
           <img src={defaultImage} alt="사진" className="mx-auto" />
           <div className="flex justify-evenly pt-3">
-            <RoundedButton label="사진 변경" user="counselor" onClick={changePhoto} size="md" />
-            <RoundedButton label="삭제" user="counselor" onClick={deletePhoto} size="md" />
+            <RoundedButton
+              label="사진 변경"
+              user="counselor"
+              onClick={handleChangePhoto}
+              size="md"
+            />
+            <RoundedButton label="삭제" user="counselor" onClick={handleDeletePhoto} size="md" />
           </div>
         </section>
       </main>
     </>
   );
 };
-export default CounselorEditProfile;
+export default CounselorEditInfomationPage;
