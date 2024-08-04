@@ -40,6 +40,19 @@ const CommunityDetailPage: React.FC = () => {
         <CommunityCommentCard />
         <CommunityWriteCommentCard />
       </div>
+      {/* {postDetail && (
+        <>
+          <CommunityPostCard postDetail={postDetail} />
+          <div className="border-y-2 border-orange-300 px-10 py-2 mt-3">
+            <span className="text-orange-500 font-bold text-xl">{comments.length}</span>
+            <span className="font-bold text-base">개의 댓글이 있습니다.</span>
+          </div>
+          {comments.map(comment => (
+            <CommunityCommentCard key={comment.id} commentDetail={comment} />
+          ))}
+          <CommunityWriteCommentCard />
+        </>
+      )} */}
     </div>
   );
 };
