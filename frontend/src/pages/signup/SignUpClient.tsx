@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import SignUpClientInput from '@/components/input/SignUpClientInput';
-import SignUpClientComplete from '@/pages/signup/SignUpClientComplete';
+import SignUpClientCompleteCard from '@/components/card/signup/SignUpClientCompleteCard';
 import ProgressBar from '@/components/navigation/ClientProgressBar';
 import SignUpBar from '@/components/navigation/SignUpBar';
 
@@ -25,7 +25,7 @@ const SignUpClient: React.FC = () => {
           <ProgressBar currentStep={currentStep} />
           <Routes>
             <Route path="/" element={<SignUpClientInput />} />
-            <Route path="complete" element={<SignUpClientComplete />} />
+            <Route path="complete" element={<SignUpClientCompleteCard />} />
           </Routes>
         </div>
       </div>
