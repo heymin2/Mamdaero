@@ -11,8 +11,12 @@ import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.notice.exception.CommentNotFoundException;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
+import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,17 +32,34 @@ public class BoardCommentService {
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
 
-    public List<BoardCommentResponse> findAll(Long id) {
-        List<CounselorBoardComment> comments = boardCommentRepository.findByBoardId(id);
+    public Pagination<BoardCommentResponse> findAll(int page, int size, Long id) {
+        // 토큰 확인 후 본인인지 확인
+        Long memberId = 1L;
 
-        return comments.stream()
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 페이지네이션을 적용하여 댓글을 조회합니다.
+        Page<CounselorBoardComment> boardPage = boardCommentRepository.findByBoardId(id, pageable);
+
+        List<BoardCommentResponse> commentResponses = boardPage.getContent().stream()
                 .map(comment -> {
                     String writer = memberRepository.findById(comment.getMemberId())
                             .orElseThrow(CounselorNotFoundException::new)
                             .getName();
-                    return BoardCommentResponse.of(comment, writer);
+
+                    boolean isMine = boardCommentRepository.existsByIdAndMemberId(comment.getId(), memberId);
+
+                    return BoardCommentResponse.of(comment, writer, isMine);
                 })
                 .collect(Collectors.toList());
+
+        return new Pagination<>(
+                commentResponses,
+                boardPage.getNumber() + 1, // 현재 페이지 (0부터 시작하므로 +1)
+                boardPage.getTotalPages(),
+                boardPage.getSize(),
+                (int) boardPage.getTotalElements()
+        );
     }
 
     @Transactional
@@ -54,7 +75,7 @@ public class BoardCommentService {
     }
 
     @Transactional
-    public void update(Long boardId, Long commentId, BoardCommentRequest request) {
+    public BoardCommentResponse update(Long boardId, Long commentId, BoardCommentRequest request) {
         // 토큰 확인 후 본인인지 확인
         Long memberId = 1L;
         
@@ -62,7 +83,14 @@ public class BoardCommentService {
                 .orElseThrow(CommentNotFoundException::new);
 
         comment.updateComment(request.getComment());
-        boardCommentRepository.save(comment);
+
+        String writer = memberRepository.findById(comment.getMemberId())
+                .orElseThrow(CounselorNotFoundException::new)
+                .getName();
+
+        boolean isMine = boardCommentRepository.existsByIdAndMemberId(comment.getId(), memberId);
+
+        return BoardCommentResponse.of(comment, writer, isMine);
     }
 
     @Transactional
