@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CounselorCard from '@/components/card/CounselorCard';
+import CounselorProfileCard from '@/components/card/CounselorProfileCard';
 import AlignDropdown from '@/components/dropdown/AlignDropdown';
 import { IoIosSearch } from 'react-icons/io';
 
@@ -46,21 +46,21 @@ const CounselorListPage: React.FC = () => {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-6">
-        <CounselorCard
+        <CounselorProfileCard
           counselorId="1234"
           counselorName="박민준"
           counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."
           reviewAvgScore={4.5}
           reviewCount={12}
         />
-        <CounselorCard
+        <CounselorProfileCard
           counselorId="1234"
           counselorName="박민준"
           counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."
           reviewAvgScore={4.5}
           reviewCount={12}
         />
-        <CounselorCard
+        <CounselorProfileCard
           counselorId="1234"
           counselorName="박민준"
           counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."

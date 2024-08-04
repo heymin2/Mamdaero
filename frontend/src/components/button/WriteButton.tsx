@@ -13,9 +13,9 @@ const WriteButton = ({ onClick, color }: ButtonProps) => {
   };
   return (
     <div>
-      <button onClick={onClick} className={`rounded-md ${colorClasses[color]}`}>
-        <div className="flex font-bold text-sm items-center my-1 mx-3 gap-2">
-          <FiEdit3 size={18} />
+      <button onClick={onClick} className={`h-9 rounded-md ${colorClasses[color]}`}>
+        <div className="flex font-bold text-md items-center my-1 mx-3 gap-2">
+          <FiEdit3 size={20} />
           글쓰기
         </div>
       </button>
