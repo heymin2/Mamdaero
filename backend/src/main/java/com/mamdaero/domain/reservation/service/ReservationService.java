@@ -13,12 +13,15 @@ import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
 import com.mamdaero.domain.work_schedule.exception.WorkTimeNotfoundException;
 import com.mamdaero.domain.work_schedule.repository.WorkTimeRepository;
+import com.mamdaero.global.dto.Pagination;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -102,9 +105,11 @@ public class ReservationService {
         reservationRepository.deleteById(reservationId);
     }
 
-    public List<ReservationListResponse> getReservationList() {
+    public Pagination<ReservationListResponse> getReservationList(int page, int size) {
         // TODO: 토큰에서 호출한사람 정보 가져와서 바꾸기
         String caller = "상담사";
+
+        Pageable pageable = PageRequest.of(page, size);
 
         if ("내담자".equals(caller)) {
             Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberId(1L, pageable);
@@ -124,7 +129,7 @@ public class ReservationService {
                     reservationPage.getTotalPages(),
                     reservationPage.getSize(),
                     (int) reservationPage.getTotalElements()
-                    
+
             );
         } else {
             throw new RuntimeException("예약 목록 조회 권한이 없습니다.");
