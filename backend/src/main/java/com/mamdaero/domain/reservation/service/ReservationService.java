@@ -13,15 +13,12 @@ import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
 import com.mamdaero.domain.work_schedule.exception.WorkTimeNotfoundException;
 import com.mamdaero.domain.work_schedule.repository.WorkTimeRepository;
-import com.mamdaero.global.dto.Pagination;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -105,8 +102,7 @@ public class ReservationService {
         reservationRepository.deleteById(reservationId);
     }
 
-    public Pagination<ReservationListResponse> getReservationList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public List<ReservationListResponse> getReservationList() {
         // TODO: 토큰에서 호출한사람 정보 가져와서 바꾸기
         String caller = "상담사";
 
