@@ -12,7 +12,7 @@ const SignUpChoose: React.FC = () => {
         <div className="w-full flex justify-center mt-20">
           <div className="flex justify-center space-x-8 max-w-6xl w-full px-4">
             <SignUpCard
-              user="client"
+              color="orange"
               icon="🙎‍♂️"
               title="일반 회원 등록"
               description="일반 회원 등록"
@@ -20,7 +20,7 @@ const SignUpChoose: React.FC = () => {
               link="/signup/client"
             />
             <SignUpCard
-              user="counselor"
+              color="blue"
               icon="👨‍💼"
               title="상담사 회원 등록"
               description="상담사 회원 등록"

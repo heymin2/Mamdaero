@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import SquareButton from '@/components/button/SquareButton.tsx';
+import Button from '@/components/button/Button.tsx';
 
 interface SignUpCardProps {
-  user: 'client' | 'counselor';
+  color: 'orange' | 'blue';
   icon: string;
   title: string;
   description: string;
@@ -12,7 +12,7 @@ interface SignUpCardProps {
 }
 
 const SignUpCard: React.FC<SignUpCardProps> = ({
-  user,
+  color,
   icon,
   title,
   description,
@@ -27,7 +27,7 @@ const SignUpCard: React.FC<SignUpCardProps> = ({
       <h2 className="text-xl font-semibold mb-2">{title}</h2>
       <p className="mb-4">{description}</p>
       <Link to={link}>
-        <SquareButton label={buttonText} onClick={() => {}} size="mdlg" user={user} />
+        <Button label={buttonText} onClick={() => {}} size="회원가입" color={color} />
       </Link>
     </div>
   );
