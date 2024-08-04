@@ -24,5 +24,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
             "WHERE ci.counselorId = :counselorId")
     Page<ReservationListResponse> findByCounselorId(@Param("counselorId") Long counselorId, Pageable pageable);
+
+
 }
 

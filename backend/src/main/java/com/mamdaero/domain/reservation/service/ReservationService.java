@@ -118,6 +118,7 @@ public class ReservationService {
                     reservationPage.getTotalPages(),
                     reservationPage.getSize(),
                     (int) reservationPage.getTotalElements()
+
             );
         } else if ("상담사".equals(caller)) {
             Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorId(16L, pageable);
@@ -127,6 +128,7 @@ public class ReservationService {
                     reservationPage.getTotalPages(),
                     reservationPage.getSize(),
                     (int) reservationPage.getTotalElements()
+                    
             );
         } else {
             throw new RuntimeException("예약 목록 조회 권한이 없습니다.");
