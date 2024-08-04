@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '@/components/button/Button';
+import Button from '@/components/button/SquareButton';
 import TestBar from '@/components/navigation/TestBar';
 import { FaCheck } from 'react-icons/fa';
 
@@ -153,7 +153,7 @@ const PTSDPage: React.FC = () => {
       )}
       {/* 다음버튼 */}
       <div className="flex justify-center w-full mt-8">
-        <Button onClick={handleSubmit} label="결과보기" color="orange" />
+        <Button onClick={handleSubmit} label="결과보기" size="md" user="client" />
       </div>
     </div>
   );

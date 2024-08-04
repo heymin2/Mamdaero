@@ -12,16 +12,9 @@ export default {
       width: {
         '1.5/12': '12.5%',
       },
-      scrollbar: {
-        hide: {
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
-        },
-      },
     },
   },
-  plugins: [require('daisyui'), require('tailwind-scrollbar')],
+  plugins: [require('daisyui')],
   daisyui: {
     themes: [
       {

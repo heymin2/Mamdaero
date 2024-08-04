@@ -1,7 +1,8 @@
 import DefaultProfile from '@/assets/DefaultProfile.jpg';
 import ReviewCard from '@/components/card/ReviewCard';
-import Button from '@/components/button/Button';
-import { useNavigate, useParams } from 'react-router-dom';
+import SquareButton from '@/components/button/SquareButton';
+import RoundedButton from '@/components/button/RoundedButton';
+import { useNavigate } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaStar } from 'react-icons/fa6';
 
@@ -30,11 +31,10 @@ const CounselorDetailPage = () => {
     ' 상담을 통해 현재의 어려움을 다른 관점으로 바라볼 수 있게 되기도 하고, 문제를 다룰 수 있는 내적인 힘이 생기기도 한답니다. 왜냐하면 머릿속에서 과거와 현재의 경험, 여러 감정들이 서로 복잡하게 엉켜 있어 명료하게 바라볼 수 없었던 것들이 상담 과정에서 하나씩 이해되고 정리되며 어려웠던 감정은 치유될 수 있기 때문이지요. ';
   const profileImage = DefaultProfile;
   const reviewCount = 5;
-  const { counselorId } = useParams<{ counselorId: string }>();
   return (
     <div className="my-3 mx-24">
       <div className="mb-3">
-        <Button
+        <RoundedButton
           label={
             <span className="flex items-center ms-2">
               <IoIosArrowBack />
@@ -43,9 +43,8 @@ const CounselorDetailPage = () => {
           }
           onClick={backToList}
           size="상담사목록보기"
-          color="orange"
-          textSize="sm"
-        ></Button>
+          user="client"
+        ></RoundedButton>
       </div>
       <div className="grid grid-cols-4">
         {/* 왼쪽 부분 (상담사 소개) */}
@@ -95,15 +94,12 @@ const CounselorDetailPage = () => {
               </div>
             </div>
             <div>
-              <Button
+              <SquareButton
                 label="예약하기"
-                onClick={() => {
-                  navigate(`/counselor/${counselorId}/reservation`);
-                }}
+                onClick={backToList}
                 size="예약하기"
-                color="orange"
-                textSize="xl"
-              ></Button>
+                user="client"
+              ></SquareButton>
             </div>
           </div>
         </div>

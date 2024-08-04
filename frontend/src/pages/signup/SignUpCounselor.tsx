@@ -2,9 +2,7 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import SignUpCounselorInput from '@/components/input/SignUpCounselorInput';
 import SignUpCounselorInfo from '@/components/input/SignUpCounselorInfo';
-import SignUpCounselorCompleteCard from '@/components/card/signup/SignUpCounselorCompleteCard';
-import ProgressBar from '@/components/navigation/CounselorProgressBar';
-import SignUpBar from '@/components/navigation/SignUpBar';
+import ProgressBar from '@/components/navigation/ProgressBar';
 
 const SignUpCounselor: React.FC = () => {
   const location = useLocation();
@@ -17,22 +15,13 @@ const SignUpCounselor: React.FC = () => {
   }
 
   return (
-    <div>
-      <div className="container space-y-10">
-        <SignUpBar
-          user="counselor"
-          title="상담사"
-          subtitle="맘대로와 함께 마음의 안정을 느껴보세요!"
-        />
-        <div className="flex flex-col w-full items-center">
-          <ProgressBar currentStep={currentStep} />
-          <Routes>
-            <Route path="/" element={<SignUpCounselorInput />} />
-            <Route path="info" element={<SignUpCounselorInfo />} />
-            <Route path="complete" element={<SignUpCounselorCompleteCard />} />
-          </Routes>
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen w-full">
+      <h1 className="text-3xl font-bold mb-8">상담사 회원 가입</h1>
+      <ProgressBar currentStep={currentStep} />
+      <Routes>
+        <Route path="/" element={<SignUpCounselorInput />} />
+        <Route path="info" element={<SignUpCounselorInfo />} />
+      </Routes>
     </div>
   );
 };
