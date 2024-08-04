@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SquareButton from '@/components/button/SquareButton.tsx';
-import Button from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 
 const SignUpCounselorInput: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -97,8 +96,8 @@ const SignUpCounselorInput: React.FC = () => {
             <Button
               label={'인증요청'}
               onClick={handleEmailVerification}
-              size="md"
-              user="counselor"
+              shape="rounded"
+              color="blue"
             />
           </div>
           {emailConfirmation && (
@@ -123,8 +122,8 @@ const SignUpCounselorInput: React.FC = () => {
             <Button
               label={'인증확인'}
               onClick={handleVerificationCode}
-              size="md"
-              user="counselor"
+              shape="rounded"
+              color="blue"
             />
           </div>
           {verificationConfirmation && (
@@ -132,7 +131,7 @@ const SignUpCounselorInput: React.FC = () => {
           )}
         </div>
       </div>
-      <SquareButton onClick={handleNext} size="full" user={'counselor'} label={'다음'} />
+      <Button onClick={handleNext} size="full" color="blue" label={'다음'} />
       {error && (
         <div className="w-full bg-red-200 text-sm text-red-700 p-2 rounded mt-4">{error}</div>
       )}

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import DefaultProfile from '@/assets/DefaultProfile.jpg';
-import SquareButton from '@/components/button/SquareButton';
+import Button from '@/components/button/Button';
 
 interface CounselorSidebarProps {
   username: string;
@@ -59,12 +59,7 @@ const CounselorSidebar: React.FC<CounselorSidebarProps> = ({ username, handleRes
             <div className="collapse-content">
               <p className="mb-4">{product.description}</p>
               <div className="flex justify-center">
-                <SquareButton
-                  label="예약하기"
-                  onClick={handleReservation}
-                  size="md"
-                  user="client"
-                />
+                <Button label="예약하기" onClick={handleReservation} color="orange" />
               </div>
             </div>
           </div>

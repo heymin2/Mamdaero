@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import NavClient from '@/components/navigation/NavClient';
+import NavCounselor from '@/components/navigation/NavCounselor';
 import Router from '@/Router';
 
 const routeBackgroundColors: { [key: string]: string } = {

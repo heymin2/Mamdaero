@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
-import RoundedButton from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 import PasswordChangeModal from '@/components/modal/PasswordChangeModal';
 import counselor from '@/pages/mypage/props/counselor';
 // variants
@@ -163,8 +163,8 @@ const CouselorMyPage: React.FC = () => {
             <li>
               {isEditing ? (
                 <div className="flex justify-center gap-5">
-                  <RoundedButton label="저장" onClick={handleSave} size="md" user="counselor" />
-                  <RoundedButton label="취소" onClick={handleCancel} size="md" user="counselor" />
+                  <Button label="저장" onClick={handleSave} shape="rounded" color="blue" />
+                  <Button label="취소" onClick={handleCancel} shape="rounded" color="blue" />
                 </div>
               ) : null}
             </li>
@@ -173,20 +173,43 @@ const CouselorMyPage: React.FC = () => {
         <section className="flex-grow-[2] flex flex-col justify-evenly items-center">
           <PasswordChangeModal password={currentUser.password} />
           <Link to={'edit'} className="w-1/2">
-            <RoundedButton label="조회 정보 수정" onClick={() => {}} size="lg" user="counselor" />
+            <Button
+              label="조회 정보 수정"
+              onClick={() => {}}
+              size="lg"
+              textSize="xl"
+              color="blue"
+              shape="rounded"
+            />
           </Link>
           <Link to={'product'} className="w-1/2">
-            <RoundedButton label="내 상품 관리" onClick={() => {}} size="lg" user="counselor" />
+            <Button
+              label="내 상품 관리"
+              onClick={() => {}}
+              size="lg"
+              textSize="xl"
+              color="blue"
+              shape="rounded"
+            />
           </Link>
           <Link to={'time'} className="w-1/2">
-            <RoundedButton label="상담 일정 관리" onClick={() => {}} size="lg" user="counselor" />
+            <Button
+              label="상담 일정 관리"
+              onClick={() => {}}
+              size="lg"
+              textSize="xl"
+              color="blue"
+              shape="rounded"
+            />
           </Link>
           <Link to={'exclude'} className="w-1/2">
-            <RoundedButton
+            <Button
               label="근무 예외 시간 관리"
               onClick={() => {}}
               size="lg"
-              user="counselor"
+              textSize="xl"
+              color="blue"
+              shape="rounded"
             />
           </Link>
         </section>

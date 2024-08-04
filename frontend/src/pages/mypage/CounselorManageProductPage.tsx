@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiX } from 'react-icons/fi';
-import Button from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 import ProductViewModal from '@/components/modal/ProductViewModal';
 import ProductCard from '@/components/card/ProductCard';
 import Product from '@/pages/mypage/props/product';
@@ -30,7 +30,7 @@ const CounselorEditProfilePage = () => {
     <>
       <header className="flex justify-between items-center">
         <h1 className="text-black text-xl font-bold">내 상품 관리</h1>
-        <Button label=" 뒤로가기" size="md" onClick={backToList} user="counselor" />
+        <Button label=" 뒤로가기" onClick={backToList} shape="rounded" color="blue" />
       </header>
       <div className="divider"></div>
       <div className="flex flex-wrap justify-around">
@@ -84,7 +84,7 @@ const CounselorEditProfilePage = () => {
               ))}
             </div>
           </div>
-          <Button label="적용하기" user="counselor" onClick={handleApplyProduct} size="md" />
+          <Button label="적용하기" shape="rounded" color="blue" onClick={handleApplyProduct} />
         </div>
       </div>
     </>

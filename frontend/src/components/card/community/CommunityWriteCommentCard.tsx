@@ -1,4 +1,4 @@
-import RegisterBUtton from '@/components/button/RegisterButton';
+import RegisterButton from '@/components/button/RegisterButton';
 
 const CommunityWriteCommentCard = () => {
   const nickname = '하늘의 미소';
@@ -12,7 +12,7 @@ const CommunityWriteCommentCard = () => {
           <textarea placeholder="댓글을 작성해 보세요!" className="bg-zinc-50 w-full h-16" />
         </div>
         <div className="text-right mb-3 mt-2">
-          <RegisterBUtton onClick={onClick} color="orange" />
+          <RegisterButton onClick={onClick} color="orange" />
         </div>
       </div>
     </div>

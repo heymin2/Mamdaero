@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
-import SquareButton from '@/components/button/SquareButton';
+import Button from '@/components/button/Button';
 import client from '@/pages/mypage/props/client';
 import PasswordChangeModal from '@/components/modal/PasswordChangeModal';
 // variants
@@ -163,8 +163,8 @@ const ClientMyPage: React.FC = () => {
             <li>
               {isEditing ? (
                 <div className="flex justify-center gap-5">
-                  <SquareButton label="저장" onClick={handleSave} size="md" user="client" />
-                  <SquareButton label="취소" onClick={handleCancel} size="md" user="client" />
+                  <Button label="저장" onClick={handleSave} color="orange" />
+                  <Button label="취소" onClick={handleCancel} color="orange" />
                 </div>
               ) : null}
             </li>

@@ -1,7 +1,6 @@
 import DefaultProfile from '@/assets/DefaultProfile.jpg';
 import ReviewCard from '@/components/card/ReviewCard';
-import SquareButton from '@/components/button/SquareButton';
-import RoundedButton from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaStar } from 'react-icons/fa6';
@@ -35,7 +34,7 @@ const CounselorDetailPage = () => {
   return (
     <div className="my-3 mx-24">
       <div className="mb-3">
-        <RoundedButton
+        <Button
           label={
             <span className="flex items-center ms-2">
               <IoIosArrowBack />
@@ -44,8 +43,9 @@ const CounselorDetailPage = () => {
           }
           onClick={backToList}
           size="상담사목록보기"
-          user="client"
-        ></RoundedButton>
+          color="orange"
+          textSize="sm"
+        ></Button>
       </div>
       <div className="grid grid-cols-4">
         {/* 왼쪽 부분 (상담사 소개) */}
@@ -95,14 +95,15 @@ const CounselorDetailPage = () => {
               </div>
             </div>
             <div>
-              <SquareButton
+              <Button
                 label="예약하기"
                 onClick={() => {
                   navigate(`/counselor/${counselorId}/reservation`);
                 }}
                 size="예약하기"
-                user="client"
-              ></SquareButton>
+                color="orange"
+                textSize="xl"
+              ></Button>
             </div>
           </div>
         </div>

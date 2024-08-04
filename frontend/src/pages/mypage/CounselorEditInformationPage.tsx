@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiX } from 'react-icons/fi';
 import defaultImage from '@/assets/DefaultProfile.jpg';
-import RoundedButton from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 import Editor from '@/components/Editor';
 
 const CounselorEditInformationPage = () => {
@@ -41,7 +41,7 @@ const CounselorEditInformationPage = () => {
     <>
       <header className="flex justify-between items-center">
         <h1 className="text-black text-xl font-bold">상담사 조회 정보 수정 페이지</h1>
-        <RoundedButton label=" 뒤로가기" size="md" onClick={backToList} user="counselor" />
+        <Button label=" 뒤로가기" shape="rounded" onClick={backToList} color="blue" />
       </header>
       <div className="divider"></div>
       <main className="flex gap-10 justify-around">
@@ -85,11 +85,12 @@ const CounselorEditInformationPage = () => {
             </div>
           </>
           <>
-            <RoundedButton
+            <Button
               label="저장하기"
               size="full"
-              user="counselor"
+              color="blue"
               onClick={handleSaveProfile}
+              textSize="xl"
             />
           </>
         </section>
@@ -97,13 +98,8 @@ const CounselorEditInformationPage = () => {
         <section className="flex-grow-[1.5] py-10 align-center bg-white h-fit rounded-badge border">
           <img src={defaultImage} alt="사진" className="mx-auto" />
           <div className="flex justify-evenly pt-3">
-            <RoundedButton
-              label="사진 변경"
-              user="counselor"
-              onClick={handleChangePhoto}
-              size="md"
-            />
-            <RoundedButton label="삭제" user="counselor" onClick={handleDeletePhoto} size="md" />
+            <Button label="사진 변경" color="blue" shape="rounded" onClick={handleChangePhoto} />
+            <Button label="삭제" color="blue" shape="rounded" onClick={handleDeletePhoto} />
           </div>
         </section>
       </main>

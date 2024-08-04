@@ -1,7 +1,7 @@
 // 현재(24.08.02)기준 사용 X LJB
 import React from 'react';
 import ModalWrapper from '@/components/modal/ModalWrapper';
-import RoundedButton from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 
 interface PasswordChangeModalProps {
   password: string;
@@ -24,7 +24,14 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ password }) =
     // <ModalWrapper isOpen={isOpen} onClose={onClose}>
     <>
       <span className="w-1/2">
-        <RoundedButton label="비밀번호 변경하기" onClick={openModal} size="lg" user="common" />
+        <Button
+          label="비밀번호 변경하기"
+          onClick={openModal}
+          size="lg"
+          shape="rounded"
+          color="gray"
+          textSize="xl"
+        />
       </span>
       {/* modal 창 */}
       <dialog className="modal" id="changePwdModal">
@@ -50,7 +57,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ password }) =
             </form>
             {/* 비밀번호 변경 form */}
             <form method="dialog">
-              <RoundedButton label="비밀번호 변경" onClick={changePwd} size="md" user="counselor" />
+              <Button label="비밀번호 변경" onClick={changePwd} shape="rounded" color="blue" />
             </form>
           </div>
         </div>

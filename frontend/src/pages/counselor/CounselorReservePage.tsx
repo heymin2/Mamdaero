@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
-import RoundedButton from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 import CalendarSection from '@/components/card/counselor/reserve/CalendarSection';
 import TimeSelection from '@/components/card/counselor/reserve/TimeSelection';
 import SituationSelection from '@/components/card/counselor/reserve/SituationSelection';
@@ -67,7 +67,7 @@ const CounselorReservePage: React.FC = () => {
   return (
     <div className="my-3 mx-24">
       <div className="mb-3">
-        <RoundedButton
+        <Button
           label={
             <span className="flex items-center ms-2">
               <IoIosArrowBack />
@@ -76,7 +76,8 @@ const CounselorReservePage: React.FC = () => {
           }
           onClick={backToList}
           size="상담사목록보기"
-          user="client"
+          color="orange"
+          textSize="sm"
         />
       </div>
       <div className="grid grid-cols-4">

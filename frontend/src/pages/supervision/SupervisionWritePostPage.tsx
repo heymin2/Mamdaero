@@ -30,7 +30,7 @@ const SupervisionWritePostPage: React.FC = () => {
     }
 
     try {
-      const response = await axios.post('https://mamdaero.o-r.kr/api/c/counselor-board', {
+      const response = await axios.post('https://mamdaero.o-r.kr/api/a/notice', {
         title,
         content,
       });

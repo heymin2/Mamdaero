@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import CommunityPostCard from '@/components/card/community/CommunityPostCard';
-import RoundedButton from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 import { IoIosArrowBack } from 'react-icons/io';
 import CommunityCommentCard from '@/components/card/community/CommunityCommentCard';
 import CommunityBar from '@/components/navigation/CommunityBar';
@@ -18,7 +18,7 @@ const CommunityDetailPage: React.FC = () => {
       <div className="sticky bg-orange-50 top-0 z-10">
         <div className="flex justify-between items-end ms-16">
           <div className="mb-3">
-            <RoundedButton
+            <Button
               label={
                 <span className="flex items-center ms-2">
                   <IoIosArrowBack />
@@ -27,8 +27,10 @@ const CommunityDetailPage: React.FC = () => {
               }
               onClick={backToList}
               size="상담사목록보기"
-              user="client"
-            ></RoundedButton>
+              color="orange"
+              shape="rounded"
+              textSize="sm"
+            ></Button>
           </div>
           <CommunityBar />
         </div>

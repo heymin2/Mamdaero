@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import SupervisionPostCard from '@/components/card/supervision/SupervisionPostCard';
-import RoundedButton from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 import { IoIosArrowBack } from 'react-icons/io';
 import SupervisionCommentCard from '@/components/card/supervision/SupervisionCommentCard';
 import SupervisionBar from '@/components/navigation/SupervisionBar';
@@ -70,7 +70,7 @@ const SupervisionDetailPage: React.FC = () => {
       <div className="sticky bg-blue-50 top-0 z-10">
         <div className="flex justify-between items-end ms-16">
           <div className="mb-3">
-            <RoundedButton
+            <Button
               label={
                 <span className="flex items-center ms-2">
                   <IoIosArrowBack />
@@ -79,8 +79,10 @@ const SupervisionDetailPage: React.FC = () => {
               }
               onClick={backToList}
               size="상담사목록보기"
-              user="counselor"
-            ></RoundedButton>
+              textSize="sm"
+              shape="rounded"
+              color="blue"
+            ></Button>
           </div>
           <SupervisionBar />
         </div>

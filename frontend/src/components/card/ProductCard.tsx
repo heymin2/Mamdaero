@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import LoginClient from '@/components/input/LoginClient.tsx';
 import LoginCounselor from '@/components/input/LoginCounselor.tsx';
-import SquareButton from '@/components/button/SquareButton.tsx';
 import Product from '@/pages/mypage/props/product';
 
 // 마이페이지- 내 상품관리- products

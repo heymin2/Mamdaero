@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@/components/button/SquareButton';
+import Button from '@/components/button/Button';
 
 const SignUpCounselorCompleteCard: React.FC = () => {
   return (
@@ -9,8 +9,7 @@ const SignUpCounselorCompleteCard: React.FC = () => {
         <div className="card-actions justify-center mt-6">
           <Button
             label="홈으로 가기"
-            user="counselor"
-            size="md"
+            color="blue"
             onClick={() => (window.location.href = '/')} // 메인 페이지로 리다이렉트
           />
         </div>
