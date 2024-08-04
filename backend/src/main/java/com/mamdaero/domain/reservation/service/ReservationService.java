@@ -107,9 +107,25 @@ public class ReservationService {
         String caller = "상담사";
 
         if ("내담자".equals(caller)) {
-            return reservationRepository.findByMemberId(1L);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberId(1L, pageable);
+            return new Pagination<ReservationListResponse>(
+                    reservationPage.getContent(),
+                    reservationPage.getNumber() + 1,
+                    reservationPage.getTotalPages(),
+                    reservationPage.getSize(),
+                    (int) reservationPage.getTotalElements()
+
+            );
         } else if ("상담사".equals(caller)) {
-            return reservationRepository.findByCounselorId(16L);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorId(16L, pageable);
+            return new Pagination<ReservationListResponse>(
+                    reservationPage.getContent(),
+                    reservationPage.getNumber() + 1,
+                    reservationPage.getTotalPages(),
+                    reservationPage.getSize(),
+                    (int) reservationPage.getTotalElements()
+                    
+            );
         } else {
             throw new RuntimeException("예약 목록 조회 권한이 없습니다.");
         }
