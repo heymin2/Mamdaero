@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SquareButton from '@/components/button/SquareButton.tsx';
-import SignUpCard from '@/components/card/SignUpCard';
+import SignUpCard from '@/components/card/signup/SignUpCard';
 import SignUpBar from '@/components/navigation/SignUpBar';
 
 const SignUpChoose: React.FC = () => {

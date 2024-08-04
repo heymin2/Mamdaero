@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import SignUpCounselorInput from '@/components/input/SignUpCounselorInput';
 import SignUpCounselorInfo from '@/components/input/SignUpCounselorInfo';
-import SignUpCounselorComplete from '@/pages/signup/SignUpCounselorComplete';
+import SignUpCounselorCompleteCard from '@/components/card/signup/SignUpCounselorCompleteCard';
 import ProgressBar from '@/components/navigation/CounselorProgressBar';
 import SignUpBar from '@/components/navigation/SignUpBar';
 
@@ -29,7 +29,7 @@ const SignUpCounselor: React.FC = () => {
           <Routes>
             <Route path="/" element={<SignUpCounselorInput />} />
             <Route path="info" element={<SignUpCounselorInfo />} />
-            <Route path="complete" element={<SignUpCounselorComplete />} />
+            <Route path="complete" element={<SignUpCounselorCompleteCard />} />
           </Routes>
         </div>
       </div>

@@ -111,6 +111,7 @@ const EmotionDiaryPage: React.FC = () => {
             }}
             eventColor="#fff7ed" // 이벤트 컬러 변경
             titleFormat={{ year: 'numeric', month: 'numeric' }}
+            height="auto"
           />
 
           <DiaryWriteModal

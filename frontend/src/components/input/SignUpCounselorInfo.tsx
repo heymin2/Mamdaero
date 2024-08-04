@@ -124,14 +124,16 @@ const SignUpCounselorInfo: React.FC = () => {
             </div>
           </div>
           <div className="w-2/5 items-center justify-center">
-            <label className="block font-bold mb-2">이미지</label>
+            <label className="block font-bold mb-2">
+              <span className="text-gray-400">(선택)</span> 이미지
+            </label>
             <div className="flex items-center justify-center">
-              <div className="w-full bg-gray-200 flex items-center justify-center rounded min-h-48 max-h-64">
+              <div className="w-full bg-gray-200 flex items-center justify-center rounded h-52">
                 {formState.image ? (
                   <img
                     src={URL.createObjectURL(formState.image)}
                     alt="Selected"
-                    className="w-full h-full min-h-48 max-h-64 object-cover rounded"
+                    className="w-full h-52 object-cover rounded"
                   />
                 ) : (
                   <span>이미지</span>
@@ -149,7 +151,10 @@ const SignUpCounselorInfo: React.FC = () => {
 
         <div className="space-y-5">
           <div className="flex items-center">
-            <label className="w-1/5 block font-bold">센터 주소</label>
+            <label className="w-1/5 flex flex-col font-bold">
+              <span className="text-gray-400">(선택)</span>
+              <span>센터 주소</span>
+            </label>
             <input
               type="text"
               name="address"
@@ -159,7 +164,10 @@ const SignUpCounselorInfo: React.FC = () => {
             />
           </div>
           <div className="flex items-center">
-            <label className="w-1/5 block font-bold">한줄소개</label>
+            <label className="w-1/5 flex flex-col font-bold">
+              <span className="text-gray-400">(선택)</span>
+              <span>한줄소개</span>
+            </label>
             <textarea
               name="intro"
               value={formState.intro}
@@ -171,7 +179,9 @@ const SignUpCounselorInfo: React.FC = () => {
         </div>
 
         <div>
-          <label className="block font-bold">상세소개</label>
+          <label className="block font-bold">
+            <span className="text-gray-400">(선택)</span> 상세소개
+          </label>
           <textarea
             name="intro_detail"
             value={formState.intro_detail}
