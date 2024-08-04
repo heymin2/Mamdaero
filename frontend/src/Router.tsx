@@ -32,6 +32,9 @@ import CounselorManageProductPage from '@/pages/mypage/CounselorManageProductPag
 import CounselorManageTimePage from '@/pages/mypage/CounselorManageTimePage';
 import CounselorManageExcludePage from '@/pages/mypage/CounselorManageExcludePage';
 import EmotionDiaryPage from '@/pages/emotiondiary/EmotionDiaryPage';
+import CounselHistory from './pages/mycounsel/counselor/CounselHistory';
+import CounselRecordList from './pages/mycounsel/counselor/CounselRecordList';
+import CounselRecordDetail from './pages/mycounsel/counselor/CounselRecordDetail';
 
 const Router = () => (
   <Routes>
@@ -75,6 +78,10 @@ const Router = () => (
     <Route path="/mypage/counselor/exclude" element={<CounselorManageExcludePage />} />
     {/* EmotionDiary Routes */}
     <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
+    {/* MyCounsel Routes */}
+    <Route path="/mycounsel/counselor/history/*" element={<CounselHistory />} />
+    <Route path="/mycounsel/counselor/record" element={<CounselRecordList />} />
+    <Route path="/mycounsel/counselor/record/:clientId/*" element={<CounselRecordDetail />} />
   </Routes>
 );
 
