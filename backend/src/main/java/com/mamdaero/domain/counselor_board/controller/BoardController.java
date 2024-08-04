@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,8 +34,9 @@ public class BoardController {
     }
 
     @PostMapping("/c/counselor-board")
-    public ResponseEntity<?> create(@RequestBody BoardRequest request) {
-        boardService.create(request);
+    public ResponseEntity<?> create(@RequestPart(name = "file", required = false) List<MultipartFile> file,
+                                    @RequestPart("data") BoardRequest request) throws IOException {
+        boardService.create(request, file);
         return ResponseEntity.ok().build();
     }
 

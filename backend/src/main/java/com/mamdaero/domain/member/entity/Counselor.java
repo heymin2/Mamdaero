@@ -1,9 +1,14 @@
 package com.mamdaero.domain.member.entity;
 
-import com.mamdaero.global.entity.BaseEntity;
 import com.mamdaero.domain.member.dto.request.CounselorRequestDto;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -26,7 +31,7 @@ public class Counselor extends Member{
     private String intro;
     @Column(length = 5000, name = "intro_detail")
     private String introDetail;
-    @Column(length = 256)
+    @Column(length = 600)
     private String img;
 
     public void updateIntro(CounselorRequestDto requestDto){
@@ -37,7 +42,7 @@ public class Counselor extends Member{
         this.introDetail = requestDto.getIntroDetail();
     }
 
-    public void updateImg(CounselorRequestDto requestDto){
-        this.img = requestDto.getImg();
+    public void updateImg(String img){
+        this.img = img;
     }
 }

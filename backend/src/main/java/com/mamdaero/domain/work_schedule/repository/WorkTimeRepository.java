@@ -1,5 +1,6 @@
 package com.mamdaero.domain.work_schedule.repository;
 
+import com.mamdaero.domain.work_schedule.dto.response.WorkTimeResponse;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,9 @@ public interface WorkTimeRepository extends JpaRepository<WorkTime, Long> {
     void deleteByDateBeforeAndNotIsReserved(@Param("date") LocalDate date);
 
     List<WorkTime> findByCounselorId(Long counselorId);
+
+
+    @Query("SELECT new com.mamdaero.domain.work_schedule.dto.response.WorkTimeResponse(w.id, w.counselorId, w.date, w.isReserved, w.isWorkTime) " +
+            "FROM WorkTime w WHERE w.counselorId = :counselorId AND w.date = :date")
+    List<WorkTimeResponse> findByCounselorIdAndDate(@Param("counselorId") Long counselorId, @Param("date") LocalDate date);
 }

@@ -6,6 +6,7 @@ import com.mamdaero.domain.notice.entity.Notice;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
 import com.mamdaero.domain.notice.exception.BoardNotFoundException;
 import com.mamdaero.domain.notice.repository.NoticeRepository;
+import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,16 +23,26 @@ public class PNoticeService {
 
     private final NoticeRepository noticeRepository;
 
-    public List<NoticeResponse> findAll(int page, int size, String searchField, String searchValue) {
+    public Pagination<NoticeResponse> findAll(int page, int size, String searchField, String searchValue) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Notice> boardPage = noticeRepository.findAll(pageable);
+        Page<Notice> boardPage;
 
-        if(searchField  != null && searchValue != null) {
+        if (!searchField.isEmpty() && !searchValue.isEmpty()) {
             boardPage = findBoardsBySearch(searchField, searchValue, pageable);
+        } else {
+            boardPage = noticeRepository.findAll(pageable);
         }
 
-        return convertToBoardResponses(boardPage.getContent());
+        List<NoticeResponse> noticeResponses = convertToBoardResponses(boardPage.getContent());
+
+        return new Pagination<>(
+                noticeResponses,
+                boardPage.getNumber() + 1,
+                boardPage.getTotalPages(),
+                boardPage.getSize(),
+                (int) boardPage.getTotalElements()
+        );
     }
 
     private Page<Notice> findBoardsBySearch(String searchField, String searchValue, Pageable pageable) {
