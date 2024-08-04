@@ -3,11 +3,12 @@ package com.mamdaero.domain.reservation.controller;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
 import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
 import com.mamdaero.domain.reservation.service.ReservationService;
-import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -33,11 +34,8 @@ public class ReservationController {
      * 예약 목록 조회
      */
     @GetMapping("/cm/reservation")
-    public ResponseEntity<Pagination<ReservationListResponse>> findMyReservation(
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size
-    ) {
-        return ResponseEntity.ok(reservationService.getReservationList(page, size));
+    public ResponseEntity<List<ReservationListResponse>> findMyReservation() {
+        return ResponseEntity.ok(reservationService.getReservationList());
     }
 
 }
