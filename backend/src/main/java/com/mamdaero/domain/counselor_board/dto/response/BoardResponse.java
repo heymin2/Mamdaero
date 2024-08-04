@@ -18,14 +18,16 @@ public class  BoardResponse {
     private String writer;
     private String title;
     private Integer view;
+    private Integer likeCount;
     private LocalDateTime createdAt;
 
-    public static BoardResponse of(CounselorBoard board, String writer) {
+    public static BoardResponse of(CounselorBoard board, String writer, int likeCount) {
         return BoardResponse.builder()
                 .id(board.getId())
                 .writer(writer)
                 .title(board.getTitle())
                 .view(board.getView())
+                .likeCount(likeCount)
                 .createdAt(board.getCreatedAt())
                 .build();
     }
