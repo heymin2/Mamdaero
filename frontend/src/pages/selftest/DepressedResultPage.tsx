@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TestBar from '@/components/navigation/TestBar';
 import lean from '@/assets/lean2.png';
-import Button from '@/components/button/Button';
+import Button from '@/components/button/RoundedButton';
 
 interface LocationState {
   totalScore: number;
@@ -56,21 +56,12 @@ const DepressedResultPage: React.FC = () => {
               <div className="divider"></div>
               <div>{resultMessage}</div>
               <div className="flex justify-center space-x-10 pt-5">
-                <Button
-                  label="다시하기"
-                  onClick={handleRetry}
-                  size="lg"
-                  textSize="xl"
-                  shape="rounded"
-                  color="orange"
-                />
+                <Button label="다시하기" onClick={handleRetry} size="lg" user="client" />
                 <Button
                   label="다른 검진 해보기 "
                   onClick={handleGoToList}
                   size="lg"
-                  textSize="xl"
-                  shape="rounded"
-                  color="orange"
+                  user="client"
                 />
               </div>
             </div>
