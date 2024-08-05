@@ -102,6 +102,7 @@ const SupervisionDetailPage: React.FC = () => {
               <SupervisionCommentCard key={comment.id} commentDetail={comment} />
             ))}
             <SupervisionWriteCommentCard />
+            <SupervisionWriteCommentCard />
           </>
         )}
       </div>
