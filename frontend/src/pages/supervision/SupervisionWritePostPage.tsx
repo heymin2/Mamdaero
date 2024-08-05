@@ -7,9 +7,17 @@ import axios from 'axios';
 
 const SupervisionWritePostPage: React.FC = () => {
   const navigate = useNavigate();
+  const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // 파일 입력 핸들러
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFile(event.target.files[0]); // FileList에서 첫 번째 파일만 설정
+    }
+  };
 
   // 제목 입력 핸들러
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,11 +36,25 @@ const SupervisionWritePostPage: React.FC = () => {
       alert('제목과 내용을 모두 입력해 주세요.');
       return;
     }
+    setIsLoading(true);
 
+    const postData = {
+      title,
+      content,
+    };
+
+    const formData = new FormData();
+    formData.append('data', new Blob([JSON.stringify(postData)], { type: 'application/json' }));
+    if (file) {
+      formData.append('file', file);
+    }
+
+    console.log('Form data:', formData);
     try {
-      const response = await axios.post('https://mamdaero.o-r.kr/api/a/notice', {
-        title,
-        content,
+      const response = await axios.post('https://mamdaero.o-r.kr/api/c/counselor-board', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       // 게시글 작성
@@ -63,6 +85,7 @@ const SupervisionWritePostPage: React.FC = () => {
           onChange={handleTitleChange}
         />
         <Editor value={content} onChange={handleEditorChange} />
+        <input className="file-input mt-4" type="file" onChange={handleFileChange} />
       </div>
     </div>
   );

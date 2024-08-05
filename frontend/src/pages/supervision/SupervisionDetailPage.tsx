@@ -7,6 +7,7 @@ import SupervisionCommentCard from '@/components/card/supervision/SupervisionCom
 import SupervisionBar from '@/components/navigation/SupervisionBar';
 import SupervisionWriteCommentCard from '@/components/card/supervision/SupervisionWriteCommentCard';
 import axios from 'axios';
+import axiosInstance from '@/api/axiosInstance';
 
 interface PostDetail {
   id: number;
@@ -26,6 +27,7 @@ interface CommentDetail {
   comment: string;
   createdAt: string;
 }
+
 const SupervisionDetailPage: React.FC = () => {
   const { supervisionId } = useParams<{ supervisionId: string }>();
   const navigate = useNavigate();
@@ -41,18 +43,18 @@ const SupervisionDetailPage: React.FC = () => {
       try {
         const res = await axios.get(`https://mamdaero.o-r.kr/api/ca/counselor-board/${postId}`);
         setPostDetail(res.data);
-        console.log(res.data);
       } catch (error) {
         console.error(error);
       }
     };
+
     const fetchComments = async (postId: number) => {
       try {
         const res = await axios.get(
           `https://mamdaero.o-r.kr/api/ca/counselor-board/${postId}/comment`
         );
-        setComments(res.data);
-        console.log(res.data);
+        const commentsData = Array.isArray(res.data.data) ? res.data.data : [];
+        setComments(commentsData); // Correctly set comments array
       } catch (error) {
         console.error(error);
       }
