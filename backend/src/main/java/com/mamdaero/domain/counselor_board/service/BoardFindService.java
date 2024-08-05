@@ -2,6 +2,7 @@ package com.mamdaero.domain.counselor_board.service;
 
 import com.mamdaero.domain.counselor_board.dto.response.BoardResponse;
 import com.mamdaero.domain.counselor_board.entity.CounselorBoard;
+import com.mamdaero.domain.counselor_board.repository.BoardLikeRepository;
 import com.mamdaero.domain.counselor_board.repository.BoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class BoardFindService {
 
     private final BoardRepository boardRepository;
+    private final BoardLikeRepository boardLikeRepository;
     private final MemberRepository memberRepository;
 
     public Pagination<BoardResponse> findAll(int page, int size, String condition, String searchField, String searchValue) {
@@ -69,7 +71,10 @@ public class BoardFindService {
                     String writer = memberRepository.findById(board.getMemberId())
                             .orElseThrow(CounselorNotFoundException::new)
                             .getName();
-                    return BoardResponse.of(board, writer);
+
+                    int likeCount = boardLikeRepository.countByBoardId(board.getId());
+
+                    return BoardResponse.of(board, writer, likeCount);
                 })
                 .collect(Collectors.toList());
     }

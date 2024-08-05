@@ -34,7 +34,7 @@ public class QuestionService {
         return new QuestionResponse(question.getId(), question.getContent());
     }
 
-    @Scheduled(cron = "* * * */1 * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
 //    @Scheduled(cron = "0 0 0 */7 * ?")
     @Transactional
     public void nextQuestion() {

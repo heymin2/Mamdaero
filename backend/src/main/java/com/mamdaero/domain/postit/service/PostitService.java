@@ -10,9 +10,13 @@ import com.mamdaero.domain.notice.exception.CommentNotFoundException;
 import com.mamdaero.domain.postit.dto.request.PostitRequest;
 import com.mamdaero.domain.postit.dto.response.PostitResponse;
 import com.mamdaero.domain.postit.entity.Postit;
-import com.mamdaero.domain.postit.repository.PoistitRepository;
+import com.mamdaero.domain.postit.repository.PostitRepository;
 import com.mamdaero.domain.postit.repository.PostitLikeRepository;
+import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,17 +27,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostitService {
 
-    private final PoistitRepository poistitRepository;
+    private final PostitRepository postitRepository;
     private final PostitLikeRepository postitLikeRepository;
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
 
-    public List<PostitResponse> findPost(Long questionId) {
-        Long memberId = 1L;
+    public Pagination<PostitResponse> findPost(int page, int size, Long questionId) {
+        Long memberId = 1L; // 현재 로그인된 사용자의 ID를 가져오는 방법이 필요함
 
-        List<Postit> postits = poistitRepository.findByQuestionId(questionId);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Postit> postitPage = postitRepository.findByQuestionId(questionId, pageable);
 
-        return postits.stream()
+        List<PostitResponse> postitResponses = postitPage.getContent().stream()
                 .map(postit -> {
                     String writer = memberRepository.findById(postit.getMemberId())
                             .orElseThrow(CounselorNotFoundException::new)
@@ -41,11 +46,19 @@ public class PostitService {
 
                     int likeCount = postitLikeRepository.countByBoardId(postit.getId());
                     boolean isLike = postitLikeRepository.existsByBoardIdAndMemberId(postit.getId(), memberId);
-                    boolean isMine = poistitRepository.existsByIdAndMemberId(postit.getId(), memberId);
+                    boolean isMine = postitRepository.existsByIdAndMemberId(postit.getId(), memberId);
 
                     return PostitResponse.of(postit, writer, likeCount, isLike, isMine);
                 })
                 .collect(Collectors.toList());
+
+        return new Pagination<>(
+                postitResponses,
+                postitPage.getNumber() + 1,
+                postitPage.getTotalPages(),
+                postitPage.getSize(),
+                (int) postitPage.getTotalElements()
+        );
     }
 
     @Transactional
@@ -57,7 +70,7 @@ public class PostitService {
             throw new BoardBadRequestException();
         }
 
-        poistitRepository.save(PostitRequest.toEntity(memberId, questionId, request));
+        postitRepository.save(PostitRequest.toEntity(memberId, questionId, request));
     }
 
     @Transactional
@@ -65,7 +78,7 @@ public class PostitService {
         // 토큰 확인 후 본인인지 확인
         Long memberId = 1L;
 
-        Postit post = poistitRepository.findByQuestionIdAndIdAndMemberId(questionId, postitId, memberId)
+        Postit post = postitRepository.findByQuestionIdAndIdAndMemberId(questionId, postitId, memberId)
                 .orElseThrow(CommentNotFoundException::new);
 
         post.updateContent(request.getContent());
@@ -76,7 +89,7 @@ public class PostitService {
 
         int likeCount = postitLikeRepository.countByBoardId(post.getId());
         boolean isLike = postitLikeRepository.existsByBoardIdAndMemberId(post.getId(), memberId);
-        boolean isMine = poistitRepository.existsByIdAndMemberId(post.getId(), memberId);
+        boolean isMine = postitRepository.existsByIdAndMemberId(post.getId(), memberId);
 
         return PostitResponse.of(post, writer, likeCount ,isLike, isMine);
     }
@@ -86,10 +99,10 @@ public class PostitService {
         // 토큰 확인 후 본인인지 확인
         Long memberId = 1L;
 
-        Postit post = poistitRepository.findByQuestionIdAndIdAndMemberId(questionId, postitId, memberId)
+        Postit post = postitRepository.findByQuestionIdAndIdAndMemberId(questionId, postitId, memberId)
                 .orElseThrow(CommentNotFoundException::new);
 
-        poistitRepository.delete(post);
+        postitRepository.delete(post);
     }
 
     @Transactional

@@ -106,9 +106,10 @@ public class ReservationService {
     }
 
     public Pagination<ReservationListResponse> getReservationList(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
         // TODO: 토큰에서 호출한사람 정보 가져와서 바꾸기
-        String caller = "내담자";
+        String caller = "상담사";
+
+        Pageable pageable = PageRequest.of(page, size);
 
         if ("내담자".equals(caller)) {
             Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberId(1L, pageable);
@@ -118,6 +119,7 @@ public class ReservationService {
                     reservationPage.getTotalPages(),
                     reservationPage.getSize(),
                     (int) reservationPage.getTotalElements()
+
             );
         } else if ("상담사".equals(caller)) {
             Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorId(16L, pageable);
@@ -127,6 +129,7 @@ public class ReservationService {
                     reservationPage.getTotalPages(),
                     reservationPage.getSize(),
                     (int) reservationPage.getTotalElements()
+
             );
         } else {
             throw new RuntimeException("예약 목록 조회 권한이 없습니다.");

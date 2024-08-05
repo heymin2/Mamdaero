@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
@@ -24,5 +23,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
             "WHERE ci.counselorId = :counselorId")
     Page<ReservationListResponse> findByCounselorId(@Param("counselorId") Long counselorId, Pageable pageable);
+
+
 }
 

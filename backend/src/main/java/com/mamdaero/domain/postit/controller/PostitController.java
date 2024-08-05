@@ -14,8 +14,10 @@ public class PostitController {
     private final PostitService postitService;
 
     @GetMapping("/p/postit/{questionId}")
-    public ResponseEntity<?> findPost(@PathVariable("questionId") Long questionId) {
-        return ResponseEntity.ok(postitService.findPost(questionId));
+    public ResponseEntity<?> findPost(@RequestParam(name = "page", defaultValue = "0") int page,
+                                      @RequestParam(name = "size", defaultValue = "10") int size,
+                                      @PathVariable("questionId") Long questionId) {
+        return ResponseEntity.ok(postitService.findPost(page, size, questionId));
     }
 
     @PostMapping("/cm/postit/{questionId}")

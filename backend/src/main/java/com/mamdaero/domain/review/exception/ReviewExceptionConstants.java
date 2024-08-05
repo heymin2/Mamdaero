@@ -1,6 +1,6 @@
 package com.mamdaero.domain.review.exception;
 
-import com.mamdaero.domain.global.exception.ExceptionConstants;
+import com.mamdaero.global.exception.ExceptionConstants;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
