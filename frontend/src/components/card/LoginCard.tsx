@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import LoginClient from '@/components/input/LoginClient.tsx';
 import LoginCounselor from '@/components/input/LoginCounselor.tsx';
-import Button from '@/components/button/Button.tsx';
+import SquareButton from '@/components/button/SquareButton.tsx';
 const LoginCard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'client' | 'counselor'>('client');
 
@@ -14,20 +14,18 @@ const LoginCard: React.FC = () => {
   return (
     <div className="p-8 max-w-sm w-full bg-gray-100 rounded-lg shadow-lg">
       <div className="flex w-full justify-center space-x-2 mb-3">
-        <Button
+        <SquareButton
           label="일반 회원 로그인"
           onClick={clientLogin}
-          size="lg"
-          color={activeTab === 'client' ? 'orange' : 'gray'}
-          textSize="xl"
-        ></Button>
-        <Button
+          size="mdlg"
+          user={activeTab === 'client' ? 'client' : 'common'}
+        ></SquareButton>
+        <SquareButton
           label="상담사 로그인"
           onClick={counselorLogin}
-          size="lg"
-          color={activeTab === 'counselor' ? 'blue' : 'gray'}
-          textSize="xl"
-        ></Button>
+          size="mdlg"
+          user={activeTab === 'counselor' ? 'counselor' : 'common'}
+        ></SquareButton>
       </div>
       <div>
         {activeTab === 'client' && <LoginClient />}

@@ -10,7 +10,7 @@ interface CounselorCardProps {
   reviewAvgScore: number;
   reviewCount: number;
 }
-const CounselorProfileCard: React.FC<CounselorCardProps> = ({
+const CounselorCard: React.FC<CounselorCardProps> = ({
   counselorId,
   counselorName,
   counselorIntro,
@@ -46,4 +46,4 @@ const CounselorProfileCard: React.FC<CounselorCardProps> = ({
   );
 };
 
-export default CounselorProfileCard;
+export default CounselorCard;
