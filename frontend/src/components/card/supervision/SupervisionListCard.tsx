@@ -4,31 +4,25 @@ import { Link } from 'react-router-dom';
 interface Post {
   id: number;
   title: string;
-  author: string;
-  viewCount: number;
+  writer: string;
+  view: number;
   likeCount: number;
-  date: string;
+  createdAt: string;
 }
 
 interface BoardTableProps {
   posts: Post[];
   currentPage: number;
-  postsPerPage: number;
+  totalPages: number;
   paginate: (pageNumber: number) => void;
 }
 
 const SupervisionListCard: React.FC<BoardTableProps> = ({
   posts,
   currentPage,
-  postsPerPage,
+  totalPages,
   paginate,
 }) => {
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-  const pageNumbers = Math.ceil(posts.length / postsPerPage);
-
   return (
     <div className="container mx-auto p-4">
       <table className="min-w-full table-fixed">
@@ -51,7 +45,7 @@ const SupervisionListCard: React.FC<BoardTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {currentPosts.map(post => (
+          {posts.map(post => (
             <tr key={post.id} className="border-b hover:bg-blue-100 transition-colors duration-200">
               <td className="px-4 py-2 text-center truncate">{post.id}</td>
               <td className="px-4 py-2 text-center truncate">
@@ -59,16 +53,16 @@ const SupervisionListCard: React.FC<BoardTableProps> = ({
                   {post.title}
                 </Link>
               </td>
-              <td className="px-4 py-2 text-center truncate">{post.author}</td>
-              <td className="px-4 py-2 text-center truncate">{post.viewCount}</td>
+              <td className="px-4 py-2 text-center truncate">{post.writer}</td>
+              <td className="px-4 py-2 text-center truncate">{post.view}</td>
               <td className="px-4 py-2 text-center truncate">{post.likeCount}</td>
-              <td className="px-4 py-2 text-center truncate">{post.date}</td>
+              <td className="px-4 py-2 text-center truncate">{post.createdAt}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <div className="flex justify-center mt-4">
-        {Array.from({ length: pageNumbers }, (_, i) => (
+        {Array.from({ length: totalPages }, (_, i) => (
           <button
             key={i}
             onClick={() => paginate(i + 1)}

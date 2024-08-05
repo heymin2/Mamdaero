@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '@/components/button/SquareButton';
+import Button from '@/components/button/Button';
 import depressed from '@/assets/depressed.png';
 import unrest from '@/assets/unrest.png';
 import stress from '@/assets/stress.png';
@@ -56,7 +56,13 @@ const SelfTestCard: React.FC<SelfTestCardProps> = ({ mental }) => {
         </figure>
         <p>{description}</p>
         <div className="card-actions">
-          <Button onClick={handleButtonClick} label="검진하기" size="sm" user="client" />
+          <Button
+            onClick={handleButtonClick}
+            label="검진하기"
+            size="sm"
+            color="orange"
+            textSize="sm"
+          />
         </div>
       </div>
     </div>

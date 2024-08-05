@@ -23,8 +23,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   };
 
   return (
-    <div className="mb-8 text-gray-600">
-      <ul className="steps steps-horizontal ">
+    <div className="mb-8">
+      <ul className="steps steps-horizontal text-gray-600">
         {steps.map(step => (
           <li key={step.key} className={getStepClassName(step.key)}>
             {step.label}

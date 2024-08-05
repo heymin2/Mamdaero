@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { FiPlusCircle, FiXCircle } from 'react-icons/fi';
-import Button from '@/components/button/RoundedButton';
+import Button from '@/components/button/Button';
 
-const CounselorManageTime = () => {
+const CounselorManageTimePage = () => {
   const navigate = useNavigate();
   const backToList = () => {
     navigate('/mypage/counselor');
@@ -19,9 +19,9 @@ const CounselorManageTime = () => {
 
   return (
     <div>
-      <header className="flex justify-between">
-        <h1 className="text-black text-5xl font-bold">상담 일정 관리</h1>
-        <Button label=" 뒤로가기" size="xs" onClick={backToList} user="counselor" />
+      <header className="flex justify-between items-center">
+        <h1 className="text-black text-xl font-bold">상담 일정 관리</h1>
+        <Button label=" 뒤로가기" size="md" onClick={backToList} shape="rounded" color="blue" />
       </header>
       <div className="divider"></div>
       <main className="flex justify-around">
@@ -100,10 +100,17 @@ const CounselorManageTime = () => {
           </article>
         </section>
         <span className="my-auto">
-          <Button label="적용하기" user="counselor" onClick={applyTime} size="lg" />
+          <Button
+            label="적용하기"
+            color="blue"
+            shape="rounded"
+            onClick={applyTime}
+            size="lg"
+            textSize="xl"
+          />
         </span>
       </main>
     </div>
   );
 };
-export default CounselorManageTime;
+export default CounselorManageTimePage;
