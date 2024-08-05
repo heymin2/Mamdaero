@@ -171,7 +171,7 @@ public class ReservationService {
     public void deleteConsult(Long consultId) {
         Long memberId = 1L;
 
-        Reservation reservation = reservationRepository.findByMemberIdAndReservationId(memberId, consultId);
+        Reservation reservation = reservationRepository.findByMemberIdAndId(memberId, consultId);
 
         if(reservation == null) {
             throw new ReservationNotFoundException();
