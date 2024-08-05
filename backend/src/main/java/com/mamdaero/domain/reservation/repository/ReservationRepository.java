@@ -43,6 +43,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "AND r.status = '상담완료'")
     Page<ReservationListResponse> findByCounselorIdComplete(@Param("counselorId") Long counselorId, Pageable pageable);
 
-    Reservation findByMemberIdAndReservationId(Long memberId, Long reservationId);
+    Reservation findByMemberIdAndId(Long memberId, Long reservationId);
 }
 
