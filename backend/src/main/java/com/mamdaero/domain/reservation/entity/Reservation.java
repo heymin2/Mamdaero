@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE reservation SET is_delete = true WHERE reservation_id = ?")
 @Table(name = "reservation")
 public class Reservation extends BaseEntity {
     @Id
@@ -24,8 +26,11 @@ public class Reservation extends BaseEntity {
     private Long counselorItemId;
     @Column(name = "worktime_id")
     private Long workTimeId;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private Status status;
+
     @Column(name = "item_name", nullable = false)
     private String itemName;
     @Column(name = "item_fee", nullable = false)
@@ -59,7 +64,7 @@ public class Reservation extends BaseEntity {
         this.itemFee = itemFee;
         this.requirement = requirement;
         this.isDiaryShared = isDiaryShared;
-        this.status = "예약완료";
+        this.status = Status.예약완료;
         this.isDelete = false;
         this.situations = situations;
         this.symptoms = symptoms;
@@ -71,7 +76,7 @@ public class Reservation extends BaseEntity {
      * @param canceler 내담자, 상담사
      */
     public void cancel(String canceler) {
-        this.status = "예약취소";
+        this.status = Status.예약취소;
         this.canceler = canceler;
         this.canceledAt = LocalDateTime.now();
     }
