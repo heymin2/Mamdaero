@@ -4,17 +4,10 @@ import { Link } from 'react-router-dom';
 interface Post {
   id: number;
   title: string;
-<<<<<<< HEAD
   writer: string;
   view: number;
   likeCount: number;
   createdAt: string;
-=======
-  author: string;
-  viewCount: number;
-  likeCount: number;
-  date: string;
->>>>>>> 0d437f691c34bce14d5fe34844b317bec42240d8
 }
 
 interface BoardTableProps {
@@ -60,17 +53,10 @@ const SupervisionListCard: React.FC<BoardTableProps> = ({
                   {post.title}
                 </Link>
               </td>
-<<<<<<< HEAD
               <td className="px-4 py-2 text-center truncate">{post.writer}</td>
               <td className="px-4 py-2 text-center truncate">{post.view}</td>
               <td className="px-4 py-2 text-center truncate">{post.likeCount}</td>
               <td className="px-4 py-2 text-center truncate">{post.createdAt}</td>
-=======
-              <td className="px-4 py-2 text-center truncate">{post.author}</td>
-              <td className="px-4 py-2 text-center truncate">{post.viewCount}</td>
-              <td className="px-4 py-2 text-center truncate">{post.likeCount}</td>
-              <td className="px-4 py-2 text-center truncate">{post.date}</td>
->>>>>>> 0d437f691c34bce14d5fe34844b317bec42240d8
             </tr>
           ))}
         </tbody>
