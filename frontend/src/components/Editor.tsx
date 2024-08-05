@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ImageResize from 'quill-image-resize-module-react';
@@ -11,12 +11,9 @@ const Font = Quill.import('formats/font');
 Font.whitelist = ['sans-serif', 'serif', 'monospace'];
 Quill.register(Font, true);
 
-interface EditorProps {
-  value: string;
-  onChange: (content: string) => void;
-}
+const Editor: React.FC = () => {
+  const [value, setValue] = useState<string>('');
 
-const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
   const modules = {
     toolbar: {
       container: [
@@ -52,6 +49,10 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
     'background',
   ];
 
+  const handleChange = (content: string) => {
+    setValue(content);
+  };
+
   return (
     <div className="pb-10" style={{ backgroundColor: 'white' }}>
       <ReactQuill
@@ -59,7 +60,7 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
         modules={modules}
         formats={formats}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         style={{ backgroundColor: 'white', height: '430px' }}
       />
     </div>

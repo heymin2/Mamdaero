@@ -39,5 +39,19 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getReservationList(page, size));
     }
 
+    /**
+     * 상담 완료 목록 조회
+     */
+    @GetMapping("/cm/consult")
+    public ResponseEntity<Pagination<ReservationListResponse>> findMyConsult(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return ResponseEntity.ok(reservationService.getConsult(page, size));
+    }
 
+    @DeleteMapping("/m/consult/{consultId}")
+    public ResponseEntity<?> deleteConsult(@PathVariable(name = "consultId") Long consultId) {
+        reservationService.deleteConsult(consultId);
+        return ResponseEntity.ok().build();
+    }
 }

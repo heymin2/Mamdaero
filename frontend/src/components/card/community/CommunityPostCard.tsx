@@ -67,6 +67,10 @@ const CommunityPostCard = () => {
           <div className="font-bold">{likeCount}</div>
         </div>
       </div>
+      <div className="border-y-2 border-orange-300 px-10 py-2">
+        <span className="text-orange-500 font-bold text-xl">{commentCount}</span>
+        <span className="font-bold text-base">개의 댓글이 있습니다.</span>
+      </div>
     </div>
   );
 };
