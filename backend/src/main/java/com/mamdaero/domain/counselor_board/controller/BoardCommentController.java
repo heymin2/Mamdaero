@@ -14,8 +14,10 @@ public class BoardCommentController {
     private final BoardCommentService boardCommentService;
 
     @GetMapping("/ca/counselor-board/{boardId}/comment")
-    public ResponseEntity<?> comment(@PathVariable("boardId") Long id) {
-        return ResponseEntity.ok(boardCommentService.findAll(id));
+    public ResponseEntity<?> comment(@RequestParam(name = "page", defaultValue = "0") int page,
+                                     @RequestParam(name = "size", defaultValue = "10") int size,
+                                     @PathVariable("boardId") Long id) {
+        return ResponseEntity.ok(boardCommentService.findAll(page, size, id));
     }
 
     @PostMapping("/ca/counselor-board/{boardId}/comment")
@@ -26,8 +28,7 @@ public class BoardCommentController {
 
     @PatchMapping("/ca/counselor-board/{boardId}/comment/{commentId}")
     public ResponseEntity<?> update(@PathVariable("boardId") Long boardId, @PathVariable("commentId") Long commentId, @RequestBody BoardCommentRequest request) {
-        boardCommentService.update(boardId, commentId, request);
-        return ResponseEntity.ok(boardCommentService.findAll(boardId));
+        return ResponseEntity.ok(boardCommentService.update(boardId, commentId, request));
     }
 
     @DeleteMapping("/ca/counselor-board/{boardId}/comment/{commentId}")

@@ -19,8 +19,8 @@ public class PNoticeController {
     @GetMapping
     public ResponseEntity<?> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
                                      @RequestParam(name = "size", defaultValue = "10") int size,
-                                     @RequestParam(name = "searchField", required = false) String searchField,
-                                     @RequestParam(name = "searchValue", required = false) String searchValue) {
+                                     @RequestParam(name = "searchField", defaultValue = "") String searchField,
+                                     @RequestParam(name = "searchValue", defaultValue = "") String searchValue) {
         return ResponseEntity.ok(noticeService.findAll(page, size, searchField, searchValue));
     }
 

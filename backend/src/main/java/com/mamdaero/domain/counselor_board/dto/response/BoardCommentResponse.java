@@ -15,13 +15,15 @@ public class BoardCommentResponse {
     private String writer;
     private String comment;
     private LocalDateTime createdAt;
+    private Boolean isMine;
 
-    public static BoardCommentResponse of(CounselorBoardComment comment, String writer) {
+    public static BoardCommentResponse of(CounselorBoardComment comment, String writer, boolean isMine) {
         return BoardCommentResponse.builder()
                 .id(comment.getId())
                 .writer(writer)
                 .comment(comment.getComment())
                 .createdAt(comment.getCreatedAt())
+                .isMine(isMine)
                 .build();
     }
 }
