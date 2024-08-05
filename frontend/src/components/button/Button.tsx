@@ -6,7 +6,7 @@ interface ButtonProps {
   onClick: () => void;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기' | '예약하기' | '회원가입';
   shape?: 'rounded' | 'square';
-  color?: 'blue' | 'orange' | 'gray';
+  color?: 'blue' | 'orange' | 'gray' | 'red';
   textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
@@ -30,10 +30,11 @@ const shapeClasses: Record<'rounded' | 'square', string> = {
   square: 'rounded-md',
 };
 
-const colorClasses: Record<'blue' | 'orange' | 'gray', string> = {
+const colorClasses: Record<'blue' | 'orange' | 'gray' | 'red', string> = {
   blue: 'bg-blue-200 hover:bg-blue-300 transition',
   orange: 'bg-orange-200 hover:bg-orange-300 transition',
   gray: 'bg-gray-200 hover:bg-gray-300 transition',
+  red: 'bg-red-300 hover:bg-red-400 transition',
 };
 
 const textSizeClasses: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string> = {
