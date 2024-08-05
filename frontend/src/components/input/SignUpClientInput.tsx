@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '@/components/button/RoundedButton';
+import Button from '@/components/button/CertificationButton';
 
 const SignUpClientInput: React.FC = () => {
-  const [selectedGender, setSelectedGender] = useState<'M' | 'F' | 'none'>('none');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -13,8 +12,11 @@ const SignUpClientInput: React.FC = () => {
     birth: '',
     tel: '',
     role: 'client',
+    gender: '', // gender 추가
   });
   const [error, setError] = useState<string | null>(null);
+  const [emailConfirmation, setEmailConfirmation] = useState<string | null>(null);
+  const [nicknameConfirmation, setNicknameConfirmation] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,19 +27,37 @@ const SignUpClientInput: React.FC = () => {
     });
   };
 
-  const handleGenderChange = (gender: 'M' | 'F' | 'none') => {
-    setSelectedGender(gender);
+  const handleGenderChange = (gender: 'M' | 'F') => {
+    setFormData({
+      ...formData,
+      gender,
+    });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    // 오류 상태 초기화
+    setError(null);
+
+    if (
+      !formData.email ||
+      !formData.password ||
+      !formData.name ||
+      !formData.nickname ||
+      !formData.tel ||
+      !formData.gender
+    ) {
+      setError('모든 필드를 입력해주세요.');
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
       return;
     }
 
-    if (!/^\d{8}$/.test(formData.birth)) {
+    if (formData.birth && !/^\d{8}$/.test(formData.birth)) {
       setError('생년월일은 8자리 숫자로 입력해주세요.');
       return;
     }
@@ -47,140 +67,198 @@ const SignUpClientInput: React.FC = () => {
       return;
     }
 
-    setError(null);
     const dataToSubmit = {
       ...formData,
-      gender: selectedGender === 'none' ? null : selectedGender,
     };
     console.log('Form submitted:', dataToSubmit);
-    alert('회원가입이 완료되었습니다!');
-    navigate('/');
+    navigate('/signup/client/complete');
+  };
+
+  const checkEmailDuplicate = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setEmailConfirmation('사용 가능한 이메일입니다.');
+    setTimeout(() => setEmailConfirmation(null), 3000); // 3초 후에 메시지 숨기기
+  };
+
+  const checkNicknameDuplicate = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setNicknameConfirmation('사용 가능한 닉네임입니다.');
+    setTimeout(() => setNicknameConfirmation(null), 3000); // 3초 후에 메시지 숨기기
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative w-[472px] h-[555px] bg-gray-50 rounded-[10px] overflow-hidden m-4"
+      className="relative w-full max-w-lg bg-gray-50 rounded-lg overflow-hidden m-4 p-12 shadow-lg"
     >
+      <div className="mb-6">
+        <div className="relative mb-4">
+          <div className="flex items-center">
+            <label
+              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              htmlFor="email"
+            >
+              이메일
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
+            />
+            <Button label={'중복확인'} onClick={checkEmailDuplicate} user="client" />
+          </div>
+          {emailConfirmation && (
+            <div className="text-green-700 text-xs mt-2">{emailConfirmation}</div>
+          )}
+        </div>
+        <div className="relative mb-4">
+          <div className="flex items-center">
+            <label
+              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              htmlFor="password"
+            >
+              비밀번호
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
+            />
+          </div>
+        </div>
+        <div className="relative mb-4">
+          <div className="flex items-center">
+            <label
+              className="w-1/5 text-gray-700 text-base font-bold mb-2 mr-4 flex flex-col"
+              htmlFor="confirmPassword"
+            >
+              <span>비밀번호</span>
+              <span>확인</span>
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="mb-6">
+        <div className="relative mb-4">
+          <div className="flex items-center">
+            <label
+              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              htmlFor="name"
+            >
+              이름
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
+            />
+          </div>
+        </div>
+        <div className="relative mb-4">
+          <div className="flex items-center">
+            <label
+              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              htmlFor="nickname"
+            >
+              닉네임
+            </label>
+            <input
+              type="text"
+              name="nickname"
+              value={formData.nickname}
+              onChange={handleInputChange}
+              className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
+            />
+            <Button label={'중복확인'} onClick={checkNicknameDuplicate} user="client" />
+          </div>
+          {nicknameConfirmation && (
+            <div className="text-green-700 text-xs mt-2">{nicknameConfirmation}</div>
+          )}
+        </div>
+        <div className="relative mb-4">
+          <div className="flex items-center">
+            <label
+              className="w-1/5 text-gray-700 text-base font-bold mb-2 mr-4 flex flex-col"
+              htmlFor="birth"
+            >
+              <span className="text-gray-400">(선택)</span> <span>생년월일</span>
+            </label>
+            <input
+              type="text"
+              name="birth"
+              value={formData.birth}
+              onChange={handleInputChange}
+              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
+              placeholder="YYYYMMDD"
+            />
+          </div>
+        </div>
+        <div className="relative mb-4">
+          <div className="flex items-center">
+            <label
+              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              htmlFor="tel"
+            >
+              전화번호
+            </label>
+            <input
+              type="tel"
+              name="tel"
+              value={formData.tel}
+              onChange={handleInputChange}
+              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
+              placeholder="01012345678"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="mb-6">
+        <div className="flex items-center">
+          <label className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4">성별</label>
+          <div className="flex justify-between flex-1">
+            <button
+              type="button"
+              className={`flex-1 p-3 mx-1 rounded-md font-bold ${
+                formData.gender === 'M' ? 'bg-orange-200' : 'bg-gray-200'
+              }`}
+              onClick={() => handleGenderChange('M')}
+            >
+              남
+            </button>
+            <button
+              type="button"
+              className={`flex-1 p-3 mx-1 rounded-md font-bold ${
+                formData.gender === 'F' ? 'bg-orange-200' : 'bg-gray-200'
+              }`}
+              onClick={() => handleGenderChange('F')}
+            >
+              여
+            </button>
+          </div>
+        </div>
+      </div>
       {error && (
-        <div className="absolute w-[363px] top-8 left-[54px] bg-red-200 text-xs text-red-700 p-2 rounded">
-          {error}
-        </div>
+        <div className="w-full bg-red-200 text-xs text-red-700 p-2 rounded mb-4">{error}</div>
       )}
-      <div className="absolute w-[363px] h-[108px] top-[79px] left-[54px] bg-[#ffffff] rounded-[5px] overflow-hidden border border-solid border-gray-300">
-        <div className="relative w-full h-9 border-b border-gray-300">
-          <input
-            type="email"
-            name="email"
-            placeholder="이메일"
-            value={formData.email}
-            onChange={handleInputChange}
-            className="absolute top-1.5 left-3 text-gray-400 w-2/3"
-          />
-          <div className="absolute top-1/2 transform -translate-y-1/2 right-3 bg-orange-200 rounded px-2 text-xs">
-            <Button label={'중복 확인'} onClick={() => {}} size="xs" user="client"></Button>
-          </div>
-        </div>
-        <div className="relative w-full h-9 border-b border-gray-300">
-          <input
-            type="password"
-            name="password"
-            placeholder="비밀번호"
-            value={formData.password}
-            onChange={handleInputChange}
-            className="absolute top-1.5 left-3 text-gray-400 w-2/3"
-          />
-        </div>
-        <div className="relative w-full h-9">
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="비밀번호 확인"
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-            className="absolute top-1.5 left-3 text-gray-400 w-2/3"
-          />
-        </div>
-      </div>
-      <div className="absolute w-[363px] h-[180px] top-[214px] left-[54px] bg-[#ffffff] rounded-[5px] overflow-hidden border border-solid border-gray-300">
-        <div className="relative w-full h-9 border-b border-gray-300">
-          <input
-            type="text"
-            name="name"
-            placeholder="이름"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="absolute top-1.5 left-3 text-gray-400 w-2/3 "
-          />
-        </div>
-        <div className="relative w-full h-9 border-b border-gray-300">
-          <input
-            type="text"
-            name="nickname"
-            placeholder="닉네임"
-            value={formData.nickname}
-            onChange={handleInputChange}
-            className="absolute top-1.5 left-3 text-gray-400 w-2/3"
-          />
-          <div className="absolute top-1/2 transform -translate-y-1/2 right-3 bg-orange-200 rounded px-2 text-xs">
-            <Button label={'중복 확인'} onClick={() => {}} size="xs" user="client"></Button>
-          </div>
-        </div>
-        <div className="relative w-full h-9 border-b border-gray-300">
-          <input
-            type="text"
-            name="birth"
-            placeholder="[선택] 생년월일 8자리"
-            value={formData.birth}
-            onChange={handleInputChange}
-            className="absolute top-1.5 left-3 text-gray-400 w-2/3"
-          />
-        </div>
-        <div className="relative w-full h-9 border-b border-gray-300">
-          <input
-            type="tel"
-            name="tel"
-            placeholder="전화번호"
-            value={formData.tel}
-            onChange={handleInputChange}
-            className="absolute top-1.5 left-3 text-gray-400 w-2/3"
-          />
-        </div>
-        <div className="flex absolute w-full h-[35px] top-[144px] left-0">
-          <div
-            className={`flex-1 h-full flex items-center justify-center cursor-pointer ${
-              selectedGender === 'M' ? 'bg-orange-200' : 'bg-gray-200'
-            }`}
-            onClick={() => handleGenderChange('M')}
-          >
-            <div className="text-gray-400 text-center">남</div>
-          </div>
-          <div
-            className={`flex-1 h-full flex items-center justify-center cursor-pointer ${
-              selectedGender === 'F' ? 'bg-orange-200' : 'bg-gray-200'
-            }`}
-            onClick={() => handleGenderChange('F')}
-          >
-            <div className="text-gray-400 text-center">여</div>
-          </div>
-          <div
-            className={`flex-1 h-full flex items-center justify-center cursor-pointer ${
-              selectedGender === 'none' ? 'bg-orange-200' : 'bg-gray-200'
-            }`}
-            onClick={() => handleGenderChange('none')}
-          >
-            <div className="text-gray-400 text-center">선택 안함</div>
-          </div>
-        </div>
-      </div>
-      <div className="absolute w-[365px] h-16 top-[418px] left-[54px]">
-        <button
-          type="submit"
-          className="w-full h-full bg-orange-200 rounded flex items-center justify-center"
-        >
-          <span className="text-gray-800 font-semibold">회원가입</span>
-        </button>
-      </div>
+      <button
+        type="submit"
+        className="w-full p-3 bg-orange-200 rounded-md text-gray-800 font-semibold"
+      >
+        회원가입
+      </button>
     </form>
   );
 };
