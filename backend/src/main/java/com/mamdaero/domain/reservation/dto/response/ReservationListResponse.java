@@ -1,5 +1,6 @@
 package com.mamdaero.domain.reservation.dto.response;
 
+import com.mamdaero.domain.reservation.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ public class ReservationListResponse {
     private Long reservationId;
     private LocalDate date;
     private Integer time;
-    private String status;
+    private Status status;
     private String itemName;
     private Integer itemFee;
     private String canceler;

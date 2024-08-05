@@ -136,5 +136,47 @@ public class ReservationService {
         }
     }
 
+    public Pagination<ReservationListResponse> getConsult(int page, int size) {
+        // TODO: 토큰에서 호출한사람 정보 가져와서 바꾸기
+        String caller = "상담사";
 
+        Pageable pageable = PageRequest.of(page, size);
+
+        if ("내담자".equals(caller)) {
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberIdComplete(1L, pageable);
+            return new Pagination<ReservationListResponse>(
+                    reservationPage.getContent(),
+                    reservationPage.getNumber() + 1,
+                    reservationPage.getTotalPages(),
+                    reservationPage.getSize(),
+                    (int) reservationPage.getTotalElements()
+
+            );
+        } else if ("상담사".equals(caller)) {
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorIdComplete(16L, pageable);
+            return new Pagination<ReservationListResponse>(
+                    reservationPage.getContent(),
+                    reservationPage.getNumber() + 1,
+                    reservationPage.getTotalPages(),
+                    reservationPage.getSize(),
+                    (int) reservationPage.getTotalElements()
+
+            );
+        } else {
+            throw new RuntimeException("예약 목록 조회 권한이 없습니다.");
+        }
+    }
+
+    @Transactional
+    public void deleteConsult(Long consultId) {
+        Long memberId = 1L;
+
+        Reservation reservation = reservationRepository.findByMemberIdAndReservationId(memberId, consultId);
+
+        if(reservation == null) {
+            throw new ReservationNotFoundException();
+        }
+
+        reservationRepository.delete(reservation);
+    }
 }
