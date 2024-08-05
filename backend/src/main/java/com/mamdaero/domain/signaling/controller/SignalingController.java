@@ -31,6 +31,7 @@ public class SignalingController {
 
     //
 
+    // camkey => memberId로 변환하기
     @MessageMapping("/peer/answer/{camKey}/{roomId}")
     @SendTo("/topic/peer/answer/{camKey}/{roomId}")
     public String PeerHandleAnswer(@Payload String answer, @DestinationVariable(value = "roomId") String roomId,
