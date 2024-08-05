@@ -1,4 +1,4 @@
-import SquareButton from '@/components/button/SquareButton.tsx';
+import Button from '@/components/button/Button.tsx';
 import { Link } from 'react-router-dom';
 const Login = () => {};
 const LoginForm = () => {
@@ -25,14 +25,15 @@ const LoginForm = () => {
         />
       </label>
       <div className="pt-6 flex flex-col items-center space-y-4">
-        <SquareButton label="로그인" onClick={Login} size="full" user="counselor"></SquareButton>
+        <Button label="로그인" onClick={Login} size="full" color="blue" textSize="xl"></Button>
         <Link to="/signup/choose">
-          <SquareButton
+          <Button
             label="상담사 회원가입"
             onClick={Login}
-            size="mdlg"
-            user="common"
-          ></SquareButton>
+            size="lg"
+            color="gray"
+            textSize="xl"
+          ></Button>
         </Link>
       </div>
     </div>
