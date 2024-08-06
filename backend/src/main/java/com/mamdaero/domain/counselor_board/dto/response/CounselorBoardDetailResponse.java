@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardDetailResponse {
+public class CounselorBoardDetailResponse {
 
     private Long id;
     private String writer;
@@ -26,8 +26,8 @@ public class BoardDetailResponse {
     private Boolean isMine;
     private List<String> file;
 
-    public static BoardDetailResponse of(CounselorBoard board, String writer, int likeCount, boolean isLike, boolean isMine, List<String> file) {
-        return BoardDetailResponse.builder()
+    public static CounselorBoardDetailResponse of(CounselorBoard board, String writer, int likeCount, boolean isLike, boolean isMine, List<String> file) {
+        return CounselorBoardDetailResponse.builder()
                 .id(board.getId())
                 .writer(writer)
                 .title(board.getTitle())

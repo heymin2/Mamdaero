@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface BoardCommentRepository extends JpaRepository<CounselorBoardComment, Long>  {
+public interface CounselorBoardCommentRepository extends JpaRepository<CounselorBoardComment, Long>  {
     Page<CounselorBoardComment> findByBoardId(Long boardId, Pageable pageable);
     Optional<CounselorBoardComment> findByIdAndBoardIdAndMemberId(Long id, Long boardId, Long memberId);
     boolean existsByIdAndMemberId(Long id, Long memberId);
+    Optional<CounselorBoardComment> findFirstByBoardIdOrderByCreatedAtDesc(Long id);
 }

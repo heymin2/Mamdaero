@@ -8,6 +8,7 @@ import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
 import com.mamdaero.domain.reservation.entity.Reservation;
 import com.mamdaero.domain.reservation.entity.ReservationSituation;
 import com.mamdaero.domain.reservation.entity.ReservationSymptom;
+import com.mamdaero.domain.reservation.exception.CanNotMakeReservationException;
 import com.mamdaero.domain.reservation.exception.ReservationNotFoundException;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.domain.work_schedule.entity.WorkTime;
@@ -51,9 +52,9 @@ public class ReservationService {
 
         System.out.println(workTime.getIsReserved());
         // 이미 예약된 시간이거나 근무시간이 아니라면 예약할 수 없다.
-//        if (workTime.getIsReserved() || !workTime.getIsWorkTime()) {
-//            throw new CanNotMakeReservationException();
-//        }
+        if (workTime.getIsReserved() || !workTime.getIsWorkTime()) {
+            throw new CanNotMakeReservationException();
+        }
 
         workTime.reserve();
 
@@ -102,7 +103,6 @@ public class ReservationService {
         reservation.cancel("내담자");
         workTime.cancelReserve();
 
-        reservationRepository.deleteById(reservationId);
     }
 
     public Pagination<ReservationListResponse> getReservationList(int page, int size) {
@@ -173,7 +173,7 @@ public class ReservationService {
 
         Reservation reservation = reservationRepository.findByMemberIdAndId(memberId, consultId);
 
-        if(reservation == null) {
+        if (reservation == null) {
             throw new ReservationNotFoundException();
         }
 
