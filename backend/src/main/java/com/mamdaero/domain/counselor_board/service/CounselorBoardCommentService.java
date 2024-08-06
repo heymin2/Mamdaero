@@ -3,14 +3,14 @@ package com.mamdaero.domain.counselor_board.service;
 import com.mamdaero.domain.complaint.entity.Complaint;
 import com.mamdaero.domain.complaint.entity.Source;
 import com.mamdaero.domain.complaint.repository.ComplaintRepository;
-import com.mamdaero.domain.counselor_board.dto.request.BoardCommentRequest;
-import com.mamdaero.domain.counselor_board.dto.response.BoardCommentResponse;
+import com.mamdaero.domain.counselor_board.dto.request.CounselorBoardCommentRequest;
+import com.mamdaero.domain.counselor_board.dto.response.CounselorBoardCommentResponse;
 import com.mamdaero.domain.counselor_board.entity.CounselorBoardComment;
-import com.mamdaero.domain.counselor_board.repository.BoardCommentRepository;
+import com.mamdaero.domain.counselor_board.repository.CounselorBoardCommentRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
-import com.mamdaero.domain.notice.exception.CommentNotFoundException;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
+import com.mamdaero.domain.notice.exception.CommentNotFoundException;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +26,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BoardCommentService {
+public class
+CounselorBoardCommentService {
 
-    private final BoardCommentRepository boardCommentRepository;
+    private final CounselorBoardCommentRepository boardCommentRepository;
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
 
-    public Pagination<BoardCommentResponse> findAll(int page, int size, Long id) {
+    public Pagination<CounselorBoardCommentResponse> findAll(int page, int size, Long id) {
         // 토큰 확인 후 본인인지 확인
         Long memberId = 1L;
 
@@ -41,7 +42,7 @@ public class BoardCommentService {
         // 페이지네이션을 적용하여 댓글을 조회합니다.
         Page<CounselorBoardComment> boardPage = boardCommentRepository.findByBoardId(id, pageable);
 
-        List<BoardCommentResponse> commentResponses = boardPage.getContent().stream()
+        List<CounselorBoardCommentResponse> commentResponses = boardPage.getContent().stream()
                 .map(comment -> {
                     String writer = memberRepository.findById(comment.getMemberId())
                             .orElseThrow(CounselorNotFoundException::new)
@@ -49,7 +50,7 @@ public class BoardCommentService {
 
                     boolean isMine = boardCommentRepository.existsByIdAndMemberId(comment.getId(), memberId);
 
-                    return BoardCommentResponse.of(comment, writer, isMine);
+                    return CounselorBoardCommentResponse.of(comment, writer, isMine);
                 })
                 .collect(Collectors.toList());
 
@@ -63,7 +64,7 @@ public class BoardCommentService {
     }
 
     @Transactional
-    public void create(Long id, BoardCommentRequest request) {
+    public void create(Long id, CounselorBoardCommentRequest request) {
         // 토큰 확인 후 상담사인지 확인
         Long memberId = 1L;
 
@@ -71,11 +72,11 @@ public class BoardCommentService {
             throw new BoardBadRequestException();
         }
 
-        boardCommentRepository.save(BoardCommentRequest.toEntity(id, memberId, request));
+        boardCommentRepository.save(CounselorBoardCommentRequest.toEntity(id, memberId, request));
     }
 
     @Transactional
-    public BoardCommentResponse update(Long boardId, Long commentId, BoardCommentRequest request) {
+    public CounselorBoardCommentResponse update(Long boardId, Long commentId, CounselorBoardCommentRequest request) {
         // 토큰 확인 후 본인인지 확인
         Long memberId = 1L;
         
@@ -90,7 +91,7 @@ public class BoardCommentService {
 
         boolean isMine = boardCommentRepository.existsByIdAndMemberId(comment.getId(), memberId);
 
-        return BoardCommentResponse.of(comment, writer, isMine);
+        return CounselorBoardCommentResponse.of(comment, writer, isMine);
     }
 
     @Transactional
