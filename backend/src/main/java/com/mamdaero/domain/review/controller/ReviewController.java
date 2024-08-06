@@ -52,14 +52,14 @@ public class ReviewController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-//
-//    @DeleteMapping("/review/{reviewId}")
-//    public ResponseEntity<Review> delete(@PathVariable(name = "reviewId") Long reviewId) {
-//
-//        reviewService.delete(reviewId);
-//
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+
+    @DeleteMapping("/m/review/{reviewId}")
+    public ResponseEntity<?> delete(@PathVariable(name = "reviewId") Long reviewId) {
+
+        reviewService.delete(reviewId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
 
 

@@ -30,4 +30,8 @@ public class Review extends BaseEntity {
         this.review = request.getReview();
         this.score = request.getScore();
     }
+
+    public void delete() {
+        this.isDelete = true;
+    }
 }

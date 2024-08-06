@@ -108,36 +108,22 @@ public class ReviewService {
         review.update(request);
     }
 
-//    @Transactional
-//    public void update(Long id, ReviewRequestDto requestDto) {
-//        Optional<Review> optionalReview = reviewRepository.findById(id);
-//
-//        if (optionalReview.isPresent()) {
-//
-//            Review review = optionalReview.get();
-//
-//            if (requestDto.getReview().isEmpty()) {
-//                throw new ReviewNoReviewException();
-//            } else if (requestDto.getScore().isNaN()) {
-//                throw new ReviewNoScoreException();
-//            }
-//
-//            review.update(requestDto);
-//        } else {
-//            throw new ReviewNotFoundException();
-//        }
-//    }
-//
-//    @Transactional
-//    public void delete(Long id) {
-//        Optional<Review> optionalReview = reviewRepository.findById(id);
-//
-//        if (optionalReview.isPresent()) {
-//            Review review = optionalReview.get();
-//
-//            reviewRepository.delete(review);
-//        } else {
-//            throw new ReviewNotFoundException();
-//        }
-//    }
+    @Transactional
+    public void delete(Long id) {
+        if (!reviewRepository.existsById(id) || reviewRepository.findById(id).get().getIsDelete()) {
+            throw new ReviewNotFoundException();
+        }
+
+        //TODO: 진짜 멤버 아이디로 바꾸기
+        Long memberId = 1L;
+
+        // 자신이 작성한 리뷰가 아닐경우 리뷰 삭제 불가
+        if (reservationRepository.findById(id).get().getMemberId() != memberId) {
+            throw new ReviewBadRequestException();
+        }
+
+        Review review = reviewRepository.findById(id).get();
+        review.delete();
+    }
+
 }
