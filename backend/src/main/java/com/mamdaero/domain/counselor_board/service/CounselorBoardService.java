@@ -3,13 +3,13 @@ package com.mamdaero.domain.counselor_board.service;
 import com.mamdaero.domain.complaint.entity.Complaint;
 import com.mamdaero.domain.complaint.entity.Source;
 import com.mamdaero.domain.complaint.repository.ComplaintRepository;
-import com.mamdaero.domain.counselor_board.dto.request.BoardRequest;
-import com.mamdaero.domain.counselor_board.dto.response.BoardDetailResponse;
+import com.mamdaero.domain.counselor_board.dto.request.CounselorBoardRequest;
+import com.mamdaero.domain.counselor_board.dto.response.CounselorBoardDetailResponse;
 import com.mamdaero.domain.counselor_board.entity.CounselorBoard;
 import com.mamdaero.domain.counselor_board.entity.CounselorBoardFile;
-import com.mamdaero.domain.counselor_board.repository.BoardFileRepository;
-import com.mamdaero.domain.counselor_board.repository.BoardLikeRepository;
-import com.mamdaero.domain.counselor_board.repository.BoardRepository;
+import com.mamdaero.domain.counselor_board.repository.CounselorBoardFileRepository;
+import com.mamdaero.domain.counselor_board.repository.CounselorBoardLikeRepository;
+import com.mamdaero.domain.counselor_board.repository.CounselorBoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
@@ -28,17 +28,17 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class BoardService {
+public class CounselorBoardService {
 
-    private final BoardRepository boardRepository;
+    private final CounselorBoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
-    private final BoardLikeRepository boardLikeRepository;
-    private final BoardFileRepository boardFileRepository;
+    private final CounselorBoardLikeRepository boardLikeRepository;
+    private final CounselorBoardFileRepository boardFileRepository;
     private final FileService fileService;
 
     @Transactional
-    public BoardDetailResponse findDetail(Long id) {
+    public CounselorBoardDetailResponse findDetail(Long id) {
         Long memberId = null;
 
         CounselorBoard board = boardRepository.findById(id)
@@ -62,11 +62,11 @@ public class BoardService {
         }
 
 
-        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine, list);
+        return CounselorBoardDetailResponse.of(board, writer, likeCount, isLike, isMine, list);
     }
 
     @Transactional
-    public void create(BoardRequest request, List<MultipartFile> files) throws IOException {
+    public void create(CounselorBoardRequest request, List<MultipartFile> files) throws IOException {
         // 토큰 확인 후 상담사인지 확인
         Long memberId = 1L;
 
@@ -74,7 +74,7 @@ public class BoardService {
             throw new BoardBadRequestException();
         }
 
-        CounselorBoard board = BoardRequest.toEntity(memberId, request);
+        CounselorBoard board = CounselorBoardRequest.toEntity(memberId, request);
         boardRepository.save(board);
 
         for (MultipartFile file : files) {
@@ -89,7 +89,7 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardDetailResponse update(Long id, BoardRequest request) {
+    public CounselorBoardDetailResponse update(Long id, CounselorBoardRequest request) {
         // 토큰 확인 후 상담사인지 확인
         Long memberId = 1L;
 
@@ -112,7 +112,7 @@ public class BoardService {
         boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
         boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
 
-        return BoardDetailResponse.of(board, writer, likeCount, isLike, isMine, null);
+        return CounselorBoardDetailResponse.of(board, writer, likeCount, isLike, isMine, null);
     }
 
     @Transactional

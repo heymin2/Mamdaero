@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardCommentRequest {
+public class CounselorBoardCommentRequest {
 
     private String comment;
 
-    public static CounselorBoardComment toEntity(Long boardId, Long memberId, BoardCommentRequest request) {
+    public static CounselorBoardComment toEntity(Long boardId, Long memberId, CounselorBoardCommentRequest request) {
         return CounselorBoardComment.builder()
                 .boardId(boardId)
                 .memberId(memberId)

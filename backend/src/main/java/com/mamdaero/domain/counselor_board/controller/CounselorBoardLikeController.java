@@ -1,6 +1,6 @@
 package com.mamdaero.domain.counselor_board.controller;
 
-import com.mamdaero.domain.counselor_board.service.BoardLikeService;
+import com.mamdaero.domain.counselor_board.service.CounselorBoardLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequiredArgsConstructor
-public class BoardLikeController {
+public class CounselorBoardLikeController {
 
-    private final BoardLikeService boardLikeService;
+    private final CounselorBoardLikeService boardLikeService;
 
     @PostMapping("/c/counselor-board/{boardId}/like")
     public ResponseEntity<?> like(@PathVariable("boardId") Long id) {

@@ -1,7 +1,7 @@
 package com.mamdaero.domain.counselor_board.service;
 
 import com.mamdaero.domain.counselor_board.entity.CounselorBoardLike;
-import com.mamdaero.domain.counselor_board.repository.BoardLikeRepository;
+import com.mamdaero.domain.counselor_board.repository.CounselorBoardLikeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BoardLikeService {
+public class CounselorBoardLikeService {
 
-    private final BoardLikeRepository boardLikeRepository;
+    private final CounselorBoardLikeRepository boardLikeRepository;
 
     @Transactional
     public boolean like(Long boardId) {
