@@ -23,7 +23,7 @@ const sizeClasses: Record<
   상담사목록보기: 'w-36 h-8',
   예약하기: 'w-full h-12',
   회원가입: 'w-40 h-12',
-  검색: ' w-16 H-9',
+  검색: ' w-16 h-9',
 };
 
 const shapeClasses: Record<'rounded' | 'square', string> = {
@@ -35,7 +35,7 @@ const colorClasses: Record<'blue' | 'orange' | 'gray' | 'red', string> = {
   blue: 'bg-blue-200 hover:bg-blue-300 transition',
   orange: 'bg-orange-200 hover:bg-orange-300 transition',
   gray: 'bg-gray-200 hover:bg-gray-300 transition',
-  red: 'bg-red-300 hover:bg-red-400 transition',
+  red: 'bg-red-200 hover:bg-red-300 transition',
 };
 
 const textSizeClasses: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string> = {

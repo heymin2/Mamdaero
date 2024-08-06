@@ -70,15 +70,15 @@ const CounselHistory: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen p-3">
       <div className="sticky bg-blue-50 top-0 z-10 pt-4">
-        <div role="tablist" className="tabs tabs-lifted tabs-lg font-bold">
+        <div role="tablist" className="tabs tabs-lg font-bold border-b-4 border-b-blue-300">
           <a
-            className={`tab tab-lg h-16 ${activeTab === 'reservation' ? 'tab-active [--tab-bg:#93c5fd] [--tab-border-color:#93c5fd]' : '[--tab-border-color:#93c5fd]'}`}
+            className={`tab tab-lg h-14 ${activeTab === 'reservation' ? 'tab-active bg-blue-200 rounded-t-md' : 'bg-blue-50'}`}
             onClick={() => setActiveTab('reservation')}
           >
             예약 현황
           </a>
           <a
-            className={`tab tab-lg h-16 ${activeTab === 'completed' ? 'tab-active [--tab-bg:#93c5fd] [--tab-border-color:#93c5fd]' : '[--tab-border-color:#93c5fd]'}`}
+            className={`tab tab-lg h-14 ${activeTab === 'completed' ? 'tab-active bg-blue-200 rounded-t-md' : 'bg-blue-50'}`}
             onClick={() => setActiveTab('completed')}
           >
             완료된 상담
