@@ -3,6 +3,7 @@ package com.mamdaero.domain.consulting.service;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -26,7 +27,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class ClovaSpeechService {
+public class ScriptService {
 
     @Value("${CLOBA.SECRET}")
     private String secret;
@@ -34,8 +35,13 @@ public class ClovaSpeechService {
     @Value("${CLOBA.INVOKE_URL}")
     private String invokeUrl;
 
+    @Getter
+    private String script;
+
     private CloseableHttpClient httpClient = HttpClients.createDefault();
     private Gson gson = new Gson();
+    @Value("${OPENAI.SECRET}")
+    private String openAiApiKey; // OpenAI API 키
 
     private Header[] getHeaders() {
         return new Header[] {
@@ -104,21 +110,8 @@ public class ClovaSpeechService {
         }
     }
 
-    public String speechToText() {
-        NestRequestEntity requestEntity = new NestRequestEntity();
-        // 기존 필드를 설정합니다.
-        // local에 저장된 파일로 변환
-        final String result = upload(new File("C:\\Users\\SSAFY\\Desktop\\sample.mp4"), requestEntity);
-        // 외부 저장소에 저장된 파일로 변환
-//        final String result = url("https://kr.object.ncloudstorage.com/mamdaerostt/sample.mp4", requestEntity);
-        // NCP objectStorage에 저장된 파일로 변환
-        // aws s3 Storage랑 연동된다고 하는데 아직 잘 모르겠음
-//        final String result = objectStorage("sample.mp4", requestEntity);
-
-        JsonParser parser = new JsonParser();
-        JsonObject jsonObject = (JsonObject) parser.parse(result);
-
-        return jsonObject.get("text").toString();
+    public ScriptService(String script) {
+        this.script = script;
     }
 
     public static class Boosting {
@@ -267,4 +260,62 @@ public class ClovaSpeechService {
             this.sed = sed;
         }
     }
+
+    public String speechToText() {
+        NestRequestEntity requestEntity = new NestRequestEntity();
+        // 기존 필드를 설정합니다.
+        // local에 저장된 파일로 변환
+        final String result = upload(new File("C:\\Users\\SSAFY\\Desktop\\sample.mp4"), requestEntity);
+        // 외부 저장소에 저장된 파일로 변환
+//        final String result = url("https://kr.object.ncloudstorage.com/mamdaerostt/sample.mp4", requestEntity);
+        // NCP objectStorage에 저장된 파일로 변환
+        // aws s3 Storage랑 연동된다고 하는데 아직 잘 모르겠음
+//        final String result = objectStorage("sample.mp4", requestEntity);
+
+        JsonParser parser = new JsonParser();
+        JsonObject jsonObject = (JsonObject) parser.parse(result);
+
+        System.out.println(jsonObject);
+
+        script = jsonObject.get("text").getAsString();
+
+        System.out.println(script);
+
+        return script;
+    }
+
+    // ChatGPT를 사용하여 텍스트를 요약하는 메서드
+    private String summarizeWithChatGPT(String text) {
+        String apiEndpoint = "https://api.openai.com/v1/chat/completions"; // OpenAI API URL
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost postRequest = new HttpPost(apiEndpoint);
+            postRequest.setHeader("Authorization", "Bearer " + openAiApiKey);
+            postRequest.setHeader("Content-Type", "application/json");
+
+            String jsonBody = String.format("{\"model\": \"gpt-4o\",\"messages\": [{\"role\": \"system\", \"content\": \"Summarize the following text.\"}, {\"role\": \"user\", \"content\": \"%s\"}]}",
+                    text);
+            postRequest.setEntity(new StringEntity(jsonBody, StandardCharsets.UTF_8));
+
+            try (CloseableHttpResponse response = httpClient.execute(postRequest)) {
+                HttpEntity entity = response.getEntity();
+                String responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+
+                // JsonParser 인스턴스를 생성하여 사용
+                JsonParser parser = new JsonParser();
+                JsonObject jsonResponse = parser.parse(responseString).getAsJsonObject();
+
+                System.out.println(jsonResponse);
+                String summary = jsonResponse.getAsJsonArray("choices").get(0).getAsJsonObject().get("message").getAsJsonObject().get("content").getAsString();
+                return summary;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to call OpenAI API", e);
+        }
+    }
+
+    // 기존 메서드를 수정하여 ChatGPT를 호출
+    public String summaryFromGPT() {
+        return summarizeWithChatGPT(script);
+    }
+
 }

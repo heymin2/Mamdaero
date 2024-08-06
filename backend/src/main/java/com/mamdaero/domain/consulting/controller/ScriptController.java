@@ -1,6 +1,6 @@
 package com.mamdaero.domain.consulting.controller;
 
-import com.mamdaero.domain.consulting.service.ClovaSpeechService;
+import com.mamdaero.domain.consulting.service.ScriptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,11 +10,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ScriptController {
 
-    private final ClovaSpeechService clovaSpeechService;
+    private final ScriptService scriptService;
 
     @GetMapping("/c/script")
+    // @GetMapping("/c/script/{consultId}")
     public ResponseEntity<String> getScript() {
-        String script = clovaSpeechService.speechToText();
+        String script = scriptService.speechToText();
+        return ResponseEntity.ok(script);
+    }
+
+    @GetMapping("/c/summarized-script")
+    // @GetMapping("/c/summarized-script/{consultId}")
+    public ResponseEntity<String> getSummarizedScript() {
+
+        String script = scriptService.summaryFromGPT();
+
         return ResponseEntity.ok(script);
     }
 }
