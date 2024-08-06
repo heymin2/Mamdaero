@@ -1,6 +1,12 @@
 package com.mamdaero.domain.review.service;
 
+import com.mamdaero.domain.consult.repository.ConsultRepository;
+import com.mamdaero.domain.reservation.repository.ReservationRepository;
+import com.mamdaero.domain.review.dto.request.CreateReviewRequest;
 import com.mamdaero.domain.review.dto.response.ReviewResponse;
+import com.mamdaero.domain.review.entity.Review;
+import com.mamdaero.domain.review.exception.ReviewAlreadyExistException;
+import com.mamdaero.domain.review.exception.ReviewBadRequestException;
 import com.mamdaero.domain.review.repository.ReviewRepository;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +20,8 @@ import org.springframework.stereotype.Service;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ConsultRepository consultRepository;
+    private final ReservationRepository reservationRepository;
 
     public Pagination<ReviewResponse> findAllCounselorReview(Long id, int page, int size) {
 
@@ -46,6 +54,36 @@ public class ReviewService {
                 reviewPage.getSize(),
                 (int) reviewPage.getTotalElements()
         );
+    }
+
+    public void create(Long consultId, CreateReviewRequest request) {
+
+        // 상담이 없으면 리뷰 작성 불가
+        if (!consultRepository.existsById(consultId)) {
+            throw new ReviewBadRequestException();
+        }
+
+        // 이미 작성된 리뷰가 있을경우 리뷰 작성 불가
+        if (reviewRepository.existsById(consultId)) {
+            throw new ReviewAlreadyExistException();
+        }
+
+        //TODO: 진짜 멤버ID 가져오기
+        Long memberId = 1L;
+
+        // 자신이 예약한 상담이 아닐경우 리뷰 작성 불가
+        if (reservationRepository.findById(consultId).get().getMemberId() != memberId) {
+            throw new ReviewBadRequestException();
+        }
+
+
+        Review review = Review.builder()
+                .id(consultId)
+                .review(request.getReview())
+                .score(request.getScore())
+                .build();
+        reviewRepository.save(review);
+
     }
 
 //    @Transactional
