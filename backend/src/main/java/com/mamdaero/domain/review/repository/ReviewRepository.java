@@ -14,13 +14,16 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "FROM Review r " +
             "JOIN Reservation rv ON r.id = rv.id " +
             "JOIN CounselorItem ci ON rv.counselorItemId = ci.counselorItemId " +
-            "WHERE ci.counselorId = :counselorId ")
+            "WHERE ci.counselorId = :counselorId " +
+            "AND r.isDelete = false")
     Page<ReviewResponse> findAllCounselorReview(@Param("counselorId") Long counselorId, Pageable pageable);
 
 
     @Query("SELECT new com.mamdaero.domain.review.dto.response.ReviewResponse(r.id, r.review, r.score) " +
             "FROM Review r " +
             "JOIN Reservation rv ON r.id = rv.id " +
-            "WHERE rv.memberId = :memberId ")
+            "WHERE rv.memberId = :memberId " +
+            "AND r.isDelete = false"
+    )
     Page<ReviewResponse> findAllMyReview(@Param("memberId") Long memberId, Pageable pageable);
 }
