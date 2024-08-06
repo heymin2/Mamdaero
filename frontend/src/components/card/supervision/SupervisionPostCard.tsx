@@ -2,6 +2,7 @@ import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import dayjs from 'dayjs';
+import parse from 'html-react-parser';
 
 interface SupervisionPostCardProps {
   postDetail: {
@@ -45,7 +46,7 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail })
       </div>
       {/* 게시글 내용 */}
       <div className="relative border-y-2 border-blue-300 p-10">
-        <div className="whitespace-pre-wrap">{content}</div>
+        <div className="whitespace-pre-wrap">{parse(content)}</div>
         <div className="absolute bottom-3 right-5 flex text-base gap-1 p-2">
           <IoMdHeartEmpty size={24} color="red" />
           <IoMdHeart size={24} color="red" />

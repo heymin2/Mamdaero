@@ -12,7 +12,6 @@ const CounselorManageTimePage: React.FC = () => {
   const [startTime, setStartTime] = useState<number>(9);
   const [endTime, setEndTime] = useState<number>(10);
   const [times, setTimes] = useState<Time[]>([]);
-  const [availableWeeks, setAvailableWeeks] = useState<string[]>([]);
   const navigate = useNavigate();
   const backToList = () => {
     navigate('/mypage/counselor');

@@ -14,14 +14,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @MappedSuperclass // 객체 입장에서 공통 매핑 정보가 필요할 때 사용
-@SuperBuilder(toBuilder = true)
+@SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @Getter
 @ToString
 public abstract class BaseEntity {
     @CreatedDate
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
     @LastModifiedDate
     @Column(name = "updated_at")
