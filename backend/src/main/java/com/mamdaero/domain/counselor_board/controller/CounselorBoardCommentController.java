@@ -2,6 +2,7 @@ package com.mamdaero.domain.counselor_board.controller;
 
 import com.mamdaero.domain.counselor_board.dto.request.CounselorBoardCommentRequest;
 import com.mamdaero.domain.counselor_board.service.CounselorBoardCommentService;
+import com.mamdaero.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class CounselorBoardCommentController {
 
     private final CounselorBoardCommentService boardCommentService;
+    private final NotificationService notificationService;
 
     @GetMapping("/ca/counselor-board/{boardId}/comment")
     public ResponseEntity<?> comment(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -23,6 +25,7 @@ public class CounselorBoardCommentController {
     @PostMapping("/ca/counselor-board/{boardId}/comment")
     public ResponseEntity<?> create(@PathVariable("boardId") Long id, @RequestBody CounselorBoardCommentRequest request) {
         boardCommentService.create(id, request);
+        notificationService.notifyComment(id);
         return ResponseEntity.ok().build();
     }
 
