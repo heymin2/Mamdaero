@@ -3,7 +3,6 @@ import Button from '@/components/button/Button';
 
 interface CounselorReservationStatusCardProps {
   counselId: string;
-  counselorName: string;
   clientName: string;
   date: string;
   time: string;
@@ -13,7 +12,6 @@ interface CounselorReservationStatusCardProps {
 
 const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardProps> = ({
   counselId,
-  counselorName,
   clientName,
   date,
   time,
@@ -52,7 +50,6 @@ const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardPro
       <div className="grid grid-cols-2 gap-4 mb-2">
         <div>
           <p>상담ID: {counselId}</p>
-          <p>상담사: {counselorName}</p>
           <p>일자: {date}</p>
         </div>
         <div>
