@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axiosInstance from '@/api/axiosInstance';
 import dayjs from 'dayjs';
 
 import SupervisionListCard from '@/components/card/supervision/SupervisionListCard';
@@ -27,7 +27,9 @@ interface Post {
 }
 
 const fetchPosts = async (page: number): Promise<Page<Post>> => {
-  const res = await axios.get<Page<Post>>('https://mamdaero.o-r.kr/api/ca/counselor-board', {
+  const res = await axiosInstance({
+    method: 'get',
+    url: 'ca/counselor-board',
     params: {
       page: page - 1,
       condition: 'new',
@@ -35,7 +37,7 @@ const fetchPosts = async (page: number): Promise<Page<Post>> => {
   });
   return {
     ...res.data,
-    data: res.data.data.map(item => ({
+    data: res.data.data.map((item: Post) => ({
       id: item.id,
       title: item.title,
       writer: item.writer,
@@ -50,7 +52,6 @@ const SupervisionListPage: React.FC = () => {
   const [selectedOption1, setSelectedOption1] = useState('최신순');
   const [selectedOption2, setSelectedOption2] = useState('제목');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const postsPerPage = 10;
 
   const navigate = useNavigate();
 
