@@ -31,6 +31,23 @@ public class ReviewService {
 
     }
 
+    public Pagination<ReviewResponse> findAllMyReview(int page, int size) {
+        //TODO: 진짜 멤버 아이디로 바꾸기
+        Long memberId = 1L;
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<ReviewResponse> reviewPage = reviewRepository.findAllMyReview(memberId, pageable);
+
+        return new Pagination<>(
+                reviewPage.getContent(),
+                reviewPage.getNumber() + 1,
+                reviewPage.getTotalPages(),
+                reviewPage.getSize(),
+                (int) reviewPage.getTotalElements()
+        );
+    }
+
 //    @Transactional
 //    public void create(Long id, ReviewRequestDto requestDto) {
 //

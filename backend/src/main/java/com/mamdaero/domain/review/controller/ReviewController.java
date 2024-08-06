@@ -29,11 +29,14 @@ public class ReviewController {
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
 
-//    @GetMapping("/review")
-//    public ResponseEntity<List<Review>> findMyReview() {
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    @GetMapping("/m/review")
+    public ResponseEntity<Pagination<ReviewResponse>> findMyReview(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        Pagination<ReviewResponse> reviewList = reviewService.findAllMyReview(page, size);
+        return new ResponseEntity<>(reviewList, HttpStatus.OK);
+    }
 //
 //    @PostMapping("/review/{reviewId}")
 //    public ResponseEntity<Review> create(@PathVariable(name = "reviewId") Long reviewId, @RequestBody ReviewRequestDto requestDto) {

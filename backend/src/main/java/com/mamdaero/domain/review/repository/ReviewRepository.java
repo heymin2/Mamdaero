@@ -16,4 +16,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "JOIN CounselorItem ci ON rv.counselorItemId = ci.counselorItemId " +
             "WHERE ci.counselorId = :counselorId ")
     Page<ReviewResponse> findAllCounselorReview(@Param("counselorId") Long counselorId, Pageable pageable);
+
+
+    @Query("SELECT new com.mamdaero.domain.review.dto.response.ReviewResponse(r.id, r.review, r.score) " +
+            "FROM Review r " +
+            "JOIN Reservation rv ON r.id = rv.id " +
+            "WHERE rv.memberId = :memberId ")
+    Page<ReviewResponse> findAllMyReview(@Param("memberId") Long memberId, Pageable pageable);
 }
