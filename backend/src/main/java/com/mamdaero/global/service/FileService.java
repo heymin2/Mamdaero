@@ -48,7 +48,7 @@ public class FileService {
     }
 
     private String upload(MultipartFile multipartFile, String dirName, Long memberId) throws IOException {
-        String fileName = dirName + memberId + "/" + UUID.randomUUID();
+        String fileName = dirName + memberId + "/" + UUID.randomUUID()  + "_" + multipartFile.getOriginalFilename();
         try (InputStream inputStream = multipartFile.getInputStream()) {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(multipartFile.getSize());

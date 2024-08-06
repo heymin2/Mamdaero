@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface BoardRepository extends JpaRepository<CounselorBoard, Long> {
+public interface CounselorBoardRepository extends JpaRepository<CounselorBoard, Long> {
     boolean existsByIdAndMemberId(Long id, Long memberId);
     Page<CounselorBoard> findAllByOrderByCreatedAtDesc(Pageable pageable);
     Page<CounselorBoard> findAllByOrderByCreatedAt(Pageable pageable);

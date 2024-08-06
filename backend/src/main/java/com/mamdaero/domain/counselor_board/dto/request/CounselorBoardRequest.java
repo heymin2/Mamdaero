@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BoardRequest {
+public class CounselorBoardRequest {
 
     private String title;
     private String content;
 
-    public static CounselorBoard toEntity(Long memberId, BoardRequest request) {
+    public static CounselorBoard toEntity(Long memberId, CounselorBoardRequest request) {
         return CounselorBoard.builder()
                 .memberId(memberId)
                 .title(request.getTitle())
