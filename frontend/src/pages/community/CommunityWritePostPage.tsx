@@ -32,7 +32,7 @@ const CommunityWritePostPage = () => {
       <div className="sticky top-0 z-10">
         <CommunityBar />
         <div className="mx-24 text-right">
-          <RegisterBUtton onClick={handleSubmit} color="orange" />
+          {/* <RegisterBUtton onClick={handleSubmit} color="orange" /> */}
         </div>
       </div>
       <div className="mx-24 my-6">

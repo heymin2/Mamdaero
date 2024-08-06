@@ -4,7 +4,7 @@ import React from 'react';
 interface ButtonProps {
   label: React.ReactNode;
   onClick: () => void;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기' | '예약하기' | '회원가입';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기' | '예약하기' | '회원가입' | '검색';
   shape?: 'rounded' | 'square';
   color?: 'blue' | 'orange' | 'gray' | 'red';
   textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -12,7 +12,7 @@ interface ButtonProps {
 }
 
 const sizeClasses: Record<
-  'xs' | 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기' | '예약하기' | '회원가입',
+  'xs' | 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기' | '예약하기' | '회원가입' | '검색',
   string
 > = {
   xs: 'w-16 h-5',
@@ -23,6 +23,7 @@ const sizeClasses: Record<
   상담사목록보기: 'w-36 h-8',
   예약하기: 'w-full h-12',
   회원가입: 'w-40 h-12',
+  검색: ' w-16 H-9',
 };
 
 const shapeClasses: Record<'rounded' | 'square', string> = {
