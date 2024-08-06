@@ -1,7 +1,8 @@
 package com.mamdaero.domain.counselor_board.controller;
 
-import com.mamdaero.domain.counselor_board.dto.request.BoardCommentRequest;
-import com.mamdaero.domain.counselor_board.service.BoardCommentService;
+import com.mamdaero.domain.counselor_board.dto.request.CounselorBoardCommentRequest;
+import com.mamdaero.domain.counselor_board.service.CounselorBoardCommentService;
+import com.mamdaero.domain.notification.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,9 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-public class BoardCommentController {
+public class CounselorBoardCommentController {
 
-    private final BoardCommentService boardCommentService;
+    private final CounselorBoardCommentService boardCommentService;
+    private final EventService eventService;
 
     @GetMapping("/ca/counselor-board/{boardId}/comment")
     public ResponseEntity<?> comment(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -21,13 +23,14 @@ public class BoardCommentController {
     }
 
     @PostMapping("/ca/counselor-board/{boardId}/comment")
-    public ResponseEntity<?> create(@PathVariable("boardId") Long id, @RequestBody BoardCommentRequest request) {
+    public ResponseEntity<?> create(@PathVariable("boardId") Long id, @RequestBody CounselorBoardCommentRequest request) {
         boardCommentService.create(id, request);
+        eventService.notifyComment(id);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/ca/counselor-board/{boardId}/comment/{commentId}")
-    public ResponseEntity<?> update(@PathVariable("boardId") Long boardId, @PathVariable("commentId") Long commentId, @RequestBody BoardCommentRequest request) {
+    public ResponseEntity<?> update(@PathVariable("boardId") Long boardId, @PathVariable("commentId") Long commentId, @RequestBody CounselorBoardCommentRequest request) {
         return ResponseEntity.ok(boardCommentService.update(boardId, commentId, request));
     }
 

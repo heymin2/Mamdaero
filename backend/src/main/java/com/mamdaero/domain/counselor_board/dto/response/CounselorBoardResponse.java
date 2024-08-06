@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class  BoardResponse {
+public class CounselorBoardResponse {
 
     private Long id;
     private String writer;
@@ -21,8 +21,8 @@ public class  BoardResponse {
     private Integer likeCount;
     private LocalDateTime createdAt;
 
-    public static BoardResponse of(CounselorBoard board, String writer, int likeCount) {
-        return BoardResponse.builder()
+    public static CounselorBoardResponse of(CounselorBoard board, String writer, int likeCount) {
+        return CounselorBoardResponse.builder()
                 .id(board.getId())
                 .writer(writer)
                 .title(board.getTitle())
