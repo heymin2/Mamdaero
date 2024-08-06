@@ -38,7 +38,7 @@ const ReportWriteModal: React.FC<ReportModalProps> = ({
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
-      <div className="max-h-[80vh] overflow-y-auto p-4">
+      <div className="max-h-[vh] overflow-y-auto p-4">
         <h2 className="text-2xl font-bold mb-4">상담 일지</h2>
         <table className="w-full mb-4">
           <tbody>
@@ -53,6 +53,10 @@ const ReportWriteModal: React.FC<ReportModalProps> = ({
               <td>박민준</td>
               <td className="font-bold">상담시간</td>
               <td>1시간</td>
+            </tr>
+            <tr>
+              <td className="font-bold">상담방법</td>
+              <td colSpan={3}>개인상담</td>
             </tr>
           </tbody>
         </table>

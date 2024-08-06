@@ -30,7 +30,7 @@ const DepressedResultPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-16">
+    <div className="min-h-screen">
       <TestBar
         title="우울"
         subtitle="기분이 늘 울적하고 매사에 의욕이 없나요?"

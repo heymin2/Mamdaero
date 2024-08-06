@@ -34,7 +34,7 @@ const StressResultPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-16">
+    <div className="min-h-screen">
       <TestBar
         title="스트레스"
         subtitle="요즘 스트레스에 시달리고 계신가요?"
