@@ -1,6 +1,7 @@
 package com.mamdaero.domain.review.controller;
 
 import com.mamdaero.domain.review.dto.request.CreateReviewRequest;
+import com.mamdaero.domain.review.dto.request.UpdateReviewRequest;
 import com.mamdaero.domain.review.dto.response.ReviewResponse;
 import com.mamdaero.domain.review.service.ReviewService;
 import com.mamdaero.global.dto.Pagination;
@@ -43,14 +44,14 @@ public class ReviewController {
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-//
-//    @PatchMapping("/review/{reviewId}")
-//    public ResponseEntity<Review> update(@PathVariable(name = "reviewId") Long reviewId, @RequestBody ReviewRequestDto requestDto) {
-//
-//        reviewService.update(reviewId, requestDto);
-//
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+
+    @PatchMapping("/m/review/{reviewId}")
+    public ResponseEntity<?> update(@PathVariable(name = "reviewId") Long reviewId, @RequestBody UpdateReviewRequest request) {
+
+        reviewService.update(reviewId, request);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 //
 //    @DeleteMapping("/review/{reviewId}")
 //    public ResponseEntity<Review> delete(@PathVariable(name = "reviewId") Long reviewId) {

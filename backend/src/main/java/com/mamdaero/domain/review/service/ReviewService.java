@@ -3,12 +3,15 @@ package com.mamdaero.domain.review.service;
 import com.mamdaero.domain.consult.repository.ConsultRepository;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.domain.review.dto.request.CreateReviewRequest;
+import com.mamdaero.domain.review.dto.request.UpdateReviewRequest;
 import com.mamdaero.domain.review.dto.response.ReviewResponse;
 import com.mamdaero.domain.review.entity.Review;
 import com.mamdaero.domain.review.exception.ReviewAlreadyExistException;
 import com.mamdaero.domain.review.exception.ReviewBadRequestException;
+import com.mamdaero.domain.review.exception.ReviewNotFoundException;
 import com.mamdaero.domain.review.repository.ReviewRepository;
 import com.mamdaero.global.dto.Pagination;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -86,31 +89,25 @@ public class ReviewService {
 
     }
 
-//    @Transactional
-//    public void create(Long id, ReviewRequestDto requestDto) {
-//
-//        Optional<Review> optionalReview = reviewRepository.findById(id);
-//
-//        if (optionalReview.isEmpty()) {
-//
-//            if (requestDto.getReview().isEmpty()) {
-//                throw new ReviewNoReviewException();
-//            } else if (requestDto.getScore().isNaN()) {
-//                throw new ReviewNoScoreException();
-//            }
-//
-//            Review review = Review.builder()
-//                    .id(id)
-//                    .review(requestDto.getReview())
-//                    .score(requestDto.getScore())
-//                    .build();
-//
-//            reviewRepository.save(review);
-//        } else {
-//            throw new ReviewAlreadyException();
-//        }
-//    }
-//
+    @Transactional
+    public void update(Long id, UpdateReviewRequest request) {
+
+        if (!reviewRepository.existsById(id)) {
+            throw new ReviewNotFoundException();
+        }
+
+        //TODO: 진짜 멤버 아이디로 바꾸기
+        Long memberId = 1L;
+
+        // 자신이 작성한 리뷰가 아닐경우 리뷰 수정 불가
+        if (reservationRepository.findById(id).get().getMemberId() != memberId) {
+            throw new ReviewBadRequestException();
+        }
+
+        Review review = reviewRepository.findById(id).get();
+        review.update(request);
+    }
+
 //    @Transactional
 //    public void update(Long id, ReviewRequestDto requestDto) {
 //        Optional<Review> optionalReview = reviewRepository.findById(id);
