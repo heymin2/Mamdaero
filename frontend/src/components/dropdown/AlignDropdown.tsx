@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 
 interface DropdownProps {
@@ -8,12 +8,19 @@ interface DropdownProps {
 }
 
 const AlignDropdown: React.FC<DropdownProps> = ({ selectedOption, options, onOptionClick }) => {
-  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (detailsRef.current && !detailsRef.current.contains(event.target as Node)) {
-        detailsRef.current.removeAttribute('open');
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node) &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
       }
     };
 
@@ -23,36 +30,56 @@ const AlignDropdown: React.FC<DropdownProps> = ({ selectedOption, options, onOpt
     };
   }, []);
 
+  const toggleMenu = () => setIsOpen(prev => !prev);
+
   const handleOptionClick = (option: string) => {
     onOptionClick(option);
-    if (detailsRef.current) {
-      detailsRef.current.removeAttribute('open');
-    }
+    setIsOpen(false);
   };
 
   return (
-    <details ref={detailsRef} className="dropdown">
-      <summary className="btn m-1 w-32 shadow-md flex items-center justify-between">
-        <span className="truncate">{selectedOption}</span>
-        <IoIosArrowDown className="ml-1 flex-shrink-0" />
-      </summary>
-      <ul className="menu dropdown-content bg-base-100 rounded-box w-52 p-2 shadow mt-1 z-10">
-        {options.map(option => (
-          <li key={option}>
-            <a
-              href="#"
-              onClick={e => {
-                e.preventDefault();
-                handleOptionClick(option);
-              }}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
-            >
-              {option}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </details>
+    <div className="relative text-left mx-1 w-32">
+      <button
+        type="button"
+        className="inline-flex w-full justify-center rounded-md bg-white px-3 py-1.5 text-md font-semibold text-gray-900 hover:bg-gray-100"
+        id="menu-button"
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        onClick={toggleMenu}
+        ref={buttonRef}
+      >
+        {selectedOption}
+        <IoIosArrowDown className="ml-1 mt-0.5 flex-shrink-0" />
+      </button>
+
+      {isOpen && (
+        <div
+          className="absolute right-0 z-10 mt-2 w-28 origin-top-right rounded-md bg-white shadow-lg focus:outline-none"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="menu-button"
+          ref={menuRef}
+        >
+          <div className="py-1" role="none">
+            {options.map(option => (
+              <a
+                key={option}
+                href="#"
+                onClick={e => {
+                  e.preventDefault();
+                  handleOptionClick(option);
+                }}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+                tabIndex={-1}
+              >
+                {option}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

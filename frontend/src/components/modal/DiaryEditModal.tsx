@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
-import { Emotion, emotionEmojis } from '@/pages/emotiondiary/emotion';
+import { Emotion, getEmotionImage, emotionImages } from '@/pages/emotiondiary/emotion';
 import ModalWrapper from '@/components/modal/ModalWrapper';
 
 interface DiaryEditModalProps {
   isOpen: boolean;
-  diary: { id: string; date: string; emotion: Emotion; content: string };
+  diary: {
+    id: string;
+    date: string;
+    emotion: Emotion;
+    content: string;
+    shareWithCounselor: boolean;
+  };
   onClose: () => void;
-  onSubmit: (diary: { id: string; date: string; emotion: Emotion; content: string }) => void;
+  onSubmit: (diary: {
+    id: string;
+    date: string;
+    emotion: Emotion;
+    content: string;
+    shareWithCounselor: boolean;
+  }) => void;
 }
 
 const DiaryEditModal: React.FC<DiaryEditModalProps> = ({ isOpen, diary, onClose, onSubmit }) => {
@@ -14,6 +26,7 @@ const DiaryEditModal: React.FC<DiaryEditModalProps> = ({ isOpen, diary, onClose,
 
   const [emotion, setEmotion] = useState<Emotion>(diary.emotion);
   const [content, setContent] = useState(diary.content);
+  const [shareWithCounselor, setShareWithCounselor] = useState(diary.shareWithCounselor);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,46 +34,58 @@ const DiaryEditModal: React.FC<DiaryEditModalProps> = ({ isOpen, diary, onClose,
       ...diary,
       emotion,
       content,
+      shareWithCounselor,
     });
   };
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
-      <h2 className="text-2xl mb-4">일기 수정 ({diary.date})</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block mb-2">감정 선택:</label>
-          <div className="flex space-x-2">
-            {Object.entries(emotionEmojis).map(([key, value]) => (
+      <div className="bg-gray-100 p-4 rounded-lg shadow-lg" style={{ width: '600px' }}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-bold">날짜</h2>
+          <div className="bg-orange-200 px-4 py-2 rounded">{diary.date}</div>
+          <div className="flex items-center">
+            <span className="mr-2">오늘의 감정</span>
+            {Object.keys(emotionImages).map(key => (
               <button
                 key={key}
                 type="button"
-                className={`p-2 rounded ${emotion === key ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                className={`p-1 rounded-full ${emotion === key ? 'bg-orange-300' : ''}`}
                 onClick={() => setEmotion(key as Emotion)}
               >
-                {value}
+                <img src={getEmotionImage(key as Emotion)} alt={key} className="w-7 h-6" />
               </button>
             ))}
           </div>
         </div>
-        <div className="mb-4">
-          <label className="block mb-2">내용:</label>
+
+        <div className="mb-4 flex items-center">
+          <input
+            type="checkbox"
+            id="shareWithCounselor"
+            checked={shareWithCounselor}
+            onChange={e => setShareWithCounselor(e.target.checked)}
+            className="mr-2"
+          />
+          <label htmlFor="shareWithCounselor">상담사 공개</label>
+        </div>
+
+        <form onSubmit={handleSubmit}>
           <textarea
-            className="w-full p-2 border rounded"
+            className="w-full p-4 border rounded-lg bg-white h-40 resize-none"
             value={content}
             onChange={e => setContent(e.target.value)}
+            placeholder="오늘의 일기를 작성해주세요..."
             required
           />
-        </div>
-        <div className="flex justify-end space-x-2">
-          <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">
-            취소
-          </button>
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
-            수정
-          </button>
-        </div>
-      </form>
+
+          <div className="flex justify-center mt-4">
+            <button type="submit" className="px-6 py-2 bg-orange-300 text-white rounded-full">
+              작성 완료
+            </button>
+          </div>
+        </form>
+      </div>
     </ModalWrapper>
   );
 };
