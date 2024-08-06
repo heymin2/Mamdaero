@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import SupervisionPostCard from '@/components/card/supervision/SupervisionPostCard';
-import Button from '@/components/button/Button';
-import { IoIosArrowBack } from 'react-icons/io';
-import SupervisionCommentCard from '@/components/card/supervision/SupervisionCommentCard';
-import SupervisionBar from '@/components/navigation/SupervisionBar';
-import SupervisionWriteCommentCard from '@/components/card/supervision/SupervisionWriteCommentCard';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
+
+import { IoIosArrowBack } from 'react-icons/io';
+import Button from '@/components/button/Button';
+import SupervisionBar from '@/components/navigation/SupervisionBar';
+import SupervisionPostCard from '@/components/card/supervision/SupervisionPostCard';
+import SupervisionCommentCard from '@/components/card/supervision/SupervisionCommentCard';
+import SupervisionWriteCommentCard from '@/components/card/supervision/SupervisionWriteCommentCard';
 
 interface PostDetail {
   id: number;
@@ -19,6 +20,7 @@ interface PostDetail {
   likeCount: number;
   isLike: boolean;
   isMine: boolean;
+  file: string;
 }
 
 interface CommentDetail {
@@ -28,43 +30,44 @@ interface CommentDetail {
   createdAt: string;
 }
 
+const fetchPostDetail = async (postId: number): Promise<PostDetail> => {
+  const response = await axiosInstance({
+    method: 'get',
+    url: `/ca/counselor-board/${postId}`,
+  });
+  return response.data;
+};
+
+const fetchComments = async (postId: number): Promise<CommentDetail[]> => {
+  const response = await axiosInstance({
+    method: 'get',
+    url: `/ca/counselor-board/${postId}/comment`,
+  });
+  return Array.isArray(response.data.data) ? response.data.data : [];
+};
+
 const SupervisionDetailPage: React.FC = () => {
   const { supervisionId } = useParams<{ supervisionId: string }>();
   const navigate = useNavigate();
-  const [postDetail, setPostDetail] = useState<PostDetail | null>(null);
-  const [comments, setComments] = useState<CommentDetail[]>([]);
 
   const backToList = () => {
     navigate('/supervision');
   };
 
-  useEffect(() => {
-    const fetchPostDetail = async (postId: number) => {
-      try {
-        const res = await axios.get(`https://mamdaero.o-r.kr/api/ca/counselor-board/${postId}`);
-        setPostDetail(res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const postDetailQuery = useQuery({
+    queryKey: ['postDetail', supervisionId],
+    queryFn: () => fetchPostDetail(Number(supervisionId)),
+    enabled: !!supervisionId,
+  });
 
-    const fetchComments = async (postId: number) => {
-      try {
-        const res = await axios.get(
-          `https://mamdaero.o-r.kr/api/ca/counselor-board/${postId}/comment`
-        );
-        const commentsData = Array.isArray(res.data.data) ? res.data.data : [];
-        setComments(commentsData); // Correctly set comments array
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const commentsQuery = useQuery({
+    queryKey: ['comments', supervisionId],
+    queryFn: () => fetchComments(Number(supervisionId)),
+    enabled: !!supervisionId,
+  });
 
-    if (supervisionId) {
-      fetchPostDetail(Number(supervisionId));
-      fetchComments(Number(supervisionId));
-    }
-  }, [supervisionId]);
+  if (postDetailQuery.isError) return <div>Error loading post details</div>;
+  if (commentsQuery.isError) return <div>Error loading comments</div>;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -84,25 +87,27 @@ const SupervisionDetailPage: React.FC = () => {
               textSize="sm"
               shape="rounded"
               color="blue"
-            ></Button>
+            />
           </div>
           <SupervisionBar />
         </div>
       </div>
       {/* 게시물 내용 */}
       <div className="flex-grow py-5 px-16">
-        {postDetail && (
+        {postDetailQuery.data && (
           <>
-            <SupervisionPostCard postDetail={postDetail} />
+            <SupervisionPostCard postDetail={postDetailQuery.data} />
             <div className="border-y-2 border-blue-300 px-10 py-2 mt-3">
-              <span className="text-blue-500 font-bold text-xl">{comments.length}</span>
+              <span className="text-blue-500 font-bold text-xl">
+                {commentsQuery.data?.length || 0}
+              </span>
               <span className="font-bold text-base">개의 댓글이 있습니다.</span>
             </div>
-            {comments.map(comment => (
-              <SupervisionCommentCard key={comment.id} commentDetail={comment} />
-            ))}
-            <SupervisionWriteCommentCard />
-            <SupervisionWriteCommentCard />
+            {commentsQuery.data &&
+              commentsQuery.data.map(comment => (
+                <SupervisionCommentCard key={comment.id} commentDetail={comment} />
+              ))}
+            <SupervisionWriteCommentCard postId={Number(supervisionId)} />
           </>
         )}
       </div>
