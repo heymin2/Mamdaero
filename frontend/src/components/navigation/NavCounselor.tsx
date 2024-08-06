@@ -9,8 +9,8 @@ import DiaryViewModal from '../modal/DiaryViewModal';
 const navStyle =
   'p-3 text-lg font-semibold hover:bg-gray-200 text-center transition-colors duration-300';
 const navSubStyle =
-  'py-2 px-6 text-base font-semibold hover:bg-gray-100 text-left transition-colors duration-300';
-const activeStyle = 'bg-blue-100 border-l-4 border-blue-500';
+  'py-2 px-6 text-base font-semibold hover:bg-gray-100 text-left transition-colors duration-300 text-center';
+const activeStyle = 'bg-blue-100 border-l-4 border-blue-500 text-center';
 const activeSubStyle = 'bg-gray-200';
 
 const NavClient: React.FC = () => {
@@ -64,11 +64,11 @@ const NavClient: React.FC = () => {
       >
         {isMyCounselOpen ? (
           <div className="flex items-center justify-center space-x-3">
-            <span>나의 상담</span> <FaChevronDown />
+            <span>나의 상담</span> <FaChevronDown size={12} />
           </div>
         ) : (
           <div className="flex items-center justify-center space-x-3">
-            <span>나의 상담</span> <FaChevronUp />
+            <span>나의 상담</span> <FaChevronUp size={12} />
           </div>
         )}
       </button>
