@@ -7,18 +7,24 @@ import com.mamdaero.domain.counselor_board.repository.CounselorBoardRepository;
 import com.mamdaero.domain.counselor_item.entity.CounselorItem;
 import com.mamdaero.domain.counselor_item.repository.CounselorItemRepository;
 import com.mamdaero.domain.notification.controller.NotificationController;
+import com.mamdaero.domain.notification.dto.NotificationResponse;
 import com.mamdaero.domain.notification.entity.EventSource;
 import com.mamdaero.domain.notification.entity.Notification;
 import com.mamdaero.domain.notification.repository.NotificationRepository;
 import com.mamdaero.domain.reservation.entity.Reservation;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
+import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,6 +59,25 @@ public class NotificationService {
         sseEmitter.onError((e) -> NotificationController.sseEmitters.remove(memberId));
 
         return sseEmitter;
+    }
+
+    public Pagination<NotificationResponse> notification(int page, int size) {
+        Long memberId = 1L;
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Notification> list = notificationRepository.findByMemberId(memberId, pageable);
+
+        List<NotificationResponse> responses = list.getContent().stream()
+                .map(NotificationResponse::of)
+                .toList();
+
+        return new Pagination<>(
+                responses,
+                list.getNumber() + 1,
+                list.getTotalPages(),
+                list.getSize(),
+                (int) list.getTotalElements()
+        );
     }
 
     // 알림 삭제

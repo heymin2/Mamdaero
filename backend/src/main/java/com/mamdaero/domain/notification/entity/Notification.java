@@ -1,12 +1,10 @@
 package com.mamdaero.domain.notification.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -14,9 +12,11 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLDelete(sql = "UPDATE notification SET is_delete = true WHERE notification_id = ?")
+@Where(clause = "is_delete = false")
 @Table(name = "notification")
 public class Notification {
 

@@ -18,9 +18,15 @@ public class NotificationController {
     private final NotificationService notificationService;
     public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
-    @GetMapping
+    @GetMapping("/connect")
     public SseEmitter subscribe() {
         return notificationService.subscribe();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> notification(@RequestParam(name = "page", defaultValue = "0") int page,
+                                          @RequestParam(name = "size", defaultValue = "10") int size) {
+        return ResponseEntity.ok(notificationService.notification(page, size));
     }
 
     @PatchMapping("/{notificationId}")
