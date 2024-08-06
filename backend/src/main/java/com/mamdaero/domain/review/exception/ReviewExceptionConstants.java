@@ -13,7 +13,7 @@ public enum ReviewExceptionConstants implements ExceptionConstants {
     REVIEW_BAD_REQUEST("R002", HttpStatus.BAD_REQUEST),
     REVIEW_NO_REVIEW("R003", HttpStatus.BAD_REQUEST),
     REVIEW_NO_SCORE("R004", HttpStatus.BAD_REQUEST),
-    REVIEW_ALREADY("R005", HttpStatus.BAD_REQUEST);
+    REVIEW_ALREADY_EXIST("R005", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final HttpStatus status;

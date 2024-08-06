@@ -1,6 +1,5 @@
-// src/components/navigation/EmotionStatisticsTable.tsx
 import React from 'react';
-import { Emotion, getEmoji, emotionEmojis } from '@/pages/emotiondiary/emotion';
+import { Emotion, getEmotionImage, emotionImages } from '@/pages/emotiondiary/emotion';
 
 interface EmotionStatisticsTableProps {
   diaries: { emotion: Emotion }[];
@@ -26,15 +25,15 @@ const EmotionStatisticsTable: React.FC<EmotionStatisticsTableProps> = ({ diaries
       <div>
         {Object.keys(emotionCounts).map(emotion => (
           <div key={emotion} className="flex items-center mb-2">
-            <span className="text-2xl">{getEmoji(emotion as Emotion)}</span>
+            <img src={getEmotionImage(emotion as Emotion)} alt={emotion} className="w-9 h-8" />
             <div className="flex-grow ml-2">
               <div className="relative pt-1">
-                <div className="overflow-hidden h-4 mb-1 text-xs flex rounded bg-gray-200">
+                <div className="overflow-hidden h-4 mb-1 text-xs flex rounded bg-gray-100">
                   <div
                     style={{
                       width: `${(emotionCounts[emotion as Emotion] / diaries.length) * 100}%`,
                     }}
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-300"
                   ></div>
                 </div>
               </div>
