@@ -1,8 +1,8 @@
 package com.mamdaero.domain.counselor_board.controller;
 
-import com.mamdaero.domain.counselor_board.dto.request.BoardRequest;
-import com.mamdaero.domain.counselor_board.service.BoardFindService;
-import com.mamdaero.domain.counselor_board.service.BoardService;
+import com.mamdaero.domain.counselor_board.dto.request.CounselorBoardRequest;
+import com.mamdaero.domain.counselor_board.service.CounselorBoardFindService;
+import com.mamdaero.domain.counselor_board.service.CounselorBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,10 +15,10 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class BoardController {
+public class CounselorBoardController {
 
-    private final BoardService boardService;
-    private final BoardFindService boardFindService;
+    private final CounselorBoardService boardService;
+    private final CounselorBoardFindService boardFindService;
 
     @GetMapping("/ca/counselor-board")
     public ResponseEntity<?> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -36,13 +36,13 @@ public class BoardController {
 
     @PostMapping("/c/counselor-board")
     public ResponseEntity<?> create(@RequestPart(name = "file", required = false) List<MultipartFile> file,
-                                    @RequestPart("data") BoardRequest request) throws IOException {
+                                    @RequestPart("data") CounselorBoardRequest request) throws IOException {
         boardService.create(request, file != null ? file : Collections.emptyList());
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/c/counselor-board/{boardId}")
-    public ResponseEntity<?> update(@PathVariable("boardId") Long id, @RequestBody BoardRequest request) {
+    public ResponseEntity<?> update(@PathVariable("boardId") Long id, @RequestBody CounselorBoardRequest request) {
         return ResponseEntity.ok(boardService.update(id, request));
     }
 
