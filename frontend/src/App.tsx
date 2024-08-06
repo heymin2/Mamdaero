@@ -8,6 +8,8 @@ const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
   '/supervision': 'bg-blue-50',
   '/supervision/:supervisionId': 'bg-blue-50',
+  '/mycounsel/counselor/history': 'bg-blue-50',
+  '/mycounsel/counselor/record': 'bg-blue-50',
 };
 
 function getBackgroundColor(pathname: string): string {
@@ -26,7 +28,7 @@ function App() {
   return (
     <div className="App grid grid-cols-8 min-h-screen">
       <div className="fixed flex min-h-screen col-span-1">
-        <NavClient />
+        <NavCounselor />
       </div>
       <div
         className={`col-start-2 col-span-7 justify-center items-center px-16 py-6 ${backgroundColor}`}
