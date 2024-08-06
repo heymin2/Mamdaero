@@ -49,9 +49,9 @@ const SelfTestCard: React.FC<SelfTestCardProps> = ({ mental }) => {
     <div className="card bg-white w-72 shadow-xl">
       <div className="card-body items-center text-center">
         <h2 className="card-title text-2xl">{title}</h2>
-        <figure className="px-10 ">
-          <div className="flex items-end justify-center h-48 w-full">
-            <img src={image} alt="왕자" className="rounded-xl max-h-full object-contain" />
+        <figure className="px-10">
+          <div className="flex items-end justify-center h-40 w-full">
+            <img src={image} alt="왕자" className="rounded-xl h-32 object-contain" />
           </div>
         </figure>
         <p>{description}</p>
