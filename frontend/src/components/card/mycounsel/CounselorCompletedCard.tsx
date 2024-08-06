@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@/components/button/Button';
+import { useNavigate } from 'react-router-dom';
 
 interface CounselorCompletedCardProps {
   counselId: string;
-  counselorName: string;
+  clientId: string;
   clientName: string;
   date: string;
   time: string;
@@ -12,32 +13,24 @@ interface CounselorCompletedCardProps {
 
 const CounselorCompletedCard: React.FC<CounselorCompletedCardProps> = ({
   counselId,
-  counselorName,
   clientName,
   date,
   time,
   status,
+  clientId,
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="border-b-2 border-blue-300 py-4 mb-4 p-4">
       <div className="flex justify-between items-center mb-2 p-2">
         <h3 className="flex text-gray-500 items-center text-xl font-semibold space-x-3">
           <span className="text-black">{clientName} 님 </span>
-          <Button
-            label="상담 기록 보기"
-            onClick={() => {}}
-            size="md"
-            shape="rounded"
-            color="blue"
-            textSize="xs"
-          />
         </h3>
         <span className="text-green-600 h-9 font-semibold">{status}</span>
       </div>
       <div className="grid grid-cols-2 gap-4 mb-2">
         <div>
           <p>상담ID: {counselId}</p>
-          <p>상담사: {counselorName}</p>
           <p>일자: {date}</p>
         </div>
         <div>
@@ -48,8 +41,10 @@ const CounselorCompletedCard: React.FC<CounselorCompletedCardProps> = ({
       </div>
       <div className="flex justify-end space-x-2">
         <Button
-          label="상담 보고서 작성하기"
-          onClick={() => {}}
+          label="상담 기록 보기"
+          onClick={() => {
+            navigate(`/mycounsel/counselor/record/${clientId}`);
+          }}
           size="lg"
           shape="rounded"
           color="blue"
