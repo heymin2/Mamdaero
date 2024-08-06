@@ -1,25 +1,36 @@
 package com.mamdaero.domain.review.service;
 
+import com.mamdaero.domain.review.dto.response.ReviewResponse;
+import com.mamdaero.domain.review.repository.ReviewRepository;
+import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
-//
-//    private final ReviewRepository reviewRepository;
-//
-//    public List<ReviewResponseDto> findAllByReservation_CounselorItem_CounselorId(Long id) {
-//
-//        if (reviewRepository.findAllByReservation_CounselorItem_CounselorId(id).isEmpty()) {
-//            throw new ReviewNotFoundException();
-//        }
-//
-//        return reviewRepository.findAllByReservation_CounselorItem_CounselorId(id).stream()
-//                .map(ReviewResponseDto::toDto)
-//                .toList();
-//    }
-//
+
+    private final ReviewRepository reviewRepository;
+
+    public Pagination<ReviewResponse> findAllCounselorReview(Long id, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<ReviewResponse> reviewPage = reviewRepository.findAllCounselorReview(id, pageable);
+
+        return new Pagination<>(
+                reviewPage.getContent(),
+                reviewPage.getNumber() + 1,
+                reviewPage.getTotalPages(),
+                reviewPage.getSize(),
+                (int) reviewPage.getTotalElements()
+        );
+
+    }
+
 //    @Transactional
 //    public void create(Long id, ReviewRequestDto requestDto) {
 //
