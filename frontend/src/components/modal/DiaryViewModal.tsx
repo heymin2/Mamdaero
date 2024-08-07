@@ -32,7 +32,7 @@ const DiaryViewModal: React.FC<DiaryViewModalProps> = ({
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
-      <div className="bg-gray-100 p-4 rounded-lg shadow-lg" style={{ width: '600px' }}>
+      <div className="bg-gray-100 p-4 rounded-lg shadow-lg" style={{ width: '590px' }}>
         <div className="flex items-center mb-4 space-x-2">
           <h2 className="text-lg font-bold">날짜 |</h2>
           <div className="bg-orange-200 px-4 py-2 rounded">{diary.date}</div>

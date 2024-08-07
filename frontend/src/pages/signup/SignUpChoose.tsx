@@ -6,8 +6,8 @@ import SignUpBar from '@/components/navigation/SignUpBar';
 const SignUpChoose: React.FC = () => {
   return (
     <div>
+      <SignUpBar user="common" title="" subtitle="맘대로와 함께 마음의 안정을 느껴보세요!" />
       <div className="container">
-        <SignUpBar user="common" title="" subtitle="맘대로와 함께 마음의 안정을 느껴보세요!" />
         {/* 회원가입 박스들 */}
         <div className="w-full flex justify-center mt-20">
           <div className="flex justify-center space-x-8 max-w-6xl w-full px-4">
