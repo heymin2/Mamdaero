@@ -25,6 +25,7 @@ public class CodeController {
         return new ResponseEntity<>(codeGroupService.findAll(), HttpStatus.OK);
     }
 
+    // 지금은 필요 없어보이는 API라서 구현 안함
     @GetMapping("/a/code-group/{groupId}")
     public ResponseEntity<List<CodeResponse>> getCodeGroup(@PathVariable(name = "groupId") Long groupId) {
         return ResponseEntity.ok().build();
