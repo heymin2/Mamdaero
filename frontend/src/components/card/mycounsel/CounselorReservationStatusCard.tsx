@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 interface CounselorReservationStatusCardProps {
   counselId: string;
   clientName: string;
+  clientId: string;
   date: string;
   time: string;
   status: string;
@@ -13,6 +14,7 @@ interface CounselorReservationStatusCardProps {
 const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardProps> = ({
   counselId,
   clientName,
+  clientId,
   date,
   time,
   status,
@@ -65,7 +67,9 @@ const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardPro
         <div className="flex flex-col col-span-2 items-center mt-3 gap-3">
           <Button
             label="1:1 화상 채팅"
-            onClick={() => navigate(`/mycounsel/counselor/history/${counselId}`)}
+            onClick={() =>
+              navigate(`/mycounsel/counselor/history/facechat/${counselId}/${clientId}`)
+            }
             size="lg"
             shape="rounded"
             color="blue"

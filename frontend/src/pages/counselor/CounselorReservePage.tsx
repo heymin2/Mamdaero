@@ -61,7 +61,7 @@ const CounselorReservePage: React.FC = () => {
       requestText,
     });
     alert('예약이 완료되었습니다.');
-    navigate('/mycounsel');
+    navigate('/mycounsel/client/history');
   };
 
   return (
