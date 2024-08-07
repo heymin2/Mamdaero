@@ -45,7 +45,7 @@ public class CounselorBoardController {
     public ResponseEntity<?> update(@PathVariable("boardId") Long id,
                                     @RequestPart(name = "file", required = false) List<MultipartFile> file,
                                     @RequestPart("data") CounselorBoardRequest request) throws IOException {
-        return ResponseEntity.ok(boardService.update(id, file, request));
+        return ResponseEntity.ok(boardService.update(id, file != null ? file : Collections.emptyList(), request));
     }
 
     @DeleteMapping("/ca/counselor-board/{boardId}")
