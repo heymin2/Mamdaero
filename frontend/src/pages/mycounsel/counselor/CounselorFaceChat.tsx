@@ -18,8 +18,8 @@ interface OfferAnswerMessage {
   body: RTCSessionDescriptionInit;
 }
 
-const ClientFaceChat: React.FC = () => {
-  const { counsultId: counselId = '', memberId: counselorId = '' } = useParams<{
+const CounselFaceChat: React.FC = () => {
+  const { counsultId: counselId = '', memberId: clientId = '' } = useParams<{
     counsultId: string;
     memberId: string;
   }>();
@@ -44,7 +44,7 @@ const ClientFaceChat: React.FC = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!counselId || !counselorId) {
+    if (!counselId || !clientId) {
       console.error('Invalid counsel or client ID');
       return;
     }
@@ -59,7 +59,7 @@ const ClientFaceChat: React.FC = () => {
       }
       Object.values(peerConnectionsRef.current).forEach(pc => pc.close());
     };
-  }, [counselId, counselorId]);
+  }, [counselId, clientId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -285,7 +285,7 @@ const ClientFaceChat: React.FC = () => {
     }
   };
 
-  if (!counselId || !counselorId) {
+  if (!counselId || !clientId) {
     return <div>Error: Invalid counsel or client ID</div>;
   }
   const handleGoBack = () => {
@@ -315,7 +315,7 @@ const ClientFaceChat: React.FC = () => {
     setIsScreenSharing(!isScreenSharing);
   };
 
-  if (!counselId || !counselorId) {
+  if (!counselId || !clientId) {
     return <div>Error: Invalid counsel or client ID</div>;
   }
 
@@ -324,8 +324,8 @@ const ClientFaceChat: React.FC = () => {
       <MyCounselBar
         title1="맘대로"
         title2="화상채팅"
-        subtitle={`상담 ID: ${counselId}, 상태: ${connectionStatus}`}
-        user="client"
+        subtitle={`상담 ID: ${counselId}, 내담자 ID: ${clientId}, 상태: ${connectionStatus}`}
+        user="counselor"
         buttonLabel="메인화면 돌아가기"
         buttonPath="/"
       />
@@ -334,7 +334,7 @@ const ClientFaceChat: React.FC = () => {
           <div className="flex-1 bg-gray-100 rounded-lg p-4 shadow-md relative">
             {Object.entries(remoteStreams).length === 0 ? (
               <div className="w-full h-full rounded-lg bg-gray-300 flex items-center justify-center">
-                <p>상담사 기다리는 중...</p>
+                <p>내담자 기다리는 중...</p>
               </div>
             ) : (
               Object.entries(remoteStreams).map(([participantId, stream]) => (
@@ -357,7 +357,7 @@ const ClientFaceChat: React.FC = () => {
             <button
               onClick={toggleCamera}
               className={`flex items-center px-3 py-1.5 rounded-lg text-xs ${
-                isCameraOn ? 'bg-orange-400 text-white' : 'bg-gray-300 text-gray-700'
+                isCameraOn ? 'bg-blue-400 text-white' : 'bg-gray-300 text-gray-700'
               }`}
             >
               <FaVideo className="mr-1.5 text-sm" />
@@ -366,7 +366,7 @@ const ClientFaceChat: React.FC = () => {
             <button
               onClick={toggleMic}
               className={`flex items-center px-3 py-1.5 rounded-lg text-xs ${
-                isMicOn ? 'bg-orange-400 text-white' : 'bg-gray-300 text-gray-700'
+                isMicOn ? 'bg-blue-400 text-white' : 'bg-gray-300 text-gray-700'
               }`}
             >
               <FaMicrophone className="mr-1.5 text-sm" />
@@ -410,7 +410,7 @@ const ClientFaceChat: React.FC = () => {
                       {sender}
                       <time className="text-xs opacity-50 ml-1">방금</time>
                     </div>
-                    <div className="chat-bubble chat-bubble-primary break-words text-sm max-w-[80%]">
+                    <div className="chat-bubble chat-bubble-secondary break-words text-sm max-w-[80%]">
                       {content}
                     </div>
                   </div>
@@ -427,7 +427,7 @@ const ClientFaceChat: React.FC = () => {
                 placeholder="메시지를 입력하세요."
                 className="flex-grow px-2 py-1 border rounded-lg mr-2 text-sm"
               />
-              <Button label="전송" onClick={handleSendChatMessage} size="검색" />
+              <Button label="전송" onClick={handleSendChatMessage} size="검색" color="blue" />
             </div>
           </div>
         </div>
@@ -436,4 +436,4 @@ const ClientFaceChat: React.FC = () => {
   );
 };
 
-export default ClientFaceChat;
+export default CounselFaceChat;

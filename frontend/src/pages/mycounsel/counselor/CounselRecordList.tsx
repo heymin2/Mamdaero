@@ -97,7 +97,7 @@ const CounselRecordList: React.FC = () => {
             </div>
             <div className="flex flex-col text-right">
               <div className="text-4xl font-bold ms-8 flex-shrink-0">
-                <span className="text-blue-500">내담자 목록</span> 상담내역
+                <span className="text-blue-500">내담자 목록</span> 상담기록
               </div>
             </div>
           </div>
