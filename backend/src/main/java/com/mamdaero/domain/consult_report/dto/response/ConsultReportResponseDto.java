@@ -1,6 +1,6 @@
-package com.mamdaero.domain.consulting_report.dto.response;
+package com.mamdaero.domain.consult_report.dto.response;
 
-import com.mamdaero.domain.consulting_report.entity.ConsultingReport;
+import com.mamdaero.domain.consult_report.entity.ConsultReport;
 import com.mamdaero.domain.member.repository.CounselorRepository;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class ConsultingReportResponseDto {
+public class ConsultReportResponseDto {
 
     private String memberName;
     private Long reservationId;
@@ -20,8 +20,8 @@ public class ConsultingReportResponseDto {
     private String opinion;
     private LocalDateTime consultDate;
 
-    public static ConsultingReportResponseDto toDTO(ConsultingReport consultingReport, CounselorRepository counselorRepository) {
-        return ConsultingReportResponseDto.builder().build();
+    public static ConsultReportResponseDto toDTO(ConsultReport consultingReport, CounselorRepository counselorRepository) {
+        return ConsultReportResponseDto.builder().build();
 //        return ConsultingReportResponseDto.builder()
 //                .reservationId(consultingReport.getReservation().getId())
 //                .memberName(consultingReport.getReservation().getMember().getName())

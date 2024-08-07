@@ -42,8 +42,10 @@ public class CounselorBoardController {
     }
 
     @PatchMapping("/c/counselor-board/{boardId}")
-    public ResponseEntity<?> update(@PathVariable("boardId") Long id, @RequestBody CounselorBoardRequest request) {
-        return ResponseEntity.ok(boardService.update(id, request));
+    public ResponseEntity<?> update(@PathVariable("boardId") Long id,
+                                    @RequestPart(name = "file", required = false) List<MultipartFile> file,
+                                    @RequestPart("data") CounselorBoardRequest request) throws IOException {
+        return ResponseEntity.ok(boardService.update(id, file, request));
     }
 
     @DeleteMapping("/ca/counselor-board/{boardId}")
