@@ -1,5 +1,6 @@
 package com.mamdaero.domain.consult_report.repository;
 
+import com.mamdaero.domain.consult_report.dto.response.ConsultReportDetailResponse;
 import com.mamdaero.domain.consult_report.dto.response.ConsultReportListResponse;
 import com.mamdaero.domain.consult_report.entity.ConsultReport;
 import org.springframework.data.domain.Page;
@@ -20,4 +21,19 @@ public interface ConsultReportRepository extends JpaRepository<ConsultReport, Lo
                     "LEFT JOIN ConsultReport cr ON c.id = cr.id"
     )
     Page<ConsultReportListResponse> findByClientIdAndCounselorId(@Param("clientId") Long clientId, @Param("counselorId") Long counselorId, Pageable pageable);
+
+    @Query(
+            "SELECT new com.mamdaero.domain.consult_report.dto.response.ConsultReportDetailResponse(" +
+                    "cr.id, wt.date, wt.time, m.name, counselor.name, cr.title, cr.detail, cr.opinion " +
+                    ") " +
+                    "FROM Reservation r " +
+                    "JOIN WorkTime wt ON r.workTimeId = wt.id " +
+                    "JOIN Member m ON r.memberId = m.id " +
+                    "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
+                    "JOIN Counselor counselor ON ci.counselorId = counselor.id " +
+                    "JOIN Consult c ON r.id = c.id " +
+                    "JOIN ConsultReport cr ON c.id = cr.id " +
+                    "WHERE cr.id = :reportId")
+    ConsultReportDetailResponse findReport(@Param("reportId") Long reportId);
+
 }

@@ -1,6 +1,7 @@
 package com.mamdaero.domain.consult_report.entity;
 
 import com.mamdaero.domain.consult_report.dto.request.ConsultingReportRequestDto;
+import com.mamdaero.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-public class ConsultReport {
+public class ConsultReport extends BaseEntity {
 
     @Id
     @Column(name = "consult_report_id")

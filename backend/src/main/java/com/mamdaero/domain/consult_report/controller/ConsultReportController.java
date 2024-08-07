@@ -1,5 +1,6 @@
 package com.mamdaero.domain.consult_report.controller;
 
+import com.mamdaero.domain.consult_report.dto.response.ConsultReportDetailResponse;
 import com.mamdaero.domain.consult_report.dto.response.ConsultReportListResponse;
 import com.mamdaero.domain.consult_report.service.ConsultReportService;
 import com.mamdaero.global.dto.Pagination;
@@ -27,6 +28,14 @@ public class ConsultReportController {
     ) {
         Pagination<ConsultReportListResponse> reportList = consultingReportService.getConsultReportListByClientId(clientId, page, size);
         return ResponseEntity.ok(reportList);
+    }
+
+    @GetMapping("/c/consult-report/{reportId}")
+    public ResponseEntity<ConsultReportDetailResponse> getConsultReportByReportId(
+            @PathVariable(name = "reportId") Long reportId
+    ) {
+        ConsultReportDetailResponse report = consultingReportService.findById(reportId);
+        return ResponseEntity.ok(report);
     }
 
 }
