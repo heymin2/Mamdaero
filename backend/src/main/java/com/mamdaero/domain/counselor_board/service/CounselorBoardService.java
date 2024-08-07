@@ -89,7 +89,7 @@ public class CounselorBoardService {
     }
 
     @Transactional
-    public CounselorBoardDetailResponse update(Long id, CounselorBoardRequest request) {
+    public CounselorBoardDetailResponse update(Long id, List<MultipartFile> files, CounselorBoardRequest request) throws IOException {
         // 토큰 확인 후 상담사인지 확인
         Long memberId = 1L;
 
@@ -111,6 +111,16 @@ public class CounselorBoardService {
         int likeCount = boardLikeRepository.countByBoardId(board.getId());
         boolean isLike = boardLikeRepository.existsByBoardIdAndMemberId(board.getId(), memberId);
         boolean isMine = boardRepository.existsByIdAndMemberId(board.getId(), memberId);
+
+        for (MultipartFile file : files) {
+            String fileUrl = fileService.saveBoard(file, memberId);  // 파일 URL 저장
+
+            if(fileUrl == null) {
+                break;
+            }
+            CounselorBoardFile boardFile = new CounselorBoardFile(null, board.getId(), fileUrl, false);
+            boardFileRepository.save(boardFile);
+        }
 
         return CounselorBoardDetailResponse.of(board, writer, likeCount, isLike, isMine, null);
     }
