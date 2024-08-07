@@ -19,7 +19,7 @@ public class ConsultReportController {
     /**
      * 내담자별 상담 보고서 목록 조회
      */
-    @GetMapping("/c/{clientId}/report")
+    @GetMapping("/c/{clientId}/consult-report")
     public ResponseEntity<Pagination<ConsultReportListResponse>> getConsultReportListByClientId(
             @PathVariable(name = "clientId") Long clientId,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -28,6 +28,5 @@ public class ConsultReportController {
         Pagination<ConsultReportListResponse> reportList = consultingReportService.getConsultReportListByClientId(clientId, page, size);
         return ResponseEntity.ok(reportList);
     }
-
 
 }
