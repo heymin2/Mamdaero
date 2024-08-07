@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReportInfoTable from '@/components/table/ReportInfoTable';
 import SelfTestResultTable from '@/components/table/SelfTestResultTable';
+import Button from '@/components/button/Button';
+import { IoIosArrowBack } from 'react-icons/io';
 
 const CounselRecordDetail: React.FC = () => {
   const { clientId } = useParams<{ clientId: string }>();
@@ -79,25 +81,41 @@ const CounselRecordDetail: React.FC = () => {
   const client = clientId ? clientInfo[clientId] || { name: '알 수 없음' } : { name: '알 수 없음' };
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       {/* 상단바 */}
-      <div className="flex flex-col my-6 mx-16 justify-end">
-        <div className="flex justify-between items-center ml-5 mr-5">
-          <button
-            className="text-gray-600 hover:text-gray-800 mr-4"
-            onClick={() => navigate('/mycounsel/counselor/record')}
-          >
-            목록보기
-          </button>
+      <div className="sticky bg-blue-50 top-0 z-10 mb-8">
+        <div className="flex flex-col mt-6 mx-16 justify-end">
+          <div className="flex justify-between items-center">
+            {/* <button
+              className="text-gray-600 hover:text-gray-800 mr-4"
+              onClick={() => navigate('/mycounsel/counselor/record')}
+            >
+              목록보기
+            </button> */}
+            <Button
+              label={
+                <span className="flex items-center ms-2">
+                  <IoIosArrowBack />
+                  <div className="ms-2 mt-0.5">내담자 목록 보기</div>
+                </span>
+              }
+              onClick={() => navigate('/mycounsel/counselor/record')}
+              size="상담사목록보기"
+              textSize="sm"
+              shape="rounded"
+              color="blue"
+            />
 
-          <div className="flex flex-col text-right text-gray-500 flex-grow">
-            <div>내담자의 기록을 확인하여 개인 맞춤형 상담 서비스를 제공하세요!</div>
+            <div className="flex flex-col text-right text-gray-500 flex-grow">
+              <div>내담자의 기록을 확인하여 개인 맞춤형 상담 서비스를 제공하세요!</div>
+            </div>
+            <div className="text-4xl font-bold ms-8 flex-shrink-0">
+              <span className="text-blue-500">{client.name}</span> 상담기록
+            </div>
           </div>
-          <div className="text-4xl font-bold ms-8 flex-shrink-0">
-            <span className="text-blue-500">{client.name}</span> 상담기록
-          </div>
+          {/* <div className="border-t-2 border-gray-300 mt-2"></div> */}
+          <div className="mt-2"></div>
         </div>
-        <div className="border-t-2 border-gray-300 mt-2"></div>
       </div>
       {/* 상담기록 탭목록 */}
       <div className="w-full flex flex-col items-center">

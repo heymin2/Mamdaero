@@ -34,7 +34,7 @@ const UnrestResultPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-16">
+    <div className="min-h-screen">
       <TestBar
         title="불안"
         subtitle="위험요소가 다 사라졌지만 불안하신가요?"

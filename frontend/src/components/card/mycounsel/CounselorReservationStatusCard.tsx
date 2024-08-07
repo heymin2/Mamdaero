@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '@/components/button/Button';
-
+import { useNavigate } from 'react-router-dom';
 interface CounselorReservationStatusCardProps {
   counselId: string;
   clientName: string;
@@ -19,7 +19,7 @@ const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardPro
   onDelete,
 }) => {
   const [isDeleted, setIsDeleted] = useState(false);
-
+  const navigate = useNavigate();
   const handleCancelReservation = () => {
     const isConfirmed = window.confirm('정말 예약을 취소하시겠습니까?');
     if (isConfirmed) {
@@ -63,7 +63,13 @@ const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardPro
           </div>
         </div>
         <div className="flex flex-col col-span-2 items-center mt-3 gap-3">
-          <Button label="1:1 화상 채팅" onClick={() => {}} size="lg" shape="rounded" color="blue" />
+          <Button
+            label="1:1 화상 채팅"
+            onClick={() => navigate(`/mycounsel/counselor/history/${counselId}`)}
+            size="lg"
+            shape="rounded"
+            color="blue"
+          />
           <Button
             label="1:1 메신저 채팅"
             onClick={() => {}}

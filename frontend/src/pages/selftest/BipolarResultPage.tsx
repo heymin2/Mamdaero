@@ -30,7 +30,7 @@ const BipolarResultPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-16">
+    <div className="min-h-screen">
       <TestBar
         title="조울증"
         subtitle="기분이 지나치게 들뜨거나 가라앉는 경험을 자주 하시나요?"
