@@ -13,14 +13,22 @@ import com.mamdaero.domain.notification.repository.NotificationRepository;
 import com.mamdaero.domain.reservation.entity.Reservation;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EventService {
 
@@ -46,7 +54,7 @@ public class EventService {
             SseEmitter sseEmitter = NotificationController.sseEmitters.get(memberId);
             try {
                 Map<String, String> eventData = new HashMap<>();
-                eventData.put("message", "댓글이 달렸습니다.");
+                eventData.put("message", "댓글이 달렸습니다");
                 eventData.put("createdAt", receiveComment.getCreatedAt().toString());   // 댓글이 달린 시간
                 eventData.put("content", receiveComment.getComment());                 // 댓글 내용
 
@@ -87,7 +95,7 @@ public class EventService {
             SseEmitter sseEmitter = NotificationController.sseEmitters.get(memberId);
             try {
                 Map<String, String> eventData = new HashMap<>();
-                eventData.put("message", "예약이 취소되었습니다.");
+                eventData.put("message", "예약이 취소되었습니다");
                 eventData.put("canceledAt", reservation.getCanceledAt().toString());
                 eventData.put("memberId", memberId.toString());
                 eventData.put("counselorId", counselorId.toString());
@@ -97,7 +105,7 @@ public class EventService {
                 // 내담자
                 Notification notification = new Notification();
                 notification.setCreatedAt(reservation.getCanceledAt());
-                notification.setContent("예약이 취소되었습니다.");
+                notification.setContent("예약이 취소되었습니다");
                 notification.setEventSource(EventSource.RESERVATION);
                 notification.setEventId(reservationId);
                 notification.setMemberId(memberId);
@@ -109,12 +117,90 @@ public class EventService {
                 //상담자
                 notification = new Notification();
                 notification.setCreatedAt(reservation.getCanceledAt());
-                notification.setContent("예약이 취소되었습니다.");
+                notification.setContent("예약이 취소되었습니다");
                 notification.setEventSource(EventSource.RESERVATION);
                 notification.setEventId(reservationId);
                 notification.setMemberId(counselorId);
                 notification.setIsDelete(false);
                 notification.setIsRead(false);
+
+                notificationRepository.save(notification);
+
+            } catch (IOException e) {
+                NotificationController.sseEmitters.remove(memberId);
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 45 * * * ?")
+    @Transactional
+    public void notifyReservation() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Reservation> upcomingReservations = getUpcomingReservations(now);
+
+        if (upcomingReservations == null) {
+            return;
+        }
+
+        for (Reservation reservation : upcomingReservations) {
+            notifyBeforeReservation(reservation, now);
+        }
+    }
+
+    private List<Reservation> getUpcomingReservations(LocalDateTime threshold) {
+        LocalDate date = threshold.toLocalDate();
+        LocalTime time = threshold.toLocalTime();
+        int timeInt = time.getMinute() + 15;
+
+        if(timeInt != 60) {
+            return null;
+        }
+
+        return reservationRepository.findReservationsBefore(date, time.getHour() + 1);
+    }
+
+    private void notifyBeforeReservation(Reservation reservation, LocalDateTime threshold) {
+        CounselorItem counselorItem = counselorItemRepository.findById(reservation.getCounselorItemId()).orElseThrow(
+                () -> new IllegalArgumentException("상담 상품을 찾을 수 없습니다.")
+        );
+
+        Long memberId = reservation.getMemberId();
+        Long counselorId = counselorItem.getCounselorId();
+
+        if (NotificationController.sseEmitters.containsKey(memberId)) {
+            SseEmitter sseEmitter = NotificationController.sseEmitters.get(memberId);
+            try {
+                Map<String, String> eventData = new HashMap<>();
+                eventData.put("message", "상담 15분 전입니다");
+                eventData.put("dateTime", threshold.toString());
+                eventData.put("memberId", memberId.toString());
+                eventData.put("counselorId", counselorId.toString());
+
+                sseEmitter.send(SseEmitter.event().name("reservation").data(eventData));
+
+                // 내담자
+                Notification notification = new Notification();
+                notification.setCreatedAt(threshold);
+                notification.setContent("상담 15분 전입니다");
+                notification.setEventSource(EventSource.RESERVATION);
+                notification.setEventId(reservation.getId());
+                notification.setMemberId(memberId);
+                notification.setIsDelete(false);
+                notification.setIsRead(false);
+
+                notificationRepository.save(notification);
+
+                //상담자
+                notification = new Notification();
+                notification.setCreatedAt(threshold);
+                notification.setContent("상담 15분 전입니다");
+                notification.setEventSource(EventSource.RESERVATION);
+                notification.setEventId(reservation.getId());
+                notification.setMemberId(counselorId);
+                notification.setIsDelete(false);
+                notification.setIsRead(false);
+                notification.setMemberId(counselorId);
 
                 notificationRepository.save(notification);
 
