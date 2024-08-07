@@ -20,22 +20,22 @@ public class CodeController {
     private final CodeService codeService;
     private final CodeGroupService codeGroupService;
 
-    @GetMapping("/cma/code-group")
+    @GetMapping("/a/code-group")
     public ResponseEntity<List<CodeGroupResponse>> getCodeGroups() {
         return new ResponseEntity<>(codeGroupService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/cma/code-group/{groupId}")
+    @GetMapping("/a/code-group/{groupId}")
     public ResponseEntity<List<CodeResponse>> getCodeGroup(@PathVariable(name = "groupId") Long groupId) {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/cma/symptom")
+    @GetMapping("/p/symptom")
     public ResponseEntity<List<CodeResponse>> getSymptoms() {
         return new ResponseEntity<>(codeService.findCodesByCodeGroupName("symptom"), HttpStatus.OK);
     }
 
-    @GetMapping("/cma/situation")
+    @GetMapping("/p/situation")
     public ResponseEntity<List<CodeResponse>> getSituations() {
         return new ResponseEntity<>(codeService.findCodesByCodeGroupName("situation"), HttpStatus.OK);
     }
