@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
 
 import { IoIosArrowBack } from 'react-icons/io';
@@ -49,11 +49,14 @@ const fetchComments = async (postId: number): Promise<CommentDetail[]> => {
 const SupervisionDetailPage: React.FC = () => {
   const { supervisionId } = useParams<{ supervisionId: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const backToList = () => {
     navigate('/supervision');
   };
-
+  const handleCommentAdded = () => {
+    queryClient.invalidateQueries({ queryKey: ['comments', supervisionId] });
+  };
   const postDetailQuery = useQuery({
     queryKey: ['postDetail', supervisionId],
     queryFn: () => fetchPostDetail(Number(supervisionId)),
@@ -96,7 +99,10 @@ const SupervisionDetailPage: React.FC = () => {
       <div className="flex-grow py-5 px-16">
         {postDetailQuery.data && (
           <>
-            <SupervisionPostCard postDetail={postDetailQuery.data} />
+            <SupervisionPostCard
+              postDetail={postDetailQuery.data}
+              queryKey={{ queryKey: ['supervisionPosts'] }}
+            />
             <div className="border-y-2 border-blue-300 px-10 py-2 mt-3">
               <span className="text-blue-500 font-bold text-xl">
                 {commentsQuery.data?.length || 0}
@@ -107,7 +113,10 @@ const SupervisionDetailPage: React.FC = () => {
               commentsQuery.data.map(comment => (
                 <SupervisionCommentCard key={comment.id} commentDetail={comment} />
               ))}
-            <SupervisionWriteCommentCard postId={Number(supervisionId)} />
+            <SupervisionWriteCommentCard
+              postId={Number(supervisionId)}
+              onCommentAdded={handleCommentAdded}
+            />{' '}
           </>
         )}
       </div>
