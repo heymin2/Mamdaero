@@ -3,6 +3,7 @@ package com.mamdaero.domain.consult_report.service;
 import com.mamdaero.domain.consult.exception.ConsultNotFoundException;
 import com.mamdaero.domain.consult.repository.ConsultRepository;
 import com.mamdaero.domain.consult_report.dto.request.CreateConsultReportRequest;
+import com.mamdaero.domain.consult_report.dto.request.UpdateConsultReportRequest;
 import com.mamdaero.domain.consult_report.dto.response.ConsultReportDetailResponse;
 import com.mamdaero.domain.consult_report.dto.response.ConsultReportListResponse;
 import com.mamdaero.domain.consult_report.entity.ConsultReport;
@@ -13,6 +14,7 @@ import com.mamdaero.domain.consult_report.repository.ConsultReportRepository;
 import com.mamdaero.domain.counselor_item.repository.CounselorItemRepository;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.global.dto.Pagination;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -93,6 +95,34 @@ public class ConsultReportService {
                 .build();
 
         consultReportRepository.save(report);
+
+    }
+
+    @Transactional
+    public void update(Long reportId, UpdateConsultReportRequest request) {
+
+        // 보고서가 존재하지 않으면 수정 불가
+        if (!consultReportRepository.existsById(reportId)) {
+            throw new ConsultReportNotFoundException();
+        }
+
+        // 필수 필드 확인
+        if (request.getTitle() == null || request.getDetail() == null) {
+            throw new ConsultReportBadRequestException();
+        }
+
+
+        // TODO: 토큰으로부터 진짜 상담사ID 가져오기
+        Long counselorId = 16L;
+        Long counselorItemId = reservationRepository.findById(reportId).get().getCounselorItemId();
+
+        // 상담사 자신의 상담이 아니면 보고서 작성 불가
+        if (counselorItemRepository.findById(counselorItemId).get().getCounselorId() != counselorId) {
+            throw new ConsultReportBadRequestException();
+        }
+
+        ConsultReport report = consultReportRepository.findById(reportId).get();
+        report.update(request);
 
     }
 }

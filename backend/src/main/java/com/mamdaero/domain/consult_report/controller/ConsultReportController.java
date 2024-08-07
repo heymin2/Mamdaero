@@ -1,6 +1,7 @@
 package com.mamdaero.domain.consult_report.controller;
 
 import com.mamdaero.domain.consult_report.dto.request.CreateConsultReportRequest;
+import com.mamdaero.domain.consult_report.dto.request.UpdateConsultReportRequest;
 import com.mamdaero.domain.consult_report.dto.response.ConsultReportDetailResponse;
 import com.mamdaero.domain.consult_report.dto.response.ConsultReportListResponse;
 import com.mamdaero.domain.consult_report.service.ConsultReportService;
@@ -42,6 +43,15 @@ public class ConsultReportController {
             @RequestBody CreateConsultReportRequest request
     ) {
         consultingReportService.create(reportId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/c/consult-report/{reportId}")
+    public ResponseEntity<?> updateConsultReport(
+            @PathVariable(name = "reportId") Long reportId,
+            @RequestBody UpdateConsultReportRequest request
+    ) {
+        consultingReportService.update(reportId, request);
         return ResponseEntity.ok().build();
     }
 

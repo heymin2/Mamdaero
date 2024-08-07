@@ -1,6 +1,6 @@
 package com.mamdaero.domain.consult_report.entity;
 
-import com.mamdaero.domain.consult_report.dto.request.ConsultingReportRequestDto;
+import com.mamdaero.domain.consult_report.dto.request.UpdateConsultReportRequest;
 import com.mamdaero.global.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,9 +29,9 @@ public class ConsultReport extends BaseEntity {
     @Column(length = 3000)
     private String opinion;
 
-    public void update(ConsultingReportRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.detail = requestDto.getDetail();
-        this.opinion = requestDto.getOpinion();
+    public void update(UpdateConsultReportRequest request) {
+        this.title = request.getTitle();
+        this.detail = request.getDetail();
+        this.opinion = request.getOpinion();
     }
 }
