@@ -1,15 +1,13 @@
 package com.mamdaero.domain.consult_report.controller;
 
+import com.mamdaero.domain.consult_report.dto.request.CreateConsultReportRequest;
 import com.mamdaero.domain.consult_report.dto.response.ConsultReportDetailResponse;
 import com.mamdaero.domain.consult_report.dto.response.ConsultReportListResponse;
 import com.mamdaero.domain.consult_report.service.ConsultReportService;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,6 +34,15 @@ public class ConsultReportController {
     ) {
         ConsultReportDetailResponse report = consultingReportService.findById(reportId);
         return ResponseEntity.ok(report);
+    }
+
+    @PostMapping("/c/consult-report/{reportId}")
+    public ResponseEntity<?> createConsultReport(
+            @PathVariable(name = "reportId") Long reportId,
+            @RequestBody CreateConsultReportRequest request
+    ) {
+        consultingReportService.create(reportId, request);
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -14,7 +14,7 @@ public enum ConsultReportExceptionConstants implements ExceptionConstants {
     CONSULT_REPORT_UNAUTHORIZED("CR003", HttpStatus.UNAUTHORIZED),
     CONSULT_REPORT_NO_TITLE("CR004", HttpStatus.BAD_REQUEST),
     CONSULT_REPORT_NO_DETAIL("CR005", HttpStatus.BAD_REQUEST),
-    CONSULT_REPORT_ALREADY("CR006", HttpStatus.BAD_REQUEST);
+    CONSULT_REPORT_ALREADY_EXIST("CR006", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final HttpStatus status;
