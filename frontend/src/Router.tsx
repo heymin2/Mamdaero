@@ -25,6 +25,7 @@ import CommunityWritePostPage from '@/pages/community/CommunityWritePostPage';
 import SupervisionListPage from '@/pages/supervision/SupervisionListPage';
 import SupervisionDetailPage from '@/pages/supervision/SupervisionDetailPage';
 import SupervisionWritePostPage from '@/pages/supervision/SupervisionWritePostPage';
+import SupervisionEditPostPage from '@/pages/supervision/SupervisionEditPostPage';
 import ClientMyPage from '@/pages/mypage/ClientMyPage';
 import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
 import CounselorEditInformationPage from '@/pages/mypage/CounselorEditInformationPage';
@@ -69,6 +70,7 @@ const Router = () => (
     <Route path="/supervision" element={<SupervisionListPage />} />
     <Route path="/supervision/:supervisionId" element={<SupervisionDetailPage />} />
     <Route path="/supervision/write/post" element={<SupervisionWritePostPage />} />
+    <Route path="/supervision/edit/:supervisionId" element={<SupervisionEditPostPage />} />
     {/* MyPage Routes */}
     <Route path="/mypage/client" element={<ClientMyPage />} />
     <Route path="/mypage/counselor" element={<CounselorMyPage />} />

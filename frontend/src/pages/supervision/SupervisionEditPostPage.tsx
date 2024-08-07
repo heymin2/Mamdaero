@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/api/axiosInstance';
-import { useNavigate } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery, useMutation, UseMutationResult } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 import Editor from '@/components/Editor';
 import RegisterButton from '@/components/button/RegisterButton';
@@ -22,83 +23,98 @@ interface PostData {
   file?: File;
 }
 
-const SupervisionWritePostPage: React.FC = () => {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-  const [isPageModified, setIsPageModified] = useState<boolean>(false);
+// 기존 게시글 가져오기
+const fetchPostDetail = async (supervisionId: number): Promise<PostArticleResponse> => {
+  const response = await axiosInstance({
+    method: 'get',
+    url: `ca/counselor-board/${supervisionId}`,
+  });
+  return response.data;
+};
 
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isPageModified) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    };
+// 게시글 수정
+const updateArticle = async (
+  supervisionId: number,
+  postData: PostData
+): Promise<PostArticleResponse> => {
+  const formData = new FormData();
+  formData.append('data', new Blob([JSON.stringify(postData)], { type: 'application/json' }));
+  if (postData.file) {
+    formData.append('file', postData.file);
+  }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [isPageModified]);
-
-  useEffect(() => {
-    setIsPageModified(title.trim() !== '' || content.trim() !== '' || file !== null);
-  }, [title, content, file]);
-
-  const backToList = () => {
-    if (isPageModified && !window.confirm('작성 중인 내용이 있습니다. 정말로 나가시겠습니까?')) {
-      return;
-    }
-    navigate('/supervision');
-  };
-
-  const postArticleMutation = useMutation({
-    mutationFn: async (postData: PostData): Promise<PostArticleResponse> => {
-      const formData = new FormData();
-      formData.append('data', new Blob([JSON.stringify(postData)], { type: 'application/json' }));
-      if (postData.file) {
-        formData.append('file', postData.file);
-      }
-
-      const response = await axiosInstance({
-        method: 'post',
-        url: 'c/counselor-board',
-        data: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      return response.data;
-    },
-    onSuccess: () => {
-      setIsPageModified(false);
-      queryClient.invalidateQueries({ queryKey: ['supervisionPosts'] });
-      navigate('/supervision');
-    },
-    onError: (error: unknown) => {
-      alert(`오류가 발생했습니다. ${error}`);
+  const response = await axiosInstance({
+    method: 'patch',
+    url: `c/counselor-board/${supervisionId}`,
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
   });
 
+  return response.data;
+};
+
+const SupervisionEditPostPage: React.FC = () => {
+  const { supervisionId: postIdString } = useParams<{ supervisionId: string }>();
+  const supervisionId = postIdString ? parseInt(postIdString, 10) : undefined;
+  const navigate = useNavigate();
+  const [file, setFile] = useState<File | null>(null);
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+
+  const backToList = () => {
+    navigate('/supervision');
+  };
+
+  const {
+    data: postData,
+    isLoading,
+    isError,
+  } = useQuery<PostArticleResponse, AxiosError>({
+    queryKey: ['PostData', supervisionId],
+    queryFn: () => fetchPostDetail(supervisionId!),
+    enabled: supervisionId !== undefined,
+  });
+
+  useEffect(() => {
+    if (postData) {
+      setTitle(postData.title);
+      setContent(postData.content);
+    }
+  }, [postData]);
+
+  const mutation = useMutation<PostArticleResponse, AxiosError, PostData>({
+    mutationFn: (data: PostData) => {
+      if (supervisionId === undefined) throw new Error('Post ID is missing');
+      return updateArticle(supervisionId, data);
+    },
+    onSuccess: () => {
+      navigate('/supervision');
+    },
+    onError: (error: AxiosError) => {
+      alert(`오류가 발생했습니다. ${error.message}`);
+    },
+  });
+
+  // 파일 입력 핸들러
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setFile(event.target.files[0]);
     }
   };
 
+  // 제목 입력 핸들러
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   };
 
+  // 에디터 내용 핸들러
   const handleEditorChange = (content: string) => {
     setContent(content);
   };
 
+  // 게시글 작성 핸들러
   const handleSubmit = () => {
     if (!title.trim() || !content.trim()) {
       alert('제목과 내용을 모두 입력해 주세요.');
@@ -111,7 +127,7 @@ const SupervisionWritePostPage: React.FC = () => {
       file: file || undefined,
     };
 
-    postArticleMutation.mutate(postData);
+    mutation.mutate(postData);
   };
 
   return (
@@ -148,11 +164,7 @@ const SupervisionWritePostPage: React.FC = () => {
         <div className="flex justify-between">
           <input className="file-input h-9 mt-4" type="file" onChange={handleFileChange} />
           <div className="m-6">
-            <RegisterButton
-              onClick={handleSubmit}
-              disabled={postArticleMutation.isPending}
-              color="blue"
-            />
+            <RegisterButton onClick={handleSubmit} disabled={mutation.isPending} color="blue" />
           </div>
         </div>
       </div>
@@ -160,4 +172,4 @@ const SupervisionWritePostPage: React.FC = () => {
   );
 };
 
-export default SupervisionWritePostPage;
+export default SupervisionEditPostPage;
