@@ -79,8 +79,11 @@ public class ReviewService {
             throw new ReviewAlreadyExistException();
         }
 
-        //TODO: 진짜 멤버ID 가져오기
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null) {
+            throw new AccessDeniedException();
+        }
+        Long memberId = member.getMemberId();
 
         // 자신이 예약한 상담이 아닐경우 리뷰 작성 불가
         if (reservationRepository.findById(consultId).get().getMemberId() != memberId) {
