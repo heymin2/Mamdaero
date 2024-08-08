@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import CommunityListCard from '@/components/card/community/CommunityListCard';
 import CommunityBar from '@/components/navigation/CommunityBar';
 import WriteButton from '@/components/button/WriteButton';
+import AlignDropdown from '@/components/dropdown/AlignDropdown';
+
 interface Post {
   id: number;
   title: string;
@@ -13,6 +15,11 @@ interface Post {
 }
 
 const CommunityListPage: React.FC = () => {
+  const [selectedOption1, setSelectedOption1] = useState('최신순');
+  const [selectedOption2, setSelectedOption2] = useState('제목');
+
+  const options1 = ['최신순', '오래된순', '추천 많은 순', '댓글 많은 순'];
+  const options2 = ['제목', '내용', '작성자'];
   const generateSamplePosts = (): Post[] => {
     return Array.from({ length: 50 }, (_, i) => ({
       id: i + 1,
@@ -36,9 +43,18 @@ const CommunityListPage: React.FC = () => {
   return (
     <div>
       <CommunityBar />
-      <div className="mx-4">
-        <div className="text-right mr-20">
-          <WriteButton onClick={writePost} color="orange" />
+      <div className="mx-8">
+        <div className="flex justify-between mx-5">
+          <div>
+            <AlignDropdown
+              selectedOption={selectedOption1}
+              options={options1}
+              onOptionClick={setSelectedOption1}
+            />
+          </div>
+          <div className="text-right">
+            <WriteButton onClick={writePost} color="orange" />
+          </div>
         </div>
         <CommunityListCard
           posts={posts}
