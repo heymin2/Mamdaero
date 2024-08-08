@@ -1,6 +1,7 @@
 package com.mamdaero.domain.member.service;
 
 import com.mamdaero.domain.member.dto.request.CounselorRequestDto;
+import com.mamdaero.domain.member.dto.response.CounselorResponseDto;
 import com.mamdaero.domain.member.entity.Counselor;
 import com.mamdaero.domain.member.exception.FileBadRequestException;
 import com.mamdaero.domain.member.exception.FileNotFoundException;
@@ -22,22 +23,30 @@ public class CounselorService {
     private final CounselorRepository counselorRepository;
     private final FileService fileService;
 
-    public List<Counselor> findAll(){
-        return counselorRepository.findAll();
+    public List<CounselorResponseDto> findAll(){
+        return counselorRepository.findAll().stream()
+                .map(CounselorResponseDto::toDTO)
+                .toList();
     }
 
-    public List<Counselor> findAllByName(String name){
-        return counselorRepository.findAllByNameContains(name);
+    public List<CounselorResponseDto> findAllByName(String name){
+        return counselorRepository.findAllByNameContains(name).stream()
+                .map(CounselorResponseDto::toDTO)
+                .toList();
     }
 
-    // Todo id 말고 토큰으로 본인 찾기 추가
-    public Counselor find(final Long id){
+    public CounselorResponseDto find(final Long id){
         Optional<Counselor> optionalCounselor = counselorRepository.findById(id);
 
-        return optionalCounselor.orElse(null);
+        if (optionalCounselor.isPresent()){
+            Counselor counselor = optionalCounselor.get();
+
+            return CounselorResponseDto.toDTO(counselor);
+        }
+
+        return null;
     }
 
-    // Todo id 말고 토큰으로 본인 찾기 추가
     @Transactional
     public void modifyIntro(final Long id, CounselorRequestDto requestDto){
         Optional<Counselor> optionalCounselor = counselorRepository.findById(id);
@@ -47,7 +56,7 @@ public class CounselorService {
             counselor.updateIntro(requestDto);
         }
     }
-    // Todo id 말고 토큰으로 본인 찾기 추가
+
     @Transactional
     public void modifyIntroDetail(final Long id, CounselorRequestDto requestDto){
         Optional<Counselor> optionalCounselor = counselorRepository.findById(id);
@@ -57,10 +66,9 @@ public class CounselorService {
             counselor.updateIntroDetail(requestDto);
         }
     }
-    // Todo id 말고 토큰으로 본인 찾기 추가
+
     @Transactional
-    public void modifyImg(MultipartFile file) throws IOException {
-        Long memberId = 1L;
+    public void modifyImg(final Long memberId, MultipartFile file) throws IOException {
 
         if(file == null) {
             throw new FileBadRequestException();
