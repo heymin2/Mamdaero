@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,41 +45,56 @@ public class CounselorController {
     @GetMapping(value = "/c/member/counselor")
     public ResponseEntity<?> getCounselor() {
 
-        Long CounselorId = findUserService.findMemberId();
+        if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
+            Long CounselorId = findUserService.findMemberId();
 
-        CounselorResponseDto responseDto = counselorService.find(CounselorId);
+            CounselorResponseDto responseDto = counselorService.find(CounselorId);
 
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PatchMapping(value = "/c/member/counselor/intro", consumes = "application/json")
     public ResponseEntity<?> modifyIntro(@RequestBody CounselorRequestDto counselorDto) {
 
-        Long CounselorId = findUserService.findMemberId();
+        if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
-        counselorService.modifyIntro(CounselorId, counselorDto);
+            Long CounselorId = findUserService.findMemberId();
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            counselorService.modifyIntro(CounselorId, counselorDto);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PatchMapping(value = "/c/member/counselor/intro-detail", consumes = "application/json")
     public ResponseEntity<?> modifyIntroDetail(@RequestBody CounselorRequestDto counselorDto) {
 
-        Long CounselorId = findUserService.findMemberId();
+        if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
-        counselorService.modifyIntroDetail(CounselorId, counselorDto);
+            Long CounselorId = findUserService.findMemberId();
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            counselorService.modifyIntroDetail(CounselorId, counselorDto);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PatchMapping(value = "/c/member/counselor/img")
     public ResponseEntity<?> modifyIntroImg(@RequestPart(name = "file", required = false) MultipartFile file) throws IOException {
 
-        Long CounselorId = findUserService.findMemberId();
+        if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
-        counselorService.modifyImg(CounselorId, file);
+            Long CounselorId = findUserService.findMemberId();
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            counselorService.modifyImg(CounselorId, file);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
 }

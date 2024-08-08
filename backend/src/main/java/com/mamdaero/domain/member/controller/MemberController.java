@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -19,20 +21,27 @@ public class MemberController {
     @GetMapping(value = "/m/member")
     public ResponseEntity<?> getMember() {
 
-        Long memberId = findUserService.findMemberId();
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
-        MemberResponseDto responseDto = memberService.find(memberId);
+            Long memberId = findUserService.findMemberId();
 
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            MemberResponseDto responseDto = memberService.find(memberId);
+
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PatchMapping(value = "/m/member", consumes = "application/json")
     public ResponseEntity<?> patchMemberJson(@RequestBody MemberRequestDto memberRequestDto) {
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
-        Long memberId = findUserService.findMemberId();
+            Long memberId = findUserService.findMemberId();
 
-        memberService.modifyMember(memberId, memberRequestDto);
+            memberService.modifyMember(memberId, memberRequestDto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }
