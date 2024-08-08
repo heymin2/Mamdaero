@@ -1,7 +1,9 @@
 package com.mamdaero.domain.member.controller;
 
 import com.mamdaero.domain.member.dto.request.MemberRequestDto;
+import com.mamdaero.domain.member.dto.response.MemberResponseDto;
 import com.mamdaero.domain.member.entity.Member;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +16,24 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final FindUserService findUserService;
 
-    // Todo id 말고 토큰으로 본인 찾기 추가
     @GetMapping(value = "/member")
     public ResponseEntity<?> getMember() {
-        // member 객체 찾아오기
 
-        Member member = memberService.find(1L);
+        Long memberId = findUserService.findMemberId();
 
-        return new ResponseEntity<>(member, HttpStatus.OK);
+        MemberResponseDto responseDto = memberService.find(memberId);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // Todo id 말고 토큰으로 본인 찾기 추가
     @PatchMapping(value = "/member", consumes = "application/json")
     public ResponseEntity<?> patchMemberJson(@RequestBody MemberRequestDto memberRequestDto) {
 
-        memberService.modifyMember(1L, memberRequestDto);
+        Long memberId = findUserService.findMemberId();
+
+        memberService.modifyMember(memberId, memberRequestDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
