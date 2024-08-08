@@ -35,7 +35,7 @@ const ReviewWriteModal: React.FC<ReviewWriteModalProps> = ({
   };
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose}>
+    <ModalWrapper isOpen={isOpen} onClose={onClose} size="md">
       <div className="bg-white p-6 rounded-lg max-w-2xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">상담 리뷰 작성</h2>
         <div className="grid grid-cols-2 gap-4 mb-4">

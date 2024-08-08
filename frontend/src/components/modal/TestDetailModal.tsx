@@ -24,7 +24,7 @@ const TestDetailModal: React.FC<TestDetailModalProps> = ({
   if (!testResult) return null;
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose}>
+    <ModalWrapper isOpen={isOpen} onClose={onClose} size="md">
       <div className="max-h-[80vh] overflow-y-auto p-4 z-50">
         <h2 className="text-xl font-bold mb-4">{testResult.selftestName} 검사 결과</h2>
         <p>내담자: {clientName}</p>
