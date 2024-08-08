@@ -128,8 +128,11 @@ public class ReviewService {
             throw new ReviewNotFoundException();
         }
 
-        //TODO: 진짜 멤버 아이디로 바꾸기
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null) {
+            throw new AccessDeniedException();
+        }
+        Long memberId = member.getMemberId();
 
         // 자신이 작성한 리뷰가 아닐경우 리뷰 삭제 불가
         if (reservationRepository.findById(id).get().getMemberId() != memberId) {
