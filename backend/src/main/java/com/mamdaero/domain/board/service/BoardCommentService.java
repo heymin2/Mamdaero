@@ -1,12 +1,12 @@
-package com.mamdaero.domain.counselor_board.service;
+package com.mamdaero.domain.board.service;
 
+import com.mamdaero.domain.board.dto.request.BoardCommentRequest;
+import com.mamdaero.domain.board.dto.response.BoardCommentResponse;
+import com.mamdaero.domain.board.entity.BoardComment;
+import com.mamdaero.domain.board.repository.BoardCommentRepository;
 import com.mamdaero.domain.complaint.entity.Complaint;
 import com.mamdaero.domain.complaint.entity.Source;
 import com.mamdaero.domain.complaint.repository.ComplaintRepository;
-import com.mamdaero.domain.counselor_board.dto.request.CounselorBoardCommentRequest;
-import com.mamdaero.domain.counselor_board.dto.response.CounselorBoardCommentResponse;
-import com.mamdaero.domain.counselor_board.entity.CounselorBoardComment;
-import com.mamdaero.domain.counselor_board.repository.CounselorBoardCommentRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.member.exception.AccessDeniedException;
 import com.mamdaero.domain.member.repository.MemberRepository;
@@ -31,29 +31,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class
-CounselorBoardCommentService {
+BoardCommentService {
 
-    private final CounselorBoardCommentRepository boardCommentRepository;
+    private final BoardCommentRepository boardCommentRepository;
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
     private final FindUserService findUserService;
 
-    public Pagination<CounselorBoardCommentResponse> findAll(int page, int size, Long id) {
-        MemberInfoDTO member = findUserService.findMember();
-
-        Long memberId = member.getMemberId();
-        String memberRole = member.getMemberRole();
-
-        if(memberId == null || memberRole.equals("내담자")) {
-            throw new AccessDeniedException();
-        }
+    public Pagination<BoardCommentResponse> findAll(int page, int size, Long id) {
+        Long memberId = findUserService.findMemberId();
 
         Pageable pageable = PageRequest.of(page, size);
 
-        // 페이지네이션을 적용하여 댓글을 조회합니다.
-        Page<CounselorBoardComment> boardPage = boardCommentRepository.findByBoardId(id, pageable);
+        Page<BoardComment> boardPage = boardCommentRepository.findByBoardId(id, pageable);
 
-        List<CounselorBoardCommentResponse> commentResponses = boardPage.getContent().stream()
+        List<BoardCommentResponse> commentResponses = boardPage.getContent().stream()
                 .map(comment -> {
                     String writer = memberRepository.findById(comment.getMemberId())
                             .orElseThrow(CounselorNotFoundException::new)
@@ -61,7 +53,7 @@ CounselorBoardCommentService {
 
                     boolean isMine = boardCommentRepository.existsByIdAndMemberId(comment.getId(), memberId);
 
-                    return CounselorBoardCommentResponse.of(comment, writer, isMine);
+                    return BoardCommentResponse.of(comment, writer, isMine);
                 })
                 .collect(Collectors.toList());
 
@@ -75,35 +67,25 @@ CounselorBoardCommentService {
     }
 
     @Transactional
-    public void create(Long id, CounselorBoardCommentRequest request) {
-        MemberInfoDTO member = findUserService.findMember();
-
-        Long memberId = member.getMemberId();
-        String memberRole = member.getMemberRole();
-
-        if(memberId == null || memberRole.equals("내담자")) {
-            throw new AccessDeniedException();
-        }
+    public void create(Long id, BoardCommentRequest request) {
+        Long memberId = findUserService.findMemberId();
 
         if(request.getComment() == null) {
             throw new BoardBadRequestException();
         }
 
-        boardCommentRepository.save(CounselorBoardCommentRequest.toEntity(id, memberId, request));
+        boardCommentRepository.save(BoardCommentRequest.toEntity(id, memberId, request));
     }
 
     @Transactional
-    public CounselorBoardCommentResponse update(Long boardId, Long commentId, CounselorBoardCommentRequest request) {
-        MemberInfoDTO member = findUserService.findMember();
+    public BoardCommentResponse update(Long boardId, Long commentId, BoardCommentRequest request) {
+        Long memberId = findUserService.findMemberId();
 
-        Long memberId = member.getMemberId();
-        String memberRole = member.getMemberRole();
-
-        if(memberId == null || memberRole.equals("내담자")) {
+        if(memberId == null) {
             throw new AccessDeniedException();
         }
 
-        CounselorBoardComment comment = boardCommentRepository.findByIdAndBoardIdAndMemberId(commentId, boardId, memberId)
+        BoardComment comment = boardCommentRepository.findByIdAndBoardIdAndMemberId(commentId, boardId, memberId)
                 .orElseThrow(CommentNotFoundException::new);
 
         comment.updateComment(request.getComment());
@@ -114,7 +96,7 @@ CounselorBoardCommentService {
 
         boolean isMine = boardCommentRepository.existsByIdAndMemberId(comment.getId(), memberId);
 
-        return CounselorBoardCommentResponse.of(comment, writer, isMine);
+        return BoardCommentResponse.of(comment, writer, isMine);
     }
 
     @Transactional
@@ -124,14 +106,14 @@ CounselorBoardCommentService {
         Long memberId = member.getMemberId();
         String memberRole = member.getMemberRole();
 
-        if(memberId == null || memberRole.equals("내담자")) {
+        if(memberId == null) {
             throw new AccessDeniedException();
         }
 
-        CounselorBoardComment comment = boardCommentRepository.findByIdAndBoardId(commentId, boardId)
+        BoardComment comment = boardCommentRepository.findByIdAndBoardId(commentId, boardId)
                 .orElseThrow(CommentNotFoundException::new);
 
-        if(memberRole.equals("상담사")) {
+        if(!memberRole.equals("관리자")) {
             if(!Objects.equals(comment.getMemberId(), memberId)) {
                 throw new AccessDeniedException();
             }
@@ -147,16 +129,16 @@ CounselorBoardCommentService {
         Long memberId = member.getMemberId();
         String memberRole = member.getMemberRole();
 
-        if(memberId == null || !memberRole.equals("상담사")) {
+        if(memberId == null || memberRole.equals("관리자")) {
             throw new AccessDeniedException();
         }
 
-        if(complaintRepository.existsByMemberIdAndEventSourceAndEventId(memberId, Source.COUNSELOR_BOARD_COMMENT, commentId)) {
+        if(complaintRepository.existsByMemberIdAndEventSourceAndEventId(memberId, Source.BOARD, commentId)) {
             return false;
         }
 
         complaintRepository.save(Complaint.builder()
-                .eventSource(Source.COUNSELOR_BOARD_COMMENT)
+                .eventSource(Source.BOARD)
                 .eventId(commentId)
                 .memberId(memberId)
                 .build());

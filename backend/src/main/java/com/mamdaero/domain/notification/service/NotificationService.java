@@ -1,5 +1,6 @@
 package com.mamdaero.domain.notification.service;
 
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.notification.controller.NotificationController;
 import com.mamdaero.domain.notification.dto.NotificationResponse;
 import com.mamdaero.domain.notification.entity.Notification;
@@ -22,10 +23,11 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final FindUserService findUserService;
 
     // 메시지 알림
     public SseEmitter subscribe() {
-        Long memberId = 1L;
+        Long memberId = findUserService.findMemberId();
 
         // 현재 클라이언트를 위한 sseEmitter 생성
         SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
@@ -47,7 +49,7 @@ public class NotificationService {
     }
 
     public Pagination<NotificationResponse> notification(int page, int size) {
-        Long memberId = 1L;
+        Long memberId = findUserService.findMemberId();
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Notification> list = notificationRepository.findByMemberId(memberId, pageable);
