@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,49 +23,78 @@ public class DiaryController {
     @GetMapping("/m/diary")
     public ResponseEntity<List<DiaryResponseDto>> findAllByMember() {
 
-        Long memberId = findUserService.findMemberId();
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
-        List<DiaryResponseDto> diaryList = diaryService.findAllByMember(memberId);
+            Long memberId = findUserService.findMemberId();
 
-        return new ResponseEntity<>(diaryList, HttpStatus.OK);
+            List<DiaryResponseDto> diaryList = diaryService.findAllByMember(memberId);
+
+            return new ResponseEntity<>(diaryList, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/c/diary/{memberId}")
     public ResponseEntity<List<DiaryResponseDto>> findAllByDiary(@PathVariable(name = "memberId") Long memberId) {
 
-        List<DiaryResponseDto> diaryList = diaryService.findAllByMemberAndIsOpen(memberId,true);
+        if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
-        return new ResponseEntity<>(diaryList, HttpStatus.OK);
+            List<DiaryResponseDto> diaryList = diaryService.findAllByMemberAndIsOpen(memberId, true);
+
+            return new ResponseEntity<>(diaryList, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/m/diary/{diaryId}")
     public ResponseEntity<DiaryResponseDto> findById(@PathVariable(name = "diaryId") Long diaryId) {
-        DiaryResponseDto diary = diaryService.findById(diaryId);
 
-        return new ResponseEntity<>(diary, HttpStatus.OK);
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
+
+            DiaryResponseDto diary = diaryService.findById(diaryId);
+
+            return new ResponseEntity<>(diary, HttpStatus.OK);
+
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/m/diary")
     public ResponseEntity<Diary> create(@RequestBody DiaryRequestDto requestDto) {
 
-        diaryService.create(findUserService.findMemberId(), requestDto);
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+            diaryService.create(findUserService.findMemberId(), requestDto);
+
+            return new ResponseEntity<>(HttpStatus.CREATED);
+
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @PatchMapping("/m/diary/{diaryId}")
     public ResponseEntity<Diary> update(@PathVariable(name = "diaryId") Long diaryId, @RequestBody DiaryRequestDto requestDto) {
 
-        diaryService.update(diaryId, requestDto, findUserService.findMemberId());
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            diaryService.update(diaryId, requestDto, findUserService.findMemberId());
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @DeleteMapping("/m/diary/{diaryId}")
     public ResponseEntity<Diary> delete(@PathVariable(name = "diaryId") Long diaryId) {
 
-        diaryService.delete(diaryId, findUserService.findMemberId());
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            diaryService.delete(diaryId, findUserService.findMemberId());
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }

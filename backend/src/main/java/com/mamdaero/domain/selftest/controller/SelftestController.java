@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,8 +40,13 @@ public class SelftestController {
     @PostMapping("/m/selftest/{testId}")
     public ResponseEntity<MemberSelftestList> createByTestId(@PathVariable(name = "testId") Integer testId, @RequestBody TestRequestDto requestDto) {
 
-        selftestService.createByTestId(findUserService.findMemberId(), testId, requestDto);
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
-        return new ResponseEntity<>(HttpStatus.OK);
+            selftestService.createByTestId(findUserService.findMemberId(), testId, requestDto);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }
