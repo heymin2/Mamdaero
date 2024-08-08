@@ -1,5 +1,6 @@
 package com.mamdaero.domain.selftest.controller;
 
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.selftest.dto.request.TestRequestDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestQuestionResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestResponseDto;
@@ -17,6 +18,7 @@ import java.util.List;
 public class SelftestController {
 
     private final SelftestService selftestService;
+    private final FindUserService findUserService;
 
     @GetMapping("/p/selftest")
     public ResponseEntity<List<SelftestResponseDto>> findAll() {
@@ -37,7 +39,7 @@ public class SelftestController {
     @PostMapping("/m/selftest/{testId}")
     public ResponseEntity<MemberSelftestList> createByTestId(@PathVariable(name = "testId") Integer testId, @RequestBody TestRequestDto requestDto) {
 
-        selftestService.createByTestId(testId, requestDto);
+        selftestService.createByTestId(findUserService.findMemberId(), testId, requestDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
