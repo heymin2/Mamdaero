@@ -21,7 +21,7 @@ public class CounselorController {
     private final CounselorService counselorService;
     private final FindUserService findUserService;
 
-    @GetMapping(value = "/counselor")
+    @GetMapping(value = "/p/counselor")
     public ResponseEntity<List<CounselorResponseDto>> getCounselors(@RequestParam(name = "counselorName", required = false) String counselorName) {
         List<CounselorResponseDto> counselors;
         if (counselorName == null || counselorName.isEmpty()) {
@@ -33,7 +33,7 @@ public class CounselorController {
         return new ResponseEntity<>(counselors, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/counselor/{counselorId}")
+    @GetMapping(value = "/p/counselor/{counselorId}")
     public ResponseEntity<?> getCounselor(@PathVariable(name = "counselorId") Long id) {
 
         CounselorResponseDto responseDto = counselorService.find(id);
@@ -41,7 +41,7 @@ public class CounselorController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/member/counselor")
+    @GetMapping(value = "/c/member/counselor")
     public ResponseEntity<?> getCounselor() {
 
         Long CounselorId = findUserService.findMemberId();
@@ -51,7 +51,7 @@ public class CounselorController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/member/counselor/intro", consumes = "application/json")
+    @PatchMapping(value = "/c/member/counselor/intro", consumes = "application/json")
     public ResponseEntity<?> modifyIntro(@RequestBody CounselorRequestDto counselorDto) {
 
         Long CounselorId = findUserService.findMemberId();
@@ -61,7 +61,7 @@ public class CounselorController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/member/counselor/intro-detail", consumes = "application/json")
+    @PatchMapping(value = "/c/member/counselor/intro-detail", consumes = "application/json")
     public ResponseEntity<?> modifyIntroDetail(@RequestBody CounselorRequestDto counselorDto) {
 
         Long CounselorId = findUserService.findMemberId();

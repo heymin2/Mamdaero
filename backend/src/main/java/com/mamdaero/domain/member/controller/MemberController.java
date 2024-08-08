@@ -18,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
     private final FindUserService findUserService;
 
-    @GetMapping(value = "/member")
+    @GetMapping(value = "/m/member")
     public ResponseEntity<?> getMember() {
 
         Long memberId = findUserService.findMemberId();
@@ -28,7 +28,7 @@ public class MemberController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/member", consumes = "application/json")
+    @PatchMapping(value = "/m/member", consumes = "application/json")
     public ResponseEntity<?> patchMemberJson(@RequestBody MemberRequestDto memberRequestDto) {
 
         Long memberId = findUserService.findMemberId();
