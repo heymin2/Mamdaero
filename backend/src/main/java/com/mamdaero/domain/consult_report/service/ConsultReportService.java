@@ -114,6 +114,10 @@ public class ConsultReportService {
 
     @Transactional
     public void update(Long reportId, UpdateConsultReportRequest request) {
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         // 보고서가 존재하지 않으면 수정 불가
         if (!consultReportRepository.existsById(reportId)) {
