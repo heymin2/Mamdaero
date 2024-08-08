@@ -1,5 +1,8 @@
 package com.mamdaero.domain.work_schedule.service;
 
+import com.mamdaero.domain.member.exception.AccessDeniedException;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.work_schedule.dto.request.WorkScheduleRequest;
 import com.mamdaero.domain.work_schedule.dto.response.WorkScheduleResponse;
 import com.mamdaero.domain.work_schedule.entity.WorkSchedule;
@@ -19,7 +22,7 @@ import java.util.Optional;
 public class WorkScheduleService {
     private final WorkScheduleRepository workScheduleRepository;
     private final WorkTimeRepository workTimeRepository;
-
+    private final FindUserService findUserService;
     /**
      * 상담사의 근무 일정 조회
      */
@@ -34,7 +37,11 @@ public class WorkScheduleService {
      */
     public boolean create(List<WorkScheduleRequest> workScheduleRequestList) {
 
-        // TODO: 유효한 상담사인지 확인
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
+
 
         // 유효한 요일인지 확인
         for (WorkScheduleRequest request : workScheduleRequestList) {
@@ -55,7 +62,7 @@ public class WorkScheduleService {
 
         // 다른 근무 일정과 겹치는지 확인
         for (WorkScheduleRequest request : workScheduleRequestList) {
-            List<WorkSchedule> workSchedules = workScheduleRepository.findByCounselorIdAndDay(request.getCounselorId(), request.getDay());
+            List<WorkSchedule> workSchedules = workScheduleRepository.findByCounselorIdAndDay(member.getMemberId(), request.getDay());
             for (WorkSchedule workSchedule : workSchedules) {
                 if (workSchedule.getStartTime() < request.getEndTime() &&
                         request.getStartTime() < workSchedule.getEndTime()) {
@@ -77,7 +84,13 @@ public class WorkScheduleService {
 
     @Transactional
     public WorkScheduleResponse update(Long id, WorkScheduleRequest request) {
-        // TODO: 유효한 상담사인지 확인
+
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
+
+
         Optional<WorkSchedule> findWorkSchedule = workScheduleRepository.findById(id);
         // 존재하는 근무 일정인지 확인
         if (findWorkSchedule.isEmpty()) {
@@ -95,7 +108,7 @@ public class WorkScheduleService {
 
 
         // 다른 근무 일정과 겹치는지 확인
-        List<WorkSchedule> workSchedules = workScheduleRepository.findByCounselorIdAndDay(request.getCounselorId(), request.getDay());
+        List<WorkSchedule> workSchedules = workScheduleRepository.findByCounselorIdAndDay(member.getMemberId(), request.getDay());
         for (WorkSchedule otherSchedule : workSchedules) {
             if (otherSchedule.getStartTime() < request.getEndTime() &&
                     request.getStartTime() < otherSchedule.getEndTime()) {
@@ -113,6 +126,12 @@ public class WorkScheduleService {
      */
     @Transactional
     public Boolean delete(Long id) {
+
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
+
         // 존재하는 근무 일정인지 확인
         if (!workScheduleRepository.existsById(id)) {
             throw new WorkScheduleNotFoundException();
