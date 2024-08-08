@@ -26,8 +26,14 @@ public class WorkScheduleService {
     /**
      * 상담사의 근무 일정 조회
      */
-    public List<WorkScheduleResponse> find(long id, int day) {
-        return workScheduleRepository.findByCounselorIdAndDay(id, day).stream()
+    public List<WorkScheduleResponse> find(int day) {
+
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
+
+        return workScheduleRepository.findByCounselorIdAndDay(member.getMemberId(), day).stream()
                 .map(WorkScheduleResponse::toDTO)
                 .toList();
     }
