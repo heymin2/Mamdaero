@@ -1,13 +1,11 @@
-package com.mamdaero.domain.counselor_board.service;
+package com.mamdaero.domain.board.service;
 
-import com.mamdaero.domain.counselor_board.dto.response.CounselorBoardResponse;
-import com.mamdaero.domain.counselor_board.entity.CounselorBoard;
-import com.mamdaero.domain.counselor_board.repository.CounselorBoardLikeRepository;
-import com.mamdaero.domain.counselor_board.repository.CounselorBoardRepository;
+import com.mamdaero.domain.board.dto.response.BoardResponse;
+import com.mamdaero.domain.board.entity.Board;
+import com.mamdaero.domain.board.repository.BoardLikeRepository;
+import com.mamdaero.domain.board.repository.BoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
-import com.mamdaero.domain.member.exception.AccessDeniedException;
 import com.mamdaero.domain.member.repository.MemberRepository;
-import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
@@ -21,30 +19,23 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CounselorBoardFindService {
+public class BoardFindService {
 
-    private final CounselorBoardRepository boardRepository;
-    private final CounselorBoardLikeRepository boardLikeRepository;
+    private final BoardRepository boardRepository;
+    private final BoardLikeRepository boardLikeRepository;
     private final MemberRepository memberRepository;
-    private final FindUserService findUserService;
 
-    public Pagination<CounselorBoardResponse> findAll(int page, int size, String condition, String searchField, String searchValue) {
-        String memberRole = findUserService.findMemberRole();
-
-        if(memberRole.equals("내담자")) {
-            throw new AccessDeniedException();
-        }
-
+    public Pagination<BoardResponse> findAll(int page, int size, String condition, String searchField, String searchValue) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<CounselorBoard> boardPage;
+        Page<Board> boardPage;
         if (!searchField.isEmpty() && !searchValue.isEmpty()) {
             boardPage = findBoardsBySearch(searchField, searchValue, pageable);
         } else {
             boardPage = findBoardsByCondition(condition, pageable);
         }
 
-        List<CounselorBoardResponse> boardResponses = convertToBoardResponses(boardPage.getContent());
+        List<BoardResponse> boardResponses = convertToBoardResponses(boardPage.getContent());
 
         return new Pagination<>(
                 boardResponses,
@@ -55,7 +46,7 @@ public class CounselorBoardFindService {
         );
     }
 
-    private Page<CounselorBoard> findBoardsBySearch(String searchField, String searchValue, Pageable pageable) {
+    private Page<Board> findBoardsBySearch(String searchField, String searchValue, Pageable pageable) {
         return switch (searchField) {
             case "title" -> boardRepository.findByTitle(searchValue, pageable);
             case "content" -> boardRepository.findByContent(searchValue, pageable);
@@ -64,7 +55,7 @@ public class CounselorBoardFindService {
         };
     }
 
-    private Page<CounselorBoard> findBoardsByCondition(String condition, Pageable pageable) {
+    private Page<Board> findBoardsByCondition(String condition, Pageable pageable) {
         return switch (condition) {
             case "new" -> boardRepository.findAllByOrderByCreatedAtDesc(pageable);
             case "old" -> boardRepository.findAllByOrderByCreatedAt(pageable);
@@ -74,7 +65,7 @@ public class CounselorBoardFindService {
         };
     }
 
-    private List<CounselorBoardResponse> convertToBoardResponses(List<CounselorBoard> boards) {
+    private List<BoardResponse> convertToBoardResponses(List<Board> boards) {
         return boards.stream()
                 .map(board -> {
                     String writer = memberRepository.findById(board.getMemberId())
@@ -83,7 +74,7 @@ public class CounselorBoardFindService {
 
                     int likeCount = boardLikeRepository.countByBoardId(board.getId());
 
-                    return CounselorBoardResponse.of(board, writer, likeCount);
+                    return BoardResponse.of(board, writer, likeCount);
                 })
                 .collect(Collectors.toList());
     }
