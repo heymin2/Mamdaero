@@ -2,7 +2,7 @@ package com.mamdaero.domain.board.controller;
 
 import com.mamdaero.domain.board.dto.request.BoardCommentRequest;
 import com.mamdaero.domain.board.service.BoardCommentService;
-import com.mamdaero.domain.notification.service.NotifyCommentService;
+import com.mamdaero.domain.notification.service.NotifyBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class BoardCommentController {
 
     private final BoardCommentService boardCommentService;
-    private final NotifyCommentService notifyCommentService;
+    private final NotifyBoardService notifyBoardService;
 
     @GetMapping("/cma/board/{boardId}/comment")
     public ResponseEntity<?> comment(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -25,7 +25,7 @@ public class BoardCommentController {
     @PostMapping("/cma/board/{boardId}/comment")
     public ResponseEntity<?> create(@PathVariable("boardId") Long id, @RequestBody BoardCommentRequest request) {
         boardCommentService.create(id, request);
-        notifyCommentService.notifyCommentSave(id);
+        notifyBoardService.notifyCommentSave(id);
         return ResponseEntity.ok().build();
     }
 
