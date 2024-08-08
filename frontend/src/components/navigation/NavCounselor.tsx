@@ -1,13 +1,32 @@
-import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import logo from '@/assets/MamdaeroLogo.svg';
 import { CgProfile } from 'react-icons/cg';
 import { LuBellRing } from 'react-icons/lu';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import DiaryViewModal from '../modal/DiaryViewModal';
 
 const navStyle =
   'p-3 text-lg font-semibold hover:bg-gray-200 text-center transition-colors duration-300';
+const navSubStyle =
+  'py-2 px-6 text-base font-semibold hover:bg-gray-100 text-left transition-colors duration-300';
 const activeStyle = 'bg-blue-100 border-l-4 border-blue-500';
+const activeSubStyle = 'bg-gray-200';
 
-const NavClient = () => {
+const NavClient: React.FC = () => {
+  const [isMyCounselOpen, setIsMyCounselOpen] = useState(false);
+  const location = useLocation();
+
+  const isMyCounselActive =
+    location.pathname.includes('/mycounsel/counselor/history') ||
+    location.pathname.includes('/mycounsel/counselor/record');
+
+  useEffect(() => {
+    if (!isMyCounselActive) {
+      setIsMyCounselOpen(false);
+    }
+  }, [location, isMyCounselActive]);
+
   return (
     <div className="flex flex-col w-1.5/12 h-screen bg-white text-gray-800 fixed shadow-lg">
       <div className="flex justify-center items-center">
@@ -39,12 +58,36 @@ const NavClient = () => {
       >
         커뮤니티
       </NavLink>
-      <NavLink
-        to="mycounsel"
-        className={({ isActive }) => `${navStyle} ${isActive ? activeStyle : ''}`}
+      <button
+        onClick={() => setIsMyCounselOpen(!isMyCounselOpen)}
+        className={`${navStyle} text-left ${isMyCounselOpen || isMyCounselActive ? activeSubStyle : ''}`}
       >
-        나의 상담
-      </NavLink>
+        {isMyCounselOpen ? (
+          <div className="flex items-center justify-center space-x-3">
+            <span>나의 상담</span> <FaChevronDown />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center space-x-3">
+            <span>나의 상담</span> <FaChevronUp />
+          </div>
+        )}
+      </button>
+      {isMyCounselOpen && (
+        <div className="flex flex-col mt-1 bg-gray-50">
+          <NavLink
+            to="/mycounsel/counselor/history"
+            className={({ isActive }) => `${navSubStyle} ${isActive ? activeStyle : ''}`}
+          >
+            상담 내역
+          </NavLink>
+          <NavLink
+            to="/mycounsel/counselor/record"
+            className={({ isActive }) => `${navSubStyle} ${isActive ? activeStyle : ''}`}
+          >
+            상담 기록
+          </NavLink>
+        </div>
+      )}
       <div className="flex justify-evenly mt-auto mb-5">
         <Link to="/notice" className="font-bold">
           공지사항
