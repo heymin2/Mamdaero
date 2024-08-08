@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '@/components/button/Button';
 import { useNavigate } from 'react-router-dom';
 import ReviewWriteModal from '@/components/modal/ReviewWriteModal';
+import ChatModal from '@/components/modal/ChatModal';
 
 interface ClientCompletedCardProps {
   counselId: string;
@@ -19,6 +20,8 @@ const ClientCompletedCard: React.FC<ClientCompletedCardProps> = ({
   status,
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+
   return (
     <div className="border-b-2 border-orange-300 p-6">
       <h3 className="text-xl font-bold mb-3">{counselorName} 상담사님</h3>
@@ -38,16 +41,14 @@ const ClientCompletedCard: React.FC<ClientCompletedCardProps> = ({
         <div className="flex flex-col col-span-2 items-center mt-3 gap-3">
           <Button
             label="리뷰쓰기"
-            onClick={() => {
-              setIsReviewModalOpen(true);
-            }}
+            onClick={() => setIsReviewModalOpen(true)}
             size="lg"
             shape="rounded"
             color="orange"
           />
           <Button
             label="1:1 메신저 채팅"
-            onClick={() => {}}
+            onClick={() => setIsChatModalOpen(true)}
             size="lg"
             shape="rounded"
             color="gray"
@@ -60,6 +61,13 @@ const ClientCompletedCard: React.FC<ClientCompletedCardProps> = ({
         counselorName={counselorName}
         date={date}
         time={time}
+      />
+      <ChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        memberName={counselorName}
+        reservationId={counselId}
+        user="client"
       />
     </div>
   );

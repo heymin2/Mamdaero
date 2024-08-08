@@ -10,7 +10,7 @@ interface ModalWrapperProps {
 const ModalWrapper: React.FC<ModalWrapperProps> = ({ isOpen, onClose, children }) => {
   return (
     <dialog className={`modal ${isOpen ? 'modal-open' : ''}`}>
-      <div className="modal-box relative w-11/12 max-w-2xl">
+      <div className="modal-box relative w-full max-w-2xl">
         <button
           className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
           onClick={onClose}
