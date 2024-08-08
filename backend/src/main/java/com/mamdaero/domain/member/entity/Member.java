@@ -49,4 +49,14 @@ public class Member extends BaseEntity {
         this.birth = requestDto.getBirth();
         this.tel = requestDto.getTel();
     }
+
+    public void destroyRefreshToken()
+    {
+        this.token = null;
+    }
+
+    public void updateRefreshToken(String refreshToken)
+    {
+        this.token = refreshToken;
+    }
 }
