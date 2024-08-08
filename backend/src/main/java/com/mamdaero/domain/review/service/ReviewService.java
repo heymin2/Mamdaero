@@ -1,6 +1,9 @@
 package com.mamdaero.domain.review.service;
 
 import com.mamdaero.domain.consult.repository.ConsultRepository;
+import com.mamdaero.domain.member.exception.AccessDeniedException;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.domain.review.dto.request.CreateReviewRequest;
 import com.mamdaero.domain.review.dto.request.UpdateReviewRequest;
@@ -25,6 +28,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ConsultRepository consultRepository;
     private final ReservationRepository reservationRepository;
+    private final FindUserService findUserService;
+
 
     public Pagination<ReviewResponse> findAllCounselorReview(Long id, int page, int size) {
 
@@ -43,12 +48,15 @@ public class ReviewService {
     }
 
     public Pagination<ReviewResponse> findAllMyReview(int page, int size) {
-        //TODO: 진짜 멤버 아이디로 바꾸기
-        Long memberId = 1L;
+
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null) {
+            throw new AccessDeniedException();
+        }
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<ReviewResponse> reviewPage = reviewRepository.findAllMyReview(memberId, pageable);
+        Page<ReviewResponse> reviewPage = reviewRepository.findAllMyReview(member.getMemberId(), pageable);
 
         return new Pagination<>(
                 reviewPage.getContent(),
