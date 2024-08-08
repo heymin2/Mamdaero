@@ -35,6 +35,7 @@ public class WorkScheduleService {
     /**
      * 상담사의 근무 일정 등록
      */
+    @Transactional
     public boolean create(List<WorkScheduleRequest> workScheduleRequestList) {
 
         MemberInfoDTO member = findUserService.findMember();
@@ -72,9 +73,19 @@ public class WorkScheduleService {
         }
 
 
-        workScheduleRepository.saveAll(workScheduleRequestList.stream()
+        List<WorkSchedule> workSchedules = workScheduleRequestList.stream()
                 .map(WorkScheduleRequest::toEntity)
-                .toList());
+                .toList();
+
+        // 근무 일정 등록
+        workScheduleRepository.saveAll(workSchedules);
+
+
+        // 근무
+        for (WorkSchedule workSchedule : workSchedules) {
+            work(workSchedule);
+        }
+
         return true;
     }
 
@@ -116,8 +127,16 @@ public class WorkScheduleService {
             }
         }
 
+        // 변경 전 근무 취소
+        cancelWork(workSchedule);
 
+        // 근무 일정 수정
         workSchedule.update(request);
+
+        // 변경 후 근무
+        work(workSchedule);
+
+
         return WorkScheduleResponse.toDTO(workSchedule);
     }
 
@@ -171,6 +190,17 @@ public class WorkScheduleService {
                     workSchedule.getStartTime() <= workTime.getTime() &&
                     workTime.getTime() < workSchedule.getEndTime()) {
                 workTime.cancelWork();
+            }
+        }
+    }
+
+    private void work(WorkSchedule workSchedule) {
+        List<WorkTime> workTimes = workTimeRepository.findAll();
+        for (WorkTime workTime : workTimes) {
+            if (workTime.getDate().getDayOfWeek().getValue() == workSchedule.getDay() &&
+                    workSchedule.getStartTime() <= workTime.getTime() &&
+                    workTime.getTime() < workSchedule.getEndTime()) {
+                workTime.work();
             }
         }
     }
