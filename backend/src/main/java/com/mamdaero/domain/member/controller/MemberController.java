@@ -2,11 +2,9 @@ package com.mamdaero.domain.member.controller;
 
 import com.mamdaero.domain.member.dto.request.MemberRequestDto;
 import com.mamdaero.domain.member.dto.response.MemberResponseDto;
-import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
