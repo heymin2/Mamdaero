@@ -81,7 +81,7 @@ const CounselorReservePage: React.FC = () => {
         />
       </div>
       <div className="grid grid-cols-4">
-        <div className="col-span-3 flex flex-col space-y-8 p-4">
+        <div className="col-span-3 flex flex-col space-y-10 p-4">
           <div className="flex text-3xl font-bold space-x-3 ">
             <span className="text-orange-500">상담</span>
             <span>예약하기</span>

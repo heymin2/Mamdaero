@@ -39,6 +39,7 @@ import CounselRecordDetail from '@/pages/mycounsel/counselor/CounselRecordDetail
 import ClientHistory from '@/pages/mycounsel/client/ClientHistory';
 import ClientFaceChat from '@/pages/mycounsel/client/ClientFaceChat';
 import CounselorFaceChat from '@/pages/mycounsel/counselor/CounselorFaceChat';
+import PostitPage from '@/pages/postit/PostitPage';
 
 const Router = () => (
   <Routes>
@@ -97,6 +98,8 @@ const Router = () => (
       path="/mycounsel/client/history/facechat/:counsultId/:memberId"
       element={<ClientFaceChat />}
     />
+    {/* Postit Routes */}
+    <Route path="/postit" element={<PostitPage />} />
   </Routes>
 );
 
