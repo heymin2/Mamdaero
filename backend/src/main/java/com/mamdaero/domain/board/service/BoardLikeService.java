@@ -1,7 +1,7 @@
-package com.mamdaero.domain.counselor_board.service;
+package com.mamdaero.domain.board.service;
 
-import com.mamdaero.domain.counselor_board.entity.CounselorBoardLike;
-import com.mamdaero.domain.counselor_board.repository.CounselorBoardLikeRepository;
+import com.mamdaero.domain.board.entity.BoardLike;
+import com.mamdaero.domain.board.repository.BoardLikeRepository;
 import com.mamdaero.domain.member.exception.AccessDeniedException;
 import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
 import com.mamdaero.domain.member.security.service.FindUserService;
@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CounselorBoardLikeService {
+public class BoardLikeService {
 
-    private final CounselorBoardLikeRepository boardLikeRepository;
+    private final BoardLikeRepository boardLikeRepository;
     private final FindUserService findUserService;
 
     @Transactional
@@ -25,14 +25,14 @@ public class CounselorBoardLikeService {
         Long memberId = member.getMemberId();
         String memberRole = member.getMemberRole();
 
-        if(memberId == null || !memberRole.equals("상담사")) {
+        if(memberId == null || memberRole.equals("관리자")) {
             throw new AccessDeniedException();
         }
 
-        CounselorBoardLike like = boardLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
+        BoardLike like = boardLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
 
         if (like == null) {
-            CounselorBoardLike newLike = CounselorBoardLike.builder()
+            BoardLike newLike = BoardLike.builder()
                     .boardId(boardId)
                     .memberId(memberId)
                     .build();

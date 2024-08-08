@@ -11,7 +11,10 @@ import com.mamdaero.domain.counselor_board.repository.CounselorBoardFileReposito
 import com.mamdaero.domain.counselor_board.repository.CounselorBoardLikeRepository;
 import com.mamdaero.domain.counselor_board.repository.CounselorBoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
+import com.mamdaero.domain.member.exception.AccessDeniedException;
 import com.mamdaero.domain.member.repository.MemberRepository;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
 import com.mamdaero.domain.notice.exception.BoardNotFoundException;
 import com.mamdaero.global.service.FileService;
@@ -24,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -36,10 +40,18 @@ public class CounselorBoardService {
     private final CounselorBoardLikeRepository boardLikeRepository;
     private final CounselorBoardFileRepository boardFileRepository;
     private final FileService fileService;
+    private final FindUserService findUserService;
 
     @Transactional
     public CounselorBoardDetailResponse findDetail(Long id) {
-        Long memberId = null;
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || memberRole.equals("내담자")) {
+            throw new AccessDeniedException();
+        }
 
         CounselorBoard board = boardRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
@@ -67,8 +79,16 @@ public class CounselorBoardService {
 
     @Transactional
     public void create(CounselorBoardRequest request, List<MultipartFile> files) throws IOException {
-        // 토큰 확인 후 상담사인지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+
+        log.info(member.toString());
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || !memberRole.equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         if(request.getTitle() == null || request.getContent() == null) {
             throw new BoardBadRequestException();
@@ -90,11 +110,21 @@ public class CounselorBoardService {
 
     @Transactional
     public CounselorBoardDetailResponse update(Long id, List<MultipartFile> files, CounselorBoardRequest request) throws IOException {
-        // 토큰 확인 후 상담사인지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || !memberRole.equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         CounselorBoard board = boardRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
+
+        if(!Objects.equals(board.getMemberId(), memberId)) {
+            throw new AccessDeniedException();
+        }
 
         String writer = memberRepository.findById(board.getMemberId())
                 .orElseThrow(CounselorNotFoundException::new)
@@ -127,19 +157,37 @@ public class CounselorBoardService {
 
     @Transactional
     public void delete(Long id) {
-        // 토큰 확인 후 상담사인지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || memberRole.equals("내담자")) {
+            throw new AccessDeniedException();
+        }
 
         CounselorBoard board = boardRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
+
+        if(memberRole.equals("상담사")) {
+            if(!Objects.equals(board.getMemberId(), memberId)) {
+                throw new AccessDeniedException();
+            }
+        }
 
         boardRepository.delete(board);
     }
 
     @Transactional
     public boolean complaint(Long id) {
-        // 토큰 확인 후 로그인한지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || !memberRole.equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         if(complaintRepository.existsByMemberIdAndEventSourceAndEventId(memberId, Source.COUNSELOR_BOARD, id)) {
             return false;
