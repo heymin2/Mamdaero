@@ -72,7 +72,10 @@ public class ConsultReportService {
     }
 
     public void create(Long reportId, CreateConsultReportRequest request) {
-
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         //상담이 존재하지 않으면 보고서를 작성 불가
         if (!consultRepository.existsById(reportId)) {
