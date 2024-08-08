@@ -101,7 +101,7 @@ const CounselRecordDetail: React.FC = () => {
             type="radio"
             name="records"
             role="tab"
-            className="tab"
+            className="tab font-bold border-4 border-blue-300"
             aria-label="보고서"
             defaultChecked
           />
@@ -116,7 +116,7 @@ const CounselRecordDetail: React.FC = () => {
             type="radio"
             name="records"
             role="tab"
-            className="tab"
+            className="tab font-bold border-4 border-blue-300"
             aria-label="자가진단검사결과"
           />
           <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">

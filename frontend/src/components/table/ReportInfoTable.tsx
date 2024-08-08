@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '@/components/button/Button';
 import ReportWriteModal from '@/components/modal/ReportWriteModal';
 import ReportViewModal from '@/components/modal/ReportViewModal';
@@ -23,6 +23,13 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
   const [isScriptModalOpen, setIsScriptModalOpen] = useState(false);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
+
+  // Sort records by date in descending order
+  const sortedRecords = useMemo(() => {
+    return [...records].sort((a, b) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+  }, [records]);
 
   const handleOpenWriteModal = (record: Record) => {
     setSelectedRecord(record);
@@ -58,7 +65,6 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
         <thead>
           <tr>
             <th></th>
-            <th>내담자</th>
             <th>날짜</th>
             <th>시간</th>
             <th>스크립트</th>
@@ -66,10 +72,9 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
           </tr>
         </thead>
         <tbody>
-          {records.map((record, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{clientName}</td>
+          {sortedRecords.map((record, index) => (
+            <tr key={sortedRecords.length - index}>
+              <td>{sortedRecords.length - index}</td>
               <td>{record.date}</td>
               <td>{record.time}</td>
               <td className="space-x-3">
@@ -113,7 +118,6 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
       </table>
       {selectedRecord && (
         <>
-          {/* 보고서 보기 모달 */}
           <ReportWriteModal
             isOpen={isWriteModalOpen}
             onClose={handleCloseModal}
@@ -121,7 +125,6 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
             date={selectedRecord.date}
             time={selectedRecord.time}
           />
-          {/* 보고서 작성 모달 */}
           {selectedRecord.report && (
             <ReportViewModal
               isOpen={isViewModalOpen}
@@ -134,7 +137,6 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
               opinion={selectedRecord.report.opinion}
             />
           )}
-          {/* 스크립트 전체보기 모달 */}
           <ScriptViewModal
             isOpen={isScriptModalOpen}
             onClose={handleCloseModal}
@@ -143,7 +145,6 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
             time={selectedRecord.time}
             script={selectedRecord.script}
           />
-          {/* 스크립트 요약보기 모달 */}
           <ScriptSummaryModal
             isOpen={isSummaryModalOpen}
             onClose={handleCloseModal}

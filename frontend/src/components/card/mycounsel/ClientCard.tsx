@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
-import book from '@/assets/book.png';
+import book from '@/assets/book2.png';
 
 interface ClientCardProps {
   clientName: string;

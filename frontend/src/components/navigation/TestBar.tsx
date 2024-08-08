@@ -33,7 +33,7 @@ const TestBar: React.FC<HeaderWithBackButtonProps> = ({
               </span>
             }
             onClick={() => navigate('/selftest')}
-            size="상담사목록보기"
+            size="목록보기"
             textSize="sm"
             shape="rounded"
             color="orange"
