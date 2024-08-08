@@ -4,14 +4,24 @@ import React from 'react';
 interface ButtonProps {
   label: React.ReactNode;
   onClick: () => void;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기' | '예약하기' | '회원가입' | '검색';
+  size?:
+    | 'xs'
+    | 'sm'
+    | 'md'
+    | 'lg'
+    | 'full'
+    | '목록보기'
+    | '예약하기'
+    | '회원가입'
+    | '검색'
+    | '수정';
   shape?: 'rounded' | 'square';
   color?: 'blue' | 'orange' | 'gray' | 'red';
   textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 const sizeClasses: Record<
-  'xs' | 'sm' | 'md' | 'lg' | 'full' | '상담사목록보기' | '예약하기' | '회원가입' | '검색',
+  'xs' | 'sm' | 'md' | 'lg' | 'full' | '목록보기' | '예약하기' | '회원가입' | '검색' | '수정',
   string
 > = {
   xs: 'w-16 h-5',
@@ -19,10 +29,11 @@ const sizeClasses: Record<
   md: 'w-24 h-9',
   lg: 'w-40 h-10',
   full: 'w-full h-10',
-  상담사목록보기: 'w-36 h-8',
+  목록보기: 'w-36 h-8',
   예약하기: 'w-full h-12',
   회원가입: 'w-40 h-12',
-  검색: ' w-16 h-9',
+  검색: 'w-16 h-9',
+  수정: 'w-10 h-7',
 };
 
 const shapeClasses: Record<'rounded' | 'square', string> = {

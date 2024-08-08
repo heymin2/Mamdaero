@@ -1,7 +1,5 @@
 import LoginCard from '@/components/card/LoginCard';
 import MainTitleCard from '@/components/card/MainTitleCard';
-import Lottie from 'lottie-react';
-import animation from '@/api/animation1.json';
 import lean2 from '@/assets/lean2.png';
 
 const MainPage = () => {
