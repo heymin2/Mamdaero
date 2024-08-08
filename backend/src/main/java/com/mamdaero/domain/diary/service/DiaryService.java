@@ -96,6 +96,7 @@ public class DiaryService {
                     .member(member)
                     .content(requestDto.getContent())
                     .date(requestDto.getDate())
+                    .isOpen(requestDto.getIsOpen())
                     .build();
 
             diaryRepository.save(diary);
