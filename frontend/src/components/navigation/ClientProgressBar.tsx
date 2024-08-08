@@ -11,7 +11,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   ];
 
   const getStepClassName = (stepKey: string) => {
-    if (currentStep === stepKey) return 'step step-primary';
+    if (currentStep === stepKey) return 'step step-primary w-36';
     if (
       steps.findIndex(step => step.key === stepKey) <
       steps.findIndex(step => step.key === currentStep)
@@ -22,7 +22,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   };
 
   return (
-    <div className="mb-5">
+    <div className="mb-3">
       <ul className="steps steps-horizontal text-gray-600">
         {steps.map(step => (
           <li key={step.key} className={getStepClassName(step.key)}>
