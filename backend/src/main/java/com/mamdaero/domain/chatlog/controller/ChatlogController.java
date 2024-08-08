@@ -4,6 +4,7 @@ import com.mamdaero.domain.chatlog.entity.Chatlog;
 import com.mamdaero.domain.chatlog.service.ChatlogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -11,9 +12,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,10 +24,12 @@ public class ChatlogController {
     private final ChatlogService chatlogService;
 
     // 채팅 리스트 반환
-    @GetMapping("/chatlog/{reservation_id}")
-    public ResponseEntity<List<Chatlog>> getChatList(@PathVariable("reservation_id") Long reservation_id) {
+    @GetMapping("/cm/chatlog/{reservation_id}")
+    public ResponseEntity<Page<Chatlog>> getChatList(@PathVariable("reservation_id") Long reservation_id,
+                                                     @RequestParam(name = "page", defaultValue = "0") int page,
+                                                     @RequestParam(name = "size", defaultValue = "10") int size) {
 
-        List<Chatlog> chatLogList = chatlogService.findAllByReservationId(reservation_id);
+        Page<Chatlog> chatLogList = chatlogService.findAllByReservationId(reservation_id, page, size);
 
         return ResponseEntity.ok().body(chatLogList);
     }
@@ -41,8 +43,8 @@ public class ChatlogController {
 
     @MessageMapping("/message")
     public ResponseEntity<Void> receiveMessage(@Payload Chatlog chatLog) {
-        chatlogService.save(1L, 1L, chatLog.getMessage());
-        messagingTemplate.convertAndSend("/sub/chatroom/1", chatLog);
+        chatlogService.save(chatLog.getReservationId(), chatLog.getMemberId(), chatLog.getMessage());
+        messagingTemplate.convertAndSend("/sub/chatroom/" + chatLog.getReservationId(), chatLog);
         log.info("Received message: {}", chatLog);
 
         return ResponseEntity.ok().build();
