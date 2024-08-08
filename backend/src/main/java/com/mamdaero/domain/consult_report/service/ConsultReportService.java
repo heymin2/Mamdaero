@@ -92,8 +92,7 @@ public class ConsultReportService {
             throw new ConsultReportBadRequestException();
         }
 
-        // TODO: 토큰으로부터 진짜 상담사ID 가져오기
-        Long counselorId = 16L;
+        Long counselorId = member.getMemberId();
         Long counselorItemId = reservationRepository.findById(reportId).get().getCounselorItemId();
 
         // 상담사 자신의 상담이 아니면 보고서 작성 불가
@@ -130,8 +129,7 @@ public class ConsultReportService {
         }
 
 
-        // TODO: 토큰으로부터 진짜 상담사ID 가져오기
-        Long counselorId = 16L;
+        Long counselorId = member.getMemberId();
         Long counselorItemId = reservationRepository.findById(reportId).get().getCounselorItemId();
 
         // 상담사 자신의 상담이 아니면 보고서 작성 불가
