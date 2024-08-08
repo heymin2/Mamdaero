@@ -16,7 +16,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // Todo id 말고 토큰으로 본인 찾기 추가
-    @GetMapping(value = "/member")
+    @GetMapping(value = "/m/member")
     public ResponseEntity<?> getMember() {
         // member 객체 찾아오기
 
@@ -26,7 +26,7 @@ public class MemberController {
     }
 
     // Todo id 말고 토큰으로 본인 찾기 추가
-    @PatchMapping(value = "/member", consumes = "application/json")
+    @PatchMapping(value = "/m/member", consumes = "application/json")
     public ResponseEntity<?> patchMemberJson(@RequestBody MemberRequestDto memberRequestDto) {
 
         memberService.modifyMember(1L, memberRequestDto);

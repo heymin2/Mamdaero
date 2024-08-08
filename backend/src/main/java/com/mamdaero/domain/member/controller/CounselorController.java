@@ -18,7 +18,7 @@ public class CounselorController {
 
     private final CounselorService counselorService;
 
-    @GetMapping(value = "/counselor")
+    @GetMapping(value = "/p/counselor")
     public ResponseEntity<List<Counselor>> getCounselors(@RequestParam(name = "counselorName", required = false) String counselorName) {
         List<Counselor> counselors;
         if (counselorName == null || counselorName.isEmpty()) {
@@ -30,7 +30,7 @@ public class CounselorController {
         return new ResponseEntity<>(counselors, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/counselor/{counselorId}")
+    @GetMapping(value = "/p/counselor/{counselorId}")
     public ResponseEntity<?> getCounselor(@PathVariable(name = "counselorId") Long id) {
 
         Counselor counselor = counselorService.find(id);
@@ -39,7 +39,7 @@ public class CounselorController {
     }
 
     // Todo id 말고 토큰으로 본인 찾기 추가
-    @GetMapping(value = "/member/counselor")
+    @GetMapping(value = "/c/member/counselor")
     public ResponseEntity<?> getCounselor() {
 
         Counselor counselor = counselorService.find(16L);
@@ -48,7 +48,7 @@ public class CounselorController {
     }
 
     // Todo id 말고 토큰으로 본인 찾기 추가
-    @PatchMapping(value = "/member/counselor/intro", consumes = "application/json")
+    @PatchMapping(value = "/c/member/counselor/intro", consumes = "application/json")
     public ResponseEntity<?> modifyIntro(@RequestBody CounselorRequestDto counselorDto) {
 
         counselorService.modifyIntro(16L, counselorDto);
@@ -57,7 +57,7 @@ public class CounselorController {
     }
 
     // Todo id 말고 토큰으로 본인 찾기 추가
-    @PatchMapping(value = "/member/counselor/intro-detail", consumes = "application/json")
+    @PatchMapping(value = "/c/member/counselor/intro-detail", consumes = "application/json")
     public ResponseEntity<?> modifyIntroDetail(@RequestBody CounselorRequestDto counselorDto) {
 
         counselorService.modifyIntroDetail(16L, counselorDto);
