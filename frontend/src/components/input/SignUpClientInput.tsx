@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '@/api/axiosInstance';
+import { useMutation } from '@tanstack/react-query';
 import Button from '@/components/button/CertificationButton';
 
 const SignUpClientInput: React.FC = () => {
@@ -12,12 +14,72 @@ const SignUpClientInput: React.FC = () => {
     birth: '',
     tel: '',
     role: 'client',
-    gender: '', // gender 추가
+    gender: '',
   });
   const [error, setError] = useState<string | null>(null);
   const [emailConfirmation, setEmailConfirmation] = useState<string | null>(null);
   const [nicknameConfirmation, setNicknameConfirmation] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const checkEmailDuplicate = async (email: string): Promise<boolean> => {
+    const response = await axiosInstance({
+      method: 'post',
+      url: 'p/member/email-check',
+      data: { email },
+    });
+    return response.data;
+  };
+
+  const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
+    const response = await axiosInstance({
+      method: 'post',
+      url: 'p/member/nickname-check',
+      data: { nickname },
+    });
+    return response.data;
+  };
+
+  const emailMutation = useMutation({
+    mutationFn: checkEmailDuplicate,
+    onSuccess: email => {
+      if (email) {
+        setEmailConfirmation('사용 가능한 이메일입니다.');
+      } else {
+        setEmailConfirmation('이미 사용 중인 이메일입니다.');
+      }
+      setTimeout(() => setEmailConfirmation(null), 3000);
+    },
+    onError: error => {
+      setEmailConfirmation(`이메일 중복 확인 중 오류가 발생했습니다. ${error}`);
+      setTimeout(() => setEmailConfirmation(null), 3000);
+    },
+  });
+
+  const nicknameMutation = useMutation({
+    mutationFn: checkNicknameDuplicate,
+    onSuccess: nickname => {
+      if (nickname) {
+        setNicknameConfirmation('사용 가능한 닉네임입니다.');
+      } else {
+        setNicknameConfirmation('이미 사용 중인 닉네임입니다.');
+      }
+      setTimeout(() => setNicknameConfirmation(null), 3000);
+    },
+    onError: error => {
+      setNicknameConfirmation(`닉네임 중복 확인 중 오류가 발생했습니다. ${error}`);
+      setTimeout(() => setNicknameConfirmation(null), 3000);
+    },
+  });
+
+  const handleEmailCheck = (e: React.MouseEvent) => {
+    e.preventDefault();
+    emailMutation.mutate(formData.email);
+  };
+
+  const handleNicknameCheck = (e: React.MouseEvent) => {
+    e.preventDefault();
+    nicknameMutation.mutate(formData.nickname);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -37,7 +99,6 @@ const SignUpClientInput: React.FC = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    // 오류 상태 초기화
     setError(null);
 
     if (
@@ -67,23 +128,8 @@ const SignUpClientInput: React.FC = () => {
       return;
     }
 
-    const dataToSubmit = {
-      ...formData,
-    };
-    console.log('Form submitted:', dataToSubmit);
+    console.log('Form submitted:', formData);
     navigate('/signup/client/complete');
-  };
-
-  const checkEmailDuplicate = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setEmailConfirmation('사용 가능한 이메일입니다.');
-    setTimeout(() => setEmailConfirmation(null), 3000); // 3초 후에 메시지 숨기기
-  };
-
-  const checkNicknameDuplicate = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setNicknameConfirmation('사용 가능한 닉네임입니다.');
-    setTimeout(() => setNicknameConfirmation(null), 3000); // 3초 후에 메시지 숨기기
   };
 
   return (
@@ -107,7 +153,7 @@ const SignUpClientInput: React.FC = () => {
               onChange={handleInputChange}
               className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
             />
-            <Button label={'중복확인'} onClick={checkEmailDuplicate} user="client" />
+            <Button label={'중복확인'} onClick={handleEmailCheck} user="client" />
           </div>
           {emailConfirmation && (
             <div className="text-green-700 text-xs mt-2">{emailConfirmation}</div>
@@ -182,7 +228,7 @@ const SignUpClientInput: React.FC = () => {
               onChange={handleInputChange}
               className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
             />
-            <Button label={'중복확인'} onClick={checkNicknameDuplicate} user="client" />
+            <Button label={'중복확인'} onClick={handleNicknameCheck} user="client" />
           </div>
           {nicknameConfirmation && (
             <div className="text-green-700 text-xs mt-2">{nicknameConfirmation}</div>

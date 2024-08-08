@@ -67,11 +67,7 @@ const SupervisionEditPostPage: React.FC = () => {
     navigate('/supervision');
   };
 
-  const {
-    data: postData,
-    isLoading,
-    isError,
-  } = useQuery<PostArticleResponse, AxiosError>({
+  const { data: postData } = useQuery<PostArticleResponse, AxiosError>({
     queryKey: ['PostData', supervisionId],
     queryFn: () => fetchPostDetail(supervisionId!),
     enabled: supervisionId !== undefined,

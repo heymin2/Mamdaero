@@ -30,9 +30,7 @@ function App() {
       <div className="fixed flex min-h-screen col-span-1">
         <NavCounselor />
       </div>
-      <div
-        className={`col-start-2 col-span-7 justify-center items-center px-16 py-6 ${backgroundColor}`}
-      >
+      <div className={`col-start-2 col-span-7 px-16 py-6 ${backgroundColor}`}>
         <Router />
       </div>
     </div>

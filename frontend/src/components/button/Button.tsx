@@ -8,7 +8,6 @@ interface ButtonProps {
   shape?: 'rounded' | 'square';
   color?: 'blue' | 'orange' | 'gray' | 'red';
   textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  className?: string;
 }
 
 const sizeClasses: Record<
@@ -54,7 +53,6 @@ const Button: React.FC<ButtonProps> = ({
   shape = 'square',
   color = 'orange',
   textSize = 'md',
-  className = '',
 }) => {
   return (
     <button
