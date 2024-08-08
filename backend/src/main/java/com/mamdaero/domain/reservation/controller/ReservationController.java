@@ -1,6 +1,6 @@
 package com.mamdaero.domain.reservation.controller;
 
-import com.mamdaero.domain.notification.service.EventService;
+import com.mamdaero.domain.notification.service.notifyCancelReservationService;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
 import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
 import com.mamdaero.domain.reservation.service.ReservationService;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class ReservationController {
     private final ReservationService reservationService;
-    private final EventService eventService;
+    private final notifyCancelReservationService notifyCancelReservationService;
 
     /**
      * 예약하기
@@ -28,7 +28,7 @@ public class ReservationController {
     @DeleteMapping("/cm/reservation/{reservationId}")
     public ResponseEntity<?> cancelReservation(@PathVariable(name = "reservationId") Long reservationId) {
         reservationService.cancelReservation(reservationId);
-        eventService.notifyCancelReservation(reservationId);
+        notifyCancelReservationService.notifyCancelReservationSave(reservationId);
         return ResponseEntity.ok().build();
     }
 
