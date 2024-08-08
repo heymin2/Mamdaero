@@ -1,6 +1,7 @@
 import Button from '@/components/button/Button.tsx';
 import { Link } from 'react-router-dom';
 const Login = () => {};
+
 const LoginForm = () => {
   return (
     <div className="max-w-sm w-full bg-gray-100">
@@ -27,13 +28,7 @@ const LoginForm = () => {
       <div className="pt-6 flex flex-col items-center space-y-4">
         <Button label="로그인" onClick={Login} size="full" color="blue" textSize="xl"></Button>
         <Link to="/signup/choose">
-          <Button
-            label="상담사 회원가입"
-            onClick={Login}
-            size="lg"
-            color="gray"
-            textSize="xl"
-          ></Button>
+          <Button label="회원가입" onClick={Login} size="lg" color="gray" textSize="md"></Button>
         </Link>
       </div>
     </div>

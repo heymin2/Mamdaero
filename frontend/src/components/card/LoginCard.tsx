@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import LoginClient from '@/components/input/LoginClient.tsx';
 import LoginCounselor from '@/components/input/LoginCounselor.tsx';
 import Button from '@/components/button/Button.tsx';
+
 const LoginCard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'client' | 'counselor'>('client');
 
@@ -19,14 +20,12 @@ const LoginCard: React.FC = () => {
           onClick={clientLogin}
           size="lg"
           color={activeTab === 'client' ? 'orange' : 'gray'}
-          textSize="xl"
         ></Button>
         <Button
           label="상담사 로그인"
           onClick={counselorLogin}
           size="lg"
           color={activeTab === 'counselor' ? 'blue' : 'gray'}
-          textSize="xl"
         ></Button>
       </div>
       <div>

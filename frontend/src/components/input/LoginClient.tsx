@@ -34,7 +34,7 @@ const LoginForm = () => {
         <GoogleLoginButton />
         <KakaoLoginButton />
         <Link to="/signup/choose">
-          <Button onClick={Login} label="회원가입" size="lg" color="gray" textSize="xl"></Button>
+          <Button onClick={Login} label="회원가입" size="lg" color="gray"></Button>
         </Link>
       </div>
     </div>
