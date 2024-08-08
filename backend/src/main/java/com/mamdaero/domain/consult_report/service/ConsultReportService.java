@@ -37,7 +37,7 @@ public class ConsultReportService {
     public Pagination<ConsultReportListResponse> getConsultReportListByClientId(Long clientId, int page, int size) {
 
         MemberInfoDTO member = findUserService.findMember();
-        if(member == null) {
+        if(member == null || !member.getMemberRole().equals("상담사")) {
             throw new AccessDeniedException();
         }
 
@@ -57,7 +57,10 @@ public class ConsultReportService {
     }
 
     public ConsultReportDetailResponse findById(Long reportId) {
-        //TODO: 상담사 자신의 상담 보고서인지 확인하는 로직 추가하기
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         if (!consultReportRepository.existsById(reportId)) {
             throw new ConsultReportNotFoundException();
