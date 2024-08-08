@@ -180,8 +180,14 @@ public class CounselorBoardService {
 
     @Transactional
     public boolean complaint(Long id) {
-        // 토큰 확인 후 로그인한지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || !memberRole.equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         if(complaintRepository.existsByMemberIdAndEventSourceAndEventId(memberId, Source.COUNSELOR_BOARD, id)) {
             return false;
