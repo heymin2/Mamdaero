@@ -50,7 +50,7 @@ public class ReviewService {
     public Pagination<ReviewResponse> findAllMyReview(int page, int size) {
 
         MemberInfoDTO member = findUserService.findMember();
-        if(member == null) {
+        if(member == null || !member.getMemberRole().equals("내담자")) {
             throw new AccessDeniedException();
         }
 
@@ -80,7 +80,7 @@ public class ReviewService {
         }
 
         MemberInfoDTO member = findUserService.findMember();
-        if(member == null) {
+        if(member == null || !member.getMemberRole().equals("내담자")) {
             throw new AccessDeniedException();
         }
         Long memberId = member.getMemberId();
@@ -108,7 +108,7 @@ public class ReviewService {
         }
 
         MemberInfoDTO member = findUserService.findMember();
-        if(member == null) {
+        if(member == null || !member.getMemberRole().equals("내담자")) {
             throw new AccessDeniedException();
         }
         Long memberId = member.getMemberId();
@@ -129,7 +129,7 @@ public class ReviewService {
         }
 
         MemberInfoDTO member = findUserService.findMember();
-        if(member == null) {
+        if(member == null  || !member.getMemberRole().equals("내담자")) {
             throw new AccessDeniedException();
         }
         Long memberId = member.getMemberId();
