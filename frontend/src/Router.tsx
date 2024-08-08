@@ -38,7 +38,7 @@ import CounselRecordList from '@/pages/mycounsel/counselor/CounselRecordList';
 import CounselRecordDetail from '@/pages/mycounsel/counselor/CounselRecordDetail';
 import ClientHistory from '@/pages/mycounsel/client/ClientHistory';
 import ClientFaceChat from '@/pages/mycounsel/client/ClientFaceChat';
-import CounselFaceChat from '@/pages/mycounsel/counselor/CounselFaceChat';
+import CounselorFaceChat from '@/pages/mycounsel/counselor/CounselorFaceChat';
 
 const Router = () => (
   <Routes>
@@ -84,12 +84,19 @@ const Router = () => (
     {/* EmotionDiary Routes */}
     <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
     {/* MyCounsel Routes */}
+    {/* MyCounsel Routes */}
     <Route path="/mycounsel/counselor/history/" element={<CounselHistory />} />
+    <Route
+      path="/mycounsel/counselor/history/facechat/:counsultId/:memberId"
+      element={<CounselorFaceChat />}
+    />
     <Route path="/mycounsel/counselor/record" element={<CounselRecordList />} />
     <Route path="/mycounsel/counselor/record/:clientId/*" element={<CounselRecordDetail />} />
-    <Route path="/mycounsel/counselor/history/:counsultId" element={<CounselFaceChat />} />
     <Route path="/mycounsel/client/history" element={<ClientHistory />} />
-    <Route path="/mycounsel/client/history/:counsultId" element={<ClientFaceChat />} />
+    <Route
+      path="/mycounsel/client/history/facechat/:counsultId/:memberId"
+      element={<ClientFaceChat />}
+    />
   </Routes>
 );
 
