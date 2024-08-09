@@ -20,8 +20,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSoc
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // broker url 설정
-        config.setApplicationDestinationPrefixes("/app"); // send url 설정
+        config.enableSimpleBroker("/sub"); // broker url 설정
+        config.setApplicationDestinationPrefixes("/pub"); // send url 설정
     }
 
     @Override
@@ -34,6 +34,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSoc
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(audioWebSocketHandler, "/audio")
-                .setAllowedOrigins("*");
+                .setAllowedOriginPatterns("*");
     }
 }

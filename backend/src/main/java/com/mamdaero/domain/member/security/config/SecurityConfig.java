@@ -40,7 +40,8 @@ public class SecurityConfig
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/error", "/", "/p/**", "/chatlog/**", "/sub/**", "/pub/**").permitAll()
+                        .requestMatchers("/error", "/", "/p/**", "/chatlog/**", "/sub/**", "/pub/**",
+                                "/signaling/**", "/app/**", "/topic/**").permitAll()
                         .anyRequest().authenticated())
 //                        .requestMatchers("/c/**").hasRole("상담사")
 //                        .requestMatchers("/m/**").hasRole("내담자")
