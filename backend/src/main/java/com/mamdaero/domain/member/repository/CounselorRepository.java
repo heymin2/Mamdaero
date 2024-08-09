@@ -1,16 +1,22 @@
 package com.mamdaero.domain.member.repository;
 
 import com.mamdaero.domain.member.entity.Counselor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface CounselorRepository extends JpaRepository<Counselor, Long> {
 
-    List<Counselor> findAllByNameContains(String counselorName);
+<<<<<<< backend/src/main/java/com/mamdaero/domain/member/repository/CounselorRepository.java
+//    List<Counselor> findAllByNameContains(String counselorName);
+
+//    Page<Counselor> findAll(Pageable pageable);
+
+    Page<Counselor> findAllByNameContains(String counselorName, Pageable pageable);
+
     @Modifying
     @Query("UPDATE Counselor SET img = :img WHERE id = :id")
     void updateProfileImg(@Param("img") String img, @Param("id") String id);
