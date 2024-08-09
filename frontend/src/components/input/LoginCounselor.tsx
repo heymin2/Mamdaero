@@ -4,7 +4,7 @@ const Login = () => {};
 
 const LoginForm = () => {
   return (
-    <div className="max-w-sm w-full bg-gray-100">
+    <div className="max-w-sm w-full bg-gray-50">
       <label className=" w-full max-w-xs">
         <div className="label">
           <span className="label-text">아이디</span>

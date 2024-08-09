@@ -131,9 +131,13 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
       <div className="bottom-3 right-5 flex justify-between text-base gap-1 py-2 ps-10 pr-12">
         <div>
           {file && (
-            <div className="border">
+            <div>
               <span className="font-bold mr-2">첨부 파일</span>
-              <a href={file} download={getFileName(file)} className="text-blue-500 underline">
+              <a
+                href={file}
+                download={getFileName(file)}
+                className="text-blue-500 underline bg-gray-200"
+              >
                 {getFileName(file)}
               </a>
             </div>

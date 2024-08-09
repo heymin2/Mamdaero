@@ -38,7 +38,7 @@ const MyCounselBar: React.FC<MyCounselProps> = ({
               </span>
             }
             onClick={() => navigate(buttonPath)}
-            size="상담사목록보기"
+            size="목록보기"
             textSize="sm"
             shape="rounded"
             color={buttonColor}

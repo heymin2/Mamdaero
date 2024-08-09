@@ -75,7 +75,7 @@ const CounselorReservePage: React.FC = () => {
             </span>
           }
           onClick={backToList}
-          size="상담사목록보기"
+          size="목록보기"
           color="orange"
           textSize="sm"
         />
