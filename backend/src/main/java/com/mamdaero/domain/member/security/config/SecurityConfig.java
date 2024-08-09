@@ -39,8 +39,14 @@ public class SecurityConfig
         http	.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp
+                                .policyDirectives("frame-ancestors 'self' https://mamdaero.o-r.kr") // Content-Security-Policy 설정
+                        )
+                )
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/error", "/", "/p/**", "/chatlog/**", "/sub/**", "/pub/**").permitAll()
+                        .requestMatchers("/error", "/", "/p/**", "/chatlog/**", "/sub/**", "/pub/**",
+                                "/signaling/**", "/app/**", "/topic/**").permitAll()
                         .anyRequest().authenticated())
 //                        .requestMatchers("/c/**").hasRole("상담사")
 //                        .requestMatchers("/m/**").hasRole("내담자")
