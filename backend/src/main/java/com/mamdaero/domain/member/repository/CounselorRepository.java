@@ -10,11 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface CounselorRepository extends JpaRepository<Counselor, Long> {
 
-<<<<<<< backend/src/main/java/com/mamdaero/domain/member/repository/CounselorRepository.java
-//    List<Counselor> findAllByNameContains(String counselorName);
-
-//    Page<Counselor> findAll(Pageable pageable);
-
     Page<Counselor> findAllByNameContains(String counselorName, Pageable pageable);
 
     @Modifying
