@@ -3,6 +3,7 @@ package com.mamdaero.domain.member.service;
 import com.mamdaero.domain.member.dto.request.MemberRequestDto;
 import com.mamdaero.domain.member.dto.response.MemberResponseDto;
 import com.mamdaero.domain.member.entity.Member;
+import com.mamdaero.domain.member.exception.MemberNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +26,7 @@ public class MemberService {
 
             return MemberResponseDto.toDTO(member);
         }
-
-        return null;
+        throw new MemberNotFoundException();
     }
 
     @Transactional
@@ -37,6 +37,8 @@ public class MemberService {
             Member member = optionalMember.get();
 
             member.update(requestDto);
+        } else {
+            throw new MemberNotFoundException();
         }
     }
 }
