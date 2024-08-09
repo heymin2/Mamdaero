@@ -44,6 +44,7 @@ public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSucces
         log.info( "AccessToken 을 발급합니다. AccessToken: {}" ,accessToken);
         log.info( "RefreshToken 을 발급합니다. RefreshToken: {}" ,refreshToken);
         log.info("Authentication : {}", authentication);
+        log.info("Authentication.pricipal : {}", authentication.getPrincipal());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");

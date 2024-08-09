@@ -1,5 +1,8 @@
 package com.mamdaero.domain.work_schedule.service;
 
+import com.mamdaero.domain.member.exception.AccessDeniedException;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.work_schedule.dto.request.WorkTimeRequest;
 import com.mamdaero.domain.work_schedule.dto.response.WorkTimeResponse;
 import com.mamdaero.domain.work_schedule.entity.WorkSchedule;
@@ -20,6 +23,7 @@ import java.util.List;
 public class WorkTimeService {
     private final WorkTimeRepository workTimeRepository;
     private final WorkScheduleRepository workScheduleRepository;
+    private final FindUserService findUserService;
 
 
     /**
@@ -90,6 +94,12 @@ public class WorkTimeService {
 
     @Transactional
     public void update(List<WorkTimeRequest> workTimeRequestList) {
+
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
+
         for (WorkTimeRequest request : workTimeRequestList) {
 
             WorkTime workTime = workTimeRepository.findById(request.getWorkTimeId()).orElseThrow();

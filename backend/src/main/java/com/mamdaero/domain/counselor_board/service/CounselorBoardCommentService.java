@@ -8,7 +8,10 @@ import com.mamdaero.domain.counselor_board.dto.response.CounselorBoardCommentRes
 import com.mamdaero.domain.counselor_board.entity.CounselorBoardComment;
 import com.mamdaero.domain.counselor_board.repository.CounselorBoardCommentRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
+import com.mamdaero.domain.member.exception.AccessDeniedException;
 import com.mamdaero.domain.member.repository.MemberRepository;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
 import com.mamdaero.domain.notice.exception.CommentNotFoundException;
 import com.mamdaero.global.dto.Pagination;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,10 +36,17 @@ CounselorBoardCommentService {
     private final CounselorBoardCommentRepository boardCommentRepository;
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
+    private final FindUserService findUserService;
 
     public Pagination<CounselorBoardCommentResponse> findAll(int page, int size, Long id) {
-        // 토큰 확인 후 본인인지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || memberRole.equals("내담자")) {
+            throw new AccessDeniedException();
+        }
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -65,8 +76,14 @@ CounselorBoardCommentService {
 
     @Transactional
     public void create(Long id, CounselorBoardCommentRequest request) {
-        // 토큰 확인 후 상담사인지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || memberRole.equals("내담자")) {
+            throw new AccessDeniedException();
+        }
 
         if(request.getComment() == null) {
             throw new BoardBadRequestException();
@@ -77,9 +94,15 @@ CounselorBoardCommentService {
 
     @Transactional
     public CounselorBoardCommentResponse update(Long boardId, Long commentId, CounselorBoardCommentRequest request) {
-        // 토큰 확인 후 본인인지 확인
-        Long memberId = 1L;
-        
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || memberRole.equals("내담자")) {
+            throw new AccessDeniedException();
+        }
+
         CounselorBoardComment comment = boardCommentRepository.findByIdAndBoardIdAndMemberId(commentId, boardId, memberId)
                 .orElseThrow(CommentNotFoundException::new);
 
@@ -96,19 +119,37 @@ CounselorBoardCommentService {
 
     @Transactional
     public void delete(Long boardId, Long commentId) {
-        // 토큰 확인 후 본인인지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
 
-        CounselorBoardComment comment = boardCommentRepository.findByIdAndBoardIdAndMemberId(commentId, boardId, memberId)
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || memberRole.equals("내담자")) {
+            throw new AccessDeniedException();
+        }
+
+        CounselorBoardComment comment = boardCommentRepository.findByIdAndBoardId(commentId, boardId)
                 .orElseThrow(CommentNotFoundException::new);
+
+        if(memberRole.equals("상담사")) {
+            if(!Objects.equals(comment.getMemberId(), memberId)) {
+                throw new AccessDeniedException();
+            }
+        }
 
         boardCommentRepository.delete(comment);
     }
 
     @Transactional
     public boolean complaint(Long commentId) {
-        // 토큰 확인 후 본인인지 확인
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || !memberRole.equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         if(complaintRepository.existsByMemberIdAndEventSourceAndEventId(memberId, Source.COUNSELOR_BOARD_COMMENT, commentId)) {
             return false;

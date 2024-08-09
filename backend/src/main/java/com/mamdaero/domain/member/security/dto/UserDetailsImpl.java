@@ -9,10 +9,12 @@ import java.util.Collection;
 public class UserDetailsImpl implements UserDetails
 {
     private final Member member;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Member member)
+    public UserDetailsImpl(Member member, Collection<? extends GrantedAuthority> authorities)
     {
         this.member = member;
+        this.authorities = authorities;
     }
 
     public Member getMember()
@@ -23,7 +25,12 @@ public class UserDetailsImpl implements UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities()
     {
-        return null;
+        return authorities;
+    }
+
+    public Long getId()
+    {
+        return member.getId();
     }
 
     @Override
