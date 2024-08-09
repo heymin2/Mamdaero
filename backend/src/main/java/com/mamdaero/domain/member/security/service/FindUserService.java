@@ -21,7 +21,6 @@ public class FindUserService
     //ID, 이메일, 역할 있는 객체 반환
     public MemberInfoDTO findMember()
     {
-        log.info("findMember : {}",SecurityUtil.getLoginEmail());
         Member member = memberRepository.findByEmail(SecurityUtil.getLoginEmail()).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
         log.info("findMemberOut : {}", member);
 
@@ -42,9 +41,8 @@ public class FindUserService
     //멤버 ID 반환
     public Long findMemberId()
     {
-        System.out.println(SecurityUtil.getLoginEmail());
         Member member = memberRepository.findByEmail(SecurityUtil.getLoginEmail()).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-        System.out.println(member.getId());
+        log.info("findMemberId : {}", member.getId());
 
         if (member.getId() != null)
         {

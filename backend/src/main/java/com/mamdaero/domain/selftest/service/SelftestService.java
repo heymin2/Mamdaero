@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,37 +40,43 @@ public class SelftestService {
     }
 
     @Transactional
-    public void createByTestId(Integer testId, TestRequestDto requestDto) {
+    public void createByTestId(Long memberId, Integer testId, TestRequestDto requestDto) {
 
-        Member member = memberRepository.findById(1L).get();
-        Selftest selftest = selftestRepository.findById(testId).get();
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
 
-        MemberSelftestList memberSelftestList = MemberSelftestList.builder()
-                .member(member)
-                .selftest(selftest)
-                .memberSelftestDate(LocalDateTime.now())
-                .build();
+        Optional<Selftest> optionalSelftest = selftestRepository.findById(testId);
 
-        memberSelftestListRepository.save(memberSelftestList);
+        if (optionalMember.isPresent() && optionalSelftest.isPresent()) {
+            Member member = optionalMember.get();
+            Selftest selftest = optionalSelftest.get();
 
-        List<Integer> checkList = requestDto.getCheckList();
+            MemberSelftestList memberSelftestList = MemberSelftestList.builder()
+                    .member(member)
+                    .selftest(selftest)
+                    .memberSelftestDate(LocalDateTime.now())
+                    .build();
 
-        if (testId == 1) {
-            processDepressedTest(memberSelftestList, checkList);
-        } else if (testId == 2) {
-            processUnrestTest(memberSelftestList, checkList);
-        } else if (testId == 3) {
-            processStressTest(memberSelftestList, checkList);
-        } else if (testId == 4) {
-            processPtsdTest(memberSelftestList, checkList);
-        } else if (testId == 5) {
-            processBipolarTest(memberSelftestList, checkList);
+            memberSelftestListRepository.save(memberSelftestList);
+
+            List<Integer> checkList = requestDto.getCheckList();
+
+            if (testId == 1) {
+                processDepressedTest(memberSelftestList, checkList);
+            } else if (testId == 2) {
+                processUnrestTest(memberSelftestList, checkList);
+            } else if (testId == 3) {
+                processStressTest(memberSelftestList, checkList);
+            } else if (testId == 4) {
+                processPtsdTest(memberSelftestList, checkList);
+            } else if (testId == 5) {
+                processBipolarTest(memberSelftestList, checkList);
+            }
+
+            // 총 점수 계산
+            Integer totalScore = selftestQuestionResponseRepository.findTotalScoreByMemberSelftestListId(memberSelftestList.getId());
+            memberSelftestList.updateScore(totalScore);
+            memberSelftestListRepository.save(memberSelftestList);
         }
-
-        // 총 점수 계산
-        Integer totalScore = selftestQuestionResponseRepository.findTotalScoreByMemberSelftestListId(memberSelftestList.getId());
-        memberSelftestList.updateScore(totalScore);
-        memberSelftestListRepository.save(memberSelftestList);
     }
 
     private void processDepressedTest(MemberSelftestList memberSelftestList, List<Integer> checkList) {

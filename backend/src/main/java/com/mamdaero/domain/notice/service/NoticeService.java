@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -19,9 +21,7 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
 
     @Transactional
-    public void create(NoticeRequest request) {
-        // 토큰 확인 후 관리자인지 확인
-        Long memberId = 2L;
+    public void create(Long memberId, NoticeRequest request) {
 
         if(request.getTitle() == null || request.getContent() == null) {
             throw new BoardBadRequestException();
@@ -31,33 +31,33 @@ public class NoticeService {
     }
 
     @Transactional
-    public NoticeDetailResponse update(Long id, NoticeRequest request) {
-        // 토큰 확인 후 관리자인지 확인
-        Long memberId = 2L;
+    public NoticeDetailResponse update(Long memberId, Long id, NoticeRequest request) {
 
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
 
-        if (request.getTitle() != null) {
-            notice.updateTitle(request.getTitle());
-        }
+        if (Objects.equals(notice.getMemberId(), memberId)) {
+            if (request.getTitle() != null) {
+                notice.updateTitle(request.getTitle());
+            }
 
-        if (request.getContent() != null) {
-            notice.updateContent(request.getContent());
-        }
+            if (request.getContent() != null) {
+                notice.updateContent(request.getContent());
+            }
 
-        noticeRepository.save(notice);
-        return NoticeDetailResponse.of(notice);
+            noticeRepository.save(notice);
+            return NoticeDetailResponse.of(notice);
+        }
+        throw new BoardBadRequestException();
     }
 
     @Transactional
-    public void delete(Long id) {
-        // 토큰 확인 후 관리자인지 확인
-        Long memberId = 2L;
-
+    public void delete(Long memberId, Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
 
-        noticeRepository.delete(notice);
+        if (Objects.equals(notice.getMemberId(), memberId)) {
+            noticeRepository.delete(notice);
+        }
     }
 }

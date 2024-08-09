@@ -54,6 +54,8 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.13.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    implementation("org.springframework.security:spring-security-messaging")
+
     //mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

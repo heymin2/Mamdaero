@@ -5,7 +5,9 @@ import com.mamdaero.domain.counselor_board.entity.CounselorBoard;
 import com.mamdaero.domain.counselor_board.repository.CounselorBoardLikeRepository;
 import com.mamdaero.domain.counselor_board.repository.CounselorBoardRepository;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
+import com.mamdaero.domain.member.exception.AccessDeniedException;
 import com.mamdaero.domain.member.repository.MemberRepository;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.notice.exception.BoardBadRequestException;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +26,15 @@ public class CounselorBoardFindService {
     private final CounselorBoardRepository boardRepository;
     private final CounselorBoardLikeRepository boardLikeRepository;
     private final MemberRepository memberRepository;
+    private final FindUserService findUserService;
 
     public Pagination<CounselorBoardResponse> findAll(int page, int size, String condition, String searchField, String searchValue) {
+        String memberRole = findUserService.findMemberRole();
+
+        if(memberRole.equals("내담자")) {
+            throw new AccessDeniedException();
+        }
+
         Pageable pageable = PageRequest.of(page, size);
 
         Page<CounselorBoard> boardPage;
