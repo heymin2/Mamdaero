@@ -6,11 +6,11 @@ import com.mamdaero.domain.diary.entity.Diary;
 import com.mamdaero.domain.diary.service.DiaryService;
 import com.mamdaero.domain.member.security.service.FindUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -21,30 +21,31 @@ public class DiaryController {
     private final FindUserService findUserService;
 
     @GetMapping("/m/diary")
-    public ResponseEntity<List<DiaryResponseDto>> findAllByMember() {
+    public ResponseEntity<Page<DiaryResponseDto>> findAllByMember(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                                  @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
 
         if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
             Long memberId = findUserService.findMemberId();
 
-            List<DiaryResponseDto> diaryList = diaryService.findAllByMember(memberId);
+            Page<DiaryResponseDto> diaryList = diaryService.findAllByMember(memberId, page, size);
 
             return new ResponseEntity<>(diaryList, HttpStatus.OK);
         }
-
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/c/diary/{memberId}")
-    public ResponseEntity<List<DiaryResponseDto>> findAllByDiary(@PathVariable(name = "memberId") Long memberId) {
+    public ResponseEntity<Page<DiaryResponseDto>> findAllByDiary(@PathVariable(name = "memberId") Long memberId,
+                                                                 @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                                 @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
 
         if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
-            List<DiaryResponseDto> diaryList = diaryService.findAllByMemberAndIsOpen(memberId, true);
+            Page<DiaryResponseDto> diaryList = diaryService.findAllByMemberAndIsOpen(memberId, true, page, size);
 
             return new ResponseEntity<>(diaryList, HttpStatus.OK);
         }
-
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
