@@ -9,10 +9,14 @@ import com.mamdaero.domain.diary.exception.DiaryNoDateException;
 import com.mamdaero.domain.diary.exception.DiaryNotFoundException;
 import com.mamdaero.domain.diary.repository.DiaryRepository;
 import com.mamdaero.domain.member.entity.Member;
+import com.mamdaero.domain.member.exception.MemberNotFoundException;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +30,9 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
 
-    public List<DiaryResponseDto> findAllByMember(Long memberId) {
+    public Page<DiaryResponseDto> findAllByMember(Long memberId, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         Optional<Member> optionalMember = memberRepository.findById(memberId);
 
@@ -34,19 +40,23 @@ public class DiaryService {
 
             Member member = optionalMember.get();
 
-            if (diaryRepository.findDiaryByMember(member).isEmpty()) {
+            if (diaryRepository.findDiaryByMember(member, pageable).isEmpty()) {
                 throw new DiaryNotFoundException();
             }
 
-            return diaryRepository.findDiaryByMember(member).stream()
+            List<DiaryResponseDto> diaries = diaryRepository.findDiaryByMember(member, pageable).stream()
                     .map(DiaryResponseDto::toDTO)
                     .toList();
+
+            return new PageImpl<>(diaries);
         }
 
-        return null;
+        throw new MemberNotFoundException();
     }
 
-    public List<DiaryResponseDto> findAllByMemberAndIsOpen(Long memberId, Boolean isOpen) {
+    public Page<DiaryResponseDto> findAllByMemberAndIsOpen(Long memberId, Boolean isOpen, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
 
         Optional<Member> optionalMember = memberRepository.findById(memberId);
 
@@ -54,26 +64,27 @@ public class DiaryService {
 
             Member member = optionalMember.get();
 
-            if (diaryRepository.findAllByMemberAndIsOpen(member, isOpen).isEmpty()) {
+            if (diaryRepository.findAllByMemberAndIsOpen(member, isOpen, pageable).isEmpty()) {
                 throw new DiaryNotFoundException();
             }
 
-            return diaryRepository.findAllByMemberAndIsOpen(member, isOpen).stream()
+            List<DiaryResponseDto> diaryResponseDtoList = diaryRepository.findAllByMemberAndIsOpen(member, isOpen, pageable)
+                    .stream()
                     .map(DiaryResponseDto::toDTO)
                     .toList();
-        }
 
-        return null;
+            return new PageImpl<>(diaryResponseDtoList);
+        }
+        throw new MemberNotFoundException();
     }
 
-    public DiaryResponseDto findById (Long id){
+    public DiaryResponseDto findById(Long id) {
 
         Optional<Diary> optionalDiary = diaryRepository.findById(id);
 
         if (optionalDiary.isPresent()) {
             return DiaryResponseDto.toDTO(optionalDiary.get());
         }
-
         throw new DiaryNotFoundException();
     }
 
@@ -87,8 +98,7 @@ public class DiaryService {
 
             if (requestDto.getContent().isEmpty()) {
                 throw new DiaryNoContentException();
-            }
-            else if (requestDto.getDate() == null) {
+            } else if (requestDto.getDate() == null) {
                 throw new DiaryNoDateException();
             }
 
@@ -100,6 +110,8 @@ public class DiaryService {
                     .build();
 
             diaryRepository.save(diary);
+        } else {
+            throw new MemberNotFoundException();
         }
     }
 
@@ -117,14 +129,12 @@ public class DiaryService {
 
             if (requestDto.getContent().isEmpty()) {
                 throw new DiaryNoContentException();
-            }
-            else if (requestDto.getDate() == null) {
+            } else if (requestDto.getDate() == null) {
                 throw new DiaryNoDateException();
             }
 
             diary.update(requestDto);
-        }
-        else {
+        } else {
             throw new DiaryNotFoundException();
         }
     }
@@ -141,8 +151,7 @@ public class DiaryService {
             }
 
             diaryRepository.delete(diary);
-        }
-        else {
+        } else {
             throw new DiaryNotFoundException();
         }
     }
