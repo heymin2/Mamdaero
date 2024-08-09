@@ -11,14 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkScheduleRequest {
-    private Long counselorId;
     private Integer day;
     private Integer startTime;
     private Integer endTime;
 
     public WorkSchedule toEntity() {
         return WorkSchedule.builder()
-                .counselorId(counselorId)
                 .day(day)
                 .startTime(startTime)
                 .endTime(endTime)

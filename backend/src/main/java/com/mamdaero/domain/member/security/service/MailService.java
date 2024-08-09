@@ -110,6 +110,7 @@ public class MailService
         {
             return false;
         }
+        counselorAuthRepository.updatePassword(null, request.getEmail());
         return true;
     }
 }

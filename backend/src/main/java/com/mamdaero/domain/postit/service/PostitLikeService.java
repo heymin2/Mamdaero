@@ -13,9 +13,7 @@ public class PostitLikeService {
     private final PostitLikeRepository postitLikeRepository;
 
     @Transactional
-    public boolean like(Long boardId) {
-        // 토큰 확인 필요
-        Long memberId = 1L;
+    public boolean like(Long memberId, Long boardId) {
 
         PostitLike like = postitLikeRepository.findByBoardIdAndMemberId(boardId, memberId);
 

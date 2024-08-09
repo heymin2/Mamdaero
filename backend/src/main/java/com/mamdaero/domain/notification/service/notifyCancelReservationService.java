@@ -61,6 +61,8 @@ public class notifyCancelReservationService {
         notification.setIsRead(false);
 
         notificationRepository.save(notification);
+
+        notifyCancelReservation(reservation, counselorItem);
     }
 
     // 상담사, 내담자 예약 취소
