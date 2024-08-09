@@ -3,6 +3,9 @@ package com.mamdaero.domain.reservation.service;
 import com.mamdaero.domain.counselor_item.entity.CounselorItem;
 import com.mamdaero.domain.counselor_item.exception.CounselorItemNotFoundException;
 import com.mamdaero.domain.counselor_item.repository.CounselorItemRepository;
+import com.mamdaero.domain.member.exception.AccessDeniedException;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
 import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
 import com.mamdaero.domain.reservation.entity.Reservation;
@@ -31,9 +34,14 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final CounselorItemRepository counselorItemRepository;
     private final WorkTimeRepository workTimeRepository;
+    private final FindUserService findUserService;
 
     @Transactional
     public void createReservation(CreateReservationRequest request) {
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("내담자")) {
+            throw new AccessDeniedException();
+        }
 
         // 존재하는 상담상품인지 확인;
         if (!counselorItemRepository.existsById(request.getCounselorItemId())) {
@@ -59,7 +67,7 @@ public class ReservationService {
         workTime.reserve();
 
         Reservation reservation = Reservation.builder()
-                .memberId(1L) // TODO : 진짜 멤버아이디로 바꾸기
+                .memberId(member.getMemberId())
                 .counselorItemId(request.getCounselorItemId())
                 .workTimeId(request.getWorkTimeId())
                 .requirement(request.getRequirement())
@@ -88,6 +96,11 @@ public class ReservationService {
 
     @Transactional
     public void cancelReservation(Long reservationId) {
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !(member.getMemberRole().equals("내담자") || member.getMemberRole().equals("상담사"))) {
+            throw new AccessDeniedException();
+        }
+
         Optional<Reservation> findReservation = reservationRepository.findById(reservationId);
 
         if (findReservation.isEmpty()) {
@@ -99,15 +112,19 @@ public class ReservationService {
         WorkTime workTime = workTimeRepository.findById(reservation.getWorkTimeId()).get();
 
 
-        // TODO: 토큰 확인해서 내담자인지 상담사 인지 확인 후  cancel() 메소드의 인자로 넣기
-        reservation.cancel("내담자");
+        String role = member.getMemberRole();
+        reservation.cancel(role);
         workTime.cancelReserve();
 
     }
 
     public Pagination<ReservationListResponse> getReservationList(int page, int size) {
-        // TODO: 토큰에서 호출한사람 정보 가져와서 바꾸기
-        String caller = "상담사";
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !(member.getMemberRole().equals("내담자") || member.getMemberRole().equals("상담사"))) {
+            throw new AccessDeniedException();
+        }
+
+        String caller = member.getMemberRole();
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -137,8 +154,12 @@ public class ReservationService {
     }
 
     public Pagination<ReservationListResponse> getConsult(int page, int size) {
-        // TODO: 토큰에서 호출한사람 정보 가져와서 바꾸기
-        String caller = "상담사";
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !(member.getMemberRole().equals("내담자") || member.getMemberRole().equals("상담사"))) {
+            throw new AccessDeniedException();
+        }
+
+        String caller = member.getMemberRole();
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -169,7 +190,12 @@ public class ReservationService {
 
     @Transactional
     public void deleteConsult(Long consultId) {
-        Long memberId = 1L;
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !(member.getMemberRole().equals("내담자") || member.getMemberRole().equals("상담사"))) {
+            throw new AccessDeniedException();
+        }
+
+        Long memberId = member.getMemberId();
 
         Reservation reservation = reservationRepository.findByMemberIdAndId(memberId, consultId);
 

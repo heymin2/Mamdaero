@@ -12,4 +12,5 @@ public interface CounselorBoardCommentRepository extends JpaRepository<Counselor
     Optional<CounselorBoardComment> findByIdAndBoardIdAndMemberId(Long id, Long boardId, Long memberId);
     boolean existsByIdAndMemberId(Long id, Long memberId);
     Optional<CounselorBoardComment> findFirstByBoardIdOrderByCreatedAtDesc(Long id);
+    Optional<CounselorBoardComment> findByIdAndBoardId(Long commentId, Long boardId);
 }
