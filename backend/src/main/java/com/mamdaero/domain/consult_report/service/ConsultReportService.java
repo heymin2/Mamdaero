@@ -12,6 +12,9 @@ import com.mamdaero.domain.consult_report.exception.ConsultReportBadRequestExcep
 import com.mamdaero.domain.consult_report.exception.ConsultReportNotFoundException;
 import com.mamdaero.domain.consult_report.repository.ConsultReportRepository;
 import com.mamdaero.domain.counselor_item.repository.CounselorItemRepository;
+import com.mamdaero.domain.member.exception.AccessDeniedException;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.global.dto.Pagination;
 import jakarta.transaction.Transactional;
@@ -29,11 +32,16 @@ public class ConsultReportService {
     private final ReservationRepository reservationRepository;
     private final CounselorItemRepository counselorItemRepository;
     private final ConsultRepository consultRepository;
+    private final FindUserService findUserService;
 
     public Pagination<ConsultReportListResponse> getConsultReportListByClientId(Long clientId, int page, int size) {
 
-        // TODO: 토큰으로부터 진짜 상담사ID 가져오기
-        Long counselorId = 16L;
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
+
+        Long counselorId = member.getMemberId();
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -49,7 +57,10 @@ public class ConsultReportService {
     }
 
     public ConsultReportDetailResponse findById(Long reportId) {
-        //TODO: 상담사 자신의 상담 보고서인지 확인하는 로직 추가하기
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         if (!consultReportRepository.existsById(reportId)) {
             throw new ConsultReportNotFoundException();
@@ -61,7 +72,10 @@ public class ConsultReportService {
     }
 
     public void create(Long reportId, CreateConsultReportRequest request) {
-
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         //상담이 존재하지 않으면 보고서를 작성 불가
         if (!consultRepository.existsById(reportId)) {
@@ -78,8 +92,7 @@ public class ConsultReportService {
             throw new ConsultReportBadRequestException();
         }
 
-        // TODO: 토큰으로부터 진짜 상담사ID 가져오기
-        Long counselorId = 16L;
+        Long counselorId = member.getMemberId();
         Long counselorItemId = reservationRepository.findById(reportId).get().getCounselorItemId();
 
         // 상담사 자신의 상담이 아니면 보고서 작성 불가
@@ -100,6 +113,10 @@ public class ConsultReportService {
 
     @Transactional
     public void update(Long reportId, UpdateConsultReportRequest request) {
+        MemberInfoDTO member = findUserService.findMember();
+        if(member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
 
         // 보고서가 존재하지 않으면 수정 불가
         if (!consultReportRepository.existsById(reportId)) {
@@ -112,8 +129,7 @@ public class ConsultReportService {
         }
 
 
-        // TODO: 토큰으로부터 진짜 상담사ID 가져오기
-        Long counselorId = 16L;
+        Long counselorId = member.getMemberId();
         Long counselorItemId = reservationRepository.findById(reportId).get().getCounselorItemId();
 
         // 상담사 자신의 상담이 아니면 보고서 작성 불가
