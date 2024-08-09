@@ -149,12 +149,12 @@ const BipolarPage: React.FC = () => {
           </table>
         </div>
       </div>
-      <div className="flex flex-col justify-center items-center w-5/6 mt-8">
+      <div className="flex flex-col justify-center items-center w-full mt-8">
         <h3 className="text-xl font-bold mb-4">추가 질문</h3>
         {additionalQuestions.map(question => (
           <div
             key={question.id}
-            className="w-full mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
+            className="w-4/5 mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
           >
             <label className="block text-base font-normal mb-2">
               {question.id}. {question.selftestQuestionDetail}

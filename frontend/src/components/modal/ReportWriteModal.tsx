@@ -37,7 +37,7 @@ const ReportWriteModal: React.FC<ReportModalProps> = ({
   };
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose}>
+    <ModalWrapper isOpen={isOpen} onClose={onClose} size="md">
       <div className="overflow-y-auto p-4">
         <h2 className="text-2xl font-bold mb-4">상담 일지</h2>
         <table className="w-full mb-4">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '@/components/button/Button';
 import { useNavigate } from 'react-router-dom';
+import ChatModal from '@/components/modal/ChatModal';
 
 interface CounselorCompletedCardProps {
   counselId: string;
@@ -19,6 +20,7 @@ const CounselorCompletedCard: React.FC<CounselorCompletedCardProps> = ({
   status,
   clientId,
 }) => {
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const navigate = useNavigate();
   return (
     <div className="border-b-2 border-blue-300 p-6">
@@ -48,13 +50,20 @@ const CounselorCompletedCard: React.FC<CounselorCompletedCardProps> = ({
           />
           <Button
             label="1:1 메신저 채팅"
-            onClick={() => {}}
+            onClick={() => setIsChatModalOpen(true)}
             size="lg"
             shape="rounded"
             color="gray"
           />
         </div>
       </div>
+      <ChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        memberName={clientName}
+        reservationId={counselId}
+        user="counselor"
+      />
     </div>
   );
 };

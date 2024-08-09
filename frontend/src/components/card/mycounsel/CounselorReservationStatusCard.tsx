@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Button from '@/components/button/Button';
 import { useNavigate } from 'react-router-dom';
+import ChatModal from '@/components/modal/ChatModal';
+
 interface CounselorReservationStatusCardProps {
   counselId: string;
   clientName: string;
@@ -21,6 +23,7 @@ const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardPro
   onDelete,
 }) => {
   const [isDeleted, setIsDeleted] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const navigate = useNavigate();
   const handleCancelReservation = () => {
     const isConfirmed = window.confirm('정말 예약을 취소하시겠습니까?');
@@ -76,13 +79,20 @@ const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardPro
           />
           <Button
             label="1:1 메신저 채팅"
-            onClick={() => {}}
+            onClick={() => setIsChatModalOpen(true)}
             size="lg"
             shape="rounded"
             color="gray"
           />
         </div>
       </div>
+      <ChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        memberName={clientName}
+        reservationId={counselId}
+        user="counselor"
+      />
     </div>
   );
 };
