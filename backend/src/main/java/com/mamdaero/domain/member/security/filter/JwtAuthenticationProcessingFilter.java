@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -116,9 +119,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
     private void saveAuthentication(Member member)
     {
         log.info("save_authentication IN");
-        UserDetailsImpl userDetails = new UserDetailsImpl(member);
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(member.getRole()));
+        UserDetailsImpl userDetails = new UserDetailsImpl(member, authorities);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,authoritiesMapper.mapAuthorities(userDetails.getAuthorities()));
         SecurityContext context = SecurityContextHolder.createEmptyContext();
+        log.info("ContextHolder : {}", authentication.getPrincipal());
+        log.info("role : {}", authentication.getAuthorities());
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
     }
