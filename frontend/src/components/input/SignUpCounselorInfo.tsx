@@ -56,7 +56,6 @@ const SignUpCounselorInfo: React.FC = () => {
       password: formState.password,
     };
 
-    console.log('Form submitted:', dataToSubmit);
     navigate('/signup/counselor/complete');
   };
 
@@ -68,7 +67,7 @@ const SignUpCounselorInfo: React.FC = () => {
             <div className="space-y-4">
               <div className="flex space-x-5">
                 <p className="w-1/3 font-bold">이름</p>
-                <p>{formData.name}</p>
+                <p>{formData.counselorName}</p>
               </div>
               <div className="flex space-x-5">
                 <p className="w-1/3 font-bold">자격번호</p>

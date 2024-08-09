@@ -18,6 +18,7 @@ interface ButtonProps {
   shape?: 'rounded' | 'square';
   color?: 'blue' | 'orange' | 'gray' | 'red';
   textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  disabled?: boolean;
 }
 
 const sizeClasses: Record<
@@ -64,11 +65,12 @@ const Button: React.FC<ButtonProps> = ({
   shape = 'square',
   color = 'orange',
   textSize = 'md',
+  disabled = false,
 }) => {
   return (
     <button
       onClick={onClick}
-      className={`${sizeClasses[size]} ${shapeClasses[shape]} ${colorClasses[color]} ${textSizeClasses[textSize]} font-bold`}
+      className={`${sizeClasses[size]} ${shapeClasses[shape]} ${colorClasses[color]} ${textSizeClasses[textSize]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} font-bold`}
     >
       {label}
     </button>
