@@ -41,7 +41,7 @@ public class SecurityConfig
                 .formLogin(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp -> csp
-                                .policyDirectives("frame-ancestors 'self' https://trusteddomain.com") // Content-Security-Policy 설정
+                                .policyDirectives("frame-ancestors 'self' https://mamdaero.o-r.kr") // Content-Security-Policy 설정
                         )
                 )
                 .authorizeHttpRequests((authorize) -> authorize
