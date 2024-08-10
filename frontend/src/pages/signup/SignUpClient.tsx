@@ -15,12 +15,12 @@ const SignUpClient: React.FC = () => {
 
   return (
     <div>
-      <SignUpBar
-        user="client"
-        title="일반 회원"
-        subtitle="맘대로와 함께 마음의 안정을 느껴보세요!"
-      />
       <div className="container space-y-10">
+        <SignUpBar
+          user="client"
+          title="일반 회원"
+          subtitle="맘대로와 함께 마음의 안정을 느껴보세요!"
+        />
         <div className="flex flex-col w-full items-center">
           <ProgressBar currentStep={currentStep} />
           <Routes>
