@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
 
-    public Page<DiaryResponseDto> findAllByMember(Long memberId, int page, int size) {
+    public Page<DiaryResponseDto> findAllByMember(Long memberId, int year, int month, int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -40,11 +41,19 @@ public class DiaryService {
 
             Member member = optionalMember.get();
 
-            if (diaryRepository.findDiaryByMember(member, pageable).isEmpty()) {
+            if (year == 0) {
+                year = LocalDate.now().getYear();
+            }
+
+            if (month == 0) {
+                month = LocalDate.now().getMonthValue();
+            }
+
+            if (diaryRepository.findAllByMemberAndDateYearAndDateMonth(member, year, month, pageable).isEmpty()) {
                 throw new DiaryNotFoundException();
             }
 
-            List<DiaryResponseDto> diaries = diaryRepository.findDiaryByMember(member, pageable).stream()
+            List<DiaryResponseDto> diaries = diaryRepository.findAllByMemberAndDateYearAndDateMonth(member, year, month, pageable).stream()
                     .map(DiaryResponseDto::toDTO)
                     .toList();
 
@@ -54,7 +63,7 @@ public class DiaryService {
         throw new MemberNotFoundException();
     }
 
-    public Page<DiaryResponseDto> findAllByMemberAndIsOpen(Long memberId, Boolean isOpen, int page, int size) {
+    public Page<DiaryResponseDto> findAllByMemberAndIsOpen(Long memberId, int year, int month, Boolean isOpen, int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -64,11 +73,19 @@ public class DiaryService {
 
             Member member = optionalMember.get();
 
-            if (diaryRepository.findAllByMemberAndIsOpen(member, isOpen, pageable).isEmpty()) {
+            if (year == 0) {
+                year = LocalDate.now().getYear();
+            }
+
+            if (month == 0) {
+                month = LocalDate.now().getMonthValue();
+            }
+
+            if (diaryRepository.findAllByMemberAndDateYearAndDateMonthAndIsOpen(member, year, month, isOpen, pageable).isEmpty()) {
                 throw new DiaryNotFoundException();
             }
 
-            List<DiaryResponseDto> diaryResponseDtoList = diaryRepository.findAllByMemberAndIsOpen(member, isOpen, pageable)
+            List<DiaryResponseDto> diaryResponseDtoList = diaryRepository.findAllByMemberAndDateYearAndDateMonthAndIsOpen(member, year, month, isOpen, pageable)
                     .stream()
                     .map(DiaryResponseDto::toDTO)
                     .toList();
@@ -104,6 +121,7 @@ public class DiaryService {
 
             Diary diary = Diary.builder()
                     .member(member)
+                    .emotion(requestDto.getEmotion())
                     .content(requestDto.getContent())
                     .date(requestDto.getDate())
                     .isOpen(requestDto.getIsOpen())

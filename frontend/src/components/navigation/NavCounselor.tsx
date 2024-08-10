@@ -1,25 +1,28 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useNavActive } from '@/hooks/useNavActive';
+import useAuthStore from '@/stores/authStore';
+
 import logo from '@/assets/MamdaeroLogo.svg';
-import { CgProfile } from 'react-icons/cg';
 import { LuBellRing } from 'react-icons/lu';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import DiaryViewModal from '../modal/DiaryViewModal';
+import ProfileDropdown from '@/components/dropdown/ProfileDropdown';
 
 const navStyle =
   'p-3 text-lg font-semibold hover:bg-gray-200 text-center transition-colors duration-300';
 const navSubStyle =
-  'py-2 px-6 text-base font-semibold hover:bg-gray-100 text-left transition-colors duration-300';
-const activeStyle = 'bg-blue-100 border-l-4 border-blue-500';
+  'py-2 px-6 text-base font-semibold hover:bg-gray-100 text-left transition-colors duration-300 text-center';
+const activeStyle = 'bg-blue-100 border-l-4 border-blue-500 text-center';
 const activeSubStyle = 'bg-gray-200';
 
 const NavClient: React.FC = () => {
   const [isMyCounselOpen, setIsMyCounselOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isCounselor, isClient, isAuthenticated } = useAuthStore();
+  const isNavActive = useNavActive();
 
-  const isMyCounselActive =
-    location.pathname.includes('/mycounsel/counselor/history') ||
-    location.pathname.includes('/mycounsel/counselor/record');
+  const isMyCounselActive = isNavActive('/mycounsel/counselor');
 
   useEffect(() => {
     if (!isMyCounselActive) {
@@ -36,25 +39,22 @@ const NavClient: React.FC = () => {
       </div>
       <NavLink
         to="/counselor"
-        className={({ isActive }) => `${navStyle} ${isActive ? activeStyle : ''}`}
+        className={`${navStyle} ${isNavActive('/counselor') ? activeStyle : ''}`}
       >
         상담사 조회
       </NavLink>
-      <NavLink
-        to="/postit"
-        className={({ isActive }) => `${navStyle} ${isActive ? activeStyle : ''}`}
-      >
-        익명 방명록
+      <NavLink to="/postit" className={`${navStyle} ${isNavActive('/postit') ? activeStyle : ''}`}>
+        맘대로 포스트잇
       </NavLink>
       <NavLink
         to="/supervision"
-        className={({ isActive }) => `${navStyle} ${isActive ? activeStyle : ''}`}
+        className={`${navStyle} ${isNavActive('/supervision') ? activeStyle : ''}`}
       >
-        슈퍼비전
+        상담사 슈퍼비전
       </NavLink>
       <NavLink
         to="/community"
-        className={({ isActive }) => `${navStyle} ${isActive ? activeStyle : ''}`}
+        className={`${navStyle} ${isNavActive('/community') ? activeStyle : ''}`}
       >
         커뮤니티
       </NavLink>
@@ -64,11 +64,11 @@ const NavClient: React.FC = () => {
       >
         {isMyCounselOpen ? (
           <div className="flex items-center justify-center space-x-3">
-            <span>나의 상담</span> <FaChevronDown />
+            <span>나의 상담</span> <FaChevronDown size={12} />
           </div>
         ) : (
           <div className="flex items-center justify-center space-x-3">
-            <span>나의 상담</span> <FaChevronUp />
+            <span>나의 상담</span> <FaChevronUp size={12} />
           </div>
         )}
       </button>
@@ -76,13 +76,13 @@ const NavClient: React.FC = () => {
         <div className="flex flex-col mt-1 bg-gray-50">
           <NavLink
             to="/mycounsel/counselor/history"
-            className={({ isActive }) => `${navSubStyle} ${isActive ? activeStyle : ''}`}
+            className={`${navSubStyle} ${isNavActive('/mycounsel/counselor/history') ? activeStyle : ''}`}
           >
             상담 내역
           </NavLink>
           <NavLink
             to="/mycounsel/counselor/record"
-            className={({ isActive }) => `${navSubStyle} ${isActive ? activeStyle : ''}`}
+            className={`${navSubStyle} ${isNavActive('/mycounsel/counselor/record') ? activeStyle : ''}`}
           >
             상담 기록
           </NavLink>
@@ -95,9 +95,7 @@ const NavClient: React.FC = () => {
         <Link to="/alarm">
           <LuBellRing size={24} />
         </Link>
-        <Link to="/mypage/counselor">
-          <CgProfile size={24} />
-        </Link>
+        <ProfileDropdown />
       </div>
     </div>
   );

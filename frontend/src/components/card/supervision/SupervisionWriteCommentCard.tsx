@@ -5,35 +5,65 @@ import RegisterButton from '@/components/button/RegisterButton';
 
 interface SupervisionCommentCardProps {
   postId: number;
+  onCommentAdded?: () => void;
 }
 
-const postComment = async (postId: number, comment: string): Promise<void> => {
-  await axiosInstance({
+interface CommentDetail {
+  id: number;
+  writer: string;
+  comment: string;
+  createdAt: string;
+}
+
+const postComment = async (postId: number, comment: string): Promise<CommentDetail> => {
+  const response = await axiosInstance({
     method: 'post',
     url: `ca/counselor-board/${postId}/comment`,
     data: { comment },
   });
+  return response.data;
 };
 
-const SupervisionWriteCommentCard: React.FC<SupervisionCommentCardProps> = ({ postId }) => {
+const SupervisionWriteCommentCard: React.FC<SupervisionCommentCardProps> = ({
+  postId,
+  onCommentAdded,
+}) => {
   const [comment, setComment] = useState<string>('');
   const queryClient = useQueryClient();
   const nickname = '하늘의 미소';
 
   const mutation = useMutation({
     mutationFn: (comment: string) => postComment(postId, comment),
-    onSuccess: () => {
-      setComment('');
-      queryClient.invalidateQueries({ queryKey: ['comments', postId] });
+    onMutate: async newComment => {
+      await queryClient.cancelQueries({ queryKey: ['comments', postId] });
+      const previousComments = queryClient.getQueryData<CommentDetail[]>(['comments', postId]);
+      queryClient.setQueryData<CommentDetail[]>(['comments', postId], old => {
+        const newCommentObj: CommentDetail = {
+          id: Date.now(),
+          writer: nickname,
+          comment: newComment,
+          createdAt: new Date().toISOString(),
+        };
+        return [...(old || []), newCommentObj];
+      });
+      return { previousComments };
     },
-    onError: (error: unknown) => {
-      alert(`오류가 발생했습니다. ${error}`);
+    onError: (err, newComment, context) => {
+      queryClient.setQueryData(['comments', postId], context?.previousComments);
+      alert(`오류가 발생했습니다. ${err}`);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments', postId] });
+      if (onCommentAdded) {
+        onCommentAdded(); // 댓글 추가 완료 후 콜백 함수 호출
+      }
     },
   });
 
   const handleCommentSubmit = () => {
     if (comment.trim()) {
       mutation.mutate(comment);
+      setComment(''); // 댓글 입력 후 입력창 비우기
     }
   };
 

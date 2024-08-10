@@ -11,12 +11,14 @@ import java.time.LocalDate;
 @Builder
 public class DiaryResponseDto {
 
+    private String emotion;
     private String content;
     private LocalDate date;
     private Boolean isOpen;
 
     public static DiaryResponseDto toDTO(Diary diary) {
         return DiaryResponseDto.builder()
+                .emotion(diary.getEmotion())
                 .content(diary.getContent())
                 .date(diary.getDate())
                 .isOpen(diary.getIsOpen())

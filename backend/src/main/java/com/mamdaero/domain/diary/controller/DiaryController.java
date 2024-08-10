@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @RestController
@@ -22,13 +23,15 @@ public class DiaryController {
 
     @GetMapping("/m/diary")
     public ResponseEntity<Page<DiaryResponseDto>> findAllByMember(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                                                  @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+                                                                  @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                                  @RequestParam(name = "year", required = false, defaultValue = "0") int year,
+                                                                  @RequestParam(name = "month", required = false, defaultValue = "0") int month) {
 
         if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
 
             Long memberId = findUserService.findMemberId();
 
-            Page<DiaryResponseDto> diaryList = diaryService.findAllByMember(memberId, page, size);
+            Page<DiaryResponseDto> diaryList = diaryService.findAllByMember(memberId, year, month, page, size);
 
             return new ResponseEntity<>(diaryList, HttpStatus.OK);
         }
@@ -38,11 +41,13 @@ public class DiaryController {
     @GetMapping("/c/diary/{memberId}")
     public ResponseEntity<Page<DiaryResponseDto>> findAllByDiary(@PathVariable(name = "memberId") Long memberId,
                                                                  @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                                                 @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+                                                                 @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                                 @RequestParam(name = "year", required = false, defaultValue = "0") int year,
+                                                                 @RequestParam(name = "month", required = false, defaultValue = "0") int month) {
 
         if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
-            Page<DiaryResponseDto> diaryList = diaryService.findAllByMemberAndIsOpen(memberId, true, page, size);
+            Page<DiaryResponseDto> diaryList = diaryService.findAllByMemberAndIsOpen(memberId, year, month,true, page, size);
 
             return new ResponseEntity<>(diaryList, HttpStatus.OK);
         }
