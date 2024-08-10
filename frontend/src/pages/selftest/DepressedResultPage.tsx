@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TestBar from '@/components/navigation/TestBar';
-import lean from '@/assets/lean2.png';
+import talk from '@/assets/fox_talk.png';
 import Button from '@/components/button/Button';
 
 interface LocationState {
@@ -30,7 +30,7 @@ const DepressedResultPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-16">
+    <div className="min-h-screen">
       <TestBar
         title="우울"
         subtitle="기분이 늘 울적하고 매사에 의욕이 없나요?"
@@ -46,7 +46,7 @@ const DepressedResultPage: React.FC = () => {
               <p className="text-lg mb-4">
                 <span className="font-bold text-primary text-4xl">{totalScore}점</span> 입니다.
               </p>
-              <img src={lean} alt="어린왕자" className="w-56 mb-4" />
+              <img src={talk} alt="어린왕자" className="w-56 mb-4" />
               <p className="text-lg"></p>
             </div>
           </div>
@@ -55,12 +55,12 @@ const DepressedResultPage: React.FC = () => {
               <h2 className="card-title text-2xl font-bold">우울 자가검진 결과입니다.</h2>
               <div className="divider"></div>
               <div>{resultMessage}</div>
-              <div className="flex justify-center space-x-10 pt-5">
+              <div className="flex justify-center space-x-10 pt-5 font-bold">
                 <Button
                   label="다시하기"
                   onClick={handleRetry}
                   size="lg"
-                  textSize="xl"
+                  textSize="md"
                   shape="rounded"
                   color="orange"
                 />
@@ -68,7 +68,7 @@ const DepressedResultPage: React.FC = () => {
                   label="다른 검진 해보기 "
                   onClick={handleGoToList}
                   size="lg"
-                  textSize="xl"
+                  textSize="md"
                   shape="rounded"
                   color="orange"
                 />

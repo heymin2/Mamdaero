@@ -1,80 +1,99 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '@/api/axiosInstance';
 import Button from '@/components/button/Button';
 import TestBar from '@/components/navigation/TestBar';
 import { FaCheck } from 'react-icons/fa';
 
+interface Option {
+  id: number;
+  selftestQuestionOptionDetail: string;
+  selftestQuestionOptionScore: number;
+}
+
 interface Question {
-  selftest_questionid: number;
-  selftest_question_detail: string;
-  options: number[];
+  id: number;
+  selftestQuestionDetail: string;
+  options: Option[];
 }
 
-interface SelfTest {
-  selftest_id: number;
-  selftest_name: string;
-  selftest_info: string;
-  questions: Question[];
+type SelfTest = Question[];
+
+interface SelfTestInfo {
+  id: number;
+  selftestName: string;
+  selftestInfo: string;
 }
 
-const answerLabels = ['전혀 그렇지 않다', '조금 그렇다', '보통 그렇다', '대단히 그렇다'];
+const fetchSelfTest = async (): Promise<SelfTest> => {
+  const response = await axiosInstance.get('/p/selftest/2');
+  return response.data;
+};
+
+const fetchSelfTestInfo = async (): Promise<SelfTestInfo[]> => {
+  const response = await axiosInstance.get('/p/selftest');
+  return response.data;
+};
 
 const UnrestPage: React.FC = () => {
-  const [selfTest, setSelfTest] = useState<SelfTest | null>(null);
-  const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch('/selftests.json')
-      .then(response => response.json())
-      .then(data => {
-        const unrestTest = data.selftests.find((test: SelfTest) => test.selftest_name === 'unrest');
-        setSelfTest(unrestTest);
-        setQuestions(unrestTest.questions);
-      })
-      .catch(error => console.error('Error fetching questions:', error));
-  }, []);
+  const {
+    data: selfTest,
+    isLoading: isLoadingTest,
+    isError: isErrorTest,
+  } = useQuery<SelfTest>({
+    queryKey: ['unrestTest'],
+    queryFn: fetchSelfTest,
+  });
+
+  const {
+    data: selfTestInfo,
+    isLoading: isLoadingInfo,
+    isError: isErrorInfo,
+  } = useQuery<SelfTestInfo[]>({
+    queryKey: ['selfTestInfo'],
+    queryFn: fetchSelfTestInfo,
+  });
 
   const handleAnswerChange = (questionId: number, score: number) => {
-    setAnswers({ ...answers, [questionId]: score });
+    setAnswers(prev => ({ ...prev, [questionId]: score }));
   };
 
   const handleSubmit = () => {
-    if (Object.keys(answers).length !== questions.length) {
+    if (!selfTest) return;
+
+    if (Object.keys(answers).length !== selfTest.length) {
       setAlertMessage('모든 문항에 답변해 주세요.');
       return;
     }
-    const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
-    // 답변 데이터를 구조화하여 출력
-    const detailedAnswers = Object.entries(answers).map(([questionId, score]) => {
-      return {
-        selftest_id: selfTest?.selftest_id,
-        question_id: Number(questionId),
-        answer: score,
-      };
-    });
 
-    console.log('Detailed Answers:', detailedAnswers);
+    const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
     navigate('/selftest/unrest/result', { state: { totalScore } });
   };
 
+  if (isLoadingTest || isLoadingInfo) return <div>Loading...</div>;
+  if (isErrorTest || isErrorInfo) return <div>Error loading test</div>;
+  if (!selfTest || selfTest.length === 0 || !selfTestInfo) return null;
+
+  const unrestInfo = selfTestInfo.find(info => info.selftestName === 'unrest');
+
   return (
     <div>
-      {/* 제목 */}
       <TestBar
         title="불안"
         subtitle="위험요소가 다 사라졌지만 불안하신가요?"
         showBackButton={true}
       />
-      {/* 검사테이블 */}
       <div className="flex text-sm space-x-5 m-12 justify-center">
         <FaCheck />
-        <div>{selfTest ? selfTest.selftest_info : '정보를 불러오는 중...'}</div>
+        <div>{unrestInfo ? unrestInfo.selftestInfo : ''}</div>
       </div>
       <div className="flex justify-center w-full">
-        <div className="w-full max-w-4xl px-4 ">
+        <div className="w-full max-w-4xl px-4">
           <table className="table w-full rounded-lg overflow-hidden">
             <thead>
               <tr>
@@ -84,38 +103,33 @@ const UnrestPage: React.FC = () => {
                 <th className="bg-orange-300 text-orange-300-content text-base text-center align-middle">
                   질문
                 </th>
-                {answerLabels.map((label, index) => (
+                {selfTest[0].options.map(option => (
                   <th
-                    key={index}
-                    className={`bg-orange-300 text-orange-300-content text-center text-base ${
-                      index === answerLabels.length - 1 ? 'rounded-tr-lg' : ''
-                    }`}
+                    key={option.id}
+                    className="bg-orange-300 text-orange-300-content text-center text-base"
                   >
-                    {label}
+                    {option.selftestQuestionOptionDetail}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {questions.map((question, qIndex) => (
+              {selfTest.map((question, qIndex) => (
                 <tr
-                  key={question.selftest_questionid}
-                  className={`${
-                    qIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                  } text-center align-middle`}
+                  key={question.id}
+                  className={`${qIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'} text-center align-middle`}
                 >
                   <td className="font-bold text-base rounded-l">{qIndex + 1}</td>
-                  <td className="text-base text-left">{question.selftest_question_detail}</td>
-                  {question.options.map((option, index) => (
-                    <td
-                      key={index}
-                      className={`text-center ${index === question.options.length - 1 ? 'rounded-r' : ''}`}
-                    >
+                  <td className="text-base text-left">{question.selftestQuestionDetail}</td>
+                  {question.options.map(option => (
+                    <td key={option.id} className="text-center">
                       <input
                         type="radio"
-                        name={`question-${question.selftest_questionid}`}
-                        value={option}
-                        onChange={() => handleAnswerChange(question.selftest_questionid, option)}
+                        name={`question-${question.id}`}
+                        value={option.selftestQuestionOptionScore}
+                        onChange={() =>
+                          handleAnswerChange(question.id, option.selftestQuestionOptionScore)
+                        }
                         className="radio radio-primary"
                       />
                     </td>
@@ -126,7 +140,6 @@ const UnrestPage: React.FC = () => {
           </table>
         </div>
       </div>
-      {/* 경고창 */}
       {alertMessage && (
         <div role="alert" className="alert alert-warning mt-4">
           <svg
@@ -145,7 +158,6 @@ const UnrestPage: React.FC = () => {
           <span>{alertMessage}</span>
         </div>
       )}
-      {/* 다음버튼 */}
       <div className="flex justify-center w-full mt-8">
         <Button onClick={handleSubmit} label="결과보기" color="orange" />
       </div>

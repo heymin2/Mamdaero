@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import MyCouneolBar from '@/components/navigation/MyCouneolBar';
 import ClientCard from '@/components/card/mycounsel/ClientCard';
 import Button from '@/components/button/Button';
 
@@ -68,7 +67,7 @@ const CounselRecordList: React.FC = () => {
       {/* 상단바 */}
       <div className="sticky bg-blue-50 top-0 z-10 mb-8">
         <div className="flex flex-col mt-6 mx-16 justify-end">
-          <div className="flex justify-between items-center ml-5 mr-5">
+          <div className="flex justify-between items-center">
             <div className="flex justify-start relative">
               <div className="w-52 relative mr-2">
                 <input
@@ -98,11 +97,12 @@ const CounselRecordList: React.FC = () => {
             </div>
             <div className="flex flex-col text-right">
               <div className="text-4xl font-bold ms-8 flex-shrink-0">
-                <span className="text-blue-500">내담자 목록</span> 상담내역
+                <span className="text-blue-500">내담자 목록</span> 상담기록
               </div>
             </div>
           </div>
-          <div className="border-t-2 border-gray-300 mt-2"></div>
+          {/* <div className="border-t-2 border-gray-300 mt-2"></div> */}
+          <div className=" mt-2"></div>
         </div>
       </div>
       {/* 내담자 목록 */}
