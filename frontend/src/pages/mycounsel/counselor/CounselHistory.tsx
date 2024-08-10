@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import CounselorReservationStatusCard from '@/components/card/mycounsel/CounselorReservationStatusCard';
 import CounselorCompletedCard from '@/components/card/mycounsel/CounselorCompletedCard';
+import { useNavigate } from 'react-router-dom';
+import MyCounselBar from '@/components/navigation/MyCounselBar';
 
 const CounselHistory: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'reservation' | 'completed'>('reservation');
@@ -68,17 +70,23 @@ const CounselHistory: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen p-3">
-      <div className="sticky bg-blue-50 top-0 z-10 pt-4">
-        <div role="tablist" className="tabs tabs-lifted tabs-lg font-bold">
+    <div className="flex flex-col min-h-screen">
+      <MyCounselBar
+        title1="맘대로"
+        title2="상담내역"
+        subtitle="상담 예약 현황과 지금까지 완료된 상담을 확인하세요!"
+        user="counselor"
+      />
+      <div className="sticky bg-blue-50 top-0 z-10">
+        <div role="tablist" className="tabs tabs-lg font-bold border-b-4 border-b-blue-300">
           <a
-            className={`tab tab-lg h-16 ${activeTab === 'reservation' ? 'tab-active [--tab-bg:#93c5fd] [--tab-border-color:#93c5fd]' : '[--tab-border-color:#93c5fd]'}`}
+            className={`tab tab-lg h-14 ${activeTab === 'reservation' ? 'tab-active bg-blue-200 rounded-t-md' : 'bg-blue-50'}`}
             onClick={() => setActiveTab('reservation')}
           >
             예약 현황
           </a>
           <a
-            className={`tab tab-lg h-16 ${activeTab === 'completed' ? 'tab-active [--tab-bg:#93c5fd] [--tab-border-color:#93c5fd]' : '[--tab-border-color:#93c5fd]'}`}
+            className={`tab tab-lg h-14 ${activeTab === 'completed' ? 'tab-active bg-blue-200 rounded-t-md' : 'bg-blue-50'}`}
             onClick={() => setActiveTab('completed')}
           >
             완료된 상담

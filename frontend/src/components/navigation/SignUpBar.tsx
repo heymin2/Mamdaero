@@ -15,7 +15,7 @@ const SignUpBar: React.FC<SignUpBarProps> = ({ title, subtitle, user }) => {
 
   return (
     <div className="flex flex-col my-6 mx-16 justify-end">
-      <div className="flex justify-between items-center ml-5 mr-5">
+      <div className="flex justify-between items-center ">
         <div className="flex flex-col text-right text-gray-500 flex-grow">
           {subtitleLines.map((line, index) => (
             <div key={index}>{line}</div>
@@ -25,7 +25,8 @@ const SignUpBar: React.FC<SignUpBarProps> = ({ title, subtitle, user }) => {
           <span className={titleColor}>{title}</span> 회원가입
         </div>
       </div>
-      <div className="border-t-2 border-gray-300 mt-2"></div>
+      <div className="mt-2"></div>
+      {/* <div className="border-t-2 border-gray-300 mt-2"></div> */}
     </div>
   );
 };
