@@ -1,6 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import MainPage from '@/pages/main/MainPage';
+import MainPageClient from '@/pages/main/MainPageClient';
+import MainPageCounselor from '@/pages/main/MainPageCounselor';
 import SignUpChoose from '@/pages/signup/SignUpChoose';
 import SignUpClient from '@/pages/signup/SignUpClient';
 import SignUpCounselor from '@/pages/signup/SignUpCounselor';
@@ -45,6 +47,8 @@ const Router = () => (
   <Routes>
     {/* Main Routes  */}
     <Route path="/" element={<MainPage />} />
+    <Route path="/client/main" element={<MainPageClient />} />
+    <Route path="/counselor/main" element={<MainPageCounselor />} />
     {/* SignUp Routes */}
     <Route path="/signup/choose" element={<SignUpChoose />} />
     <Route path="/signup/client/*" element={<SignUpClient />} />
