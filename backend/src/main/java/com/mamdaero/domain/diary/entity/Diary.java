@@ -24,7 +24,7 @@ public class Diary extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-    // emotion_id 필요
+    private String emotion;
     private String content;
     private LocalDate date;
     @Builder.Default
@@ -33,6 +33,7 @@ public class Diary extends BaseEntity {
     private Boolean isDelete = false;
 
     public void update(DiaryRequestDto requestDto) {
+        this.emotion = requestDto.getEmotion();
         this.content = requestDto.getContent();
         this.date = requestDto.getDate();
         this.isOpen = requestDto.getIsOpen();
