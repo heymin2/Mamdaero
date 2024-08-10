@@ -52,6 +52,8 @@ const CommunityPostCard = () => {
           </div>
           <div className="justify-end">
             <div className="flex  gap-2">
+              <EditButton color="orange" onClick={() => {}} />
+              <DeleteButton onClick={() => {}} />
               <EditButton color="orange" onClick={onClick} />
               <DeleteButton onClick={onClick} />
             </div>
