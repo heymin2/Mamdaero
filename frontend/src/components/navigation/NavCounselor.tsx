@@ -5,6 +5,7 @@ import { CgProfile } from 'react-icons/cg';
 import { LuBellRing } from 'react-icons/lu';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import DiaryViewModal from '../modal/DiaryViewModal';
+import ProfileDropdown from '@/components/dropdown/ProfileDropdown';
 
 const navStyle =
   'p-3 text-lg font-semibold hover:bg-gray-200 text-center transition-colors duration-300';
@@ -95,9 +96,7 @@ const NavClient: React.FC = () => {
         <Link to="/alarm">
           <LuBellRing size={24} />
         </Link>
-        <Link to="/mypage/counselor">
-          <CgProfile size={24} />
-        </Link>
+        <ProfileDropdown />
       </div>
     </div>
   );

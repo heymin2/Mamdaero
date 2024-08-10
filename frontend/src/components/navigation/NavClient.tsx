@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom';
 import logo from '@/assets/MamdaeroLogo.svg';
 import { CgProfile } from 'react-icons/cg';
 import { LuBellRing } from 'react-icons/lu';
+import ProfileDropdown from '@/components/dropdown/ProfileDropdown';
 
 const navStyle =
   'p-3 text-lg font-semibold hover:bg-gray-200 text-center transition-colors duration-300';
@@ -64,9 +65,7 @@ const NavClient = () => {
         <Link to="/alarm">
           <LuBellRing size={24} />
         </Link>
-        <Link to="/mypage/client">
-          <CgProfile size={24} />
-        </Link>
+        <ProfileDropdown />
       </div>
     </div>
   );
