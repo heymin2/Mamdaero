@@ -1,44 +1,41 @@
-// src/components/counselor/reserve/TimeSelection.tsx
-
 import React from 'react';
 
 interface WeekSelectionProps {
   allWeeks: Record<string, number>;
-  week: number;
   weeks: number[];
-  setWeeks: (weeks: number[]) => void;
+  selectedWeek: number | null;
+  setWeeks: (week: number) => void;
 }
-const WeekSelection: React.FC<WeekSelectionProps> = ({ allWeeks, week, weeks, setWeeks }) => {
-  return (
-    <div>
-      <div className="flex items-end font-bold border-b-4 border-blue-400 mb-4">
-        <span className="box-border text-lg flex-1 font-bold">요일 선택</span>
-      </div>
-      <div className="grid grid-cols-1 gap-3">
-        {Object.keys(allWeeks).map((day: string) => {
-          const value = allWeeks[day];
-          const isWeekInWeeks = weeks.includes(value);
 
-          return (
-            <React.Fragment key={day}>
-              <button
-                className={`btn ${
-                  isWeekInWeeks ? 'btn-primary' : 'btn-outline btn-primary bg-white'
-                } rounded-full`}
-                onClick={() => {
-                  const newWeeks = isWeekInWeeks
-                    ? weeks.filter(week => week !== value)
-                    : [...weeks, value];
-                  console.log(newWeeks);
-                  setWeeks(newWeeks);
-                }}
-              >
-                {day}
-              </button>
-            </React.Fragment>
-          );
-        })}
-      </div>
+const WeekSelection: React.FC<WeekSelectionProps> = ({
+  allWeeks,
+  weeks,
+  selectedWeek,
+  setWeeks,
+}) => {
+  return (
+    <div className="grid grid-cols-1 gap-3">
+      {Object.keys(allWeeks).map((day: string) => {
+        const value = allWeeks[day];
+        const isSelected = weeks.includes(value);
+        const isCurrentlySelected = selectedWeek === value;
+
+        return (
+          <button
+            key={day}
+            className={`btn rounded-full w-16 h-16 flex items-center justify-center text-sm font-medium ${
+              isCurrentlySelected
+                ? 'bg-gray-300 text-black'
+                : isSelected
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white border border-blue-500'
+            }`}
+            onClick={() => setWeeks(value)}
+          >
+            {day}
+          </button>
+        );
+      })}
     </div>
   );
 };

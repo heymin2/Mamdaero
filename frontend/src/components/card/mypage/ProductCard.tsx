@@ -1,81 +1,88 @@
 import React, { useState } from 'react';
-import Product from '@/pages/mypage/props/product';
+import { FiPlusCircle } from 'react-icons/fi';
 
-// 마이페이지- 내 상품관리- products
-import { FiX, FiPlusCircle } from 'react-icons/fi';
+interface Product {
+  name: string;
+  fee: number;
+  description: string | null;
+}
+
 interface ProductCardProps {
   onAddProduct: (product: Product) => void;
 }
 
-// 상품 카드 컴포넌트
 const ProductCard: React.FC<ProductCardProps> = ({ onAddProduct }) => {
-  // style variants
-  const productLabel = 'ml-2 text-md font-bold ';
-  const productContent = 'text-start pt-3 pl-3 w-full bg-white border border-blue-300 rounded-xl ';
-  const fixCss = 'absolute bottom-1 right-1 w-3 h-3 '; //공백 일부로 넣어둠
-  // states
+  const productLabel = 'ml-2 text-md font-bold flex';
+  const productContent = 'text-start py-2 pl-3 w-full bg-white border border-blue-300 rounded-xl';
+
   const [productName, setName] = useState<string>('');
   const [productPrice, setPrice] = useState<string>('');
   const [productDescription, setDescription] = useState<string>('');
-  //handler
+
+  const maxDescriptionLength = 80;
+
   const handleAddProduct = () => {
     onAddProduct({
       name: productName,
-      price: productPrice,
-      description: productDescription,
+      fee: Number(productPrice),
+      description: productDescription || null,
     });
-    // 입력 필드 초기화
     setName('');
     setPrice('');
     setDescription('');
   };
 
-  // 공통 유틸리티 함수로 clearContent 정의
-  const clearContent = (setter: React.Dispatch<React.SetStateAction<string>>) => {
-    console.log('내용 비우기');
-    setter(''); // 상태를 빈 문자열로 설정하여 텍스트 비우기
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const input = e.target.value;
+    if (input.length <= maxDescriptionLength) {
+      setDescription(input);
+    }
   };
+
   return (
-    <div className=" p-5 flex flex-col gap-1 bg-blue-50 border border-blue-200 rounded-xl">
-      <>
+    <div className="p-5 flex flex-col gap-1 space-y-4 bg-blue-50 border-blue-200 border-4 rounded-xl">
+      <div>
         <h1 className={productLabel}>상담 이름</h1>
-        <div className="relative flex-1">
+        <input
+          className={productContent}
+          value={productName}
+          onChange={e => setName(e.target.value)}
+        />
+      </div>
+      <div>
+        <h1 className={productLabel}>
+          상담 가격 <p className="text-xs text-gray-500 mt-1 ml-2">숫자만 입력 가능합니다</p>
+        </h1>
+        <div className="relative">
           <input
-            className={productContent}
-            value={productName}
-            onChange={e => setName(e.target.value)}
-          />
-          <FiX className={fixCss} onClick={() => clearContent(setName)} />
-        </div>
-      </>
-      <>
-        <h1 className={productLabel}>상담 가격</h1>
-        <div className="relative flex-1">
-          <input
-            className={productContent}
+            className={`${productContent} pr-8`}
+            type="number"
             value={productPrice}
             onChange={e => setPrice(e.target.value)}
           />
-          <FiX className={fixCss} onClick={() => clearContent(setPrice)} />
+          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            원
+          </span>
         </div>
-      </>
-      <>
+      </div>
+      <div>
         <h1 className={productLabel}>상담 설명</h1>
-        <div className="relative flex-1">
-          <textarea
-            className={productContent + 'min-h-32'}
-            value={productDescription}
-            onChange={e => setDescription(e.target.value)}
-          />
-          <FiX className={fixCss + 'bottom-3'} onClick={() => clearContent(setDescription)} />
-        </div>
-      </>
-      {/* 상품 추가 버튼 */}
-      <button onClick={handleAddProduct} className="bg-transparent mx-auto block font-bold">
-        <FiPlusCircle className="inline" />
+        <textarea
+          className={`${productContent} min-h-32`}
+          value={productDescription}
+          onChange={handleDescriptionChange}
+          maxLength={maxDescriptionLength}
+        />
+        <p className="text-xs text-gray-500 mt-1 text-right">
+          {productDescription.length}/{maxDescriptionLength} 자
+        </p>
+      </div>
+      <button onClick={handleAddProduct} className="bg-transparent mx-auto block font-bold mt-4">
+        <FiPlusCircle className="inline mr-1" />
         상품 추가
       </button>
     </div>
   );
 };
+
 export default ProductCard;
