@@ -90,7 +90,8 @@ const Chatbot = () => {
   };
   const fetchBotReply = async (input: string) => {
     if (!input.trim()) return;
-    // 히스토리가 비어있을 경우 프롬프팅 진행
+
+    // 히스토리가 인사말만 있을 경우 프롬프팅 진행
     if (chatHistory.length == 1) {
       promptEngineering();
     }
