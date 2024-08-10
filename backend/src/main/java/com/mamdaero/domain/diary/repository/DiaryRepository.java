@@ -21,7 +21,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     Page<Diary> findAllByMemberAndIsOpen(Member member, Boolean isOpen, Pageable pageable);
 
     @Query("SELECT d FROM Diary d WHERE d.member = :member AND YEAR(d.date) = :year AND MONTH(d.date) = :month")
-    Page<Diary> findAllByMemberAndDateYearAndDateMonth(Member member, @Param("year") int year, @Param("month") int month, Pageable pageable);
+    Page<Diary> findAllByMemberAndDateYearAndDateMonth(@Param("member") Member member, @Param("year") int year, @Param("month") int month, Pageable pageable);
     @Query("SELECT d FROM Diary d WHERE d.member = :member AND YEAR(d.date) = :year AND MONTH(d.date) = :month AND d.isOpen = :isOpen")
     Page<Diary> findAllByMemberAndDateYearAndDateMonthAndIsOpen(@Param("member") Member member,
                                                                 @Param("year") int year,
