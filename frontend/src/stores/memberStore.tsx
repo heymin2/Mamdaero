@@ -36,10 +36,11 @@ const useMemberStore = create<MemberState>()(
         }
         try {
           const response = await axiosInstance({
-            method: 'post',
+            method: 'get',
             url: 'm/member',
             headers: { Authorization: `Bearer ${accessToken}` },
           });
+          console.log(response);
           set({
             name: response.data.name,
             email: response.data.email,

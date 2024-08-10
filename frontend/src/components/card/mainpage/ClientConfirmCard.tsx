@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { ImClock } from 'react-icons/im';
-import useAuthStore from '@/stores/authStore';
 import useMemberStore from '@/stores/memberStore';
 
 const ReservConfirmCard: React.FC = () => {

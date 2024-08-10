@@ -1,13 +1,13 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import parse, { DOMNode, Element } from 'html-react-parser';
+import axiosInstance from '@/api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient, InvalidateQueryFilters } from '@tanstack/react-query';
-import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
+import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
-import axiosInstance from '@/api/axiosInstance';
 
 interface SupervisionPostCardProps {
   postDetail: {
@@ -27,7 +27,7 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { id, title, writer, view, likeCount, content, file } = postDetail;
-  const createdAt = dayjs(postDetail.createdAt).format('YYYY-MM-DD HH:mm:ss'); // 시간 포맷 수정
+  const createdAt = dayjs(postDetail.createdAt).format('YYYY-MM-DD HH:mm:ss');
 
   // 파일 이름 추출
   const getFileName = (url: string) => {
@@ -43,18 +43,6 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
   // 이미지 로딩 핸들러
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.style.maxWidth = '100%'; // 이미지가 컨테이너에 맞게 조정됨
-  };
-
-  // 게시글 수정
-  const handleArticleEdit = () => {
-    navigate(`/supervision/edit/${id}`);
-  };
-
-  // 게시글 삭제
-  const handleArticleDelete = () => {
-    if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-      deleteArticleMutation.mutate(id);
-    }
   };
 
   // HTML 콘텐츠를 React 컴포넌트로 변환
@@ -80,6 +68,19 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
       },
     });
   };
+
+  // 게시글 수정
+  const handleArticleEdit = () => {
+    navigate(`/supervision/edit/${id}`);
+  };
+
+  // 게시글 삭제
+  const handleArticleDelete = () => {
+    if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+      deleteArticleMutation.mutate(id);
+    }
+  };
+
   const deleteArticleMutation = useMutation({
     mutationFn: (postId: number) =>
       axiosInstance({

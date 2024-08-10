@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import useAuthStore from '@/stores/authStore';
+import useMemberStore from '@/stores/memberStore';
 
 import Button from '@/components/button/Button.tsx';
 import GoogleLoginButton from '@/components/button/GoogleLoginButton';
@@ -26,12 +27,14 @@ const LoginClient = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const login = useAuthStore(state => state.login);
+  const fetchMember = useMemberStore(state => state.fetchMember);
 
   const loginMutation = useMutation({
     mutationFn: loginUserInfo,
-    onSuccess: data => {
+    onSuccess: async data => {
       const { accessToken, role } = data.data.result;
       login(accessToken, role, email);
+      await fetchMember();
       navigate('/');
     },
     onError: error => {

@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useMutation, useQueryClient, InvalidateQueryFilters } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import axiosInstance from '@/api/axiosInstance';
-import { BsThreeDots } from 'react-icons/bs';
-import { FaRegComments } from 'react-icons/fa6';
 
 import { FaEdit } from 'react-icons/fa';
+import { BsThreeDots } from 'react-icons/bs';
+import { FaRegComments } from 'react-icons/fa6';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Button from '@/components/button/Button';
 import ReportButton from '@/components/button/ReportButton';
@@ -27,7 +26,6 @@ const SupervisionCommentCard: React.FC<SupervisionCommentCardProps> = ({
   commentDetail,
   postId,
 }) => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showReportButton, setShowReportButton] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
