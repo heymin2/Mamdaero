@@ -2,7 +2,6 @@ import LoginCard from '@/components/card/mainpage/LoginCard';
 import MainTitleCard from '@/components/card/mainpage/MainTitleCard';
 import lean2 from '@/assets/lean2.png';
 import Chatbot from '@/components/Chatbot';
-import PromptEngineering from '@/components/PromptEngineering';
 
 const MainPage = () => {
   return (

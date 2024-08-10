@@ -5,8 +5,7 @@ const axiosInstance = axios.create({
   baseURL: 'https://mamdaero.o-r.kr/api/',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization':
-      'Bearer sk-Nfkc_qzkHma_VyNhljbKN2a4WUcFbDa23Gwzg05tWjT3BlbkFJ-MFd-YvFkOrtM6XK5WPq5O8mppFdns5MyIUSAvInYA',
+    'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
   },
   maxContentLength: Infinity,
   maxBodyLength: Infinity,
