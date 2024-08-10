@@ -1,22 +1,18 @@
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
-import axiosInstance from '@/api/axiosInstance';
 
 interface AuthState {
   isAuthenticated: boolean;
   accessToken: string | null;
-  refreshToken: string | null;
+  role: string | null;
   email: string | null;
-  login: (data: LoginResponse) => void;
+  login: (accessToken: string, role: string, email: string) => void;
   logout: () => void;
-  checkAuthStatus: () => Promise<boolean>;
-  refreshAccessToken: () => Promise<boolean>;
-}
-
-interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  email: string;
+  getAccessToken: () => string | null;
+  getRole: () => string | null;
+  getEmail: () => string | null;
+  isCounselor: () => boolean;
+  isClient: () => boolean;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -24,53 +20,29 @@ const useAuthStore = create<AuthState>()(
     (set, get) => ({
       isAuthenticated: false,
       accessToken: null,
-      refreshToken: null,
+      role: null,
       email: null,
-      login: (data: LoginResponse) =>
+      login: (accessToken: string, role: string, email: string) =>
         set({
           isAuthenticated: true,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-          email: data.email,
+          accessToken,
+          role,
+          email,
         }),
-      logout: () =>
+      logout: () => {
         set({
           isAuthenticated: false,
           accessToken: null,
-          refreshToken: null,
+          role: null,
           email: null,
-        }),
-      checkAuthStatus: async () => {
-        const { accessToken, refreshAccessToken } = get();
-        if (!accessToken) {
-          return false;
-        }
-
-        try {
-          await axiosInstance.get('/api/validate-token');
-          return true;
-        } catch (error) {
-          console.error('Token validation failed:', error);
-          return refreshAccessToken();
-        }
+        });
+        localStorage.removeItem('auth-storage');
       },
-      refreshAccessToken: async () => {
-        const { refreshToken } = get();
-        if (!refreshToken) {
-          get().logout();
-          return false;
-        }
-
-        try {
-          const response = await axiosInstance.post('/api/refresh-token', { refreshToken });
-          set({ accessToken: response.data.accessToken });
-          return true;
-        } catch (error) {
-          console.error('Token refresh failed:', error);
-          get().logout();
-          return false;
-        }
-      },
+      getAccessToken: () => get().accessToken,
+      getRole: () => get().role,
+      getEmail: () => get().email,
+      isCounselor: () => get().role?.includes('상담사') ?? false,
+      isClient: () => get().role?.includes('내담자') ?? false,
     }),
     {
       name: 'auth-storage',
