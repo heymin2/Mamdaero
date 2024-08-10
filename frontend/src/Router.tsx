@@ -31,7 +31,6 @@ import SupervisionWritePostPage from '@/pages/supervision/SupervisionWritePostPa
 import SupervisionEditPostPage from '@/pages/supervision/SupervisionEditPostPage';
 import ClientMyPage from '@/pages/mypage/ClientMyPage';
 import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
-import CounselorEditInformationPage from '@/pages/mypage/CounselorEditInformationPage';
 import CounselorManageProductPage from '@/pages/mypage/CounselorManageProductPage';
 import CounselorManageTimePage from '@/pages/mypage/CounselorManageTimePage';
 import CounselorManageExcludePage from '@/pages/mypage/CounselorManageExcludePage';
@@ -103,7 +102,6 @@ const Router = () => {
       {/* MyPage Routes */}
       <Route path="/mypage/client" element={<ClientMyPage />} />
       <Route path="/mypage/counselor" element={<CounselorMyPage />} />
-      <Route path="/mypage/counselor/edit" element={<CounselorEditInformationPage />} />
       <Route path="/mypage/counselor/product" element={<CounselorManageProductPage />} />
       <Route path="/mypage/counselor/time" element={<CounselorManageTimePage />} />
       <Route path="/mypage/counselor/exclude" element={<CounselorManageExcludePage />} />

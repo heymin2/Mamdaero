@@ -1,92 +1,188 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiX } from 'react-icons/fi';
 import Button from '@/components/button/Button';
 import ProductCard from '@/components/card/mypage/ProductCard';
-import Product from '@/pages/mypage/props/product';
+import MyCounselBar from '@/components/navigation/MyCounselBar';
+import ProductModal from '@/components/modal/ProductModal';
+import ProductEditModal from '@/components/modal/ProductEditModal';
 
-const CounselorEditProfilePage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+interface CounselorItem {
+  counselor_item_id: number;
+  counselor_id: number;
+  name: string;
+  description: string | null;
+  fee: number;
+  is_delete: boolean;
+}
+
+const dummyProducts: CounselorItem[] = [
+  {
+    counselor_item_id: 1,
+    counselor_id: 1,
+    name: '기본 상담',
+    description: '30분 기본 상담 서비스',
+    fee: 50000,
+    is_delete: false,
+  },
+  {
+    counselor_item_id: 2,
+    counselor_id: 1,
+    name: '심층 상담',
+    description: '1시간 심층 상담 서비스',
+    fee: 100000,
+    is_delete: false,
+  },
+  {
+    counselor_item_id: 3,
+    counselor_id: 1,
+    name: '패키지 상담',
+    description: '5회 패키지 상담 서비스',
+    fee: 200000,
+    is_delete: false,
+  },
+];
+
+const CounselorManageProductPage: React.FC = () => {
+  const [products, setProducts] = useState<CounselorItem[]>(dummyProducts);
+  const [selectedProduct, setSelectedProduct] = useState<CounselorItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const backToList = () => {
-    navigate('/mypage/counselor');
+
+  const handleAddProduct = (
+    newProduct: Omit<CounselorItem, 'counselor_item_id' | 'counselor_id' | 'is_delete'>
+  ) => {
+    const newId = Math.max(...products.map(p => p.counselor_item_id)) + 1;
+    const productToAdd: CounselorItem = {
+      ...newProduct,
+      counselor_item_id: newId,
+      counselor_id: 1,
+      is_delete: false,
+    };
+    setProducts([...products, productToAdd]);
   };
-  const handleAddProduct = (newProduct: Product) => {
-    setProducts([...products, newProduct]);
-  };
+
   const handleApplyProduct = () => {
-    console.log('물건 적용하기');
+    console.log(products);
   };
-  const openModal = (index: number) => {
-    const modal = document.getElementById(`productModal-${index}`);
-    if (modal instanceof HTMLDialogElement) {
-      modal.showModal();
+
+  const openModal = (product: CounselorItem) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedProduct(null);
+    setIsModalOpen(false);
+  };
+
+  const openEditModal = () => {
+    setIsModalOpen(false);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  const handleEditProduct = (editedProduct: CounselorItem) => {
+    setProducts(
+      products.map(p =>
+        p.counselor_item_id === editedProduct.counselor_item_id ? editedProduct : p
+      )
+    );
+    setSelectedProduct(editedProduct);
+    closeEditModal();
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteProduct = () => {
+    if (selectedProduct && window.confirm('정말로 이 상품을 삭제하시겠습니까?')) {
+      setProducts(products.filter(p => p.counselor_item_id !== selectedProduct.counselor_item_id));
+      closeModal();
     }
   };
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <>
-      <header className="flex justify-between items-center">
-        <h1 className="text-black text-xl font-bold">내 상품 관리</h1>
-        <Button label=" 뒤로가기" onClick={backToList} shape="rounded" color="blue" />
-      </header>
-      <div className="divider"></div>
-      <div className="flex flex-wrap justify-around">
-        <div className="flex flex-col gap-10 min-w-[30%]">
+    <div className="flex flex-col min-h-screen">
+      <div className="sticky top-0 z-10 bg-blue-50 border-b-2 mb-12">
+        <MyCounselBar
+          title1="상담"
+          title2="상품 관리"
+          subtitle="상담 상품을 손쉽게 관리하고 업데이트 하세요!"
+          buttonLabel="뒤로가기"
+          user="counselor"
+          buttonPath="/mypage/counselor"
+          size="md"
+        />
+      </div>
+      <div className="flex justify-around px-4">
+        <div className="w-1/2 pr-4">
           <ProductCard onAddProduct={handleAddProduct} />
         </div>
-        {/* 내 상품 모음 */}
-        <div className="text-center min-w-[30%]">
-          <div className="mb-3 min-h-[70%] bg-white p-5 rounded-xl border-4">
-            <h1 className="text-md">내 상품 모음</h1>
-            <div className="pt-3">
-              {products.map((product, index) => (
+        <div className="w-1/2 pl-4 ">
+          <div className="bg-white p-5 rounded-xl border-4 mb-4">
+            <h1 className="text-xl font-bold mb-4 text-center">내 상품 모음</h1>
+            <input
+              type="text"
+              placeholder="상품 검색..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full p-2 mb-4 border rounded"
+            />
+            <div className="space-y-3">
+              {filteredProducts.map(product => (
                 <div
-                  key={index}
-                  className="flex flex-wrap justify-between items-center p-3 box-content bg-gray-200 rounded-lg mb-2"
-                  onClick={() => {
-                    openModal(index);
-                  }}
+                  key={product.counselor_item_id}
+                  className="flex items-center p-3 bg-gray-100 rounded-lg"
                 >
-                  <span>{product.name}</span>
-                  <span
-                    onClick={(event: React.MouseEvent<HTMLSpanElement>) => {
-                      event.stopPropagation(); // 이벤트 전파를 막음
-                      const newProducts = products.filter((_, i) => i !== index);
-                      setProducts(newProducts);
-                    }}
-                  >
-                    삭제
-                    <FiX className="inline z-10" />
+                  <span className="font-semibold w-1/2 truncate" title={product.name}>
+                    {product.name}
                   </span>
-                  {/* view modal 창 */}
-                  <dialog className="modal scrollbar-hide" id={'productModal-' + index}>
-                    <div className="modal-box flex flex-col min-h-[30rem] justify-center gap-5">
-                      <span className="font-bold text-3xl">상담이름 : {product.name}</span>
-                      <span className="font-bold text-3xl">상담 가격 : {product.price}</span>
-                      <span className="font-bold text-3xl">상담 설명 : {product.description}</span>
-                      <div className="modal-action justify-center">
-                        {/* 모달 창 끄는 form */}
-                        <form method="dialog">
-                          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                            ✕
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                    <form method="dialog" className="modal-backdrop scrollbar-hide">
-                      <button className="scrollbar-hide">close</button>
-                    </form>
-                  </dialog>
+                  <span className="text-gray-600 w-1/4 text-right">
+                    {product.fee.toLocaleString()}원
+                  </span>
+                  <div className="w-1/4 min-w-[80px] flex justify-end">
+                    <Button
+                      label="상세보기"
+                      shape="rounded"
+                      color="blue"
+                      onClick={() => openModal(product)}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-          <Button label="적용하기" shape="rounded" color="blue" onClick={handleApplyProduct} />
+          <div className="flex flex-col items-center">
+            <Button label="적용하기" shape="rounded" color="blue" onClick={handleApplyProduct} />
+          </div>
         </div>
       </div>
-    </>
+      {selectedProduct && (
+        <ProductModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          product={selectedProduct}
+          onEdit={openEditModal}
+          onDelete={handleDeleteProduct}
+        />
+      )}
+      {selectedProduct && (
+        <ProductEditModal
+          isOpen={isEditModalOpen}
+          onClose={closeEditModal}
+          product={selectedProduct}
+          onSave={handleEditProduct}
+        />
+      )}
+    </div>
   );
 };
-export default CounselorEditProfilePage;
+
+export default CounselorManageProductPage;

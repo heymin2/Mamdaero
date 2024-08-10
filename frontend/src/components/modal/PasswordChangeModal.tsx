@@ -23,32 +23,38 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ password }) =
   return (
     // <ModalWrapper isOpen={isOpen} onClose={onClose}>
     <>
-      <span className="w-1/2">
+      <span>
         <Button
           label="비밀번호 변경하기"
           onClick={openModal}
           size="lg"
           shape="rounded"
           color="gray"
-          textSize="xl"
+          textSize="md"
         />
       </span>
       {/* modal 창 */}
       <dialog className="modal" id="changePwdModal">
         <div className="modal-box">
-          <form className="flex flex-wrap pt-20 pb-5 px-10">
-            <label htmlFor="currentPwd" className="w-1/3">
-              현재 비밀번호
-            </label>
-            <input type="text" id="currentPwd" className="border w-1/2" />
-            <label htmlFor="newPwd" className="w-1/3">
-              새 비밀번호
-            </label>
-            <input type="text" id="newPwd" className="border w-1/2" />
-            <label htmlFor="reNewPwd" className="w-1/3">
-              새 비밀번호 확인
-            </label>
-            <input type="text" id="reNewPwd" className="border w-1/2" />
+          <form className="flex flex-col pt-16 pb-5 px-10 space-y-5">
+            <div className="flex justify-around">
+              <label htmlFor="currentPwd" className="w-1/3">
+                현재 비밀번호
+              </label>
+              <input type="text" id="currentPwd" className="border w-1/2" />
+            </div>
+            <div className="flex justify-around">
+              <label htmlFor="newPwd" className="w-1/3">
+                새 비밀번호
+              </label>
+              <input type="text" id="newPwd" className="border w-1/2" />
+            </div>
+            <div className="flex justify-around">
+              <label htmlFor="reNewPwd" className="w-1/3">
+                새 비밀번호 확인
+              </label>
+              <input type="text" id="reNewPwd" className="border w-1/2" />
+            </div>
           </form>
           <div className="modal-action justify-center">
             {/* 모달 창 끄는 form */}
@@ -57,7 +63,13 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ password }) =
             </form>
             {/* 비밀번호 변경 form */}
             <form method="dialog">
-              <Button label="비밀번호 변경" onClick={changePwd} shape="rounded" color="blue" />
+              <Button
+                label="비밀번호 변경"
+                onClick={changePwd}
+                shape="rounded"
+                color="blue"
+                size="lg"
+              />
             </form>
           </div>
         </div>

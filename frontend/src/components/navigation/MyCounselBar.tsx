@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import { IoIosArrowBack } from 'react-icons/io';
@@ -8,8 +8,9 @@ interface MyCounselProps {
   title2: string;
   subtitle: string | string[];
   user: 'counselor' | 'client';
-  buttonLabel?: string;
+  buttonLabel?: ReactNode;
   buttonPath?: string;
+  size?: '목록보기' | 'md';
 }
 
 const MyCounselBar: React.FC<MyCounselProps> = ({
@@ -19,6 +20,7 @@ const MyCounselBar: React.FC<MyCounselProps> = ({
   user,
   buttonLabel,
   buttonPath,
+  size = '목록보기', // 기본값
 }) => {
   const subtitleLines = Array.isArray(subtitle) ? subtitle : [subtitle];
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const MyCounselBar: React.FC<MyCounselProps> = ({
               </span>
             }
             onClick={() => navigate(buttonPath)}
-            size="목록보기"
+            size={size}
             textSize="sm"
             shape="rounded"
             color={buttonColor}
