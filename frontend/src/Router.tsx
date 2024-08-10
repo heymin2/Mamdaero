@@ -84,7 +84,6 @@ const Router = () => (
     {/* EmotionDiary Routes */}
     <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
     {/* MyCounsel Routes */}
-    {/* MyCounsel Routes */}
     <Route path="/mycounsel/counselor/history/" element={<CounselHistory />} />
     <Route
       path="/mycounsel/counselor/history/facechat/:counsultId/:memberId"
