@@ -36,6 +36,7 @@ public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSucces
         String email = extractEmail(authentication);
         String accessToken = jwtService.createAccessToken(email);
         String refreshToken = jwtService.createRefreshToken();
+        String role = authentication.getAuthorities().toString();
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         memberRepository.findByEmail(email).ifPresent(member -> member.updateRefreshToken(refreshToken));
@@ -53,6 +54,7 @@ public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSucces
                 .email(email)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .role(role)
                 .build();
         response.getWriter().write(objectMapper.writeValueAsString(ApiResponse.onSuccess(loginDto)));
     }
@@ -70,5 +72,6 @@ public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSucces
         public String email;
         public String accessToken;
         public String refreshToken;
+        public String role;
     }
 }
