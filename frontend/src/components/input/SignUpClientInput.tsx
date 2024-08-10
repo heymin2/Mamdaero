@@ -162,7 +162,6 @@ const SignUpClientInput: React.FC = () => {
   const signUpMutation = useMutation({
     mutationFn: signUp,
     onSuccess: () => {
-      console.log('페이지이동');
       navigate('complete');
     },
     onError: error => {
