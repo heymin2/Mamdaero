@@ -7,9 +7,10 @@ import chatPrince from '@/assets/chat_prince.png';
 import ReactMarkdown from 'react-markdown';
 import { AiOutlineSend } from 'react-icons/ai';
 interface ChatMessage {
-  role: 'user' | 'ai';
+  role: 'user' | 'assistant';
   content: string;
 }
+
 const emotion = [
   '우울해요',
   '짜증나요',
@@ -24,20 +25,19 @@ const emotion = [
   '행복해요',
   '감사해요',
 ];
-const Chatbot = ({ promptTemplate }: { promptTemplate: string }) => {
+const Chatbot = () => {
   const [userInput, setUserInput] = useState<string>(''); // 사용자 입력 상태 관리
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
-    { role: 'ai', content: '오늘 하루 어떠셨나요?' },
+    { role: 'assistant', content: '오늘 하루 어떠셨나요?' },
   ]); // 채팅 히스토리 관리
   const chatBoxRef = useRef<HTMLDivElement>(null);
 
   const handleQuickReply = (reply: string) => {
-    setUserInput(reply);
+    // setUserInput(reply); // 채팅창에 남길건지 여부
     fetchBotReply(reply);
   };
   const fetchBotReply = async (input: string) => {
     if (!input.trim()) return;
-    const customizedPrompt = promptTemplate.replace('{input}', input); // 프롬프트 템플릿에 사용자 입력 삽입
     // 사용자 메시지 채팅 히스토리에 추가
     setChatHistory(prev => [...prev, { role: 'user', content: input }]);
     try {
@@ -45,14 +45,13 @@ const Chatbot = ({ promptTemplate }: { promptTemplate: string }) => {
         'https://api.openai.com/v1/chat/completions',
         {
           model: 'gpt-3.5-turbo',
-          // messages: [{ role: 'user', content: customizedPrompt }],
           messages: [{ role: 'user', content: input }],
           temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
           max_tokens: 100, // 응답받을 메시지 최대 토큰(단어) 수 설정
           top_p: 1, // 토큰 샘플링 확률을 설정, 높을수록 다양한 출력을 유도
           frequency_penalty: 0.5, // 일반적으로 나오지 않는 단어를 억제하는 정도
           presence_penalty: 0.5, // 동일한 단어나 구문이 반복되는 것을 억제하는 정도
-          //stop: ['Human'], // 생성된 텍스트에서 종료 구문을 설정
+          stop: ['Human'], // 생성된 텍스트에서 종료 구문을 설정
         },
         {
           headers: {
@@ -61,11 +60,11 @@ const Chatbot = ({ promptTemplate }: { promptTemplate: string }) => {
           },
         }
       );
-      console.log(response);
+      // console.log(response);
       if (response.data && response.data.choices && response.data.choices.length > 0) {
         const reply = response.data.choices[0]?.message.content.trim(); // optional chaining 사용
         if (reply) {
-          setChatHistory(prev => [...prev, { role: 'ai', content: reply }]);
+          setChatHistory(prev => [...prev, { role: 'assistant', content: reply }]);
         } else {
           throw new Error('API 응답에서 텍스트가 유효하지 않습니다.');
         }
@@ -87,7 +86,7 @@ const Chatbot = ({ promptTemplate }: { promptTemplate: string }) => {
       }
       setChatHistory(prev => [
         ...prev,
-        { role: 'ai', content: '죄송합니다. 현재 요청을 처리할 수 없습니다.' },
+        { role: 'assistant', content: '죄송합니다. 현재 요청을 처리할 수 없습니다.' },
       ]);
     }
   };
@@ -161,7 +160,7 @@ const Chatbot = ({ promptTemplate }: { promptTemplate: string }) => {
                   <button
                     key={reply}
                     onClick={() => handleQuickReply(reply)}
-                    className="bg-[#E6E6E6] hover:bg-[#D9D9D9] text-sm py-1 px-3 rounded-full"
+                    className="bg-gray-200 hover:bg-gray-300 text-sm py-1 px-3 rounded-full"
                   >
                     {reply}
                   </button>

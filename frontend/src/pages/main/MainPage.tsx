@@ -21,8 +21,7 @@ const MainPage = () => {
         </div>
       </div>
       <div className="carousel-item justify-center min-h-[90%] max-h-[512px]">
-        {/* <PromptEngineering /> */}
-        <Chatbot promptTemplate="" />
+        <Chatbot />
       </div>
     </div>
   );
