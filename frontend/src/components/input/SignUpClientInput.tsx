@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '@/api/axiosInstance';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import Button from '@/components/button/CertificationButton';
 
+interface FormData {
+  email: string;
+  password: string;
+  confirmPassword?: string;
+  name: string;
+  nickname: string;
+  birth: string;
+  tel: string;
+  gender: 'M' | 'F' | '';
+}
+
 const SignUpClientInput: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
     confirmPassword: '',
@@ -11,80 +24,217 @@ const SignUpClientInput: React.FC = () => {
     nickname: '',
     birth: '',
     tel: '',
-    role: 'client',
-    gender: '', // gender 추가
+    gender: '',
   });
+  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [emailConfirmation, setEmailConfirmation] = useState<string | null>(null);
   const [nicknameConfirmation, setNicknameConfirmation] = useState<string | null>(null);
-  const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+  const [isEmailChecked, setIsEmailChecked] = useState<boolean>(false);
+  const [isNicknameChecked, setIsNicknameChecked] = useState<boolean>(false);
+  const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [birthError, setBirthError] = useState<string | null>(null);
+  const [telError, setTelError] = useState<string | null>(null);
+
+  // 이메일 중복 확인
+  const checkEmailDuplicate = async (email: string): Promise<boolean> => {
+    const response = await axiosInstance({
+      method: 'post',
+      url: 'p/member/email-check',
+      data: { email },
     });
+    return response.data.result.isDuplicate;
   };
 
+  const emailMutation = useMutation({
+    mutationFn: checkEmailDuplicate,
+    onSuccess: isDuplicate => {
+      setIsEmailChecked(true);
+      if (!isDuplicate) {
+        setEmailConfirmation('사용 가능한 이메일입니다.');
+      } else {
+        setEmailConfirmation('이미 사용 중인 이메일입니다.');
+      }
+    },
+    onError: error => {
+      setEmailConfirmation(`이메일 중복 확인 중 오류가 발생했습니다. ${error}`);
+    },
+  });
+
+  const handleEmailCheck = (event: React.MouseEvent) => {
+    event.preventDefault();
+    emailMutation.mutate(formData.email);
+  };
+
+  // 닉네임 중복 확인
+  const checkNicknameDuplicate = async (nickname: string): Promise<boolean> => {
+    const response = await axiosInstance({
+      method: 'post',
+      url: 'p/member/nickname-check',
+      data: { nickname },
+    });
+    return response.data.result.isDuplicate;
+  };
+
+  const nicknameMutation = useMutation({
+    mutationFn: checkNicknameDuplicate,
+    onSuccess: isDuplicate => {
+      setIsNicknameChecked(true);
+      if (!isDuplicate) {
+        setNicknameConfirmation('사용 가능한 닉네임입니다.');
+      } else {
+        setNicknameConfirmation('이미 사용 중인 닉네임입니다.');
+      }
+    },
+    onError: error => {
+      setNicknameConfirmation(`닉네임 중복 확인 중 오류가 발생했습니다. ${error}`);
+    },
+  });
+
+  const handleNicknameCheck = (event: React.MouseEvent) => {
+    event.preventDefault();
+    nicknameMutation.mutate(formData.nickname);
+  };
+
+  // 비밀번호 길이 유효성
+  const validatePassword = (password: string): boolean => {
+    return password.length >= 8;
+  };
+
+  // 생년월일 유효성
+  const validateBirth = (birth: string): boolean => {
+    const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+    if (!regex.test(birth)) return false;
+
+    const [year, month, day] = birth.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  };
+
+  // 전화번호 유효성
+  const validateTel = (tel: string): boolean => {
+    const regex = /^010-\d{4}-\d{4}$/;
+    return regex.test(tel);
+  };
+
+  // 이름, 생년월일, 전화번호
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+    if (name === 'password') {
+      if (!validatePassword(value)) {
+        setPasswordError('비밀번호는 8자 이상이어야 합니다.');
+      } else {
+        setPasswordError(null);
+      }
+    } else if (name === 'birth') {
+      if (value && !validateBirth(value)) {
+        setBirthError('올바른 날짜 형식이 아닙니다 (YYYY-MM-DD).');
+      } else {
+        setBirthError(null);
+      }
+    } else if (name === 'tel') {
+      if (value && !validateTel(value)) {
+        setTelError('올바른 전화번호 형식이 아닙니다 (010-1234-5678).');
+      } else {
+        setTelError(null);
+      }
+    }
+  };
+
+  // 성별 선택
   const handleGenderChange = (gender: 'M' | 'F') => {
-    setFormData({
-      ...formData,
-      gender,
-    });
+    setFormData({ ...formData, gender });
   };
 
+  // 회원 가입
+  const signUp = async (data: FormData) => {
+    const response = await axiosInstance({
+      method: 'post',
+      url: 'p/member/client-join',
+      data: data,
+    });
+    return response.data;
+  };
+
+  const signUpMutation = useMutation({
+    mutationFn: signUp,
+    onSuccess: () => {
+      navigate('complete');
+    },
+    onError: error => {
+      setError(`회원가입 중 오류가 발생했습니다. ${error}`);
+    },
+  });
+
+  // 회원가입 폼 제출
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-
-    // 오류 상태 초기화
     setError(null);
 
-    if (
-      !formData.email ||
-      !formData.password ||
-      !formData.name ||
-      !formData.nickname ||
-      !formData.tel ||
-      !formData.gender
-    ) {
-      setError('모든 필드를 입력해주세요.');
+    if (!isEmailChecked) {
+      alert('이메일 중복 확인을 해주세요.');
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다. 다시 입력해주세요.');
+    if (!isNicknameChecked) {
+      alert('닉네임 중복 확인을 해주세요.');
       return;
     }
 
-    if (formData.birth && !/^\d{8}$/.test(formData.birth)) {
-      setError('생년월일은 8자리 숫자로 입력해주세요.');
+    if (emailMutation.data) {
+      alert('중복된 이메일입니다. 다른 이메일을 사용해주세요.');
       return;
     }
 
-    if (!/^010\d{8}$/.test(formData.tel)) {
-      setError('전화번호는 01012345678 형식으로 입력해주세요.');
+    if (nicknameMutation.data) {
+      alert('중복된 닉네임입니다. 다른 닉네임을 사용해주세요.');
       return;
     }
 
-    const dataToSubmit = {
-      ...formData,
-    };
-    console.log('Form submitted:', dataToSubmit);
-    navigate('/signup/client/complete');
+    if (!validatePassword(formData.password)) {
+      setError('비밀번호는 8자 이상이어야 합니다.');
+      return;
+    }
+
+    if (isFormFilled) {
+      const { confirmPassword, ...signUpData } = formData;
+      signUpMutation.mutate(signUpData);
+    } else {
+      setError('모든 필드를 올바르게 입력해주세요.');
+    }
   };
 
-  const checkEmailDuplicate = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setEmailConfirmation('사용 가능한 이메일입니다.');
-    setTimeout(() => setEmailConfirmation(null), 3000); // 3초 후에 메시지 숨기기
+  // 폼 유효성 검사
+  useEffect(() => {
+    const isFilled =
+      formData.email !== '' &&
+      formData.password !== '' &&
+      formData.confirmPassword !== '' &&
+      formData.name !== '' &&
+      formData.nickname !== '' &&
+      formData.tel !== '' &&
+      formData.gender !== '' &&
+      formData.password === formData.confirmPassword &&
+      validatePassword(formData.password) &&
+      (formData.birth === '' || validateBirth(formData.birth)) &&
+      validateTel(formData.tel);
+
+    setIsFormFilled(isFilled);
+  }, [formData]);
+
+  // 비밀번호 확인
+  const checkPasswordMatch = (password: string, confirmPassword: string) => {
+    return password === confirmPassword;
   };
 
-  const checkNicknameDuplicate = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setNicknameConfirmation('사용 가능한 닉네임입니다.');
-    setTimeout(() => setNicknameConfirmation(null), 3000); // 3초 후에 메시지 숨기기
-  };
+  const { data: passwordMatch } = useQuery({
+    queryKey: ['passwordMatch', formData.password, formData.confirmPassword],
+    queryFn: () => checkPasswordMatch(formData.password, formData.confirmPassword || ''),
+    enabled: !!formData.confirmPassword,
+  });
 
   return (
     <form
@@ -93,59 +243,75 @@ const SignUpClientInput: React.FC = () => {
     >
       <div className="mb-6">
         <div className="relative mb-4">
-          <div className="flex items-center">
+          <div className="flex items-start">
             <label
-              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              className="w-1/5 block text-gray-700 text-base font-bold mr-4 mt-3"
               htmlFor="email"
             >
               이메일
             </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
-            />
-            <Button label={'중복확인'} onClick={checkEmailDuplicate} user="client" />
+            <div className="flex-1">
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="p-3 border rounded-md text-gray-700 text-base w-full"
+              />
+              {emailConfirmation && (
+                <div className="text-green-700 text-xs mt-2">{emailConfirmation}</div>
+              )}
+            </div>
+            <div className="mt-3 ms-4">
+              <Button label={'중복확인'} onClick={handleEmailCheck} user="client" />
+            </div>
           </div>
-          {emailConfirmation && (
-            <div className="text-green-700 text-xs mt-2">{emailConfirmation}</div>
-          )}
         </div>
         <div className="relative mb-4">
-          <div className="flex items-center">
+          <div className="flex">
             <label
-              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              className="w-1/5 block text-gray-700 text-base mt-3 font-bold mb-2 mr-4"
               htmlFor="password"
             >
               비밀번호
             </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
-            />
+            <div className="flex-1">
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md text-gray-700 text-base"
+              />
+              {passwordError && <div className="text-red-500 text-xs mt-1">{passwordError}</div>}
+            </div>
           </div>
         </div>
         <div className="relative mb-4">
-          <div className="flex items-center">
+          <div className="flex">
             <label
-              className="w-1/5 text-gray-700 text-base font-bold mb-2 mr-4 flex flex-col"
+              className="w-1/5 text-gray-700 text-base font-bold mb-2 mr-4"
               htmlFor="confirmPassword"
             >
-              <span>비밀번호</span>
-              <span>확인</span>
+              <div>비밀번호</div>
+              <div>확인</div>
             </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
-            />
+            <div className="flex-1">
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md text-gray-700 text-base mr-2"
+              />
+              {formData.confirmPassword && (
+                <div
+                  className={`text-xs mt-2 ${passwordMatch ? 'text-green-700' : 'text-red-500'}`}
+                >
+                  {passwordMatch ? '비밀번호가 일치합니다.' : '비밀번호가 일치하지 않습니다.'}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -163,65 +329,75 @@ const SignUpClientInput: React.FC = () => {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
+              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
             />
           </div>
         </div>
         <div className="relative mb-4">
-          <div className="flex items-center">
+          <div className="flex items-start">
             <label
-              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              className="w-1/5 block text-gray-700 text-base font-bold mr-4 mt-3"
               htmlFor="nickname"
             >
               닉네임
             </label>
-            <input
-              type="text"
-              name="nickname"
-              value={formData.nickname}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base mr-2"
-            />
-            <Button label={'중복확인'} onClick={checkNicknameDuplicate} user="client" />
+            <div className="flex-1">
+              <input
+                type="text"
+                name="nickname"
+                value={formData.nickname}
+                onChange={handleInputChange}
+                className="p-3 border rounded-md text-gray-700 text-base w-full"
+              />
+              {nicknameConfirmation && (
+                <div className="text-green-700 text-xs mt-2">{nicknameConfirmation}</div>
+              )}
+            </div>
+            <div className="mt-3 ms-4">
+              <Button label={'중복확인'} onClick={handleNicknameCheck} user="client" />
+            </div>
           </div>
-          {nicknameConfirmation && (
-            <div className="text-green-700 text-xs mt-2">{nicknameConfirmation}</div>
-          )}
         </div>
         <div className="relative mb-4">
-          <div className="flex items-center">
+          <div className="flex">
             <label
-              className="w-1/5 text-gray-700 text-base font-bold mb-2 mr-4 flex flex-col"
+              className="w-1/5 text-gray-700 text-base font-bold mb-2 mr-4 flex flex-col mt-3"
               htmlFor="birth"
             >
-              <span className="text-gray-400">(선택)</span> <span>생년월일</span>
+              생년월일
             </label>
-            <input
-              type="text"
-              name="birth"
-              value={formData.birth}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
-              placeholder="YYYYMMDD"
-            />
+            <div className="flex-1">
+              <input
+                type="text"
+                name="birth"
+                value={formData.birth}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md text-gray-700 text-base"
+                placeholder="YYYY-MM-DD"
+              />
+              {birthError && <div className="text-red-500 text-xs mt-1">{birthError}</div>}
+            </div>
           </div>
         </div>
         <div className="relative mb-4">
-          <div className="flex items-center">
+          <div className="flex">
             <label
-              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4 mt-3"
               htmlFor="tel"
             >
               전화번호
             </label>
-            <input
-              type="tel"
-              name="tel"
-              value={formData.tel}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
-              placeholder="01012345678"
-            />
+            <div className="flex-1">
+              <input
+                type="tel"
+                name="tel"
+                value={formData.tel}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md text-gray-700 text-base"
+                placeholder="010-1234-5678"
+              />
+              {telError && <div className="text-red-500 text-xs mt-1">{telError}</div>}
+            </div>
           </div>
         </div>
       </div>
@@ -255,7 +431,10 @@ const SignUpClientInput: React.FC = () => {
       )}
       <button
         type="submit"
-        className="w-full p-3 bg-orange-200 rounded-md text-gray-800 font-semibold"
+        className={`w-full p-3 rounded-md text-gray-800 font-semibold ${
+          isFormFilled ? 'bg-orange-200' : 'bg-gray-200 cursor-not-allowed'
+        }`}
+        disabled={!isFormFilled}
       >
         회원가입
       </button>

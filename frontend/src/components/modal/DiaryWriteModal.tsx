@@ -32,8 +32,8 @@ const DiaryWriteModal: React.FC<DiaryWriteModalProps> = ({ isOpen, date, onClose
   };
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose}>
-      <div className="bg-gray-100 p-4 rounded-lg shadow-lg" style={{ width: '600px' }}>
+    <ModalWrapper isOpen={isOpen} onClose={onClose} size="md">
+      <div className="bg-gray-100 p-4 rounded-lg shadow-lg mx-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">날짜</h2>
           <div className="bg-orange-200 px-4 py-2 rounded">{date}</div>

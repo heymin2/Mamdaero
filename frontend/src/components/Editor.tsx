@@ -53,15 +53,17 @@ const Editor: React.FC<EditorProps> = ({ value, onChange }) => {
   ];
 
   return (
-    <div className="pb-10" style={{ backgroundColor: 'white' }}>
-      <ReactQuill
-        theme="snow"
-        modules={modules}
-        formats={formats}
-        value={value}
-        onChange={onChange}
-        style={{ backgroundColor: 'white', height: '430px' }}
-      />
+    <div className="flex justify-center items-center bg-white">
+      <div className="pb-10 bg-white w-full">
+        <ReactQuill
+          theme="snow"
+          modules={modules}
+          formats={formats}
+          value={value}
+          onChange={onChange}
+          style={{ backgroundColor: 'white', height: '430px' }}
+        />
+      </div>
     </div>
   );
 };

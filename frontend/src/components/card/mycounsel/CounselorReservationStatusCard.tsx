@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import Button from '@/components/button/Button';
+import { useNavigate } from 'react-router-dom';
+import ChatModal from '@/components/modal/ChatModal';
 
 interface CounselorReservationStatusCardProps {
   counselId: string;
   clientName: string;
+  clientId: string;
   date: string;
   time: string;
   status: string;
@@ -13,13 +16,15 @@ interface CounselorReservationStatusCardProps {
 const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardProps> = ({
   counselId,
   clientName,
+  clientId,
   date,
   time,
   status,
   onDelete,
 }) => {
   const [isDeleted, setIsDeleted] = useState(false);
-
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const navigate = useNavigate();
   const handleCancelReservation = () => {
     const isConfirmed = window.confirm('정말 예약을 취소하시겠습니까?');
     if (isConfirmed) {
@@ -35,47 +40,59 @@ const CounselorReservationStatusCard: React.FC<CounselorReservationStatusCardPro
   }
 
   return (
-    <div className="border-b-2 border-blue-300 py-4 mb-4 p-4">
-      <div className="flex justify-between items-center mb-2 p-2">
-        <h3 className="text-xl font-semibold">{clientName} 님</h3>
-        <Button
-          label="예약취소"
-          onClick={handleCancelReservation}
-          size="md"
-          shape="rounded"
-          color="red"
-          textSize="sm"
-        />
+    <div className="border-b-2 border-blue-300 p-6">
+      <div className="flex gap-4">
+        <h3 className="text-xl font-bold mb-3">{clientName} 님</h3>
       </div>
-      <div className="grid grid-cols-2 gap-4 mb-2">
-        <div>
-          <p>상담ID: {counselId}</p>
-          <p>일자: {date}</p>
+      <div className="grid grid-cols-7 gap-4">
+        <div className="text-gray-500 col-span-1 space-y-3">
+          <p>상담ID</p>
+          <p>일자</p>
+          <p>시간</p>
+          <p>예약 상태</p>
         </div>
-        <div>
-          <p>내담자: {clientName}</p>
-          <p>시간: {time}</p>
-          <p>현재 상태: {status}</p>
+        <div className="font-apple-sdgothic-semi-bold col-span-4 space-y-3">
+          <p>{counselId}</p>
+          <p>{date}</p>
+          <p>{time}</p>
+          <div className="flex gap-4 items-center">
+            {status}
+            <Button
+              label="예약취소"
+              onClick={handleCancelReservation}
+              size="xs"
+              shape="rounded"
+              color="red"
+              textSize="xs"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col col-span-2 items-center mt-3 gap-3">
+          <Button
+            label="1:1 화상 채팅"
+            onClick={() =>
+              navigate(`/mycounsel/counselor/history/facechat/${counselId}/${clientId}`)
+            }
+            size="lg"
+            shape="rounded"
+            color="blue"
+          />
+          <Button
+            label="1:1 메신저 채팅"
+            onClick={() => setIsChatModalOpen(true)}
+            size="lg"
+            shape="rounded"
+            color="gray"
+          />
         </div>
       </div>
-      <div className="flex justify-end space-x-2">
-        <Button
-          label="1:1 화상 채팅"
-          onClick={() => {}}
-          size="lg"
-          shape="rounded"
-          color="blue"
-          textSize="sm"
-        />
-        <Button
-          label="1:1 메신저 채팅"
-          onClick={() => {}}
-          size="lg"
-          shape="rounded"
-          color="gray"
-          textSize="sm"
-        />
-      </div>
+      <ChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        memberName={clientName}
+        reservationId={counselId}
+        user="counselor"
+      />
     </div>
   );
 };
