@@ -10,7 +10,7 @@ const MainPageClient: React.FC = () => {
         <div className="flex items-center justify-center gap-32">
           <div className="space-y-12">
             <MainTitleCard />
-            <img src={lean1} alt="" className="w-44" />
+            <img src={lean1} alt="어린왕자" className="w-44" />
           </div>
           <div>
             <ClientConfirmCard />
