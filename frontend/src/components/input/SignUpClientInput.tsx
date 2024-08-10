@@ -26,16 +26,17 @@ const SignUpClientInput: React.FC = () => {
     tel: '',
     gender: '',
   });
+  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [emailConfirmation, setEmailConfirmation] = useState<string | null>(null);
   const [nicknameConfirmation, setNicknameConfirmation] = useState<string | null>(null);
-
-  const navigate = useNavigate();
 
   const [isEmailChecked, setIsEmailChecked] = useState<boolean>(false);
   const [isNicknameChecked, setIsNicknameChecked] = useState<boolean>(false);
   const [isFormFilled, setIsFormFilled] = useState<boolean>(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [birthError, setBirthError] = useState<string | null>(null);
+  const [telError, setTelError] = useState<string | null>(null);
 
   // 이메일 중복 확인
   const checkEmailDuplicate = async (email: string): Promise<boolean> => {
@@ -102,6 +103,22 @@ const SignUpClientInput: React.FC = () => {
     return password.length >= 8;
   };
 
+  // 생년월일 유효성
+  const validateBirth = (birth: string): boolean => {
+    const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+    if (!regex.test(birth)) return false;
+
+    const [year, month, day] = birth.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  };
+
+  // 전화번호 유효성
+  const validateTel = (tel: string): boolean => {
+    const regex = /^010-\d{4}-\d{4}$/;
+    return regex.test(tel);
+  };
+
   // 이름, 생년월일, 전화번호
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -111,6 +128,18 @@ const SignUpClientInput: React.FC = () => {
         setPasswordError('비밀번호는 8자 이상이어야 합니다.');
       } else {
         setPasswordError(null);
+      }
+    } else if (name === 'birth') {
+      if (value && !validateBirth(value)) {
+        setBirthError('올바른 날짜 형식이 아닙니다 (YYYY-MM-DD).');
+      } else {
+        setBirthError(null);
+      }
+    } else if (name === 'tel') {
+      if (value && !validateTel(value)) {
+        setTelError('올바른 전화번호 형식이 아닙니다 (010-1234-5678).');
+      } else {
+        setTelError(null);
       }
     }
   };
@@ -127,13 +156,13 @@ const SignUpClientInput: React.FC = () => {
       url: 'p/member/client-join',
       data: data,
     });
-    console.log(response);
     return response.data;
   };
 
   const signUpMutation = useMutation({
     mutationFn: signUp,
     onSuccess: () => {
+      console.log('페이지이동');
       navigate('complete');
     },
     onError: error => {
@@ -190,7 +219,9 @@ const SignUpClientInput: React.FC = () => {
       formData.tel !== '' &&
       formData.gender !== '' &&
       formData.password === formData.confirmPassword &&
-      validatePassword(formData.password);
+      validatePassword(formData.password) &&
+      (formData.birth === '' || validateBirth(formData.birth)) &&
+      validateTel(formData.tel);
 
     setIsFormFilled(isFilled);
   }, [formData]);
@@ -329,39 +360,45 @@ const SignUpClientInput: React.FC = () => {
           </div>
         </div>
         <div className="relative mb-4">
-          <div className="flex items-center">
+          <div className="flex">
             <label
-              className="w-1/5 text-gray-700 text-base font-bold mb-2 mr-4 flex flex-col"
+              className="w-1/5 text-gray-700 text-base font-bold mb-2 mr-4 flex flex-col mt-3"
               htmlFor="birth"
             >
-              <span className="text-gray-400">(선택)</span> <span>생년월일</span>
+              생년월일
             </label>
-            <input
-              type="text"
-              name="birth"
-              value={formData.birth}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
-              placeholder="YYYYMMDD"
-            />
+            <div className="flex-1">
+              <input
+                type="text"
+                name="birth"
+                value={formData.birth}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md text-gray-700 text-base"
+                placeholder="YYYY-MM-DD"
+              />
+              {birthError && <div className="text-red-500 text-xs mt-1">{birthError}</div>}
+            </div>
           </div>
         </div>
         <div className="relative mb-4">
-          <div className="flex items-center">
+          <div className="flex">
             <label
-              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4"
+              className="w-1/5 block text-gray-700 text-base font-bold mb-2 mr-4 mt-3"
               htmlFor="tel"
             >
               전화번호
             </label>
-            <input
-              type="tel"
-              name="tel"
-              value={formData.tel}
-              onChange={handleInputChange}
-              className="flex-1 p-3 border rounded-md text-gray-700 text-base"
-              placeholder="01012345678"
-            />
+            <div className="flex-1">
+              <input
+                type="tel"
+                name="tel"
+                value={formData.tel}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-md text-gray-700 text-base"
+                placeholder="010-1234-5678"
+              />
+              {telError && <div className="text-red-500 text-xs mt-1">{telError}</div>}
+            </div>
           </div>
         </div>
       </div>
