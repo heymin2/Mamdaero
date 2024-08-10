@@ -1,9 +1,9 @@
 import React from 'react';
 
-// ButtonProps 인터페이스 정의
 interface ButtonProps {
   label: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
   size?:
     | 'xs'
     | 'sm'
@@ -57,10 +57,10 @@ const textSizeClasses: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string> = {
   xl: 'text-xl',
 };
 
-// Button 컴포넌트 정의
 const Button: React.FC<ButtonProps> = ({
   label,
   onClick,
+  type = 'button',
   size = 'md',
   shape = 'square',
   color = 'orange',
@@ -69,8 +69,10 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
+      type={type}
       onClick={onClick}
       className={`${sizeClasses[size]} ${shapeClasses[shape]} ${colorClasses[color]} ${textSizeClasses[textSize]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} font-bold`}
+      disabled={disabled}
     >
       {label}
     </button>

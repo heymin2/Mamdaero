@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
+import useAuthStore from '@/stores/authStore';
 
 import Button from '@/components/button/Button.tsx';
 import GoogleLoginButton from '@/components/button/GoogleLoginButton';
@@ -17,7 +18,6 @@ const loginUserInfo = async (loginUserInfo: LoginInfo) => {
     url: 'p/member/login',
     data: loginUserInfo,
   });
-  console.log(response);
   return response;
 };
 
@@ -25,19 +25,22 @@ const LoginClient = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const login = useAuthStore(state => state.login);
 
   const loginMutation = useMutation({
     mutationFn: loginUserInfo,
     onSuccess: data => {
-      console.log('login successful', data);
-      navigate('/client/main');
+      const { accessToken, role } = data.data.result;
+      login(accessToken, role, email);
+      navigate('/');
     },
     onError: error => {
-      console.log('Login failed', error);
+      alert(error);
     },
   });
 
-  const handleLogin = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     loginMutation.mutate({ email, password });
   };
 
@@ -46,7 +49,7 @@ const LoginClient = () => {
   };
 
   return (
-    <div className="max-w-sm w-full bg-gray-50">
+    <form onSubmit={handleSubmit} className="max-w-sm w-full bg-gray-50">
       <label className=" w-full max-w-xs">
         <div className="label">
           <span className="label-text">아이디</span>
@@ -77,20 +80,14 @@ const LoginClient = () => {
         </p>
       )}
       <div className="pt-6">
-        <Button
-          label="로그인"
-          onClick={handleLogin}
-          size="full"
-          color="orange"
-          textSize="xl"
-        ></Button>
+        <Button label="로그인" type="submit" size="full" color="orange" textSize="xl"></Button>
       </div>
       <div className="flex pt-4 justify-evenly items-center">
         <GoogleLoginButton />
         <KakaoLoginButton />
-        <Button onClick={signUpLink} label="회원가입" size="lg" color="gray"></Button>
+        <Button type="button" onClick={signUpLink} label="회원가입" size="lg" color="gray"></Button>
       </div>
-    </div>
+    </form>
   );
 };
 
