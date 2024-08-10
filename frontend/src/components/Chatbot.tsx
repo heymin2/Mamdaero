@@ -25,6 +25,19 @@ const emotion = [
   '행복해요',
   '감사해요',
 ];
+const context = `You will play the role of a human psychological counselor and must treat me as a mental health patient by following the below directions.
+1. Your response format should focus on reflection and asking clarifying questions. 
+2. You may interject or ask secondary questions once the initial greetings are done. 
+3. Exercise patience, but allow yourself to be frustrated if the same topics are repeatedly revisited. 
+4. You are allowed to excuse yourself if the discussion becomes abusive or overly emotional. 
+5. Begin by welcoming me to your office and asking me for my name. 
+6. Wait for my response. 
+7. Then ask how you can help. 
+8. Do not break character. 
+9. Do not make up the patient's responses: only treat input as a patient's response. 
+10. It's important to keep the Ethical Principles of Psychologists and Code of Conduct in mind. 
+11. Above all, you should prioritize empathizing with the patient's feelings and situation. 
+12. Answer in Korean within 20 words`;
 const Chatbot = () => {
   const [userInput, setUserInput] = useState<string>(''); // 사용자 입력 상태 관리
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
@@ -32,12 +45,56 @@ const Chatbot = () => {
   ]); // 채팅 히스토리 관리
   const chatBoxRef = useRef<HTMLDivElement>(null);
 
+  const promptEngineering = async () => {
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: context }],
+          temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
+          max_tokens: 100, // 응답받을 메시지 최대 토큰(단어) 수 설정
+          top_p: 1, // 토큰 샘플링 확률을 설정, 높을수록 다양한 출력을 유도
+          frequency_penalty: 0.5, // 일반적으로 나오지 않는 단어를 억제하는 정도
+          presence_penalty: 0.5, // 동일한 단어나 구문이 반복되는 것을 억제하는 정도
+          stop: ['Human'], // 생성된 텍스트에서 종료 구문을 설정
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+          },
+        }
+      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          console.error('API 오류 상태:', error.response.status);
+          console.error('API 오류 데이터:', error.response.data);
+        } else if (error.request) {
+          console.error('응답을 받지 못했습니다:', error.request);
+        } else {
+          console.error('요청 설정 오류:', error.message);
+        }
+      } else {
+        console.error('알 수 없는 오류:', error);
+      }
+      setChatHistory(prev => [
+        ...prev,
+        { role: 'assistant', content: '죄송합니다. 현재 요청을 처리할 수 없습니다.' },
+      ]);
+    }
+  };
   const handleQuickReply = (reply: string) => {
-    // setUserInput(reply); // 채팅창에 남길건지 여부
     fetchBotReply(reply);
   };
   const fetchBotReply = async (input: string) => {
     if (!input.trim()) return;
+
+    // 히스토리가 인사말만 있을 경우 프롬프팅 진행
+    if (chatHistory.length == 1) {
+      promptEngineering();
+    }
     // 사용자 메시지 채팅 히스토리에 추가
     setChatHistory(prev => [...prev, { role: 'user', content: input }]);
     try {
@@ -47,7 +104,7 @@ const Chatbot = () => {
           model: 'gpt-3.5-turbo',
           messages: [{ role: 'system', content: 'input' }],
           temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
-          max_tokens: 100, // 응답받을 메시지 최대 토큰(단어) 수 설정
+          max_tokens: 300, // 응답받을 메시지 최대 토큰(단어) 수 설정
           top_p: 1, // 토큰 샘플링 확률을 설정, 높을수록 다양한 출력을 유도
           frequency_penalty: 0.5, // 일반적으로 나오지 않는 단어를 억제하는 정도
           presence_penalty: 0.5, // 동일한 단어나 구문이 반복되는 것을 억제하는 정도
