@@ -12,6 +12,10 @@ const routeBackgroundColors: { [key: string]: string } = {
   '/mycounsel/counselor/history': 'bg-blue-50',
   '/mycounsel/counselor/record': 'bg-blue-50',
   '/counselor/main': 'bg-blue-50',
+  '/mypage/counselor': 'bg-blue-50',
+  '/mypage/counselor/exclude': 'bg-blue-50',
+  '/mypage/counselor/product': 'bg-blue-50',
+  '/mypage/counselor/time': 'bg-blue-50',
 };
 
 function App() {

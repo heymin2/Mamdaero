@@ -1,5 +1,6 @@
 package com.mamdaero.domain.member.dto.response;
 
+import com.mamdaero.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,15 +11,21 @@ import java.time.LocalDate;
 @Builder
 public class MemberResponseDto {
 
-    private Integer id;
     private String email;
-    private String password;
     private String name;
     private String nickname;
     private LocalDate birth;
     private String tel;
     private String gender;
-    private String role;
-    private Boolean memberStatus;
-    private String token;
+
+    public static MemberResponseDto toDTO(Member member) {
+        return MemberResponseDto.builder()
+                .email(member.getEmail())
+                .name(member.getName())
+                .nickname(member.getNickname())
+                .birth(member.getBirth())
+                .tel(member.getTel())
+                .gender(member.getGender())
+                .build();
+    }
 }

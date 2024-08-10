@@ -32,8 +32,7 @@ public class PostitService {
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
 
-    public Pagination<PostitResponse> findPost(int page, int size, Long questionId) {
-        Long memberId = 1L; // 현재 로그인된 사용자의 ID를 가져오는 방법이 필요함
+    public Pagination<PostitResponse> findPost(Long memberId, int page, int size, Long questionId) {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Postit> postitPage = postitRepository.findByQuestionId(questionId, pageable);
@@ -62,9 +61,7 @@ public class PostitService {
     }
 
     @Transactional
-    public void create(Long questionId, PostitRequest request) {
-        // 토큰 확인 필요
-        Long memberId = 1L;
+    public void create(Long memberId, Long questionId, PostitRequest request) {
 
         if(request.getContent() == null) {
             throw new BoardBadRequestException();
@@ -74,9 +71,7 @@ public class PostitService {
     }
 
     @Transactional
-    public PostitResponse update(Long questionId, Long postitId, PostitRequest request) {
-        // 토큰 확인 후 본인인지 확인
-        Long memberId = 1L;
+    public PostitResponse update(Long memberId, Long questionId, Long postitId, PostitRequest request) {
 
         Postit post = postitRepository.findByQuestionIdAndIdAndMemberId(questionId, postitId, memberId)
                 .orElseThrow(CommentNotFoundException::new);
@@ -95,9 +90,7 @@ public class PostitService {
     }
 
     @Transactional
-    public void delete(Long questionId, Long postitId, PostitRequest request) {
-        // 토큰 확인 후 본인인지 확인
-        Long memberId = 1L;
+    public void delete(Long memberId, Long questionId, Long postitId, PostitRequest request) {
 
         Postit post = postitRepository.findByQuestionIdAndIdAndMemberId(questionId, postitId, memberId)
                 .orElseThrow(CommentNotFoundException::new);
@@ -106,9 +99,7 @@ public class PostitService {
     }
 
     @Transactional
-    public boolean complaint(Long id) {
-        // 토큰 확인 후 로그인한지 확인
-        Long memberId = 1L;
+    public boolean complaint(Long memberId, Long id) {
 
         if(complaintRepository.existsByMemberIdAndEventSourceAndEventId(memberId, Source.POSTIT, id)) {
             return false;

@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.util.List;
+
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
@@ -44,5 +47,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Page<ReservationListResponse> findByCounselorIdComplete(@Param("counselorId") Long counselorId, Pageable pageable);
 
     Reservation findByMemberIdAndId(Long memberId, Long reservationId);
+
+    @Query("SELECT r " +
+            "FROM Reservation r " +
+            "JOIN WorkTime wt ON r.workTimeId = wt.id " +
+            "WHERE wt.date = :date AND wt.time = :time " +
+            "AND r.status = '예약완료'")
+    List<Reservation> findReservationsBefore(@Param("date") LocalDate date, @Param("time") int time);
 }
 

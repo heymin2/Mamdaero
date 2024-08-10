@@ -102,7 +102,7 @@ const Chatbot = () => {
         'https://api.openai.com/v1/chat/completions',
         {
           model: 'gpt-3.5-turbo',
-          messages: [{ role: 'user', content: input }],
+          messages: [{ role: 'system', content: 'input' }],
           temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
           max_tokens: 300, // 응답받을 메시지 최대 토큰(단어) 수 설정
           top_p: 1, // 토큰 샘플링 확률을 설정, 높을수록 다양한 출력을 유도

@@ -1,7 +1,9 @@
 package com.mamdaero.domain.consult.entity;
 
-import com.mamdaero.domain.reservation.entity.Reservation;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +21,6 @@ public class Consult {
     @Column(name = "consult_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "consult_id")
-    private Reservation reservation;
-
     @Column(name = "start_at")
     private LocalDateTime startAt;
 
@@ -33,6 +30,14 @@ public class Consult {
     @Column(name = "script_url", length = 256)
     private String scriptUrl;
 
-    @Column(name = "summarized_script__url", length = 256)
+    @Column(name = "summarized_script_url", length = 256)
     private String summarizedScriptUrl;
+
+    public Consult(Long reservationId) {
+        this.id = reservationId;
+        this.startAt = LocalDateTime.now();
+        this.endAt = null;
+        this.scriptUrl = null;
+        this.summarizedScriptUrl = null;
+    }
 }
