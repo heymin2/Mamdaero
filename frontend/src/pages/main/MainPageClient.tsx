@@ -1,8 +1,8 @@
 import React from 'react';
-import MainTitleCard from '@/components/card/MainTitleCard';
+import MainTitleCard from '@/components/card/mainpage/MainTitleCard';
 import lean1 from '@/assets/lean1.png';
-import ClientConfirmCard from '@/components/card/ClientConfirmCard';
 import Chatbot from '@/components/Chatbot';
+import ClientConfirmCard from '@/components/card/mainpage/ClientConfirmCard';
 
 const MainPageClient: React.FC = () => {
   return (

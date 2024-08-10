@@ -14,18 +14,21 @@ const routeBackgroundColors: { [key: string]: string } = {
   '/counselor/main': 'bg-blue-50',
 };
 
-function getBackgroundColor(pathname: string): string {
-  for (const [route, color] of Object.entries(routeBackgroundColors)) {
-    if (pathname.startsWith(route)) {
-      return color;
-    }
-  }
-  return 'bg-orange-50'; // 기본 배경색
-}
-
 function App() {
   const location = useLocation();
   const { isClient, isCounselor } = useAuthStore();
+
+  function getBackgroundColor(pathname: string): string {
+    if (pathname === '/') {
+      return isCounselor() ? 'bg-blue-50' : 'bg-orange-50';
+    }
+    for (const [route, color] of Object.entries(routeBackgroundColors)) {
+      if (pathname.startsWith(route)) {
+        return color;
+      }
+    }
+    return 'bg-orange-50';
+  }
   const backgroundColor = getBackgroundColor(location.pathname);
 
   const renderNavigation = () => {

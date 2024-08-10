@@ -189,10 +189,10 @@ const PostitPage: React.FC = () => {
         />
       </div>
       <div className="container mx-auto">
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid grid-cols-4 gap-8 mt-5">
           <div className="col-span-1">
             <div className="sticky top-36 flex flex-col items-center">
-              <div className="relative flex flex-col items-center justify-center border border-orange-300 border-10">
+              <div className="relative flex flex-col items-center justify-center">
                 <img src={Bubble} alt="Bubble" className="w-full h-auto" />
                 <div className="absolute inset-0 flex flex-col justify-between items-center text-center py-8 p-8 h-52">
                   <h2 className="text-xl font-bold text-orange-500">질문</h2>
@@ -205,8 +205,8 @@ const PostitPage: React.FC = () => {
                     textSize="md"
                     label={
                       <div className="flex items-center justify-center">
-                        작성하기
                         <MdPostAdd className="inline mr-1" />
+                        작성하기
                       </div>
                     }
                     onClick={() => openModal('create')}
