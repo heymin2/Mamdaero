@@ -1,9 +1,9 @@
 import React from 'react';
-import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import dayjs from 'dayjs';
 import parse, { DOMNode, Element } from 'html-react-parser';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient, InvalidateQueryFilters } from '@tanstack/react-query';
+import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
@@ -96,6 +96,7 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
       alert('게시글 삭제 중 오류가 발생했습니다. 다시 시도해 주세요.');
     },
   });
+
   return (
     <div className="space-y-3">
       {/* 게시글 제목 헤더 */}
@@ -130,9 +131,13 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
       <div className="bottom-3 right-5 flex justify-between text-base gap-1 py-2 ps-10 pr-12">
         <div>
           {file && (
-            <div className="border">
+            <div>
               <span className="font-bold mr-2">첨부 파일</span>
-              <a href={file} download={getFileName(file)} className="text-blue-500 underline">
+              <a
+                href={file}
+                download={getFileName(file)}
+                className="text-blue-500 underline bg-gray-200"
+              >
                 {getFileName(file)}
               </a>
             </div>

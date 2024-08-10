@@ -329,7 +329,7 @@ const CounselFaceChat: React.FC = () => {
         buttonLabel="메인화면 돌아가기"
         buttonPath="/"
       />
-      <div className="bg-white flex flex-1 p-6 mr-12 ml-12 mb-12 space-x-4">
+      <div className="bg-white flex flex-1 p-6 mr-12 ml-12 mb-12 space-x-4 rounded-lg">
         <div className="w-2/3 flex flex-col">
           <div className="flex-1 bg-gray-100 rounded-lg p-4 shadow-md relative">
             {Object.entries(remoteStreams).length === 0 ? (

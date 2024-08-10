@@ -12,14 +12,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   ];
 
   const getStepClassName = (stepKey: string) => {
-    if (currentStep === stepKey) return 'step step-secondary';
+    if (currentStep === stepKey) return 'step step-secondary font-bold w-40';
     if (
       steps.findIndex(step => step.key === stepKey) <
       steps.findIndex(step => step.key === currentStep)
     ) {
-      return 'step step-secondary';
+      return 'step step-secondary font-bold w-40';
     }
-    return 'step';
+    return 'step font-bold w-40';
   };
 
   return (

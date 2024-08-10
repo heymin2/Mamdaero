@@ -139,7 +139,7 @@ const SupervisionEditPostPage: React.FC = () => {
                 </span>
               }
               onClick={backToList}
-              size="상담사목록보기"
+              size="목록보기"
               textSize="sm"
               shape="rounded"
               color="blue"

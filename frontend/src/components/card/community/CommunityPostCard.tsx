@@ -1,6 +1,7 @@
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
 import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
+const onClick = () => {};
 
 const CommunityPostCard = () => {
   const title = '최근의 기분 변화와 그에 대한 고민';
@@ -51,8 +52,13 @@ const CommunityPostCard = () => {
           </div>
           <div className="justify-end">
             <div className="flex  gap-2">
+<<<<<<< HEAD
               <EditButton color="orange" onClick={() => {}} />
               <DeleteButton onClick={() => {}} />
+=======
+              <EditButton color="orange" onClick={onClick} />
+              <DeleteButton onClick={onClick} />
+>>>>>>> origin/front/develop
             </div>
           </div>
         </div>

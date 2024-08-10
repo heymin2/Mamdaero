@@ -54,21 +54,38 @@ const SupervisionDetailPage: React.FC = () => {
   const backToList = () => {
     navigate('/supervision');
   };
-  const handleCommentAdded = () => {
-    queryClient.invalidateQueries({ queryKey: ['comments', supervisionId] });
-  };
+
+  // 게시글 데이터 조회
   const postDetailQuery = useQuery({
     queryKey: ['postDetail', supervisionId],
     queryFn: () => fetchPostDetail(Number(supervisionId)),
     enabled: !!supervisionId,
   });
 
+  // 댓글 데이터 조회
   const commentsQuery = useQuery({
     queryKey: ['comments', supervisionId],
     queryFn: () => fetchComments(Number(supervisionId)),
     enabled: !!supervisionId,
   });
 
+  // 댓글 추가 핸들러
+  const handleCommentAdded = () => {
+    queryClient.invalidateQueries({ queryKey: ['comments', supervisionId] });
+  };
+
+  // 댓글 수정 핸들러
+  const handleCommentUpdate = (updatedComment: CommentDetail) => {
+    queryClient.setQueryData(
+      ['comments', supervisionId],
+      (oldData: CommentDetail[] | undefined) => {
+        if (!oldData) return [updatedComment];
+        return oldData.map(comment =>
+          comment.id === updatedComment.id ? updatedComment : comment
+        );
+      }
+    );
+  };
   if (postDetailQuery.isError) return <div>Error loading post details</div>;
   if (commentsQuery.isError) return <div>Error loading comments</div>;
 
@@ -86,7 +103,7 @@ const SupervisionDetailPage: React.FC = () => {
                 </span>
               }
               onClick={backToList}
-              size="상담사목록보기"
+              size="목록보기"
               textSize="sm"
               shape="rounded"
               color="blue"
@@ -111,7 +128,11 @@ const SupervisionDetailPage: React.FC = () => {
             </div>
             {commentsQuery.data &&
               commentsQuery.data.map(comment => (
-                <SupervisionCommentCard key={comment.id} commentDetail={comment} />
+                <SupervisionCommentCard
+                  key={comment.id}
+                  commentDetail={comment}
+                  postId={Number(supervisionId)}
+                />
               ))}
             <SupervisionWriteCommentCard
               postId={Number(supervisionId)}

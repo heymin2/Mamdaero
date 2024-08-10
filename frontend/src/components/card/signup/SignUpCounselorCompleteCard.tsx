@@ -1,17 +1,15 @@
 import React from 'react';
 import Button from '@/components/button/Button';
+import lean1 from '@/assets/lean1.png';
 
 const SignUpCounselorCompleteCard: React.FC = () => {
   return (
-    <div className="card w-full max-w-md bg-base-100 shadow-xl">
+    <div className="card w-full max-w-md bg-base-100 shadow-xl mt-10">
       <div className="card-body text-center items-center">
-        <h2 className="card-title">가입이 완료되었습니다!</h2>
-        <div className="card-actions justify-center mt-6">
-          <Button
-            label="홈으로 가기"
-            color="blue"
-            onClick={() => (window.location.href = '/')} // 메인 페이지로 리다이렉트
-          />
+        <h2 className="font-bold text-2xl">가입이 완료되었습니다!</h2>
+        <div className="justify-center mt-6 flex-col space-y-8">
+          <img src={lean1} alt="사진" style={{ width: '200px', height: '200px' }} />
+          <Button label="홈으로 가기" color="blue" onClick={() => (window.location.href = '/')} />
         </div>
       </div>
     </div>

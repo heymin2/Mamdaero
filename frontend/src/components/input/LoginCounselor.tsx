@@ -1,10 +1,52 @@
-import Button from '@/components/button/Button.tsx';
-import { Link } from 'react-router-dom';
-const Login = () => {};
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '@/api/axiosInstance';
+import { useMutation } from '@tanstack/react-query';
+import useAuthStore from '@/stores/authStore';
 
-const LoginForm = () => {
+import Button from '@/components/button/Button.tsx';
+interface LoginInfo {
+  email: string;
+  password: string;
+}
+
+const loginUserInfo = async (loginUserInfo: LoginInfo) => {
+  const response = axiosInstance({
+    method: 'post',
+    url: 'p/member/login',
+    data: loginUserInfo,
+  });
+  return response;
+};
+
+const LoginCounselor = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const login = useAuthStore(state => state.login);
+
+  const loginMutation = useMutation({
+    mutationFn: loginUserInfo,
+    onSuccess: data => {
+      const { accessToken, role } = data.data.result;
+      login(accessToken, role, email);
+      navigate('/');
+    },
+    onError: error => {
+      alert(error);
+    },
+  });
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    loginMutation.mutate({ email, password });
+  };
+
+  const signUpLink = () => {
+    navigate('/signup/choose');
+  };
+
   return (
-    <div className="max-w-sm w-full bg-gray-100">
+    <form onSubmit={handleSubmit} className="max-w-sm w-full bg-gray-50">
       <label className=" w-full max-w-xs">
         <div className="label">
           <span className="label-text">아이디</span>
@@ -26,13 +68,11 @@ const LoginForm = () => {
         />
       </label>
       <div className="pt-6 flex flex-col items-center space-y-4">
-        <Button label="로그인" onClick={Login} size="full" color="blue" textSize="xl"></Button>
-        <Link to="/signup/choose">
-          <Button label="회원가입" onClick={Login} size="lg" color="gray" textSize="md"></Button>
-        </Link>
+        <Button label="로그인" type="submit" size="full" color="orange" textSize="xl"></Button>
+        <Button type="button" onClick={signUpLink} label="회원가입" size="lg" color="gray"></Button>
       </div>
-    </div>
+    </form>
   );
 };
 
-export default LoginForm;
+export default LoginCounselor;

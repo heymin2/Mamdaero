@@ -1,4 +1,5 @@
 import axios from 'axios';
+import useAuthStore from '@/stores/authStore';
 
 const axiosInstance = axios.create({
   baseURL: 'https://mamdaero.o-r.kr/api/',
@@ -11,7 +12,18 @@ const axiosInstance = axios.create({
   maxBodyLength: Infinity,
 });
 
-axiosInstance.interceptors.request.use();
+axiosInstance.interceptors.request.use(
+  config => {
+    const accessToken = useAuthStore.getState().getAccessToken();
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
 
 axiosInstance.interceptors.response.use();
 
