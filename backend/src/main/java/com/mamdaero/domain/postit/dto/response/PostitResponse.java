@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostitResponse {
 
+    private Long questionId;
     private Long id;
     private String writer;
     private String content;
@@ -21,6 +22,7 @@ public class PostitResponse {
 
     public static PostitResponse of(Postit postit, String writer, int like, boolean isLike, boolean isMine) {
         return PostitResponse.builder()
+                .questionId(postit.getQuestionId())
                 .id(postit.getId())
                 .writer(writer)
                 .content(postit.getContent())
