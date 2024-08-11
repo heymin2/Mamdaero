@@ -1,7 +1,26 @@
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '@/api/axiosInstance';
+
 import CounselorProfileCard from '@/components/card/CounselorProfileCard';
 import AlignDropdown from '@/components/dropdown/AlignDropdown';
 import { IoIosSearch } from 'react-icons/io';
+
+interface Counselor {
+  id: string;
+  name: string;
+  intro: string;
+  averageScore: number;
+  reviewCount: number;
+}
+
+const fetchCounselor = async (): Promise<Counselor[]> => {
+  const response = await axiosInstance({
+    method: 'get',
+    url: 'p/counselor',
+  });
+  return response.data.content;
+};
 
 const CounselorListPage: React.FC = () => {
   const [selectedOption1, setSelectedOption1] = useState('이름 순');
@@ -12,6 +31,17 @@ const CounselorListPage: React.FC = () => {
   const options2 = ['성별 무관', '남자 상담사', '여자 상담사'];
   const options3 = ['모든 급수', '1급 상담사', '2급 상담사'];
 
+  const {
+    data: counselors,
+    isLoading,
+    isError,
+  } = useQuery<Counselor[]>({
+    queryKey: ['counselors'],
+    queryFn: fetchCounselor,
+  });
+  console.log(fetchCounselor());
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>에러가 발생했습니다.</div>;
   return (
     <div>
       <div className="flex flex-col xl:flex-row justify-between my-5">
@@ -46,27 +76,17 @@ const CounselorListPage: React.FC = () => {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-6">
-        <CounselorProfileCard
-          counselorId="1234"
-          counselorName="박민준"
-          counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."
-          reviewAvgScore={4.5}
-          reviewCount={12}
-        />
-        <CounselorProfileCard
-          counselorId="1234"
-          counselorName="박민준"
-          counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."
-          reviewAvgScore={4.5}
-          reviewCount={12}
-        />
-        <CounselorProfileCard
-          counselorId="1234"
-          counselorName="박민준"
-          counselorIntro="안녕하세요. 박민준 상담사 입니다. 안녕하세요."
-          reviewAvgScore={4.5}
-          reviewCount={12}
-        />
+        {counselors &&
+          counselors.map(counselor => (
+            <CounselorProfileCard
+              key={counselor.id}
+              counselorId={counselor.id}
+              counselorName={counselor.name}
+              counselorIntro={counselor.intro}
+              reviewAvgScore={counselor.averageScore}
+              reviewCount={counselor.reviewCount}
+            />
+          ))}
       </div>
     </div>
   );

@@ -12,6 +12,8 @@ const routeBackgroundColors: { [key: string]: string } = {
   '/mycounsel/counselor/history': 'bg-blue-50',
   '/mycounsel/counselor/record': 'bg-blue-50',
   '/counselor/main': 'bg-blue-50',
+  '/notice': 'bg-gray-50',
+  '/notice/:noticeId': 'bg-gray-50',
 };
 
 function App() {
@@ -22,13 +24,26 @@ function App() {
     if (pathname === '/') {
       return isCounselor() ? 'bg-blue-50' : 'bg-orange-50';
     }
+
+    // 마이페이지 경로 처리
+    if (pathname.startsWith('/mypage/')) {
+      if (isCounselor()) {
+        return 'bg-blue-50'; // 상담사 마이페이지
+      } else if (isClient()) {
+        return 'bg-orange-50'; // 내담자 마이페이지
+      }
+    }
+
+    // 기타 경로 처리
     for (const [route, color] of Object.entries(routeBackgroundColors)) {
       if (pathname.startsWith(route)) {
         return color;
       }
     }
+
     return 'bg-orange-50';
   }
+
   const backgroundColor = getBackgroundColor(location.pathname);
 
   const renderNavigation = () => {

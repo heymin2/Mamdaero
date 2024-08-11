@@ -10,6 +10,9 @@ public class SecurityUtil
     public static String getLoginEmail()
     {
         log.info("SecurityUtil : {}", SecurityContextHolder.getContext().getAuthentication());
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+            return null;
+        }
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("SecurityUtil_USERNAME : {}", user.getEmail());
         log.info("SecurityUtil_EMAIL : {}", user.getMember().getEmail());
