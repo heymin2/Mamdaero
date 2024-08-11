@@ -1,54 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
 import Button from '@/components/button/Button';
 import PasswordChangeModal from '@/components/modal/PasswordChangeModal';
 import Prince from '@/assets/hi_prince.png';
+import useMemberStore from '@/stores/memberStore';
 
-interface Client {
-  member_id: string;
-  name: string;
-  email: string;
-  tel: string;
-  birth: string;
-  gender: string;
-  nickname: string;
-  password: string;
+type Gender = 'M' | 'F' | null;
+
+interface EditableUserData {
+  nickname: string | null;
+  birth: string | null;
+  tel: string | null;
+  gender: Gender;
 }
 
-const ClientMyPage: React.FC = () => {
-  const [users, setUsers] = useState<Client[]>([
-    {
-      member_id: '1',
-      name: '이 상',
-      email: 'ppmm98@yu.ac.kr',
-      tel: '010-1234-1234',
-      birth: '1910-09-23',
-      gender: '남',
-      nickname: '날 개',
-      password: '1234',
-    },
-  ]);
+const isValidGender = (value: string | null): value is Gender => {
+  return value === 'M' || value === 'F' || value === null;
+};
 
-  const [currentUser, setCurrentUser] = useState<Client>(users[0]);
+const ClientMyPage: React.FC = () => {
+  const { name, email, nickname, birth, tel, gender, fetchMember, updateMember, isLoading, error } =
+    useMemberStore();
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editedUser, setEditedUser] = useState<EditableUserData>({
+    nickname,
+    birth,
+    tel,
+    gender: isValidGender(gender) ? gender : null,
+  });
   const [birthError, setBirthError] = useState<string | null>(null);
   const [telError, setTelError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchMember();
+  }, [fetchMember]);
+
+  useEffect(() => {
+    setEditedUser({
+      nickname,
+      birth,
+      tel,
+      gender: isValidGender(gender) ? gender : null,
+    });
+  }, [nickname, birth, tel, gender]);
 
   const handleEdit = (): void => {
     setIsEditing(true);
   };
 
-  const handleSave = (): void => {
-    setUsers(prevUsers =>
-      prevUsers.map(user => (user.member_id === currentUser.member_id ? currentUser : user))
-    );
-    setIsEditing(false);
-    alert('프로필이 성공적으로 업데이트되었습니다.');
+  const handleSave = async (): Promise<void> => {
+    try {
+      await updateMember(editedUser);
+      setIsEditing(false);
+      alert('프로필이 성공적으로 업데이트되었습니다.');
+    } catch (error) {
+      console.error('프로필 업데이트 중 오류 발생:', error);
+      alert('프로필 업데이트에 실패했습니다.');
+    }
   };
 
-  const handleCancle = (): void => {
-    setCurrentUser(users.find(user => user.member_id === currentUser.member_id) || users[0]);
+  const handleCancel = (): void => {
+    setEditedUser({
+      nickname,
+      birth,
+      tel,
+      gender: isValidGender(gender) ? gender : null,
+    });
     setIsEditing(false);
   };
 
@@ -73,10 +90,7 @@ const ClientMyPage: React.FC = () => {
       const formattedTel = value
         .replace(/[^0-9]/g, '')
         .replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-      setCurrentUser(prevData => ({
-        ...prevData,
-        [name]: formattedTel,
-      }));
+      setEditedUser(prev => ({ ...prev, [name]: formattedTel }));
 
       if (!validateTel(formattedTel)) {
         setTelError('올바른 전화번호 형식이 아닙니다 (010-1234-5678).');
@@ -85,10 +99,7 @@ const ClientMyPage: React.FC = () => {
       }
     } else if (name === 'birth') {
       const formattedBirth = value.replace(/[^0-9-]/g, '').slice(0, 10);
-      setCurrentUser(prevData => ({
-        ...prevData,
-        [name]: formattedBirth,
-      }));
+      setEditedUser(prev => ({ ...prev, [name]: formattedBirth }));
 
       if (!validateBirth(formattedBirth)) {
         setBirthError('올바른 날짜 형식이 아닙니다 (YYYY-MM-DD).');
@@ -96,12 +107,27 @@ const ClientMyPage: React.FC = () => {
         setBirthError(null);
       }
     } else {
-      setCurrentUser(prevData => ({
-        ...prevData,
-        [name]: value,
-      }));
+      setEditedUser(prev => ({ ...prev, [name]: value }));
     }
   };
+
+  const handleGenderChange = (selectedGender: Gender) => {
+    setEditedUser(prev => ({ ...prev, gender: selectedGender }));
+  };
+
+  const getGenderDisplay = (genderValue: Gender) => {
+    if (genderValue === 'M') return '남';
+    if (genderValue === 'F') return '여';
+    return '';
+  };
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div>에러 발생: {error}</div>;
+  }
 
   return (
     <>
@@ -137,7 +163,7 @@ const ClientMyPage: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-md h-full flex flex-col justify-between">
             <div className="text-center space-y-10">
               <p className="text-2xl font-bold my-4">
-                <span className="text-orange-500 text-4xl">{currentUser.name}</span>님!
+                <span className="text-orange-500 text-4xl">{name || ''}</span>님!
                 <br />
                 오늘도 좋은 하루 되세요
               </p>
@@ -146,10 +172,10 @@ const ClientMyPage: React.FC = () => {
 
             {isEditing && (
               <div className="flex flex-col items-center mt-8 space-y-4">
-                <PasswordChangeModal password={currentUser.password} />
+                <PasswordChangeModal user="client" />
                 <div className="flex justify-center space-x-5">
                   <Button label="저장" onClick={handleSave} shape="rounded" color="orange" />
-                  <Button label="취소" onClick={handleCancle} shape="rounded" color="gray" />
+                  <Button label="취소" onClick={handleCancel} shape="rounded" color="gray" />
                 </div>
               </div>
             )}
@@ -161,31 +187,31 @@ const ClientMyPage: React.FC = () => {
             <ul className="flex flex-col h-full">
               <form onSubmit={e => e.preventDefault()}>
                 {[
-                  { name: '이름', type: 'text', key: 'name', readOnly: true },
-                  { name: '닉네임', type: 'text', key: 'nickname' },
-                  { name: '이메일', type: 'email', key: 'email' },
-                  { name: '전화번호', type: 'tel', key: 'tel' },
-                  { name: '생년월일', type: 'date', key: 'birth' },
-                  { name: '성별', type: 'gender', key: 'gender' },
+                  { name: '이름', type: 'text', key: 'name', value: name, readOnly: true },
+                  { name: '닉네임', type: 'text', key: 'nickname', value: editedUser.nickname },
+                  { name: '이메일', type: 'email', key: 'email', value: email, readOnly: true },
+                  { name: '전화번호', type: 'tel', key: 'tel', value: editedUser.tel },
+                  { name: '생년월일', type: 'date', key: 'birth', value: editedUser.birth },
+                  { name: '성별', type: 'gender', key: 'gender', value: editedUser.gender },
                 ].map((field, index) => (
                   <li key={field.key}>
                     <div className="flex items-center">
                       <label className="min-w-32 inline-block font-bold text-md">
                         {field.name} :
                       </label>
-                      {isEditing ? (
-                        field.type === 'gender' ? (
+                      {isEditing && !field.readOnly ? (
+                        field.key === 'gender' ? (
                           <div className="space-x-5">
                             <Button
                               label="남"
-                              onClick={() => setCurrentUser(prev => ({ ...prev, gender: '남' }))}
-                              color={currentUser.gender === '남' ? 'orange' : 'gray'}
+                              onClick={() => handleGenderChange('M')}
+                              color={editedUser.gender === 'M' ? 'orange' : 'gray'}
                               shape="rounded"
                             />
                             <Button
                               label="여"
-                              onClick={() => setCurrentUser(prev => ({ ...prev, gender: '여' }))}
-                              color={currentUser.gender === '여' ? 'orange' : 'gray'}
+                              onClick={() => handleGenderChange('F')}
+                              color={editedUser.gender === 'F' ? 'orange' : 'gray'}
                               shape="rounded"
                             />
                           </div>
@@ -195,7 +221,7 @@ const ClientMyPage: React.FC = () => {
                               type={field.type}
                               name={field.key}
                               className="input input-bordered w-full"
-                              value={currentUser[field.key as keyof Client]}
+                              value={field.value || ''}
                               onChange={handleChange}
                               readOnly={field.readOnly}
                             />
@@ -209,7 +235,9 @@ const ClientMyPage: React.FC = () => {
                         )
                       ) : (
                         <span className="mx-auto font-bold text-md break-keep whitespace-nowrap">
-                          {currentUser[field.key as keyof Client]}
+                          {field.key === 'gender'
+                            ? getGenderDisplay(field.value as Gender)
+                            : field.value || ''}
                         </span>
                       )}
                     </div>
