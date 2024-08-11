@@ -7,7 +7,7 @@ const ReservConfirmCard: React.FC = () => {
 
   return (
     <div className="p-8 max-w-sm w-96 bg-gray-50 rounded-lg shadow-lg">
-      <div className="flex w-full justify-center space-x-2 mb-3">
+      <div className="flex justify-center w-full space-x-2 mb-3">
         <ImClock size={50} color="gray" />
       </div>
       <div className="text-2xl font-bold mb-4 text-center w-full h-full truncate">
