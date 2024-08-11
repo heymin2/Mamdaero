@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import interactionPlugin from '@fullcalendar/interaction';
 import { EventClickArg, EventContentArg } from '@fullcalendar/core';
@@ -10,52 +10,59 @@ import DiaryViewModal from '@/components/modal/DiaryViewModal';
 import { sampleDiaries } from '@/pages/emotiondiary/sampleData';
 import EmotionStatisticsBar from '@/components/navigation/EmotionStatisticsBar';
 import EmotionBar from '@/components/navigation/EmotionBar';
+import { DiaryResponse, useGetEmotionDiaryList } from '@/hooks/emotionDiary';
+import dayjs from 'dayjs';
 
-interface DiaryEntry {
-  id: string;
-  date: string;
-  emotion: Emotion;
-  content: string;
-  shareWithCounselor: boolean;
-}
+const getCurrentDate = () => {
+  return dayjs().format('YYYY-MM-DD');
+};
 
 const EmotionDiaryPage: React.FC = () => {
-  const [diaries, setDiaries] = useState<DiaryEntry[]>(sampleDiaries);
+  const [date, setDate] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+  });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedDiary, setSelectedDiary] = useState<DiaryEntry | null>(null);
+  const [selectedDiary, setSelectedDiary] = useState<DiaryResponse | null>(null);
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const calendarRef = useRef<FullCalendar | null>(null);
 
-  const getCurrentDate = () => {
-    const today = new Date();
-    const offset = today.getTimezoneOffset() * 60000;
-    const adjustedTime = new Date(today.getTime() - offset);
-    return adjustedTime.toISOString().split('T')[0];
+  const { data: diaryList = [], isLoading: isDairyListLoading } = useGetEmotionDiaryList(
+    date.year,
+    date.month
+  );
+
+  // 이전 달로 이동 버튼 클릭 시
+  const onCilckPrev = () => {
+    if (!calendarRef.current) return;
+    calendarRef.current?.getApi().prev();
+    const prevDate = calendarRef.current?.getApi().getDate();
+    setDate({
+      year: prevDate.getFullYear(),
+      month: prevDate.getMonth() + 1,
+    });
+  };
+
+  // 다음 달로 이동 버튼 클릭 시
+  const onClickNext = () => {
+    if (!calendarRef.current) return;
+    calendarRef.current?.getApi().next();
+    const nextDate = calendarRef.current?.getApi().getDate();
+    setDate({
+      year: nextDate.getFullYear(),
+      month: nextDate.getMonth() + 1,
+    });
   };
 
   const handleEventClick = (arg: EventClickArg) => {
-    const diary = arg.event.extendedProps as DiaryEntry;
+    const diary = arg.event.extendedProps as DiaryResponse;
     if (diary) {
       setSelectedDiary(diary);
       setIsViewModalOpen(true);
     }
-  };
-
-  const handleWriteDiary = (newDiary: DiaryEntry) => {
-    setDiaries([...diaries, newDiary]);
-    setIsWriteModalOpen(false);
-  };
-
-  const handleEditDiary = (editedDiary: DiaryEntry) => {
-    setDiaries(diaries.map(diary => (diary.id === editedDiary.id ? editedDiary : diary)));
-    setIsEditModalOpen(false);
-  };
-
-  const handleDeleteDiary = (id: string) => {
-    setDiaries(diaries.filter(diary => diary.id !== id));
-    setIsViewModalOpen(false);
   };
 
   const renderEventContent = (eventInfo: EventContentArg) => (
@@ -94,10 +101,11 @@ const EmotionDiaryPage: React.FC = () => {
         {/* 캘린더 */}
         <div className="w-3/4 ">
           <FullCalendar
+            ref={calendarRef}
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
-            events={diaries.map(diary => ({
-              id: diary.id,
+            events={diaryList?.map(diary => ({
+              id: '' + diary.id,
               date: diary.date,
               title: getEmotionImage(diary.emotion),
               extendedProps: diary,
@@ -112,13 +120,20 @@ const EmotionDiaryPage: React.FC = () => {
             eventColor="#fff7ed" // 이벤트 컬러 변경
             titleFormat={{ year: 'numeric', month: 'numeric' }}
             height="auto"
+            customButtons={{
+              prev: {
+                click: onCilckPrev,
+              },
+              next: {
+                click: onClickNext,
+              },
+            }}
           />
 
           <DiaryWriteModal
             isOpen={isWriteModalOpen}
             date={selectedDate || getCurrentDate()}
             onClose={() => setIsWriteModalOpen(false)}
-            onSubmit={handleWriteDiary}
           />
           {selectedDiary && (
             <>
@@ -126,7 +141,6 @@ const EmotionDiaryPage: React.FC = () => {
                 isOpen={isEditModalOpen}
                 diary={selectedDiary}
                 onClose={() => setIsEditModalOpen(false)}
-                onSubmit={handleEditDiary}
               />
               <DiaryViewModal
                 isOpen={isViewModalOpen}
@@ -136,7 +150,6 @@ const EmotionDiaryPage: React.FC = () => {
                   setIsViewModalOpen(false);
                   setIsEditModalOpen(true);
                 }}
-                onDelete={handleDeleteDiary}
               />
             </>
           )}
@@ -151,7 +164,7 @@ const EmotionDiaryPage: React.FC = () => {
                 className="btn bg-orange-200 hover:bg-orange-300 text-gray-700 w-full"
                 onClick={() => {
                   const currentDate = getCurrentDate();
-                  const isDiaryExist = diaries.some(diary => diary.date === currentDate);
+                  const isDiaryExist = diaryList?.some(diary => diary.date === currentDate);
                   if (!isDiaryExist) {
                     setSelectedDate(currentDate);
                     setIsWriteModalOpen(true);
@@ -163,7 +176,7 @@ const EmotionDiaryPage: React.FC = () => {
                 오늘의 일기 쓰기
               </button>
               <div className="mt-4">
-                <EmotionStatisticsBar diaries={diaries} />
+                <EmotionStatisticsBar diaries={diaryList ?? []} />
               </div>
             </div>
           </div>

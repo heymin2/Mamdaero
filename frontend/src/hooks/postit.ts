@@ -55,7 +55,8 @@ export const useDeletePostit = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deletePostit,
+    mutationFn: ({ questionId, id }: { questionId: number; id: number }) =>
+      deletePostit(questionId, id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['postits'] });
     },
