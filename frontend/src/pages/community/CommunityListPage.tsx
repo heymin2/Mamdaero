@@ -1,42 +1,74 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '@/api/axiosInstance';
+import dayjs from 'dayjs';
+
 import CommunityListCard from '@/components/card/community/CommunityListCard';
 import CommunityBar from '@/components/navigation/CommunityBar';
 import WriteButton from '@/components/button/WriteButton';
 import AlignDropdown from '@/components/dropdown/AlignDropdown';
 
+interface Page<T> {
+  currentPage: number;
+  data: T[];
+  pageSize: number;
+  totalItems: number;
+  totalPages: number;
+}
 interface Post {
   id: number;
   title: string;
-  author: string;
-  viewCount: number;
+  writer: string;
+  view: number;
   likeCount: number;
-  date: string;
+  createdAt: string;
 }
+
+const fetchPosts = async (page: number): Promise<Page<Post>> => {
+  const res = await axiosInstance({
+    method: 'get',
+    url: 'p/board',
+    params: {
+      page: page - 1,
+      condition: 'new',
+    },
+  });
+  return {
+    ...res.data,
+    data: res.data.data.map((item: Post) => ({
+      id: item.id,
+      title: item.title,
+      writer: item.writer,
+      view: item.view,
+      likeCount: item.likeCount,
+      createdAt: dayjs(item.createdAt).format('YYYY-MM-DD'),
+    })),
+  };
+};
 
 const CommunityListPage: React.FC = () => {
   const [selectedOption1, setSelectedOption1] = useState('최신순');
   const [selectedOption2, setSelectedOption2] = useState('제목');
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
+  const navigate = useNavigate();
   const options1 = ['최신순', '오래된순', '추천 많은 순', '댓글 많은 순'];
   const options2 = ['제목', '내용', '작성자'];
-  const generateSamplePosts = (): Post[] => {
-    return Array.from({ length: 50 }, (_, i) => ({
-      id: i + 1,
-      title: `게시글 ${i + 1}`,
-      author: `작성자 ${i + 1}`,
-      viewCount: i + 1,
-      likeCount: i + 1,
-      date: new Date(2024, 6, 31 - i).toISOString().split('T')[0],
-    }));
-  };
 
-  const [posts] = useState<Post[]>(generateSamplePosts());
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const postsPerPage = 10;
+  const {
+    data: pageData,
+    isLoading,
+    error,
+  } = useQuery<Page<Post>, Error>({
+    queryKey: ['posts', currentPage] as const,
+    queryFn: () => fetchPosts(currentPage),
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>An error occurred: {error.message}</div>;
 
   const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
-  const navigate = useNavigate();
   const writePost = () => {
     navigate('/community/write/post');
   };
@@ -57,9 +89,9 @@ const CommunityListPage: React.FC = () => {
           </div>
         </div>
         <CommunityListCard
-          posts={posts}
+          posts={pageData?.data || []}
           currentPage={currentPage}
-          postsPerPage={postsPerPage}
+          totalPages={pageData?.totalPages || 1}
           paginate={paginate}
         />
       </div>

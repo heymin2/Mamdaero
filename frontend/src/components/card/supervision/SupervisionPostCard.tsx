@@ -1,23 +1,28 @@
-import React from 'react';
 import dayjs from 'dayjs';
-import parse, { DOMNode, Element } from 'html-react-parser';
+import axiosInstance from '@/api/axiosInstance';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient, InvalidateQueryFilters } from '@tanstack/react-query';
-import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 
+import parse, { DOMNode, Element } from 'html-react-parser';
+import { BsThreeDots } from 'react-icons/bs';
+import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
-import axiosInstance from '@/api/axiosInstance';
+import ReportButton from '@/components/button/ReportButton';
+import useAuthStore from '@/stores/authStore';
 
 interface SupervisionPostCardProps {
   postDetail: {
     id: number;
-    title: string;
     writer: string;
-    createdAt: string;
-    view: number;
-    likeCount: number;
+    title: string;
     content: string;
+    view: number;
+    createdAt: string;
+    likeCount: number;
+    isLike: boolean;
+    isMine: boolean;
     file: string;
   };
   queryKey: InvalidateQueryFilters;
@@ -26,8 +31,13 @@ interface SupervisionPostCardProps {
 const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, queryKey }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { id, title, writer, view, likeCount, content, file } = postDetail;
-  const createdAt = dayjs(postDetail.createdAt).format('YYYY-MM-DD HH:mm:ss'); // 시간 포맷 수정
+  const [showReportButton, setShowReportButton] = useState<boolean>(false);
+  const { id, writer, title, content, view, isMine, file } = postDetail;
+  const [isLike, setIsLike] = useState<boolean>(postDetail.isLike);
+  const [likeCount, setLikeCount] = useState<number>(postDetail.likeCount);
+  const createdAt = dayjs(postDetail.createdAt).format('YYYY-MM-DD HH:mm:ss');
+  const reportButtonRef = useRef<HTMLDivElement | null>(null);
+  const { isAuthenticated } = useAuthStore();
 
   // 파일 이름 추출
   const getFileName = (url: string) => {
@@ -43,18 +53,6 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
   // 이미지 로딩 핸들러
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.style.maxWidth = '100%'; // 이미지가 컨테이너에 맞게 조정됨
-  };
-
-  // 게시글 수정
-  const handleArticleEdit = () => {
-    navigate(`/supervision/edit/${id}`);
-  };
-
-  // 게시글 삭제
-  const handleArticleDelete = () => {
-    if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-      deleteArticleMutation.mutate(id);
-    }
   };
 
   // HTML 콘텐츠를 React 컴포넌트로 변환
@@ -80,6 +78,19 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
       },
     });
   };
+
+  // 게시글 수정
+  const handleArticleEdit = () => {
+    navigate(`/supervision/edit/${id}`);
+  };
+
+  // 게시글 삭제
+  const handleArticleDelete = () => {
+    if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
+      deleteArticleMutation.mutate(id);
+    }
+  };
+
   const deleteArticleMutation = useMutation({
     mutationFn: (postId: number) =>
       axiosInstance({
@@ -96,6 +107,71 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
       alert('게시글 삭제 중 오류가 발생했습니다. 다시 시도해 주세요.');
     },
   });
+
+  // 게시글 신고
+  const toggleReportButton = (): void => {
+    setShowReportButton(!showReportButton);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent): void => {
+      if (reportButtonRef.current && !reportButtonRef.current.contains(event.target as Node)) {
+        setShowReportButton(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const reportMutation = useMutation({
+    mutationFn: () =>
+      axiosInstance({
+        method: 'post',
+        url: `c/counselor-board/${id}/complaint`,
+      }),
+    onSuccess: () => {
+      alert('게시글 신고가 완료되었습니다.');
+    },
+    onError: error => {
+      alert('오류가 발생했습니다. 다시 시도해 주세요.');
+    },
+  });
+
+  const handleArticleReport = (): void => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    reportMutation.mutate();
+  };
+
+  // 좋아요
+  const toggleLikeMutation = useMutation({
+    mutationFn: () =>
+      axiosInstance({
+        method: 'post',
+        url: `c/counselor-board/${id}/like`,
+      }),
+    onSuccess: () => {
+      setIsLike(isLike => !isLike);
+      setLikeCount(likeCount => (isLike ? likeCount - 1 : likeCount + 1));
+      queryClient.invalidateQueries(queryKey);
+    },
+    onError: error => {
+      alert('오류가 발생했습니다. 다시 시도해 주세요.');
+    },
+  });
+
+  const handleLikeClick = () => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+    toggleLikeMutation.mutate();
+  };
 
   return (
     <div className="space-y-3">
@@ -116,10 +192,24 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
             </div>
           </div>
           <div className="justify-end">
-            <div className="flex gap-2">
-              <EditButton onClick={handleArticleEdit} color="blue" />
-              <DeleteButton onClick={handleArticleDelete} />
-            </div>
+            {isMine && (
+              <div className="flex gap-2">
+                <EditButton color="blue" onClick={handleArticleEdit} />
+                <DeleteButton onClick={handleArticleDelete} />
+              </div>
+            )}
+            {!isMine && (
+              <div className="relative" ref={reportButtonRef}>
+                <button onClick={toggleReportButton} className="p-1">
+                  <BsThreeDots />
+                </button>
+                {showReportButton && (
+                  <div className="absolute right-0 ml-2 bottom-6 z-10">
+                    <ReportButton onClick={handleArticleReport} />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -143,11 +233,14 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
             </div>
           )}
         </div>
-        <div className="flex font-bold">
-          <IoMdHeartEmpty size={24} color="red" />
-          <IoMdHeart size={24} color="red" />
-          <div>좋아요</div>
-          <div>{likeCount}</div>
+        <div className="flex font-bold items-center cursor-pointer" onClick={handleLikeClick}>
+          {isAuthenticated && isLike ? (
+            <IoMdHeart size={24} color="red" />
+          ) : (
+            <IoMdHeartEmpty size={24} color="red" />
+          )}
+          <div className="ml-1">좋아요</div>
+          <div className="ml-1">{likeCount}</div>
         </div>
       </div>
     </div>

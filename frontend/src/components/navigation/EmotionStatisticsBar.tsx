@@ -1,23 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Emotion, getEmotionImage, emotionImages } from '@/pages/emotiondiary/emotion';
+import { DiaryResponse } from '@/hooks/emotionDiary';
 
 interface EmotionStatisticsTableProps {
-  diaries: { emotion: Emotion }[];
+  diaries: DiaryResponse[];
 }
 
 const EmotionStatisticsTable: React.FC<EmotionStatisticsTableProps> = ({ diaries }) => {
-  const emotionCounts: Record<Emotion, number> = {
+  const [emotionCounts, setEmotionCounts] = useState<Record<Emotion, number>>({
     행복해요: 0,
     화나요: 0,
     우울해요: 0,
     짜증나요: 0,
     불안해요: 0,
     슬퍼요: 0,
-  };
-
-  diaries.forEach(diary => {
-    emotionCounts[diary.emotion]++;
   });
+
+  useEffect(() => {
+    setEmotionCounts({
+      행복해요: diaries.filter(diary => diary.emotion === '행복해요').length,
+      화나요: diaries.filter(diary => diary.emotion === '화나요').length,
+      우울해요: diaries.filter(diary => diary.emotion === '우울해요').length,
+      짜증나요: diaries.filter(diary => diary.emotion === '짜증나요').length,
+      불안해요: diaries.filter(diary => diary.emotion === '불안해요').length,
+      슬퍼요: diaries.filter(diary => diary.emotion === '슬퍼요').length,
+    });
+  }, [diaries]);
 
   return (
     <div className="bg-white p-4 rounded-lg shadow">
@@ -31,7 +39,7 @@ const EmotionStatisticsTable: React.FC<EmotionStatisticsTableProps> = ({ diaries
                 <div className="overflow-hidden h-4 mb-1 text-xs flex rounded bg-gray-100">
                   <div
                     style={{
-                      width: `${(emotionCounts[emotion as Emotion] / diaries.length) * 100}%`,
+                      width: `${emotionCounts[emotion as Emotion] ? (emotionCounts[emotion as Emotion] / diaries.length) * 100 : 0}%`,
                     }}
                     className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-300"
                   ></div>
