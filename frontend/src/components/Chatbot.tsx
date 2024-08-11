@@ -7,7 +7,7 @@ import chatPrince from '@/assets/chat_prince.png';
 import ReactMarkdown from 'react-markdown';
 import { AiOutlineSend } from 'react-icons/ai';
 interface ChatMessage {
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
   content: string;
 }
 
@@ -37,64 +37,29 @@ const context = `You will play the role of a human psychological counselor and m
 9. Do not make up the patient's responses: only treat input as a patient's response. 
 10. It's important to keep the Ethical Principles of Psychologists and Code of Conduct in mind. 
 11. Above all, you should prioritize empathizing with the patient's feelings and situation. 
-12. Answer in Korean within 20 words`;
+12. Answer in Korean within 20 words
+13. Show the system message in the chat screen when there is a problem.`;
+
 const Chatbot = () => {
   const [userInput, setUserInput] = useState<string>(''); // 사용자 입력 상태 관리
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([
-    { role: 'assistant', content: '오늘 하루 어떠셨나요?' },
-  ]); // 채팅 히스토리 관리
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]); // 채팅 히스토리 관리
+  const [isHide, setIsHide] = useState<boolean>(false);
   const chatBoxRef = useRef<HTMLDivElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
 
-  const promptEngineering = async () => {
-    try {
-      const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          model: 'gpt-3.5-turbo',
-          messages: [{ role: 'user', content: context }],
-          temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
-          max_tokens: 100, // 응답받을 메시지 최대 토큰(단어) 수 설정
-          top_p: 1, // 토큰 샘플링 확률을 설정, 높을수록 다양한 출력을 유도
-          frequency_penalty: 0.5, // 일반적으로 나오지 않는 단어를 억제하는 정도
-          presence_penalty: 0.5, // 동일한 단어나 구문이 반복되는 것을 억제하는 정도
-          stop: ['Human'], // 생성된 텍스트에서 종료 구문을 설정
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-          },
-        }
-      );
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          console.error('API 오류 상태:', error.response.status);
-          console.error('API 오류 데이터:', error.response.data);
-        } else if (error.request) {
-          console.error('응답을 받지 못했습니다:', error.request);
-        } else {
-          console.error('요청 설정 오류:', error.message);
-        }
-      } else {
-        console.error('알 수 없는 오류:', error);
-      }
-      setChatHistory(prev => [
-        ...prev,
-        { role: 'assistant', content: '죄송합니다. 현재 요청을 처리할 수 없습니다.' },
-      ]);
-    }
+  const getPromptEngineering = (input: string) => {
+    return chatHistory.length == 1
+      ? [{ role: 'system', content: context }]
+      : [{ role: 'user', content: input }];
   };
   const handleQuickReply = (reply: string) => {
+    setIsHide(true);
     fetchBotReply(reply);
   };
+
   const fetchBotReply = async (input: string) => {
     if (!input.trim()) return;
 
-    // 히스토리가 인사말만 있을 경우 프롬프팅 진행
-    if (chatHistory.length == 1) {
-      promptEngineering();
-    }
     // 사용자 메시지 채팅 히스토리에 추가
     setChatHistory(prev => [...prev, { role: 'user', content: input }]);
     try {
@@ -102,13 +67,12 @@ const Chatbot = () => {
         'https://api.openai.com/v1/chat/completions',
         {
           model: 'gpt-3.5-turbo',
-          messages: [{ role: 'system', content: 'input' }],
+          messages: getPromptEngineering(input),
           temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
-          max_tokens: 300, // 응답받을 메시지 최대 토큰(단어) 수 설정
+          max_tokens: 256, // 응답받을 메시지 최대 토큰(단어) 수 설정
           top_p: 1, // 토큰 샘플링 확률을 설정, 높을수록 다양한 출력을 유도
           frequency_penalty: 0.5, // 일반적으로 나오지 않는 단어를 억제하는 정도
           presence_penalty: 0.5, // 동일한 단어나 구문이 반복되는 것을 억제하는 정도
-          stop: ['Human'], // 생성된 텍스트에서 종료 구문을 설정
         },
         {
           headers: {
@@ -117,18 +81,30 @@ const Chatbot = () => {
           },
         }
       );
-      // console.log(response);
+      console.log('api 호출', response);
       if (response.data && response.data.choices && response.data.choices.length > 0) {
         const reply = response.data.choices[0]?.message.content.trim(); // optional chaining 사용
         if (reply) {
           setChatHistory(prev => [...prev, { role: 'assistant', content: reply }]);
         } else {
+          setChatHistory(prev => [
+            ...prev,
+            { role: 'system', content: '에러가 발생했으니 잠시만 기다려주세요.' },
+          ]);
           throw new Error('API 응답에서 텍스트가 유효하지 않습니다.');
         }
       } else {
+        setChatHistory(prev => [
+          ...prev,
+          { role: 'system', content: '에러가 발생했으니 잠시만 기다려주세요.' },
+        ]);
         throw new Error('API 응답이 예상대로 구조화되지 않았습니다.');
       }
     } catch (error: unknown) {
+      setChatHistory(prev => [
+        ...prev,
+        { role: 'system', content: '에러가 발생했으니 잠시만 기다려주세요.' },
+      ]);
       if (axios.isAxiosError(error)) {
         if (error.response) {
           console.error('API 오류 상태:', error.response.status);
@@ -141,10 +117,6 @@ const Chatbot = () => {
       } else {
         console.error('알 수 없는 오류:', error);
       }
-      setChatHistory(prev => [
-        ...prev,
-        { role: 'assistant', content: '죄송합니다. 현재 요청을 처리할 수 없습니다.' },
-      ]);
     }
   };
 
@@ -159,89 +131,97 @@ const Chatbot = () => {
       setUserInput('');
     }
   };
+  function handleScrollToBottom(parent: HTMLDivElement, child: HTMLDivElement) {
+    const parentHeight = parent.clientHeight;
+    const childHeight = child.clientHeight;
 
+    // 자식 요소의 높이가 부모 요소의 높이에 닿았을 때
+    if (childHeight >= parentHeight) {
+      parent.scrollTop = parent.scrollHeight; // 부모 요소를 가장 아래로 스크롤
+    }
+  }
   useEffect(() => {
-    // 새 메시지가 추가될 때마다 스크롤을 아래로 이동
-    if (chatBoxRef.current) {
-      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    if (chatBoxRef.current && chatRef.current) {
+      handleScrollToBottom(chatBoxRef.current, chatRef.current);
     }
   }, [chatHistory]);
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    e.stopPropagation(); // 스크롤 이벤트가 상위로 전파되는 것을 방지
-  };
+
   return (
-    <>
-      <section className="card min-w-[80%] h-full bg-white ">
-        <h2 className="card-title justify-center text-2xl font-bold pt-5">
-          오늘의 기분을 표현해주세요
-        </h2>
-        <div className="card-body overflow-y-scroll">
-          <div
-            ref={chatBoxRef}
-            onScroll={handleScroll}
-            className="flex-grow flex flex-col overflew-y-auto max-h-[calc(100% -100px)] align-bottom justify-end gap-1 "
-          >
-            {chatHistory.map((message, index) => (
-              <div
-                key={index}
-                className={`flex items-center ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                {message.role === 'user' ? (
-                  <div className="flex items-end max-w-[70%]">
-                    <div className="bg-orange-200 rounded-lg p-2 mr-2">
-                      <p className="pr-1">{message.content}</p>
-                    </div>
-                    <div className="avatar flex-shrink-0">
-                      <div className="mask mask-squircle max-w-10">
-                        <img src={chatPrince} alt="당신" className="w-full h-full rounded-full" />
-                      </div>
-                    </div>
+    <section className="card w-1/2 min-w-[50%] bg-white h-full">
+      <h2 className="card-title justify-center text-2xl font-bold pt-5">
+        오늘의 기분을 표현해주세요
+      </h2>
+
+      {/* 채팅 메시지를 표시하는 영역 */}
+      <div ref={chatBoxRef} className="card-body flex-grow overflow-y-scroll max-h-[512px]">
+        <div
+          ref={chatRef}
+          className="flex-grow flex flex-col align-bottom justify-end gap-1 snap-y snap-mandatory "
+        >
+          {chatHistory.map((message, index) => (
+            <div
+              key={index}
+              className={`flex items-center snap-center ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              {message.role === 'user' && (
+                <div className="flex items-end max-w-[70%]">
+                  <div className="bg-orange-200 rounded-lg py-2 px-3 mr-2">
+                    <p className="text-sm">{message.content}</p>
                   </div>
-                ) : (
-                  <div className="max-w-[70%] flex items-start">
-                    <div className="avatar flex-shrink-0">
-                      <div className="mask mask-squircle w-10">
-                        <img src={chatFox} alt="친구" className="w-full h-full rounded-full" />
-                      </div>
-                    </div>
-                    <div className="bg-blue-200 rounded-lg p-2 ml-2 ">
-                      <ReactMarkdown>{message.content}</ReactMarkdown>
-                    </div>
+                  <div className="flex-shrink-0 w-10 h-10">
+                    <img src={chatPrince} alt="당신" className="w-full h-full rounded-full" />
                   </div>
-                )}
-              </div>
-            ))}
-            <div className="card-actions justify-center items-bottom mt-3">
-              <div className="flex flex-wrap gap-2 mb-4">
-                {emotion.map(reply => (
-                  <button
-                    key={reply}
-                    onClick={() => handleQuickReply(reply)}
-                    className="bg-gray-200 hover:bg-gray-300 text-sm py-1 px-3 rounded-full"
-                  >
-                    {reply}
-                  </button>
-                ))}
-              </div>
-              <form onSubmit={handleSubmit} className="block w-full sm:w-[400px] md:w-[600px]">
-                <p className="flex p-3 border border-black rounded-full justify-between">
-                  <input
-                    type="text"
-                    value={userInput}
-                    onChange={handleInputChange}
-                    placeholder="채팅을 입력해주세요."
-                    className="w-full outline-none"
-                  />
-                  <button type="submit">
-                    <AiOutlineSend />
-                  </button>
-                </p>
-              </form>
+                </div>
+              )}
+              {message.role === 'assistant' && (
+                <div className="flex items-end max-w-[70%]">
+                  <div className="flex-shrink-0 w-10 h-10 mr-2">
+                    <img src={chatFox} alt="도우미" className="w-full h-full rounded-full" />
+                  </div>
+                  <div className="bg-blue-200 rounded-lg py-2 px-3">
+                    <ReactMarkdown className="text-sm">{message.content}</ReactMarkdown>
+                  </div>
+                </div>
+              )}
+              {message.role === 'system' && (
+                <div className="bg-red-100 text-red-700 px-4 py-2 mx-auto rounded-lg max-w-[80%]">
+                  <p className="text-sm">{message.content}</p>
+                </div>
+              )}
             </div>
-          </div>
+          ))}
         </div>
-      </section>
-    </>
+      </div>
+
+      {/* 입력창을 항상 화면 하단에 고정 */}
+      <div className="card-actions bottom-0 bg-white py-2">
+        <div className="flex flex-wrap gap-2 justify-center">
+          {emotion.map(reply => (
+            <button
+              key={reply}
+              onClick={() => handleQuickReply(reply)}
+              className={`btn bg-gray-200 hover:bg-orange-400 text-sm ${isHide ? 'hidden' : 'block'}`}
+            >
+              {reply}
+            </button>
+          ))}
+        </div>
+        <form onSubmit={handleSubmit} className="w-full px-4">
+          <div className="flex p-3 border border-black rounded-full justify-between">
+            <input
+              type="text"
+              value={userInput}
+              onChange={handleInputChange}
+              placeholder="채팅을 입력해주세요."
+              className="w-full outline-none"
+            />
+            <button type="submit" className="ml-2">
+              <AiOutlineSend />
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
   );
 };
 
