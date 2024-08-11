@@ -15,6 +15,7 @@ interface CommentDetail {
   writer: string;
   comment: string;
   createdAt: string;
+  isMine: boolean;
 }
 
 interface CommunityCommentCardProps {
@@ -52,7 +53,7 @@ const CommunityCommentCard: React.FC<CommunityCommentCardProps> = ({ commentDeta
       setIsEditing(false);
     },
     onError: error => {
-      console.error('댓글 수정 중 오류가 발생했습니다:', error);
+      alert('댓글 수정 중 오류가 발생했습니다.');
     },
   });
 
@@ -60,7 +61,7 @@ const CommunityCommentCard: React.FC<CommunityCommentCardProps> = ({ commentDeta
     updateCommentMutation.mutate(editedComment);
   };
 
-  // 댓글 삭제 로직
+  // 댓글 삭제
   const handleDeleteClick = (): void => {
     if (window.confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
       deleteCommentMutation.mutate();
@@ -83,12 +84,11 @@ const CommunityCommentCard: React.FC<CommunityCommentCardProps> = ({ commentDeta
       );
     },
     onError: error => {
-      console.error('댓글 삭제 중 오류 발생:', error);
-      alert('댓글 삭제 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      alert('댓글 삭제 중 오류가 발생했습니다.');
     },
   });
 
-  // 댓글 신고 로직
+  // 댓글 신고
   const toggleReportButton = (): void => {
     setShowReportButton(!showReportButton);
   };
@@ -106,6 +106,24 @@ const CommunityCommentCard: React.FC<CommunityCommentCardProps> = ({ commentDeta
     };
   }, []);
 
+  const reportMutation = useMutation({
+    mutationFn: () =>
+      axiosInstance({
+        method: 'post',
+        url: `cm/board/${postId}/comment/${commentDetail.id}/complaint`,
+      }),
+    onSuccess: () => {
+      alert('댓글 신고가 완료되었습니다.');
+    },
+    onError: error => {
+      alert('오류가 발생했습니다. 다시 시도해 주세요.');
+    },
+  });
+
+  const handleCommentReport = (): void => {
+    reportMutation.mutate();
+  };
+
   return (
     <div className="border-b-2 border-orange-300 px-10 pt-4 pb-2">
       <div className="flex justify-between items-center">
@@ -114,12 +132,12 @@ const CommunityCommentCard: React.FC<CommunityCommentCardProps> = ({ commentDeta
           {commentDetail.writer}
         </div>
         <div className="flex gap-2 items-center">
-          {!isEditing && (
+          {commentDetail.isMine && !isEditing && (
             <>
               <div className="relative group pb-1">
                 <FaEdit
                   onClick={handleEditClick}
-                  className="cursor-pointer hover:text-blue-500 transition-colors duration-200"
+                  className="cursor-pointer hover:text-orange-500 transition-colors duration-200"
                 />
                 <span className="absolute flex bottom-full left-1/2 whitespace-nowrap transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   수정
@@ -136,17 +154,19 @@ const CommunityCommentCard: React.FC<CommunityCommentCardProps> = ({ commentDeta
               </div>
             </>
           )}
+          {!commentDetail.isMine && (
+            <div className="relative" ref={reportButtonRef}>
+              <button onClick={toggleReportButton} className="p-1">
+                <BsThreeDots />
+              </button>
+              {showReportButton && (
+                <div className="absolute right-7 ml-2 top-0 z-10">
+                  <ReportButton onClick={handleCommentReport} />
+                </div>
+              )}
+            </div>
+          )}
           <span className="mx-2">{createdAt}</span>
-          <div className="relative" ref={reportButtonRef}>
-            <button onClick={toggleReportButton} className="p-1">
-              <BsThreeDots />
-            </button>
-            {showReportButton && (
-              <div className="absolute left-full ml-2 top-0 z-10">
-                <ReportButton />
-              </div>
-            )}
-          </div>
         </div>
       </div>
       {isEditing ? (
@@ -165,12 +185,18 @@ const CommunityCommentCard: React.FC<CommunityCommentCardProps> = ({ commentDeta
               size="수정"
               textSize="sm"
             />
-            <Button label="저장" onClick={handleSaveEdit} color="blue" size="수정" textSize="sm" />
+            <Button
+              label="저장"
+              onClick={handleSaveEdit}
+              color="orange"
+              size="수정"
+              textSize="sm"
+            />
           </div>
         </div>
       ) : (
         <div className="mx-8 my-2">{commentDetail.comment}</div>
-      )}{' '}
+      )}
     </div>
   );
 };
