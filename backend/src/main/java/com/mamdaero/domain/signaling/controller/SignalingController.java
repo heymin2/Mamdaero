@@ -19,6 +19,7 @@ public class SignalingController {
                                   @DestinationVariable(value = "memberId") String memberId, SimpMessageHeaderAccessor headerAccessor) {
         log.info("[OFFER] {} : {}", memberId, offer);
         log.info("Headers: " + headerAccessor.toNativeHeaderMap());
+        System.out.println("Headers: " + headerAccessor.toNativeHeaderMap());
         return offer;
     }
 
