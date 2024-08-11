@@ -1,57 +1,113 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiEdit } from 'react-icons/fi';
 import Button from '@/components/button/Button';
 import PasswordChangeModal from '@/components/modal/PasswordChangeModal';
 import defaultImage from '@/assets/DefaultProfile.jpg';
+import useCounselorStore from '@/stores/couselorStore';
 
-interface Counselor {
-  id: string;
-  name: string;
-  email: string;
-  tel: string;
-  birth: string;
-  gender: string;
-  password: string;
-  address: string;
-  intro: string;
-  introDetail: string;
-  img: string;
+interface EditedCounselor {
+  nickname: string | null;
+  birth: string | null;
+  tel: string | null;
+  gender: string | null;
+  intro: string | null;
+  introDetail: string | null;
 }
 
-const CouselorMyPage: React.FC = () => {
-  const [counselor, setCounselor] = useState<Counselor>({
-    id: '111-1111',
-    name: '박민준',
-    email: 'ppmm98@yu.ac.kr',
-    tel: '01012341234',
-    birth: '1998-07-20',
-    gender: '남',
-    password: '1234',
-    address: '서울특별시 강남구 테헤란로 123',
-    intro: '10년 경력의 전문 상담사입니다.',
-    introDetail: '심리학 박사 학위를 가지고 있으며, 다양한 심리 문제에 대한 상담 경험이 있습니다.',
-    img: defaultImage,
-  });
+interface EditedCounselorWithFile extends EditedCounselor {
+  imgFile: File | null;
+}
+
+type FieldConfig = {
+  name: string;
+  type: string;
+  key: keyof EditedCounselor | 'name' | 'email' | 'license' | 'level';
+  maxLength?: number;
+  readOnly?: boolean;
+  value?: string;
+};
+
+const CounselorMyPage: React.FC = () => {
+  const {
+    name,
+    email,
+    nickname,
+    birth,
+    tel,
+    gender,
+    level,
+    license,
+    intro,
+    introDetail,
+    img,
+    fetchCounselorInfo,
+    updateCounselorInfo,
+    updateIntro,
+    updateIntroDetail,
+    updateImg,
+    isLoading,
+    error,
+  } = useCounselorStore();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [editedCounselor, setEditedCounselor] = useState<EditedCounselorWithFile>({
+    nickname,
+    birth,
+    tel,
+    gender,
+    intro,
+    introDetail,
+    imgFile: null,
+  });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const level = counselor.id.charAt(0);
+  useEffect(() => {
+    fetchCounselorInfo();
+  }, [fetchCounselorInfo]);
+
+  useEffect(() => {
+    setEditedCounselor({
+      nickname,
+      birth,
+      tel,
+      gender,
+      intro,
+      introDetail,
+      imgFile: null,
+    });
+  }, [nickname, birth, tel, gender, intro, introDetail]);
 
   const handleEdit = () => setIsEditing(true);
   const handleCancel = () => {
     setIsEditing(false);
     setErrors({});
+    setEditedCounselor({
+      nickname,
+      birth,
+      tel,
+      gender,
+      intro,
+      introDetail,
+      imgFile: null,
+    });
   };
 
-  // 전화번호 유효성
+  const validateBirth = (birth: string): boolean => {
+    const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+    if (!regex.test(birth)) return false;
+
+    const [year, month, day] = birth.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  };
+
   const validateTel = (tel: string): boolean => {
     const regex = /^010-\d{4}-\d{4}$/;
     return regex.test(tel);
   };
 
-  const formatTelvalidateTelNumber = (value: string) => {
+  const formatTelNumber = (value: string) => {
     const telNumber = value.replace(/[^\d]/g, '');
     const telNumberLength = telNumber.length;
     if (telNumberLength <= 3) return telNumber;
@@ -64,45 +120,89 @@ const CouselorMyPage: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     if (name === 'tel') {
-      const formattedNumber = formatTelvalidateTelNumber(value);
-      setCounselor(prev => ({ ...prev, [name]: formattedNumber }));
+      const formattedNumber = formatTelNumber(value);
+      setEditedCounselor(prev => ({ ...prev, [name]: formattedNumber }));
       if (!validateTel(formattedNumber)) {
         setErrors(prev => ({ ...prev, tel: '올바른 전화번호 형식이 아닙니다 (010-1234-5678).' }));
       } else {
         setErrors(prev => ({ ...prev, tel: '' }));
       }
+    } else if (name === 'birth') {
+      setEditedCounselor(prev => ({ ...prev, [name]: value }));
+      if (!validateBirth(value)) {
+        setErrors(prev => ({ ...prev, birth: '올바른 생년월일 형식이 아닙니다 (YYYY-MM-DD).' }));
+      } else {
+        setErrors(prev => ({ ...prev, birth: '' }));
+      }
     } else {
-      setCounselor(prev => ({ ...prev, [name]: value }));
+      setEditedCounselor(prev => ({ ...prev, [name]: value }));
     }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCounselor(prev => ({ ...prev, img: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+      setEditedCounselor(prev => ({
+        ...prev,
+        imgFile: file,
+      }));
     }
   };
 
   const handleImageDelete = () => {
-    setCounselor(prev => ({ ...prev, img: defaultImage }));
+    setEditedCounselor(prev => ({ ...prev, imgFile: null }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (Object.values(errors).some(error => error !== '')) {
       alert('입력 정보를 확인해주세요.');
       return;
     }
-    console.log(counselor);
-    setIsEditing(false);
+    try {
+      const { imgFile, intro, introDetail, ...updateData } = editedCounselor;
+      await updateCounselorInfo(updateData);
+
+      if (intro !== null) {
+        await updateIntro(intro);
+      }
+
+      if (introDetail !== null) {
+        await updateIntroDetail(introDetail);
+      }
+
+      if (imgFile) {
+        await updateImg(imgFile);
+      }
+
+      setIsEditing(false);
+      fetchCounselorInfo(); // 업데이트 후 최신 정보를 가져옵니다.
+    } catch (error) {
+      console.error('Failed to update counselor info:', error);
+      alert('상담사 정보 업데이트에 실패했습니다.');
+    }
   };
 
   const handleGenderChange = (selectedGender: string) => {
-    setCounselor(prev => ({ ...prev, gender: selectedGender }));
+    setEditedCounselor(prev => ({ ...prev, gender: selectedGender }));
   };
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (error) {
+    return <div>에러 발생: {error}</div>;
+  }
+
+  const fieldConfigs: FieldConfig[] = [
+    { name: '이름', type: 'text', key: 'name', readOnly: true },
+    { name: '자격번호', type: 'text', key: 'license', readOnly: true },
+    { name: '이메일', type: 'email', key: 'email', readOnly: true },
+    { name: '전화번호', type: 'tel', key: 'tel', maxLength: 13 },
+    { name: '생년월일', type: 'date', key: 'birth' },
+    { name: '성별', type: 'gender', key: 'gender' },
+    { name: '등급', type: 'text', key: 'level', readOnly: true, value: `${level}급` },
+  ];
 
   return (
     <>
@@ -138,7 +238,11 @@ const CouselorMyPage: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="mb-6 text-center">
               <img
-                src={counselor.img}
+                src={
+                  editedCounselor.imgFile
+                    ? URL.createObjectURL(editedCounselor.imgFile)
+                    : img || defaultImage
+                }
                 alt="프로필 사진"
                 className="w-48 h-48 rounded-full mx-auto mb-4"
               />
@@ -159,40 +263,28 @@ const CouselorMyPage: React.FC = () => {
                 </div>
               )}
             </div>
+
             <div className="mb-4">
               <label className="block text-gray-700 text-md font-bold mb-2">한 줄 소개</label>
               {isEditing ? (
                 <div className="relative">
                   <textarea
                     name="intro"
-                    value={counselor.intro}
+                    value={editedCounselor.intro || ''}
                     onChange={handleChange}
                     className="w-full p-2 border rounded"
                     maxLength={30}
                   />
                   <span className="absolute right-2 bottom-2 text-xs text-gray-500">
-                    {counselor.intro.length}/30
+                    {(editedCounselor.intro || '').length}/30
                   </span>
                 </div>
               ) : (
-                <p>{counselor.intro}</p>
+                <p>{intro}</p>
               )}
             </div>
 
-            <div className="mb-4">
-              <label className="block text-gray-700 text-md font-bold mb-2">상담소 주소</label>
-              {isEditing ? (
-                <textarea
-                  name="address"
-                  value={counselor.address}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded"
-                  maxLength={128}
-                />
-              ) : (
-                <p>{counselor.address}</p>
-              )}
-            </div>
+            {/* 주소 필드는 현재 백엔드에서 지원하지 않으므로 제거 */}
           </div>
           {!isEditing && (
             <div className="flex flex-col mt-8 justify-center gap-4">
@@ -230,7 +322,7 @@ const CouselorMyPage: React.FC = () => {
           )}
           {isEditing && (
             <div className="flex flex-col items-center mt-8 space-y-4">
-              <PasswordChangeModal password={counselor.password} />
+              <PasswordChangeModal user="counselor" />
               <div className="flex justify-center space-x-5">
                 <Button label="저장" onClick={handleSave} shape="rounded" color="blue" />
                 <Button label="취소" onClick={handleCancel} shape="rounded" color="gray" />
@@ -243,15 +335,7 @@ const CouselorMyPage: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-md mb-8">
             <ul className="flex flex-col h-full">
               <form onSubmit={e => e.preventDefault()}>
-                {[
-                  { name: '이름', type: 'text', key: 'name', maxLength: 20 },
-                  { name: '자격번호', type: 'text', key: 'id', readOnly: true },
-                  { name: '이메일', type: 'email', key: 'email', readOnly: true },
-                  { name: '전화번호', type: 'tel', key: 'tel', maxLength: 13 },
-                  { name: '생년월일', type: 'date', key: 'birth' },
-                  { name: '성별', type: 'gender', key: 'gender' },
-                  { name: '등급', type: 'text', key: 'level', readOnly: true, value: `${level}급` },
-                ].map(field => (
+                {fieldConfigs.map(field => (
                   <li key={field.key}>
                     <div className="flex items-center">
                       <label className="min-w-32 inline-block font-bold text-md">
@@ -262,20 +346,29 @@ const CouselorMyPage: React.FC = () => {
                           <div className="space-x-5">
                             <Button
                               label="남"
-                              onClick={() => handleGenderChange('남')}
-                              color={counselor.gender === '남' ? 'blue' : 'gray'}
+                              onClick={() => handleGenderChange('M')}
+                              color={editedCounselor.gender === 'M' ? 'blue' : 'gray'}
                               shape="rounded"
                             />
                             <Button
                               label="여"
-                              onClick={() => handleGenderChange('여')}
-                              color={counselor.gender === '여' ? 'blue' : 'gray'}
+                              onClick={() => handleGenderChange('F')}
+                              color={editedCounselor.gender === 'F' ? 'blue' : 'gray'}
                               shape="rounded"
                             />
                           </div>
                         ) : field.readOnly ? (
                           <span className="mx-auto font-bold text-md break-keep whitespace-nowrap">
-                            {field.value ?? counselor[field.key as keyof Counselor]}
+                            {field.value ??
+                              (field.key === 'name'
+                                ? name
+                                : field.key === 'email'
+                                  ? email
+                                  : field.key === 'license'
+                                    ? license
+                                    : field.key === 'level'
+                                      ? `${level}급`
+                                      : '')}
                           </span>
                         ) : (
                           <div className="flex flex-col w-full max-w-xs">
@@ -283,7 +376,11 @@ const CouselorMyPage: React.FC = () => {
                               type={field.type}
                               name={field.key}
                               className="input input-bordered w-full"
-                              value={counselor[field.key as keyof Counselor]}
+                              value={
+                                field.key in editedCounselor
+                                  ? (editedCounselor[field.key as keyof EditedCounselor] ?? '')
+                                  : ''
+                              }
                               onChange={handleChange}
                               readOnly={field.readOnly}
                               maxLength={field.maxLength}
@@ -295,7 +392,21 @@ const CouselorMyPage: React.FC = () => {
                         )
                       ) : (
                         <span className="mx-auto font-bold text-md break-keep whitespace-nowrap">
-                          {field.value ?? counselor[field.key as keyof Counselor]}
+                          {field.value ??
+                            (field.key === 'name'
+                              ? name
+                              : field.key === 'email'
+                                ? email
+                                : field.key === 'license'
+                                  ? license
+                                  : field.key === 'birth'
+                                    ? birth
+                                    : field.key === 'level'
+                                      ? `${level}급`
+                                      : field.key in editedCounselor
+                                        ? (editedCounselor[field.key as keyof EditedCounselor] ??
+                                          '')
+                                        : '')}
                         </span>
                       )}
                     </div>
@@ -312,18 +423,18 @@ const CouselorMyPage: React.FC = () => {
               <div className="relative">
                 <textarea
                   name="introDetail"
-                  value={counselor.introDetail}
+                  value={editedCounselor.introDetail || ''}
                   onChange={handleChange}
                   className="w-full p-2 border rounded"
                   rows={6}
                   maxLength={2000}
                 />
                 <span className="absolute right-2 bottom-2 text-xs text-gray-500">
-                  {counselor.introDetail.length}/2000
+                  {(editedCounselor.introDetail || '').length}/2000
                 </span>
               </div>
             ) : (
-              <p>{counselor.introDetail}</p>
+              <p>{introDetail}</p>
             )}
           </div>
         </div>
@@ -332,4 +443,4 @@ const CouselorMyPage: React.FC = () => {
   );
 };
 
-export default CouselorMyPage;
+export default CounselorMyPage;
