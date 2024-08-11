@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
-
-interface Product {
-  name: string;
-  fee: number;
-  description: string | null;
-}
+import { CounselorItem } from '@/api/counselorItem';
 
 interface ProductCardProps {
-  onAddProduct: (product: Product) => void;
+  onAddProduct: (product: Omit<CounselorItem, 'counselorItemId'>) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ onAddProduct }) => {
@@ -25,7 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ onAddProduct }) => {
     onAddProduct({
       name: productName,
       fee: Number(productPrice),
-      description: productDescription || null,
+      description: productDescription || '',
     });
     setName('');
     setPrice('');
@@ -77,7 +72,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ onAddProduct }) => {
           {productDescription.length}/{maxDescriptionLength} 자
         </p>
       </div>
-      <button onClick={handleAddProduct} className="bg-transparent mx-auto block font-bold mt-4">
+      <button
+        onClick={handleAddProduct}
+        className="bg-transparent mx-auto block font-bold mt-4"
+        disabled={!productName || !productPrice}
+      >
         <FiPlusCircle className="inline mr-1" />
         상품 추가
       </button>

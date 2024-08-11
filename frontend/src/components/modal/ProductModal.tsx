@@ -1,20 +1,12 @@
 import React from 'react';
 import ModalWrapper from '@/components/modal/ModalWrapper';
 import Button from '@/components/button/Button';
-
-interface Product {
-  counselor_item_id: number;
-  counselor_id: number;
-  name: string;
-  description: string | null;
-  fee: number;
-  is_delete: boolean;
-}
+import { CounselorItem } from '@/api/counselorItem';
 
 interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
-  product: Product;
+  product: CounselorItem;
   onEdit: () => void;
   onDelete: () => void;
 }

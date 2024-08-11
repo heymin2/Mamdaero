@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import TimeCard from '@/components/card/mypage/TimeCard';
 import WeekSelection from '@/components/card/mypage/WeekSelection';
 import MyCounselBar from '@/components/navigation/MyCounselBar';
 import Time from './props/time';
+import useAuthStore from '@/stores/authStore';
 
 const allWeeks = {
   월: 1,
@@ -19,6 +20,10 @@ const allWeeks = {
 type WeekName = keyof typeof allWeeks;
 
 const CounselorManageTimePage: React.FC = () => {
+  const { memberId } = useParams<{ memberId: string }>();
+  const { getEmail } = useAuthStore();
+  const currentMemberId = memberId || getEmail()?.split('@')[0] || 'unknown';
+
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
   const [weekTimes, setWeekTimes] = useState<{ [key: number]: Time[] }>({});
   const [startTime, setStartTime] = useState<number>(9);
@@ -58,7 +63,7 @@ const CounselorManageTimePage: React.FC = () => {
           subtitle="상담 일정을 손쉽게 관리하고 업데이트 하세요!"
           buttonLabel="뒤로가기"
           user="counselor"
-          buttonPath="/mypage/counselor"
+          buttonPath={`/mypage/${currentMemberId}`}
           size="md"
         />
       </div>
