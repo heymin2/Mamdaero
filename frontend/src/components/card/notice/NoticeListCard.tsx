@@ -2,11 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 interface Post {
-  id: number;
+  noticeId: number;
   title: string;
-  writer: string;
   view: number;
-  likeCount: number;
   createdAt: string;
 }
 
@@ -17,7 +15,7 @@ interface BoardTableProps {
   paginate: (pageNumber: number) => void;
 }
 
-const CommunityListCard: React.FC<BoardTableProps> = ({
+const NoticeListCard: React.FC<BoardTableProps> = ({
   posts,
   currentPage,
   totalPages,
@@ -29,36 +27,33 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
         <colgroup>
           <col className="w-[10%]" />
           <col className="w-[40%]" />
-          <col className="w-[16%]" />
-          <col className="w-[7%]" />
-          <col className="w-[7%]" />
+          <col className="w-[20%]" />
+          <col className="w-[10%]" />
           <col className="w-[20%]" />
         </colgroup>
         <thead>
-          <tr className="border-b bg-orange-100">
+          <tr className="border-b bg-gray-200">
             <th className="px-4 py-2 text-center">번호</th>
             <th className="px-4 py-2 text-center">제목</th>
             <th className="px-4 py-2 text-center">작성자</th>
             <th className="px-4 py-2 text-center">조회수</th>
-            <th className="px-4 py-2 text-center">추천수</th>
             <th className="px-4 py-2 text-center">날짜</th>
           </tr>
         </thead>
         <tbody>
           {posts.map(post => (
             <tr
-              key={post.id}
-              className="border-b hover:bg-orange-100 transition-colors duration-200"
+              key={post.noticeId}
+              className="border-b hover:bg-gray-200 transition-colors duration-200"
             >
-              <td className="px-4 py-2 text-center truncate">{post.id}</td>
+              <td className="px-4 py-2 text-center truncate">{post.noticeId}</td>
               <td className="px-4 py-2 text-center truncate">
-                <Link to={`/community/${post.id}`} className="hover:underline">
+                <Link to={`/notice/${post.noticeId}`} className="hover:underline">
                   {post.title}
                 </Link>
               </td>
-              <td className="px-4 py-2 text-center truncate">{post.writer}</td>
+              <td className="px-4 py-2 text-center truncate">관리자</td>
               <td className="px-4 py-2 text-center truncate">{post.view}</td>
-              <td className="px-4 py-2 text-center truncate">{post.likeCount}</td>
               <td className="px-4 py-2 text-center truncate">{post.createdAt}</td>
             </tr>
           ))}
@@ -70,7 +65,7 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
             key={i}
             onClick={() => paginate(i + 1)}
             className={`mx-1 px-3 py-1 border rounded ${
-              currentPage === i + 1 ? 'bg-orange-400 text-white' : 'bg-white'
+              currentPage === i + 1 ? 'bg-gray-200 text-black' : 'bg-white'
             }`}
           >
             {i + 1}
@@ -81,4 +76,4 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
   );
 };
 
-export default CommunityListCard;
+export default NoticeListCard;

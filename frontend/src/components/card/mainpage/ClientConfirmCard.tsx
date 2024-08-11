@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ImClock } from 'react-icons/im';
-import useAuthStore from '@/stores/authStore';
+import useMemberStore from '@/stores/memberStore';
 
 const ReservConfirmCard: React.FC = () => {
-  const { email } = useAuthStore();
+  const { name } = useMemberStore();
 
   return (
     <div className="p-8 max-w-sm w-96 bg-gray-50 rounded-lg shadow-lg">
@@ -11,7 +11,7 @@ const ReservConfirmCard: React.FC = () => {
         <ImClock size={50} color="gray" />
       </div>
       <div className="text-2xl font-bold mb-4 text-center w-full h-full truncate">
-        <h2>{email}님!</h2>
+        <h2>{name}님!</h2>
         <h2>오늘 상담 확인하세요!</h2>
       </div>
       <ul className="space-y-2 text-center ">

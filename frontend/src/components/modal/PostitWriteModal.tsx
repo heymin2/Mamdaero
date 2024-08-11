@@ -7,9 +7,10 @@ interface PostitWriteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreate: (content: string) => void;
-  onUpdate: (postitId: number, content: string) => void;
+  onUpdate: (questionId: number, postitId: number, content: string) => void;
   question: string;
   postit?: {
+    questionId: number;
     postitId: number;
     content: string;
   };
@@ -33,7 +34,7 @@ const PostitWriteModal: React.FC<PostitWriteModalProps> = ({
       return;
     }
     if (type === 'update' && postit) {
-      onUpdate(postit.postitId, content);
+      onUpdate(postit.questionId, postit.postitId, content);
     }
   };
 
@@ -51,7 +52,7 @@ const PostitWriteModal: React.FC<PostitWriteModalProps> = ({
   }, [postit]);
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} size="sm">
+    <ModalWrapper isOpen={isOpen} onClose={closeModal} size="sm">
       <div className="w-full max-w-md mx-auto">
         <h2 className="text-xl font-bold mb-2 text-orange-500">질문</h2>
         <p className="text-lg mb-4">{question || '질문 데이터가 없습니다'}</p>

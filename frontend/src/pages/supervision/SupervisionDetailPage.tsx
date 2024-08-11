@@ -28,6 +28,7 @@ interface CommentDetail {
   writer: string;
   comment: string;
   createdAt: string;
+  isMine: boolean;
 }
 
 const fetchPostDetail = async (postId: number): Promise<PostDetail> => {

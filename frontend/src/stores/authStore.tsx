@@ -37,6 +37,8 @@ const useAuthStore = create<AuthState>()(
           email: null,
         });
         localStorage.removeItem('auth-storage');
+        localStorage.removeItem('member-storage');
+        localStorage.removeItem('counselor-storage');
       },
       getAccessToken: () => get().accessToken,
       getRole: () => get().role,

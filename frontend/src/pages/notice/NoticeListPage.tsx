@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
 import dayjs from 'dayjs';
 
-import CommunityListCard from '@/components/card/community/CommunityListCard';
-import CommunityBar from '@/components/navigation/CommunityBar';
+import NoticeListCard from '@/components/card/notice/NoticeListCard';
+import NoticeBar from '@/components/navigation/NoticeBar';
 import WriteButton from '@/components/button/WriteButton';
 import AlignDropdown from '@/components/dropdown/AlignDropdown';
 
@@ -16,45 +16,33 @@ interface Page<T> {
   totalItems: number;
   totalPages: number;
 }
+
 interface Post {
-  id: number;
+  noticeId: number;
   title: string;
-  writer: string;
   view: number;
-  likeCount: number;
   createdAt: string;
 }
 
 const fetchPosts = async (page: number): Promise<Page<Post>> => {
   const res = await axiosInstance({
     method: 'get',
-    url: 'p/board',
-    params: {
-      page: page - 1,
-      condition: 'new',
-    },
+    url: 'p/notice',
   });
   return {
     ...res.data,
     data: res.data.data.map((item: Post) => ({
-      id: item.id,
+      noticeId: item.noticeId,
       title: item.title,
-      writer: item.writer,
       view: item.view,
-      likeCount: item.likeCount,
       createdAt: dayjs(item.createdAt).format('YYYY-MM-DD'),
     })),
   };
 };
 
-const CommunityListPage: React.FC = () => {
-  const [selectedOption1, setSelectedOption1] = useState('최신순');
-  const [selectedOption2, setSelectedOption2] = useState('제목');
+const NoticeListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-
   const navigate = useNavigate();
-  const options1 = ['최신순', '오래된순', '추천 많은 순', '댓글 많은 순'];
-  const options2 = ['제목', '내용', '작성자'];
 
   const {
     data: pageData,
@@ -69,26 +57,21 @@ const CommunityListPage: React.FC = () => {
   if (error) return <div>An error occurred: {error.message}</div>;
 
   const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
+
   const writePost = () => {
-    navigate('/community/write/post');
+    navigate('/notice/write/post');
   };
+
   return (
     <div>
-      <CommunityBar />
+      <NoticeBar />
       <div className="mx-8">
-        <div className="flex justify-between mx-5">
-          <div>
-            <AlignDropdown
-              selectedOption={selectedOption1}
-              options={options1}
-              onOptionClick={setSelectedOption1}
-            />
-          </div>
+        <div className="flex justify-end mx-5">
           <div className="text-right">
-            <WriteButton onClick={writePost} color="orange" />
+            <WriteButton onClick={writePost} color="gray" />
           </div>
         </div>
-        <CommunityListCard
+        <NoticeListCard
           posts={pageData?.data || []}
           currentPage={currentPage}
           totalPages={pageData?.totalPages || 1}
@@ -99,4 +82,4 @@ const CommunityListPage: React.FC = () => {
   );
 };
 
-export default CommunityListPage;
+export default NoticeListPage;
