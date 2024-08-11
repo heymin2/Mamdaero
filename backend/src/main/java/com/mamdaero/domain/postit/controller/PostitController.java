@@ -48,8 +48,8 @@ public class PostitController {
     }
 
     @DeleteMapping("/cma/postit/{questionId}/{postitId}")
-    public ResponseEntity<?> delete(@PathVariable("questionId") Long questionId, @PathVariable("postitId") Long postitId, @RequestBody PostitRequest request) {
-        postitService.delete(findUserService.findMemberId(), questionId, postitId, request);
+    public ResponseEntity<?> delete(@PathVariable("questionId") Long questionId, @PathVariable("postitId") Long postitId) {
+        postitService.delete(findUserService.findMemberId(), questionId, postitId);
         return ResponseEntity.ok().build();
     }
 

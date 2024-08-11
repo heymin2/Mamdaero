@@ -10,8 +10,8 @@ import com.mamdaero.domain.notice.exception.CommentNotFoundException;
 import com.mamdaero.domain.postit.dto.request.PostitRequest;
 import com.mamdaero.domain.postit.dto.response.PostitResponse;
 import com.mamdaero.domain.postit.entity.Postit;
-import com.mamdaero.domain.postit.repository.PostitRepository;
 import com.mamdaero.domain.postit.repository.PostitLikeRepository;
+import com.mamdaero.domain.postit.repository.PostitRepository;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -90,7 +90,7 @@ public class PostitService {
     }
 
     @Transactional
-    public void delete(Long memberId, Long questionId, Long postitId, PostitRequest request) {
+    public void delete(Long memberId, Long questionId, Long postitId) {
 
         Postit post = postitRepository.findByQuestionIdAndIdAndMemberId(questionId, postitId, memberId)
                 .orElseThrow(CommentNotFoundException::new);
