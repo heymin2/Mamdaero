@@ -19,38 +19,26 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class PostitService {
-
     private final PostitRepository postitRepository;
     private final PostitLikeRepository postitLikeRepository;
     private final MemberRepository memberRepository;
     private final ComplaintRepository complaintRepository;
-
     public Pagination<PostitResponse> findPost(Long memberId, int page, int size, Long questionId) {
-
         Pageable pageable = PageRequest.of(page, size);
-        Page<Postit> postitPage = postitRepository.findByQuestionId(questionId, pageable);
-
+        Page<Postit> postitPage = postitRepository.findByQuestionIdOrderByCreatedAtDesc(questionId, pageable);
         List<PostitResponse> postitResponses = postitPage.getContent().stream()
                 .map(postit -> {
-                    String writer = memberRepository.findById(postit.getMemberId())
-                            .orElseThrow(CounselorNotFoundException::new)
-                            .getNickname();
-
                     int likeCount = postitLikeRepository.countByBoardId(postit.getId());
                     boolean isLike = postitLikeRepository.existsByBoardIdAndMemberId(postit.getId(), memberId);
                     boolean isMine = postitRepository.existsByIdAndMemberId(postit.getId(), memberId);
-
-                    return PostitResponse.of(postit, writer, likeCount, isLike, isMine);
+                    return PostitResponse.of(postit, likeCount, isLike, isMine);
                 })
                 .collect(Collectors.toList());
-
         return new Pagination<>(
                 postitResponses,
                 postitPage.getNumber() + 1,
@@ -59,14 +47,11 @@ public class PostitService {
                 (int) postitPage.getTotalElements()
         );
     }
-
     @Transactional
     public void create(Long memberId, Long questionId, PostitRequest request) {
-
         if(request.getContent() == null) {
             throw new BoardBadRequestException();
         }
-
         postitRepository.save(PostitRequest.toEntity(memberId, questionId, request));
     }
 
@@ -78,15 +63,11 @@ public class PostitService {
 
         post.updateContent(request.getContent());
 
-        String writer = memberRepository.findById(post.getMemberId())
-                .orElseThrow(CounselorNotFoundException::new)
-                .getNickname();
-
         int likeCount = postitLikeRepository.countByBoardId(post.getId());
         boolean isLike = postitLikeRepository.existsByBoardIdAndMemberId(post.getId(), memberId);
         boolean isMine = postitRepository.existsByIdAndMemberId(post.getId(), memberId);
 
-        return PostitResponse.of(post, writer, likeCount ,isLike, isMine);
+        return PostitResponse.of(post, likeCount, isLike, isMine);
     }
 
     @Transactional

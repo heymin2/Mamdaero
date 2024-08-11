@@ -49,7 +49,7 @@ BoardCommentService {
                 .map(comment -> {
                     String writer = memberRepository.findById(comment.getMemberId())
                             .orElseThrow(CounselorNotFoundException::new)
-                            .getName();
+                            .getNickname();
 
                     boolean isMine = boardCommentRepository.existsByIdAndMemberId(comment.getId(), memberId);
 
@@ -68,22 +68,14 @@ BoardCommentService {
 
     @Transactional
     public void create(Long id, BoardCommentRequest request) {
-        Long memberId = findUserService.findMemberId();
-
-        if(request.getComment() == null) {
-            throw new BoardBadRequestException();
-        }
+        Long memberId = checkTokenId();
 
         boardCommentRepository.save(BoardCommentRequest.toEntity(id, memberId, request));
     }
 
     @Transactional
     public BoardCommentResponse update(Long boardId, Long commentId, BoardCommentRequest request) {
-        Long memberId = findUserService.findMemberId();
-
-        if(memberId == null) {
-            throw new AccessDeniedException();
-        }
+        Long memberId = checkTokenId();
 
         BoardComment comment = boardCommentRepository.findByIdAndBoardIdAndMemberId(commentId, boardId, memberId)
                 .orElseThrow(CommentNotFoundException::new);
@@ -92,7 +84,7 @@ BoardCommentService {
 
         String writer = memberRepository.findById(comment.getMemberId())
                 .orElseThrow(CounselorNotFoundException::new)
-                .getName();
+                .getNickname();
 
         boolean isMine = boardCommentRepository.existsByIdAndMemberId(comment.getId(), memberId);
 
@@ -143,5 +135,15 @@ BoardCommentService {
                 .memberId(memberId)
                 .build());
         return true;
+    }
+
+    private Long checkTokenId() {
+        Long memberId = findUserService.findMemberId();
+
+        if(memberId == null) {
+            throw new AccessDeniedException();
+        }
+
+        return memberId;
     }
 }
