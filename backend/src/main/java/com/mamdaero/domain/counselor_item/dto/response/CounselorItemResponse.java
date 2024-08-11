@@ -11,7 +11,7 @@ public class CounselorItemResponse {
     private Long counselorItemId;
     private String name;
     private String description;
-    private int fee;
+    private Integer fee;
 
     public static CounselorItemResponse of(CounselorItem counselorItem) {
         return CounselorItemResponse.builder()

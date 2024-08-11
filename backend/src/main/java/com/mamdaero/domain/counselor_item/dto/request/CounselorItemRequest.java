@@ -14,7 +14,7 @@ public class CounselorItemRequest {
 
     private String name;
     private String description;
-    private int fee;
+    private Integer fee;
 
     public static CounselorItem toEntity(Long counselorId, CounselorItemRequest request) {
         return CounselorItem.builder()
