@@ -1,48 +1,46 @@
-import RegisterBUtton from '@/components/button/RegisterButton';
-import Editor from '@/components/Editor';
-import CommunityBar from '@/components/navigation/CommunityBar';
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '@/api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import CommunityForm from '@/pages/community/CommunityForm';
+
+interface PostArticleResponse {
+  id: number;
+  title: string;
+  content: string;
+}
+
+interface PostData {
+  title: string;
+  content: string;
+}
+
+const postArticle = async (postData: PostData): Promise<PostArticleResponse> => {
+  const response = await axiosInstance.post('cm/board', postData);
+  return response.data;
+};
+
 const CommunityWritePostPage = () => {
   const navigate = useNavigate();
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  // 제목 입력 핸들러
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
-  };
+  const postArticleMutation = useMutation({
+    mutationFn: postArticle,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['communityPosts'] });
+      navigate('/community');
+    },
+    onError: (error: unknown) => {
+      alert(`오류가 발생했습니다. ${error}`);
+    },
+  });
 
-  // 에디터 내용 핸들러
-  const handleEditorChange = (content: string) => {
-    setContent(content);
-  };
-
-  // 게시글 작성 핸들러
-  const handleSubmit = async () => {
-    // 제목과 내용이 비어 있는지 확인
-    if (!title.trim() || !content.trim()) {
-      alert('제목과 내용을 모두 입력해 주세요.');
-      return;
-    }
-  };
   return (
-    <div>
-      <div className="sticky top-0 z-10">
-        <CommunityBar />
-        <div className="mx-24 text-right">
-          {/* <RegisterBUtton onClick={handleSubmit} color="orange" /> */}
-        </div>
-      </div>
-      <div className="mx-24 my-6">
-        <input
-          placeholder="제목을 입력해 주세요."
-          className="w-full px-6 h-16 large-placeholder"
-        ></input>
-        <Editor value={content} onChange={handleEditorChange} />
-      </div>
-    </div>
+    <CommunityForm
+      onSubmit={postArticleMutation.mutate}
+      isSubmitting={postArticleMutation.isPending}
+      onCancel={() => navigate('/community')}
+    />
   );
 };
 

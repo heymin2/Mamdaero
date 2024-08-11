@@ -15,6 +15,7 @@ interface CommentDetail {
   writer: string;
   comment: string;
   createdAt: string;
+  isMine: boolean;
 }
 
 interface SupervisionCommentCardProps {
@@ -55,7 +56,7 @@ const SupervisionCommentCard: React.FC<SupervisionCommentCardProps> = ({
       setIsEditing(false);
     },
     onError: error => {
-      console.error('댓글 수정 중 오류가 발생했습니다:', error);
+      alert('댓글 수정 중 오류가 발생했습니다.');
     },
   });
 
@@ -86,12 +87,11 @@ const SupervisionCommentCard: React.FC<SupervisionCommentCardProps> = ({
       );
     },
     onError: error => {
-      console.error('댓글 삭제 중 오류 발생:', error);
-      alert('댓글 삭제 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      alert('댓글 삭제 중 오류가 발생했습니다.');
     },
   });
 
-  // 댓글 신고 로직
+  // 댓글 신고
   const toggleReportButton = (): void => {
     setShowReportButton(!showReportButton);
   };
@@ -109,6 +109,24 @@ const SupervisionCommentCard: React.FC<SupervisionCommentCardProps> = ({
     };
   }, []);
 
+  const reportMutation = useMutation({
+    mutationFn: () =>
+      axiosInstance({
+        method: 'post',
+        url: `c/counselor-board/${postId}/comment/${commentDetail.id}/complaint`,
+      }),
+    onSuccess: () => {
+      alert('댓글 신고가 완료되었습니다.');
+    },
+    onError: error => {
+      alert('오류가 발생했습니다. 다시 시도해 주세요.');
+    },
+  });
+
+  const handleCommentReport = (): void => {
+    reportMutation.mutate();
+  };
+
   return (
     <div className="border-b-2 border-blue-300 px-10 pt-4 pb-2">
       <div className="flex justify-between items-center">
@@ -117,7 +135,7 @@ const SupervisionCommentCard: React.FC<SupervisionCommentCardProps> = ({
           {commentDetail.writer}
         </div>
         <div className="flex gap-2 items-center">
-          {!isEditing && (
+          {commentDetail.isMine && !isEditing && (
             <>
               <div className="relative group pb-1">
                 <FaEdit
@@ -139,17 +157,19 @@ const SupervisionCommentCard: React.FC<SupervisionCommentCardProps> = ({
               </div>
             </>
           )}
+          {!commentDetail.isMine && (
+            <div className="relative" ref={reportButtonRef}>
+              <button onClick={toggleReportButton} className="p-1">
+                <BsThreeDots />
+              </button>
+              {showReportButton && (
+                <div className="absolute right-7 ml-2 top-0 z-10">
+                  <ReportButton onClick={handleCommentReport} />
+                </div>
+              )}
+            </div>
+          )}
           <span className="mx-2">{createdAt}</span>
-          <div className="relative" ref={reportButtonRef}>
-            <button onClick={toggleReportButton} className="p-1">
-              <BsThreeDots />
-            </button>
-            {showReportButton && (
-              <div className="absolute left-full ml-2 top-0 z-10">
-                <ReportButton />
-              </div>
-            )}
-          </div>
         </div>
       </div>
       {isEditing ? (

@@ -25,6 +25,7 @@ import CounselorReservePage from '@/pages/counselor/CounselorReservePage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
 import CommunityDetailPage from '@/pages/community/CommunityDetailPage';
 import CommunityWritePostPage from '@/pages/community/CommunityWritePostPage';
+import CommunityEditPostPage from './pages/community/CommunityEditPostPage';
 import SupervisionListPage from '@/pages/supervision/SupervisionListPage';
 import SupervisionDetailPage from '@/pages/supervision/SupervisionDetailPage';
 import SupervisionWritePostPage from '@/pages/supervision/SupervisionWritePostPage';
@@ -60,9 +61,7 @@ const Router = () => {
     <Routes>
       {/* Main Routes  */}
       <Route path="/" element={getHomePageElement()} />
-      {/* <Route path="/" element={<MainPage />} /> */}
-      {/* <Route path="/client/main" element={<MainPageClient />} /> */}
-      {/* <Route path="/counselor/main" element={<MainPageCounselor />} /> */}
+
       {/* SignUp Routes */}
       <Route path="/signup/choose" element={<SignUpChoose />} />
       <Route path="/signup/client/*" element={<SignUpClient />} />
@@ -90,6 +89,7 @@ const Router = () => {
       <Route path="/community" element={<CommunityListPage />} />
       <Route path="/community/:communityId" element={<CommunityDetailPage />} />
       <Route path="/community/write/post" element={<CommunityWritePostPage />} />
+      <Route path="/community/edit/:communityId" element={<CommunityEditPostPage />} />
 
       {/* Supervision Routes */}
       <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
