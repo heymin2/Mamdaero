@@ -70,7 +70,7 @@ public class BoardFindService {
                 .map(board -> {
                     String writer = memberRepository.findById(board.getMemberId())
                             .orElseThrow(CounselorNotFoundException::new)
-                            .getName();
+                            .getNickname();
 
                     int likeCount = boardLikeRepository.countByBoardId(board.getId());
 

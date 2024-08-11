@@ -1,5 +1,6 @@
 package com.mamdaero.domain.counselor_item.entity;
 
+import com.mamdaero.domain.counselor_item.dto.request.CounselorItemRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +12,6 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE counselor_item SET is_delete = true WHERE counselor_item_id = ?")
@@ -34,9 +34,24 @@ public class CounselorItem {
     private String description;
 
     @Column(nullable = false)
-    private int fee;
+    private Integer fee;
 
     @Column(name = "is_delete")
     @ColumnDefault("false")
-    private boolean isDelete;
+    private Boolean isDelete;
+
+    @Builder
+    public CounselorItem(Long counselorId, String name, String description, Integer fee) {
+        this.counselorId = counselorId;
+        this.name = name;
+        this.description = description;
+        this.fee = fee;
+        this.isDelete = false;
+    }
+
+    public void update(CounselorItemRequest request) {
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.fee = request.getFee();
+    }
 }
