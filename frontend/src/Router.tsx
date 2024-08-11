@@ -30,6 +30,10 @@ import SupervisionListPage from '@/pages/supervision/SupervisionListPage';
 import SupervisionDetailPage from '@/pages/supervision/SupervisionDetailPage';
 import SupervisionWritePostPage from '@/pages/supervision/SupervisionWritePostPage';
 import SupervisionEditPostPage from '@/pages/supervision/SupervisionEditPostPage';
+import NoticeListPage from '@/pages/notice/NoticeListPage';
+import NoticeDetailPage from '@/pages/notice/NoticeDetailPage';
+import NoticeWritePostPage from '@/pages/notice/NoticeWritePostPage';
+import NoticeEditPostPage from '@/pages/notice/NoticeEditPostPage';
 import ClientMyPage from '@/pages/mypage/ClientMyPage';
 import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
 import CounselorManageProductPage from '@/pages/mypage/CounselorManageProductPage';
@@ -98,6 +102,12 @@ const Router = () => {
         <Route path="/supervision/write/post" element={<SupervisionWritePostPage />} />
         <Route path="/supervision/edit/:supervisionId" element={<SupervisionEditPostPage />} />
       </Route>
+
+      {/* Notice Routes */}
+      <Route path="/notice" element={<NoticeListPage />} />
+      <Route path="/notice/:noticeId" element={<NoticeDetailPage />} />
+      <Route path="/notice/write/post" element={<NoticeWritePostPage />} />
+      <Route path="/notice/edit/:noticeId" element={<NoticeEditPostPage />} />
 
       {/* MyPage Routes */}
       <Route path="/mypage/client" element={<ClientMyPage />} />
