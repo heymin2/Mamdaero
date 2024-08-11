@@ -10,6 +10,7 @@ import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
 import ReportButton from '@/components/button/ReportButton';
+import useAuthStore from '@/stores/authStore';
 
 interface CommunityPostCardProps {
   postDetail: {
@@ -35,6 +36,7 @@ const CommunityPostCard: React.FC<CommunityPostCardProps> = ({ postDetail, query
   const [likeCount, setLikeCount] = useState<number>(postDetail.likeCount);
   const createdAt = dayjs(postDetail.createdAt).format('YYYY-MM-DD HH:mm:ss');
   const reportButtonRef = useRef<HTMLDivElement | null>(null);
+  const { isAuthenticated } = useAuthStore();
 
   // 이미지 로딩 핸들러
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -127,6 +129,10 @@ const CommunityPostCard: React.FC<CommunityPostCardProps> = ({ postDetail, query
   });
 
   const handleArticleReport = (): void => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
     reportMutation.mutate();
   };
 
@@ -148,6 +154,10 @@ const CommunityPostCard: React.FC<CommunityPostCardProps> = ({ postDetail, query
   });
 
   const handleLikeClick = () => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
     toggleLikeMutation.mutate();
   };
 
@@ -198,7 +208,11 @@ const CommunityPostCard: React.FC<CommunityPostCardProps> = ({ postDetail, query
 
       <div className="bottom-3 right-5 flex justify-end text-base gap-1 py-2 ps-10 pr-12">
         <div className="flex font-bold items-center cursor-pointer" onClick={handleLikeClick}>
-          {isLike ? <IoMdHeart size={24} color="red" /> : <IoMdHeartEmpty size={24} color="red" />}
+          {isAuthenticated && isLike ? (
+            <IoMdHeart size={24} color="red" />
+          ) : (
+            <IoMdHeartEmpty size={24} color="red" />
+          )}
           <div className="ml-1">좋아요</div>
           <div className="ml-1">{likeCount}</div>
         </div>

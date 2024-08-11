@@ -10,6 +10,7 @@ import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
 import ReportButton from '@/components/button/ReportButton';
+import useAuthStore from '@/stores/authStore';
 
 interface SupervisionPostCardProps {
   postDetail: {
@@ -36,6 +37,7 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
   const [likeCount, setLikeCount] = useState<number>(postDetail.likeCount);
   const createdAt = dayjs(postDetail.createdAt).format('YYYY-MM-DD HH:mm:ss');
   const reportButtonRef = useRef<HTMLDivElement | null>(null);
+  const { isAuthenticated } = useAuthStore();
 
   // 파일 이름 추출
   const getFileName = (url: string) => {
@@ -139,6 +141,10 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
   });
 
   const handleArticleReport = (): void => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
     reportMutation.mutate();
   };
 
@@ -160,6 +166,10 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
   });
 
   const handleLikeClick = () => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
     toggleLikeMutation.mutate();
   };
 
@@ -224,7 +234,11 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
           )}
         </div>
         <div className="flex font-bold items-center cursor-pointer" onClick={handleLikeClick}>
-          {isLike ? <IoMdHeart size={24} color="red" /> : <IoMdHeartEmpty size={24} color="red" />}
+          {isAuthenticated && isLike ? (
+            <IoMdHeart size={24} color="red" />
+          ) : (
+            <IoMdHeartEmpty size={24} color="red" />
+          )}
           <div className="ml-1">좋아요</div>
           <div className="ml-1">{likeCount}</div>
         </div>
