@@ -34,12 +34,10 @@ const ProfileDropdown: React.FC = () => {
   const handleLogout = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      await logout(); // 비동기 작업일 경우를 대비해 await 사용
-      // 추가적인 정리 작업이 필요한 경우 여기에 구현
+      await logout();
       navigate('/');
     } catch (error) {
-      console.error('로그아웃 중 오류 발생:', error);
-      // 오류 처리 로직 (예: 사용자에게 알림)
+      alert(`로그아웃 오류 ${error}`);
     }
   };
 

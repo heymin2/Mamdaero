@@ -33,7 +33,6 @@ const LoginClient: React.FC = () => {
   const login = useAuthStore(state => state.login);
   const { isCounselor } = useAuthStore();
   const fetchMember = useMemberStore(state => state.fetchMember);
-  const fetchCounselor = useCounselorStore(state => state.fetchCounselor);
 
   const loginMutation = useMutation({
     mutationFn: loginUserInfo,
@@ -41,9 +40,6 @@ const LoginClient: React.FC = () => {
       const { accessToken, role } = data.data.result;
       login(accessToken, role, email);
       await fetchMember();
-      if (isCounselor()) {
-        await fetchCounselor();
-      }
       navigate('/');
     },
     onError: (error: AxiosError) => {
