@@ -29,8 +29,10 @@ const useMemberStore = create<MemberState>()(
       isLoading: false,
       error: null,
       fetchMember: async () => {
+        const { accessToken, role } = useAuthStore.getState();
+
         set({ isLoading: true });
-        const accessToken = useAuthStore.getState().accessToken;
+
         if (!accessToken) {
           set({ error: 'No access token available', isLoading: false });
           return;

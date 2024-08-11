@@ -48,14 +48,16 @@ import ClientFaceChat from '@/pages/mycounsel/client/ClientFaceChat';
 import CounselorFaceChat from '@/pages/mycounsel/counselor/CounselorFaceChat';
 import PostitPage from '@/pages/postit/PostitPage';
 import UnauthoriziedPage from '@/pages/UnauthoriziedPage';
-
+import SimpleTestListPage from '@/pages/simpletest/SimpleTestListPage';
 import useAuthStore from '@/stores/authStore';
+import BernardTestPage from './pages/simpletest/BernardTestPage';
+import HTPTestPage from './pages/simpletest/HTPTestPage';
 
 const Router = () => {
   const { isCounselor, isClient, isAuthenticated, getEmail } = useAuthStore();
 
   const getHomePageElement = () => {
-    if (isAuthenticated && isCounselor()) {
+    if (isAuthenticated && (isCounselor() || isAdmin())) {
       return <MainPageCounselor />;
     } else if (isAuthenticated && isClient()) {
       return <MainPageClient />;
@@ -151,6 +153,11 @@ const Router = () => {
 
       {/* Unauthorizied */}
       <Route path="/unauthorized" element={<UnauthoriziedPage />} />
+
+      {/* SimpleTest Routes */}
+      <Route path="/simpletest" element={<SimpleTestListPage />} />
+      <Route path="/simpletest/bernard" element={<BernardTestPage />} />
+      <Route path="/simpletest/htp" element={<HTPTestPage />} />
     </Routes>
   );
 };
