@@ -14,7 +14,7 @@ import useAuthStore from '@/stores/authStore';
 
 interface NoticePostCardProps {
   postDetail: {
-    id: number;
+    noticeId: number;
     title: string;
     content: string;
     view: number;
@@ -26,10 +26,9 @@ interface NoticePostCardProps {
 const NoticePostCard: React.FC<NoticePostCardProps> = ({ postDetail, queryKey }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { id, title, content, view } = postDetail;
+  const { noticeId, title, content, view } = postDetail;
   const createdAt = dayjs(postDetail.createdAt).format('YYYY-MM-DD HH:mm:ss');
   const { isAuthenticated } = useAuthStore();
-
   // 이미지 로딩 핸들러
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.style.maxWidth = '100%'; // 이미지가 컨테이너에 맞게 조정됨
@@ -61,13 +60,13 @@ const NoticePostCard: React.FC<NoticePostCardProps> = ({ postDetail, queryKey })
 
   // 게시글 수정
   const handleArticleEdit = () => {
-    navigate(`/notice/edit/${id}`);
+    navigate(`/notice/edit/${noticeId}`);
   };
 
   // 게시글 삭제
   const handleArticleDelete = () => {
     if (window.confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-      deleteArticleMutation.mutate(id);
+      deleteArticleMutation.mutate(noticeId);
     }
   };
 

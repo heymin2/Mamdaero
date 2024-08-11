@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import NoticeListCard from '@/components/card/notice/NoticeListCard';
 import NoticeBar from '@/components/navigation/NoticeBar';
 import WriteButton from '@/components/button/WriteButton';
-import AlignDropdown from '@/components/dropdown/AlignDropdown';
+import useAuthStore from '@/stores/authStore';
 
 interface Page<T> {
   currentPage: number;
@@ -43,7 +43,7 @@ const fetchPosts = async (page: number): Promise<Page<Post>> => {
 const NoticeListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const navigate = useNavigate();
-
+  const { isAdmin } = useAuthStore();
   const {
     data: pageData,
     isLoading,
@@ -67,9 +67,12 @@ const NoticeListPage: React.FC = () => {
       <NoticeBar />
       <div className="mx-8">
         <div className="flex justify-end mx-5">
-          <div className="text-right">
-            <WriteButton onClick={writePost} color="gray" />
-          </div>
+          {isAdmin() && (
+            <div className="text-right">
+              <WriteButton onClick={writePost} color="gray" />
+            </div>
+          )}
+          {!isAdmin() && <div className="my-4"></div>}
         </div>
         <NoticeListCard
           posts={pageData?.data || []}

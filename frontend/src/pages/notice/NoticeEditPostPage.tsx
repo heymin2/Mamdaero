@@ -30,7 +30,7 @@ const updateArticle = async (postId: number, postData: PostData): Promise<PostAr
   const response = await axiosInstance({
     method: 'patch',
     url: `a/notice/${postId}`,
-    data: postData,
+    data: { name: postData.title, description: postData.content },
   });
   return response.data;
 };

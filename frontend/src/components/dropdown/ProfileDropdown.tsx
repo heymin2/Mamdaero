@@ -7,11 +7,15 @@ const ProfileDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { logout, email } = useAuthStore();
+  const { logout, email, isAuthenticated } = useAuthStore();
 
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsOpen(prev => !prev);
+    if (isAuthenticated) {
+      setIsOpen(prev => !prev);
+    } else {
+      alert('로그인이 필요합니다.');
+    }
   };
 
   useEffect(() => {
@@ -52,7 +56,7 @@ const ProfileDropdown: React.FC = () => {
       <button onClick={toggleDropdown} className="focus:outline-none rounded-full relative z-10">
         <CgProfile size={24} />
       </button>
-      {isOpen && (
+      {isAuthenticated && isOpen && (
         <div className="absolute bottom-full right-0 mb-2 w-24 bg-white rounded-md shadow-xl z-20 border border-gray-200">
           <button
             onClick={handleMyPage}

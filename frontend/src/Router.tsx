@@ -54,7 +54,7 @@ import BernardTestPage from './pages/simpletest/BernardTestPage';
 import HTPTestPage from './pages/simpletest/HTPTestPage';
 
 const Router = () => {
-  const { isCounselor, isClient, isAuthenticated, getEmail } = useAuthStore();
+  const { isCounselor, isClient, isAdmin, isAuthenticated, getEmail } = useAuthStore();
 
   const getHomePageElement = () => {
     if (isAuthenticated && (isCounselor() || isAdmin())) {

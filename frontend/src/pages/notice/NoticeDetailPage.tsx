@@ -9,7 +9,7 @@ import NoticeBar from '@/components/navigation/NoticeBar';
 import NoticePostCard from '@/components/card/notice/NoticePostCard';
 
 interface PostDetail {
-  id: number;
+  noticeId: number;
   title: string;
   content: string;
   view: number;
