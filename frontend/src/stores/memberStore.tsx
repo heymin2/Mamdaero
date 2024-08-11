@@ -7,9 +7,6 @@ interface MemberState {
   name: string | null;
   email: string | null;
   nickname: string | null;
-  birth: string | null;
-  tel: string | null;
-  gender: string | null;
   isLoading: boolean;
   error: string | null;
   fetchMember: () => Promise<void>;
@@ -22,9 +19,6 @@ const useMemberStore = create<MemberState>()(
       name: null,
       email: null,
       nickname: null,
-      birth: null,
-      tel: null,
-      gender: null,
       isLoading: false,
       error: null,
       fetchMember: async () => {
@@ -38,16 +32,11 @@ const useMemberStore = create<MemberState>()(
           const response = await axiosInstance({
             method: 'get',
             url: 'm/member',
-            headers: { Authorization: `Bearer ${accessToken}` },
           });
-          console.log(response);
           set({
             name: response.data.name,
             email: response.data.email,
             nickname: response.data.nickname,
-            birth: response.data.birth,
-            tel: response.data.tel,
-            gender: response.data.gender,
             isLoading: false,
             error: null,
           });
@@ -63,9 +52,6 @@ const useMemberStore = create<MemberState>()(
           name: null,
           email: null,
           nickname: null,
-          birth: null,
-          tel: null,
-          gender: null,
           error: null,
         }),
     }),
