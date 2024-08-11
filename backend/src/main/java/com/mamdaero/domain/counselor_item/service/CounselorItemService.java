@@ -7,12 +7,16 @@ import com.mamdaero.domain.counselor_item.exception.CounselorItemBadRequestExcep
 import com.mamdaero.domain.counselor_item.exception.CounselorItemNotFoundException;
 import com.mamdaero.domain.counselor_item.exception.CounselorNotFoundException;
 import com.mamdaero.domain.counselor_item.repository.CounselorItemRepository;
+import com.mamdaero.domain.member.exception.AccessDeniedException;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,12 +25,9 @@ import java.util.stream.Collectors;
 public class CounselorItemService {
 
     private final CounselorItemRepository counselorItemRepository;
+    private final FindUserService findUserService;
 
     public List<CounselorItemResponse> findCounselorItem(long counselorId) {
-        if(!counselorItemRepository.existsByCounselorId(counselorId)) {
-            throw new CounselorNotFoundException();
-        }
-
         return counselorItemRepository.findByCounselorId(counselorId)
                 .stream()
                 .map(CounselorItemResponse::of)
@@ -34,14 +35,9 @@ public class CounselorItemService {
     }
 
     public List<CounselorItemResponse> findMyItem() {
-        // 토큰값 체크해서 counselor 아이디 검사 기능 추가 필요
-        long counselorId = 1;
+        Long memberId = checkToken();
 
-        if(!counselorItemRepository.existsByCounselorId(counselorId)) {
-            throw new CounselorNotFoundException();
-        }
-
-        return counselorItemRepository.findByCounselorId(counselorId)
+        return counselorItemRepository.findByCounselorId(memberId)
                 .stream()
                 .map(CounselorItemResponse::of)
                 .collect(Collectors.toList());
@@ -49,14 +45,13 @@ public class CounselorItemService {
 
     @Transactional
     public void create(CounselorItemRequest request) {
-        // 토큰값 체크해서 counselor 아이디 검사 기능 추가 필요
-        long counselorId = 1;
+        Long memberId = checkToken();
 
-        if(request.getFee() > 2_000_000_000 || request.getFee() < 0 || request.getName() == null) {
+        if(request.getFee() > 1_000_000 || request.getFee() < 0 || request.getName() == null) {
             throw new CounselorItemBadRequestException();
         }
 
-        counselorItemRepository.save(CounselorItemRequest.toEntity(counselorId, request));
+        counselorItemRepository.save(CounselorItemRequest.toEntity(memberId, request));
     }
 
     @Transactional
@@ -64,10 +59,9 @@ public class CounselorItemService {
         CounselorItem item = counselorItemRepository.findById(counselorItemId)
                 .orElseThrow(CounselorItemNotFoundException::new);
 
-        // 토큰값 체크해서 counselor 아이디 검사 기능 추가 필요
-        long counselorId = 1;
+        Long memberId = checkToken();
 
-        if(item.getCounselorId() != counselorId) {
+        if(!Objects.equals(item.getCounselorId(), memberId)) {
             throw new CounselorNotFoundException();
         }
 
@@ -75,17 +69,13 @@ public class CounselorItemService {
             throw new CounselorItemBadRequestException();
         }
 
-        CounselorItem updatedItem = CounselorItem.builder()
-                .counselorItemId(item.getCounselorItemId())
-                .counselorId(item.getCounselorId())
-                .name(request.getName() != null ? request.getName() : item.getName())
-                .description(request.getDescription() != null ? request.getDescription() : item.getDescription())
-                .fee(request.getFee() != 0 ? request.getFee() : item.getFee())
-                .build();
+        if(request.getName() == null) {
+            throw new CounselorItemBadRequestException();
+        }
 
-        counselorItemRepository.save(updatedItem);
+        item.update(request);
 
-        return CounselorItemResponse.of(updatedItem);
+        return CounselorItemResponse.of(item);
     }
 
     @Transactional
@@ -93,13 +83,25 @@ public class CounselorItemService {
         CounselorItem item = counselorItemRepository.findById(counselorItemId)
                 .orElseThrow(CounselorItemNotFoundException::new);
 
-        // 토큰값 체크해서 counselor 아이디 검사 기능 추가 필요
-        long counselorId = 1;
+        Long memberId = checkToken();
 
-        if(item.getCounselorId() != counselorId) {
+        if(!Objects.equals(item.getCounselorId(), memberId)) {
             throw new CounselorNotFoundException();
         }
 
         counselorItemRepository.delete(item);
+    }
+
+    private Long checkToken() {
+        MemberInfoDTO member = findUserService.findMember();
+
+        Long memberId = member.getMemberId();
+        String memberRole = member.getMemberRole();
+
+        if(memberId == null || !memberRole.equals("상담사")) {
+            throw new AccessDeniedException();
+        }
+
+        return memberId;
     }
 }
