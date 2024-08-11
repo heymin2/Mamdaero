@@ -16,6 +16,8 @@ const routeBackgroundColors: { [key: string]: string } = {
   '/mypage/counselor/exclude': 'bg-blue-50',
   '/mypage/counselor/product': 'bg-blue-50',
   '/mypage/counselor/time': 'bg-blue-50',
+  '/notice': 'bg-gray-50',
+  '/notice/:noticeId': 'bg-gray-50',
 };
 
 function App() {

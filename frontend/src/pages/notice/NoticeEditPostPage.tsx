@@ -3,7 +3,7 @@ import axiosInstance from '@/api/axiosInstance';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import CommunityForm from '@/pages/community/CommunityForm';
+import NoticeForm from '@/pages/notice/NoticeForm';
 
 interface PostArticleResponse {
   id: number;
@@ -20,7 +20,7 @@ interface PostData {
 const fetchPostDetail = async (postId: number): Promise<PostArticleResponse> => {
   const response = await axiosInstance({
     method: 'get',
-    url: `p/board/${postId}`,
+    url: `p/notice/${postId}`,
   });
   return response.data;
 };
@@ -29,30 +29,30 @@ const fetchPostDetail = async (postId: number): Promise<PostArticleResponse> => 
 const updateArticle = async (postId: number, postData: PostData): Promise<PostArticleResponse> => {
   const response = await axiosInstance({
     method: 'patch',
-    url: `cm/board/${postId}`,
+    url: `a/notice/${postId}`,
     data: postData,
   });
   return response.data;
 };
 
-const CommunityEditPostPage: React.FC = () => {
-  const { communityId: postIdString } = useParams<{ communityId: string }>();
-  const communityId = postIdString ? parseInt(postIdString, 10) : undefined;
+const NoticeEditPostPage: React.FC = () => {
+  const { noticeId: postIdString } = useParams<{ noticeId: string }>();
+  const noticeId = postIdString ? parseInt(postIdString, 10) : undefined;
   const navigate = useNavigate();
 
   const { data: postData, isLoading } = useQuery<PostArticleResponse, AxiosError>({
-    queryKey: ['PostData', communityId],
-    queryFn: () => fetchPostDetail(communityId!),
-    enabled: communityId !== undefined,
+    queryKey: ['PostData', noticeId],
+    queryFn: () => fetchPostDetail(noticeId!),
+    enabled: noticeId !== undefined,
   });
 
   const mutation = useMutation<PostArticleResponse, AxiosError, PostData>({
     mutationFn: (data: PostData) => {
-      if (communityId === undefined) throw new Error('Post ID is missing');
-      return updateArticle(communityId, data);
+      if (noticeId === undefined) throw new Error('Post ID is missing');
+      return updateArticle(noticeId, data);
     },
     onSuccess: () => {
-      navigate(`/community/${communityId}`);
+      navigate(`/notice/${noticeId}`);
     },
     onError: (error: AxiosError) => {
       alert(`오류가 발생했습니다. ${error.message}`);
@@ -64,13 +64,13 @@ const CommunityEditPostPage: React.FC = () => {
   }
 
   return (
-    <CommunityForm
+    <NoticeForm
       initialData={postData}
       onSubmit={mutation.mutate}
       isSubmitting={mutation.isPending}
-      onCancel={() => navigate('/community')}
+      onCancel={() => navigate('/notice')}
     />
   );
 };
 
-export default CommunityEditPostPage;
+export default NoticeEditPostPage;
