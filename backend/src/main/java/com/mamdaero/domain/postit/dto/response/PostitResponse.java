@@ -13,16 +13,14 @@ import lombok.NoArgsConstructor;
 public class PostitResponse {
 
     private Long id;
-    private String writer;
     private String content;
     private Integer likeCount;
     private Boolean isLike;
     private Boolean isMine;
 
-    public static PostitResponse of(Postit postit, String writer, int like, boolean isLike, boolean isMine) {
+    public static PostitResponse of(Postit postit, int like, boolean isLike, boolean isMine) {
         return PostitResponse.builder()
                 .id(postit.getId())
-                .writer(writer)
                 .content(postit.getContent())
                 .likeCount(like)
                 .isLike(isLike)
