@@ -41,12 +41,12 @@ public class SecurityConfig
                 .formLogin(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp -> csp
-                                .policyDirectives("frame-ancestors 'self' https://mamdaero.o-r.kr/ http://127.0.0.1:5500/") // Content-Security-Policy 설정
+                                .policyDirectives("frame-ancestors 'self' https://mamdaero.o-r.kr http://127.0.0.1:5500") // Content-Security-Policy 설정
                         )
                 )
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/error", "/", "/p/**", "/chatlog/**", "/sub/**", "/pub/**",
-                                "/signaling/**", "/app/**", "/topic/**").permitAll()
+                                "/signaling/**", "/app/**", "/topic/**", "/api/signaling/**").permitAll()
                         .anyRequest().authenticated())
 //                        .requestMatchers("/c/**").hasRole("상담사")
 //                        .requestMatchers("/m/**").hasRole("내담자")
