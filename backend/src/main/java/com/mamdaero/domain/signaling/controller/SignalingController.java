@@ -18,6 +18,7 @@ public class SignalingController {
     public String PeerHandleOffer(@Payload String offer, @DestinationVariable(value = "roomId") String roomId,
                                   @DestinationVariable(value = "memberId") String memberId, SimpMessageHeaderAccessor headerAccessor) {
         log.info("[OFFER] {} : {}", memberId, offer);
+        log.info("Headers: " + headerAccessor.toNativeHeaderMap());
         return offer;
     }
 
@@ -27,6 +28,7 @@ public class SignalingController {
     public String PeerHandleIceCandidate(@Payload String candidate, @DestinationVariable(value = "roomId") String roomId,
                                          @DestinationVariable(value = "memberId") String memberId, SimpMessageHeaderAccessor headerAccessor) {
         log.info("[ICECANDIDATE] {} : {}", memberId, candidate);
+        log.info("Headers: " + headerAccessor.toNativeHeaderMap());
         return candidate;
     }
 
@@ -36,6 +38,7 @@ public class SignalingController {
     public String PeerHandleAnswer(@Payload String answer, @DestinationVariable(value = "roomId") String roomId,
                                    @DestinationVariable(value = "memberId") String memberId, SimpMessageHeaderAccessor headerAccessor) {
         log.info("[ANSWER] {} : {}", memberId, answer);
+        log.info("Headers: " + headerAccessor.toNativeHeaderMap());
         return answer;
     }
 
@@ -44,6 +47,7 @@ public class SignalingController {
     @SendTo("/sub/call/key")
     public String callKey(@Payload String message, SimpMessageHeaderAccessor headerAccessor) {
         log.info("[CALL KEY] : {}", message);
+        log.info("Headers: " + headerAccessor.toNativeHeaderMap());
         return message;
     }
 
@@ -52,6 +56,7 @@ public class SignalingController {
     @SendTo("/sub/send/key")
     public String sendKey(@Payload String message, SimpMessageHeaderAccessor headerAccessor) {
         log.info("[SEND KEY] : {}", message);
+        log.info("Headers: " + headerAccessor.toNativeHeaderMap());
         return message;
     }
 }
