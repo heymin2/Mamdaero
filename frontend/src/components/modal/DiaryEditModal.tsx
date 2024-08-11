@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Emotion, getEmotionImage, emotionImages } from '@/pages/emotiondiary/emotion';
 import ModalWrapper from '@/components/modal/ModalWrapper';
 import { DiaryResponse, useUpdateEmotionDiary } from '@/hooks/emotionDiary';
@@ -48,6 +48,10 @@ const DiaryEditModal: React.FC<DiaryEditModalProps> = ({ isOpen, diary, onClose 
         onClose();
       });
   };
+
+  useEffect(() => {
+    reestInput();
+  }, [diary]);
 
   if (!diary) return null; // diary가 null이면 아무것도 렌더링하지 않음
 
