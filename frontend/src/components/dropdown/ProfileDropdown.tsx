@@ -7,7 +7,7 @@ const ProfileDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { logout, email, getRole } = useAuthStore();
+  const { logout, email } = useAuthStore();
 
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -41,10 +41,10 @@ const ProfileDropdown: React.FC = () => {
 
   const handleMyPage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const role = getRole();
     const memberId = email?.split('@')[0] || 'unknown';
-    const myPagePath = role?.includes('상담사') ? '/mypage/counselor' : `/mypage/${memberId}`;
+    const myPagePath = `/mypage/${memberId}`;
     navigate(myPagePath);
+    setIsOpen(false); // 네비게이션 후 드롭다운을 닫습니다.
   };
 
   return (

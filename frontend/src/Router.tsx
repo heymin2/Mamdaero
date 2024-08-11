@@ -54,7 +54,8 @@ import BernardTestPage from './pages/simpletest/BernardTestPage';
 import HTPTestPage from './pages/simpletest/HTPTestPage';
 
 const Router = () => {
-  const { isCounselor, isClient, isAdmin, isAuthenticated } = useAuthStore();
+  const { isCounselor, isClient, isAuthenticated, getEmail } = useAuthStore();
+
   const getHomePageElement = () => {
     if (isAuthenticated && (isCounselor() || isAdmin())) {
       return <MainPageCounselor />;
@@ -62,6 +63,11 @@ const Router = () => {
       return <MainPageClient />;
     }
     return <MainPage />;
+  };
+
+  const getMemberId = () => {
+    const email = getEmail();
+    return email ? email.split('@')[0] : 'unknown';
   };
   return (
     <Routes>
@@ -112,11 +118,17 @@ const Router = () => {
       <Route path="/notice/edit/:noticeId" element={<NoticeEditPostPage />} />
 
       {/* MyPage Routes */}
-      <Route path="/mypage/client" element={<ClientMyPage />} />
-      <Route path="/mypage/counselor" element={<CounselorMyPage />} />
-      <Route path="/mypage/counselor/product" element={<CounselorManageProductPage />} />
-      <Route path="/mypage/counselor/time" element={<CounselorManageTimePage />} />
-      <Route path="/mypage/counselor/exclude" element={<CounselorManageExcludePage />} />
+      <Route element={<ProtectedRoute allowedRoles={['내담자', '상담사']} />}>
+        <Route
+          path="/mypage/:memberId"
+          element={isCounselor() ? <CounselorMyPage /> : <ClientMyPage />}
+        />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
+        <Route path="/mypage/:memberId/product" element={<CounselorManageProductPage />} />
+        <Route path="/mypage/:memberId/time" element={<CounselorManageTimePage />} />
+        <Route path="/mypage/:memberId/exclude" element={<CounselorManageExcludePage />} />
+      </Route>
 
       {/* EmotionDiary Routes */}
       <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
