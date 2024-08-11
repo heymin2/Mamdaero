@@ -1,45 +1,58 @@
 import React, { useState } from 'react';
 import { Emotion, getEmotionImage, emotionImages } from '@/pages/emotiondiary/emotion';
 import ModalWrapper from '@/components/modal/ModalWrapper';
+import { DiaryResponse, useUpdateEmotionDiary } from '@/hooks/emotionDiary';
 
 interface DiaryEditModalProps {
   isOpen: boolean;
-  diary: {
-    id: string;
-    date: string;
-    emotion: Emotion;
-    content: string;
-    shareWithCounselor: boolean;
-  };
+  diary: DiaryResponse;
   onClose: () => void;
-  onSubmit: (diary: {
-    id: string;
-    date: string;
-    emotion: Emotion;
-    content: string;
-    shareWithCounselor: boolean;
-  }) => void;
 }
 
-const DiaryEditModal: React.FC<DiaryEditModalProps> = ({ isOpen, diary, onClose, onSubmit }) => {
-  if (!diary) return null; // diary가 null이면 아무것도 렌더링하지 않음
-
+const DiaryEditModal: React.FC<DiaryEditModalProps> = ({ isOpen, diary, onClose }) => {
   const [emotion, setEmotion] = useState<Emotion>(diary.emotion);
   const [content, setContent] = useState(diary.content);
-  const [shareWithCounselor, setShareWithCounselor] = useState(diary.shareWithCounselor);
+  const [shareWithCounselor, setShareWithCounselor] = useState(diary.isOpen);
+
+  const { mutateAsync: updateDiary } = useUpdateEmotionDiary();
+
+  const reestInput = () => {
+    setContent(diary.content);
+    setEmotion(diary.emotion);
+    setShareWithCounselor(diary.isOpen);
+  };
+
+  const closeModal = () => {
+    reestInput();
+    onClose();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      ...diary,
-      emotion,
-      content,
-      shareWithCounselor,
-    });
+    if (!diary) return;
+    updateDiary({
+      diaryId: diary.id,
+      data: {
+        content: content,
+        emotion: emotion,
+        date: diary.date,
+        isOpen: shareWithCounselor,
+      },
+    })
+      .then(() => {})
+      .catch(() => {
+        alert('다이어리 수정에 실패했습니다.');
+      })
+      .finally(() => {
+        reestInput();
+        onClose();
+      });
   };
 
+  if (!diary) return null; // diary가 null이면 아무것도 렌더링하지 않음
+
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} size="md">
+    <ModalWrapper isOpen={isOpen} onClose={closeModal} size="md">
       <div className="bg-gray-100 p-4 rounded-lg shadow-lg mx-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">날짜</h2>
