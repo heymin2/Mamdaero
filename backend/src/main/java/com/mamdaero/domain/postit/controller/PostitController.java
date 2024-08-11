@@ -28,7 +28,7 @@ public class PostitController {
     @PostMapping("/cm/postit/{questionId}")
     public ResponseEntity<?> create(@PathVariable("questionId") Long questionId, @RequestBody PostitRequest request) {
 
-        if (Objects.equals(findUserService.findMemberRole(), "내담자") && Objects.equals(findUserService.findMemberRole(), "상담사")) {
+        if (Objects.equals(findUserService.findMemberRole(), "내담자") || Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
             postitService.create(findUserService.findMemberId(), questionId, request);
             return ResponseEntity.ok().build();
@@ -40,7 +40,7 @@ public class PostitController {
 
     @PatchMapping("/cm/postit/{questionId}/{postitId}")
     public ResponseEntity<?> update(@PathVariable("questionId") Long questionId, @PathVariable("postitId") Long postitId, @RequestBody PostitRequest request) {
-        if (Objects.equals(findUserService.findMemberRole(), "내담자") && Objects.equals(findUserService.findMemberRole(), "상담사")) {
+        if (Objects.equals(findUserService.findMemberRole(), "내담자") || Objects.equals(findUserService.findMemberRole(), "상담사")) {
             return ResponseEntity.ok(postitService.update(findUserService.findMemberId(), questionId, postitId, request));
         }
 
@@ -48,14 +48,14 @@ public class PostitController {
     }
 
     @DeleteMapping("/cma/postit/{questionId}/{postitId}")
-    public ResponseEntity<?> delete(@PathVariable("questionId") Long questionId, @PathVariable("postitId") Long postitId, @RequestBody PostitRequest request) {
-        postitService.delete(findUserService.findMemberId(), questionId, postitId, request);
+    public ResponseEntity<?> delete(@PathVariable("questionId") Long questionId, @PathVariable("postitId") Long postitId) {
+        postitService.delete(findUserService.findMemberId(), questionId, postitId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/cm/postit/{postitId}/complaint")
     public ResponseEntity<?> complaint(@PathVariable("postitId") Long id) {
-        if (Objects.equals(findUserService.findMemberRole(), "내담자") && Objects.equals(findUserService.findMemberRole(), "상담사")) {
+        if (Objects.equals(findUserService.findMemberRole(), "내담자") || Objects.equals(findUserService.findMemberRole(), "상담사")) {
             if (!postitService.complaint(findUserService.findMemberId(), id)) {
                 return ResponseEntity.ok("이미 신고한 글입니다.");
             }
