@@ -13,6 +13,7 @@ interface AuthState {
   getEmail: () => string | null;
   isCounselor: () => boolean;
   isClient: () => boolean;
+  isAdmin: () => boolean;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -22,20 +23,28 @@ const useAuthStore = create<AuthState>()(
       accessToken: null,
       role: null,
       email: null,
-      login: (accessToken: string, role: string, email: string) =>
+      login: async (accessToken: string, role: string, email: string) => {
         set({
           isAuthenticated: true,
           accessToken,
           role,
           email,
-        }),
-      logout: () => {
+        });
+        if (role !== '관리자') {
+          // 동적 임포트를 사용하여 useMemberStore 가져오기
+          const { default: useMemberStore } = await import('@/stores/memberStore');
+          useMemberStore.getState().fetchMember();
+        }
+      },
+      logout: async () => {
         set({
           isAuthenticated: false,
           accessToken: null,
           role: null,
           email: null,
         });
+        const { default: useMemberStore } = await import('@/stores/memberStore');
+        useMemberStore.getState().clearMember();
         localStorage.removeItem('auth-storage');
         localStorage.removeItem('member-storage');
         localStorage.removeItem('counselor-storage');
@@ -45,6 +54,7 @@ const useAuthStore = create<AuthState>()(
       getEmail: () => get().email,
       isCounselor: () => get().role?.includes('상담사') ?? false,
       isClient: () => get().role?.includes('내담자') ?? false,
+      isAdmin: () => get().role?.includes('관리자') ?? false,
     }),
     {
       name: 'auth-storage',
