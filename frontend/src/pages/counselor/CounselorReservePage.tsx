@@ -61,7 +61,7 @@ const CounselorReservePage: React.FC = () => {
       requestText,
     });
     alert('예약이 완료되었습니다.');
-    navigate('/mycounsel');
+    navigate('/mycounsel/client/history');
   };
 
   return (
@@ -75,13 +75,13 @@ const CounselorReservePage: React.FC = () => {
             </span>
           }
           onClick={backToList}
-          size="상담사목록보기"
+          size="목록보기"
           color="orange"
           textSize="sm"
         />
       </div>
       <div className="grid grid-cols-4">
-        <div className="col-span-3 flex flex-col space-y-8 p-4">
+        <div className="col-span-3 flex flex-col space-y-10 p-4">
           <div className="flex text-3xl font-bold space-x-3 ">
             <span className="text-orange-500">상담</span>
             <span>예약하기</span>

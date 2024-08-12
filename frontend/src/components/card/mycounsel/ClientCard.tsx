@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
-import book from '@/assets/book.png';
+import book from '@/assets/book2.png';
 
 interface ClientCardProps {
   clientName: string;
@@ -19,7 +19,9 @@ const ClientCard: React.FC<ClientCardProps> = ({ clientName, clientId }) => {
     <div className="relative w-52 h-68 cursor-pointer" onClick={handleViewRecord}>
       <img src={book} alt="Book" className="w-full h-full object-cover" />
       <div className="absolute inset-0 flex flex-col justify-start items-center pt-16">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">{clientName}</h2>
+        <div className="bg-white bg-opacity-75 rounded-md mb-2 px-8">
+          <h2 className="text-2xl font-bold ">{clientName}</h2>
+        </div>
         <div onClick={e => e.stopPropagation()}>
           <Button
             onClick={handleViewRecord}

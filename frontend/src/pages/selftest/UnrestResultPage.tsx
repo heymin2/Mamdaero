@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TestBar from '@/components/navigation/TestBar';
-import lean from '@/assets/lean2.png';
+import talk from '@/assets/fox_talk.png';
 import Button from '@/components/button/Button';
 
 interface LocationState {
@@ -34,7 +34,7 @@ const UnrestResultPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen py-16">
+    <div className="min-h-screen">
       <TestBar
         title="불안"
         subtitle="위험요소가 다 사라졌지만 불안하신가요?"
@@ -50,7 +50,7 @@ const UnrestResultPage: React.FC = () => {
               <p className="text-lg mb-4">
                 <span className="font-bold text-primary text-4xl">{totalScore}점</span> 입니다.
               </p>
-              <img src={lean} alt="어린왕자" className="w-56 mb-4" />
+              <img src={talk} alt="어린왕자" className="w-56 mb-4" />
               <p className="text-lg"></p>
             </div>
           </div>
@@ -59,13 +59,13 @@ const UnrestResultPage: React.FC = () => {
               <h2 className="card-title text-2xl font-bold">불안 자가검진 결과입니다.</h2>
               <div className="divider"></div>
               <div>{resultMessage}</div>
-              <div className="flex justify-center space-x-10 pt-5">
+              <div className="flex justify-center space-x-10 pt-5 font-bold">
                 <Button
                   label="다시하기"
                   onClick={handleRetry}
                   size="lg"
                   shape="rounded"
-                  textSize="xl"
+                  textSize="md"
                   color="orange"
                 />
                 <Button
@@ -73,7 +73,7 @@ const UnrestResultPage: React.FC = () => {
                   onClick={handleGoToList}
                   size="lg"
                   shape="rounded"
-                  textSize="xl"
+                  textSize="md"
                   color="orange"
                 />
               </div>

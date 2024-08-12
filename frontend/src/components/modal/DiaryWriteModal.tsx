@@ -1,39 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Emotion, getEmotionImage, emotionImages } from '@/pages/emotiondiary/emotion';
 import ModalWrapper from '@/components/modal/ModalWrapper';
+import { useCreateEmotionDiary } from '@/hooks/emotionDiary';
 
 interface DiaryWriteModalProps {
   isOpen: boolean;
   date: string;
   onClose: () => void;
-  onSubmit: (diary: {
-    id: string;
-    date: string;
-    emotion: Emotion;
-    content: string;
-    shareWithCounselor: boolean;
-  }) => void;
 }
 
-const DiaryWriteModal: React.FC<DiaryWriteModalProps> = ({ isOpen, date, onClose, onSubmit }) => {
+const DiaryWriteModal: React.FC<DiaryWriteModalProps> = ({ isOpen, date, onClose }) => {
   const [emotion, setEmotion] = useState<Emotion>('행복해요');
   const [content, setContent] = useState('');
   const [shareWithCounselor, setShareWithCounselor] = useState(false);
 
+  const { mutateAsync: createDiary } = useCreateEmotionDiary();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      id: Date.now().toString(),
-      date,
-      emotion,
-      content,
-      shareWithCounselor,
-    });
+    createDiary({
+      content: content,
+      date: date,
+      emotion: emotion,
+      isOpen: shareWithCounselor,
+    })
+      .then()
+      .catch(() => alert('다이어리 작성에 실패했습니다.'))
+      .finally(onClose);
+  };
+
+  const closeModal = () => {
+    setContent('');
+    setEmotion('행복해요');
+    setShareWithCounselor(false);
+    onClose();
   };
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose}>
-      <div className="bg-gray-100 p-4 rounded-lg shadow-lg" style={{ width: '600px' }}>
+    <ModalWrapper isOpen={isOpen} onClose={closeModal} size="md">
+      <div className="bg-gray-100 p-4 rounded-lg shadow-lg mx-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">날짜</h2>
           <div className="bg-orange-200 px-4 py-2 rounded">{date}</div>

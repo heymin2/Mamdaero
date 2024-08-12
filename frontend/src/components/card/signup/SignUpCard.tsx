@@ -20,7 +20,7 @@ const SignUpCard: React.FC<SignUpCardProps> = ({
   link,
 }) => {
   return (
-    <div className="p-8 w-full max-w-sm bg-gray-100 rounded-lg shadow-lg flex flex-col items-center">
+    <div className="p-8 w-full max-w-sm bg-gray-50 rounded-lg shadow-lg flex flex-col items-center">
       <div className="mb-4">
         <div className="text-5xl">{icon}</div>
       </div>

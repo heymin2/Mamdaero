@@ -1,11 +1,30 @@
-import LoginCard from '@/components/card/LoginCard';
-import MainTitleCard from '@/components/card/MainTitleCard';
+import LoginCard from '@/components/card/mainpage/LoginCard';
+import MainTitleCard from '@/components/card/mainpage/MainTitleCard';
+import lean2 from '@/assets/lean2.png';
+import Chatbot from '@/components/Chatbot';
+import { SlArrowDown } from 'react-icons/sl';
 const MainPage = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="flex flex-col items-center space-y-7">
-        <MainTitleCard />
-        <LoginCard />
+    <div className="carousel carousel-vertical rounded-box h-[90vh] w-full">
+      <div className="carousel-item justify-end h-full flex flex-col">
+        <div className="flex items-center justify-center gap-32">
+          <div className="space-y-12">
+            <MainTitleCard />
+            <img src={lean2} alt="" className="w-44" />
+          </div>
+          <div>
+            <LoginCard />
+          </div>
+        </div>
+        <div className="mx-auto mt-32 animate-bounce">
+          <a href="#chatbot">
+            <SlArrowDown size={30} />
+          </a>
+        </div>
+      </div>
+
+      <div id="chatbot" className="carousel-item justify-center h-full">
+        <Chatbot />
       </div>
     </div>
   );

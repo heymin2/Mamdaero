@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
 
 import { IoIosArrowBack } from 'react-icons/io';
@@ -28,6 +28,7 @@ interface CommentDetail {
   writer: string;
   comment: string;
   createdAt: string;
+  isMine: boolean;
 }
 
 const fetchPostDetail = async (postId: number): Promise<PostDetail> => {
@@ -49,23 +50,43 @@ const fetchComments = async (postId: number): Promise<CommentDetail[]> => {
 const SupervisionDetailPage: React.FC = () => {
   const { supervisionId } = useParams<{ supervisionId: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const backToList = () => {
     navigate('/supervision');
   };
 
+  // 게시글 데이터 조회
   const postDetailQuery = useQuery({
     queryKey: ['postDetail', supervisionId],
     queryFn: () => fetchPostDetail(Number(supervisionId)),
     enabled: !!supervisionId,
   });
 
+  // 댓글 데이터 조회
   const commentsQuery = useQuery({
     queryKey: ['comments', supervisionId],
     queryFn: () => fetchComments(Number(supervisionId)),
     enabled: !!supervisionId,
   });
 
+  // 댓글 추가 핸들러
+  const handleCommentAdded = () => {
+    queryClient.invalidateQueries({ queryKey: ['comments', supervisionId] });
+  };
+
+  // 댓글 수정 핸들러
+  const handleCommentUpdate = (updatedComment: CommentDetail) => {
+    queryClient.setQueryData(
+      ['comments', supervisionId],
+      (oldData: CommentDetail[] | undefined) => {
+        if (!oldData) return [updatedComment];
+        return oldData.map(comment =>
+          comment.id === updatedComment.id ? updatedComment : comment
+        );
+      }
+    );
+  };
   if (postDetailQuery.isError) return <div>Error loading post details</div>;
   if (commentsQuery.isError) return <div>Error loading comments</div>;
 
@@ -83,7 +104,7 @@ const SupervisionDetailPage: React.FC = () => {
                 </span>
               }
               onClick={backToList}
-              size="상담사목록보기"
+              size="목록보기"
               textSize="sm"
               shape="rounded"
               color="blue"
@@ -96,7 +117,10 @@ const SupervisionDetailPage: React.FC = () => {
       <div className="flex-grow py-5 px-16">
         {postDetailQuery.data && (
           <>
-            <SupervisionPostCard postDetail={postDetailQuery.data} />
+            <SupervisionPostCard
+              postDetail={postDetailQuery.data}
+              queryKey={{ queryKey: ['supervisionPosts'] }}
+            />
             <div className="border-y-2 border-blue-300 px-10 py-2 mt-3">
               <span className="text-blue-500 font-bold text-xl">
                 {commentsQuery.data?.length || 0}
@@ -105,9 +129,16 @@ const SupervisionDetailPage: React.FC = () => {
             </div>
             {commentsQuery.data &&
               commentsQuery.data.map(comment => (
-                <SupervisionCommentCard key={comment.id} commentDetail={comment} />
+                <SupervisionCommentCard
+                  key={comment.id}
+                  commentDetail={comment}
+                  postId={Number(supervisionId)}
+                />
               ))}
-            <SupervisionWriteCommentCard postId={Number(supervisionId)} />
+            <SupervisionWriteCommentCard
+              postId={Number(supervisionId)}
+              onCommentAdded={handleCommentAdded}
+            />{' '}
           </>
         )}
       </div>
