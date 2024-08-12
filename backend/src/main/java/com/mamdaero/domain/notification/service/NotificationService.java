@@ -52,7 +52,7 @@ public class NotificationService {
         Long memberId = findUserService.findMemberId();
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Notification> list = notificationRepository.findByMemberIdOOrderByCreatedAtDesc(memberId, pageable);
+        Page<Notification> list = notificationRepository.findByMemberIdOrderByCreatedAtDesc(memberId, pageable);
 
         List<NotificationResponse> responses = list.getContent().stream()
                 .map(NotificationResponse::of)
