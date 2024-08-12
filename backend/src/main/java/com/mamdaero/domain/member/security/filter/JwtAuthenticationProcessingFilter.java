@@ -33,12 +33,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
-    private final String NO_CHECK_URL = "/p/member/login";
+    private final String NO_CHECK_URL = "/p/member/client-login";
+    private final String NO_CHECK_URL_CON = "/p/member/counselor-login";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
     {
-        if(request.getRequestURI().equals(NO_CHECK_URL))
+        if(request.getRequestURI().equals(NO_CHECK_URL) || request.getRequestURI().equals(NO_CHECK_URL_CON))
         {
             filterChain.doFilter(request, response);
             return;

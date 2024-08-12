@@ -11,14 +11,12 @@ import com.mamdaero.global.service.FileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,32 +26,28 @@ public class CounselorService {
     private final CounselorRepository counselorRepository;
     private final FileService fileService;
 
-    public Page<CounselorResponseDto> findAll() {
+    public Page<CounselorResponseDto> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
 
-        List<CounselorResponseDto> counselorResponseDtoList = counselorRepository.findAll().stream()
-                .map(CounselorResponseDto::toDTO)
-                .toList();
+        Page<CounselorResponseDto> counselorResponseDtoList = counselorRepository.findCounselorReviewSummary(pageable);
 
-        return new PageImpl<>(counselorResponseDtoList);
+        return counselorResponseDtoList;
     }
 
     public Page<CounselorResponseDto> findAllByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        List<CounselorResponseDto> counselorResponseDtoList = counselorRepository.findAllByNameContains(name, pageable).stream()
-                .map(CounselorResponseDto::toDTO)
-                .toList();
+        Page<CounselorResponseDto> counselorResponseDtoList = counselorRepository.findCounselorReviewSummary(name, pageable);
 
-        return new PageImpl<>(counselorResponseDtoList);
+        return counselorResponseDtoList;
     }
 
     public CounselorResponseDto find(final Long id) {
         Optional<Counselor> optionalCounselor = counselorRepository.findById(id);
-
         if (optionalCounselor.isPresent()) {
             Counselor counselor = optionalCounselor.get();
 
-            return CounselorResponseDto.toDTO(counselor);
+            return counselorRepository.findCounselorReviewSummaryById(counselor.getId());
         }
 
         throw new MemberNotFoundException();
