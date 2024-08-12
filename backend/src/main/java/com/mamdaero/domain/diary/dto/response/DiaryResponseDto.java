@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class DiaryResponseDto {
 
+    private Long id;
     private String emotion;
     private String content;
     private LocalDate date;
@@ -18,6 +19,7 @@ public class DiaryResponseDto {
 
     public static DiaryResponseDto toDTO(Diary diary) {
         return DiaryResponseDto.builder()
+                .id(diary.getId())
                 .emotion(diary.getEmotion())
                 .content(diary.getContent())
                 .date(diary.getDate())
