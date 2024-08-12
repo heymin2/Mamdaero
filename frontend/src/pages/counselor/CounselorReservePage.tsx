@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
+import axiosInstance from '@/api/axiosInstance';
+
 import Button from '@/components/button/Button';
 import CalendarSection from '@/components/card/counselor/reserve/CalendarSection';
 import TimeSelection from '@/components/card/counselor/reserve/TimeSelection';
@@ -10,14 +12,30 @@ import ConsentSection from '@/components/card/counselor/reserve/ConsentSection';
 import RequestSection from '@/components/card/counselor/reserve/RequestSection';
 import CounselorSidebar from '@/components/card/counselor/reserve/CounselorSidebar';
 
+interface WorkTime {
+  id: number;
+  counselorId: number;
+  date: string;
+  isReserved: boolean;
+  isWorkTime: boolean;
+}
+
+const fetchCounselorWorkTimes = async (counselorId: string): Promise<WorkTime[]> => {
+  const response = await axiosInstance({
+    method: 'get',
+    url: `p/counselor/${counselorId}/worktime`,
+  });
+  return response.data;
+};
+
 const CounselorReservePage: React.FC = () => {
   const navigate = useNavigate();
   const { counselorId } = useParams<{ counselorId: string }>();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [selectedSituations, setSelectedSituations] = useState<string[]>([]);
-  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const [selectedSituations, setSelectedSituations] = useState<number[]>([]);
+  const [selectedSymptoms, setSelectedSymptoms] = useState<number[]>([]);
   const [diaryConsent, setDiaryConsent] = useState<boolean | null>(null);
   const [selfDiagnosisConsent, setSelfDiagnosisConsent] = useState<boolean | null>(null);
   const [selectedDiagnoses, setSelectedDiagnoses] = useState<string[]>([]);

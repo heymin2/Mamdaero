@@ -1,40 +1,42 @@
-// src/components/counselor/reserve/SymptomSelection.tsx
+import axiosInstance from '@/api/axiosInstance';
+import { useQuery } from '@tanstack/react-query';
 
-import React from 'react';
-
-const symptoms = [
-  '우울',
-  '불안',
-  '스트레스',
-  '조울증',
-  '화병',
-  '섭식',
-  '공황',
-  '불면',
-  '트라우마',
-  '강박',
-  '콤플렉스',
-  '자존감',
-  '자살',
-  '충동/폭력',
-  '조현병',
-  '신체화',
-];
+interface Symptom {
+  id: number;
+  name: string;
+}
 
 interface SymptomSelectionProps {
-  selectedSymptoms: string[];
-  setSelectedSymptoms: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedSymptoms: number[];
+  setSelectedSymptoms: React.Dispatch<React.SetStateAction<number[]>>;
 }
+
+const fetchSymptom = async () => {
+  const response = await axiosInstance({
+    method: 'get',
+    url: 'p/symptom',
+  });
+  return response.data;
+};
 
 const SymptomSelection: React.FC<SymptomSelectionProps> = ({
   selectedSymptoms,
   setSelectedSymptoms,
 }) => {
-  const handleToggleSelection = (symptom: string) => {
+  const {
+    data: symptoms = [],
+    isLoading,
+    isError,
+  } = useQuery<Symptom[]>({ queryKey: ['symptoms'], queryFn: fetchSymptom });
+
+  const handleToggleSelection = (symptomId: number) => {
     setSelectedSymptoms(prev =>
-      prev.includes(symptom) ? prev.filter(s => s !== symptom) : [...prev, symptom]
+      prev.includes(symptomId) ? prev.filter(s => s !== symptomId) : [...prev, symptomId]
     );
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching situations</div>;
 
   return (
     <div>
@@ -45,13 +47,15 @@ const SymptomSelection: React.FC<SymptomSelectionProps> = ({
       <div className="grid grid-cols-4 gap-3">
         {symptoms.map(symptom => (
           <button
-            key={symptom}
+            key={symptom.id}
             className={`btn ${
-              selectedSymptoms.includes(symptom) ? 'btn-accent' : 'btn-outline btn-accent bg-white'
+              selectedSymptoms.includes(symptom.id)
+                ? 'btn-accent'
+                : 'btn-outline btn-accent bg-white'
             } rounded-full`}
-            onClick={() => handleToggleSelection(symptom)}
+            onClick={() => handleToggleSelection(symptom.id)}
           >
-            {symptom}
+            {symptom.name}
           </button>
         ))}
       </div>
