@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.Objects;
 
@@ -26,7 +27,7 @@ public class CounselorController {
                                                                     @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         Page<CounselorResponseDto> counselors;
         if (counselorName == null || counselorName.isEmpty()) {
-            counselors = counselorService.findAll();
+            counselors = counselorService.findAll(page, size);
         } else {
             counselors = counselorService.findAllByName(counselorName, page, size);
         }
