@@ -14,7 +14,7 @@ const SimpleTestList = () => {
     <div>
       <SimpleTestBar testName="간단 그림 심리" />
       <div className="mx-72 my-24 space-y-10">
-        <div className="collapse bg-blue-50 border-gray-200 border shadow-md">
+        <div className="collapse p-4 bg-blue-50 border-gray-200 border shadow-md">
           <input type="radio" name="my-accordion-1" defaultChecked />
           <div className="collapse-title text-3xl font-bold">
             <span className="text-blue-400">베르나르 베르베르</span> 테스트
@@ -37,7 +37,7 @@ const SimpleTestList = () => {
             </div>
           </div>
         </div>
-        <div className="collapse bg-blue-50 border-gray-200 border shadow-md">
+        <div className="collapse p-4 bg-blue-50 border-gray-200 border shadow-md">
           <input type="radio" name="my-accordion-1" />
           <div className="collapse-title text-3xl font-bold">
             <span className="text-blue-400">HTP</span> 테스트

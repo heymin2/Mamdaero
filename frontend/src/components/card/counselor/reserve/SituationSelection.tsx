@@ -1,40 +1,42 @@
-// src/components/counselor/reserve/SituationSelection.tsx
+import axiosInstance from '@/api/axiosInstance';
+import { useQuery } from '@tanstack/react-query';
 
-import React from 'react';
-
-const situations = [
-  '결혼/육아',
-  '대인관계',
-  '직장',
-  '이별/이혼',
-  '가족',
-  '자아/성격',
-  '정신건강',
-  '취업/진로',
-  '신체건강',
-  '성추행',
-  '중독/집착',
-  '금전/사업',
-  '학업/고시',
-  '외모',
-  '연애',
-  'LGBT',
-];
+interface Situation {
+  id: number;
+  name: string;
+}
 
 interface SituationSelectionProps {
-  selectedSituations: string[];
-  setSelectedSituations: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedSituations: number[];
+  setSelectedSituations: React.Dispatch<React.SetStateAction<number[]>>;
 }
+
+const fetchSituation = async () => {
+  const response = await axiosInstance({
+    method: 'get',
+    url: 'p/situation',
+  });
+  return response.data;
+};
 
 const SituationSelection: React.FC<SituationSelectionProps> = ({
   selectedSituations,
   setSelectedSituations,
 }) => {
-  const handleToggleSelection = (situation: string) => {
+  const {
+    data: situations = [],
+    isLoading,
+    isError,
+  } = useQuery<Situation[]>({ queryKey: ['situations'], queryFn: fetchSituation });
+
+  const handleToggleSelection = (situationId: number) => {
     setSelectedSituations(prev =>
-      prev.includes(situation) ? prev.filter(s => s !== situation) : [...prev, situation]
+      prev.includes(situationId) ? prev.filter(id => id !== situationId) : [...prev, situationId]
     );
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching situations</div>;
 
   return (
     <div>
@@ -45,15 +47,15 @@ const SituationSelection: React.FC<SituationSelectionProps> = ({
       <div className="grid grid-cols-4 gap-3">
         {situations.map(situation => (
           <button
-            key={situation}
+            key={situation.id}
             className={`btn ${
-              selectedSituations.includes(situation)
+              selectedSituations.includes(situation.id)
                 ? 'btn-secondary'
                 : 'btn-outline btn-secondary bg-white'
             } rounded-full`}
-            onClick={() => handleToggleSelection(situation)}
+            onClick={() => handleToggleSelection(situation.id)}
           >
-            {situation}
+            {situation.name}
           </button>
         ))}
       </div>
