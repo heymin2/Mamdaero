@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
+import DefaultProfile from '@/assets/DefaultProfile.jpg';
 
 import CounselorProfileCard from '@/components/card/CounselorProfileCard';
 import AlignDropdown from '@/components/dropdown/AlignDropdown';
@@ -10,7 +11,8 @@ interface Counselor {
   id: string;
   name: string;
   intro: string;
-  averageScore: number;
+  image: string;
+  reviewRate: number;
   reviewCount: number;
 }
 
@@ -39,7 +41,6 @@ const CounselorListPage: React.FC = () => {
     queryKey: ['counselors'],
     queryFn: fetchCounselor,
   });
-  console.log(fetchCounselor());
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>에러가 발생했습니다.</div>;
   return (
@@ -83,7 +84,8 @@ const CounselorListPage: React.FC = () => {
               counselorId={counselor.id}
               counselorName={counselor.name}
               counselorIntro={counselor.intro}
-              reviewAvgScore={counselor.averageScore}
+              counselorImage={counselor.image || DefaultProfile}
+              reviewRate={counselor.reviewRate}
               reviewCount={counselor.reviewCount}
             />
           ))}
