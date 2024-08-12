@@ -1,6 +1,7 @@
 package com.mamdaero.domain.member.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.member.security.apiresult.ApiResponse;
 import com.mamdaero.domain.member.security.service.JwtService;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,9 +39,34 @@ public class LoginSuccessJWTProvideHandler extends SimpleUrlAuthenticationSucces
         String accessToken = jwtService.createAccessToken(email);
         String refreshToken = jwtService.createRefreshToken();
         String role = authentication.getAuthorities().toString();
+        Optional<Member> memberOpt = memberRepository.findByEmail(email);
+
+        if(memberOpt.isEmpty() || memberOpt.get().getMemberStatus())
+        {
+            log.info(memberOpt.get().getMemberStatus().toString());
+            response.getWriter().write(objectMapper.writeValueAsString(ApiResponse.onSuccess("Member Not Found")));
+            return;
+        }
+
+        Member member = memberOpt.get();
+        log.info(role);
+        if(request.getRequestURI().equals("/p/member/client-login") && !role.equals("[ROLE_내담자]"))
+        {
+            log.info(role);
+            log.info(request.getRequestURI());
+            response.getWriter().write(objectMapper.writeValueAsString(ApiResponse.onSuccess("No Normal Member")));
+            return;
+        }
+        else if(request.getRequestURI().equals("/p/member/counselor-login") && !role.equals("[ROLE_상담사]"))
+        {
+            log.info(role);
+            log.info(request.getRequestURI());
+            response.getWriter().write(objectMapper.writeValueAsString(ApiResponse.onSuccess("No Counselor Member")));
+            return;
+        }
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        memberRepository.findByEmail(email).ifPresent(member -> member.updateRefreshToken(refreshToken));
+        member.updateRefreshToken(refreshToken);
 
         log.info( "로그인에 성공합니다. email: {}" , email);
         log.info( "AccessToken 을 발급합니다. AccessToken: {}" ,accessToken);

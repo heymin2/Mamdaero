@@ -1,9 +1,13 @@
 import axios from 'axios';
 import useAuthStore from '@/stores/authStore';
+const accessToken = useAuthStore.getState().accessToken;
 
 const axiosInstance = axios.create({
   baseURL: 'https://mamdaero.o-r.kr/api/',
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${accessToken}`,
+  },
   maxContentLength: Infinity,
   maxBodyLength: Infinity,
 });

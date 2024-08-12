@@ -1,5 +1,6 @@
 package com.mamdaero.domain.member.security.controller;
 
+import com.google.protobuf.Api;
 import com.mamdaero.domain.counselor_board.dto.request.CounselorBoardRequest;
 import com.mamdaero.domain.member.security.apiresult.ApiResponse;
 import com.mamdaero.domain.member.security.dto.request.*;
@@ -124,6 +125,21 @@ public class MemberAuthController
         else
         {
             return ApiResponse.onSuccess(ResultDTO.builder().message("변경 실패").build());
+        }
+    }
+
+    @PatchMapping("/cm/member/del")
+    public ApiResponse<ResultDTO> deleteMember(@RequestBody DeleteMemberDTO request) throws Exception
+    {
+        boolean check = memberService.deleteUser(request);
+
+        if(check)
+        {
+            return ApiResponse.onSuccess(ResultDTO.builder().message("탈퇴 완료").build());
+        }
+        else
+        {
+            return ApiResponse.onSuccess(ResultDTO.builder().message("탈퇴 실패").build());
         }
     }
 

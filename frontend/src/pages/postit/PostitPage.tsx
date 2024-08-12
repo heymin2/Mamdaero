@@ -24,6 +24,7 @@ const postitImages = [Postit, Postit2, Postit3];
 
 interface Postit {
   id: number;
+  questionId: number;
   content: string;
   color: string;
   likeCount: number;
@@ -41,9 +42,9 @@ const PostitPage: React.FC = () => {
     type: 'create',
     isOpen: false,
   });
-  const [editPostit, setEditPostit] = useState<{ postitId: number; content: string } | undefined>(
-    undefined
-  );
+  const [editPostit, setEditPostit] = useState<
+    { questionId: number; postitId: number; content: string } | undefined
+  >(undefined);
   const nextFetchTargetRef = useRef<HTMLDivElement | null>(null);
 
   const { mutateAsync: complaintPostit } = useComplaintPostit();
@@ -78,9 +79,7 @@ const PostitPage: React.FC = () => {
 
   const handleLike = (id: number) => {
     likePostit(id)
-      .then(() => {
-        alert('좋아요가 성공적으로 등록되었습니다.');
-      })
+      .then(() => {})
       .catch(() => {
         alert('좋아요에 실패했습니다.');
       });
@@ -111,8 +110,8 @@ const PostitPage: React.FC = () => {
       });
   };
 
-  const handleDeletePostit = (id: number) => {
-    deletePostit(id)
+  const handleDeletePostit = (questionId: number, id: number) => {
+    deletePostit({ questionId, id })
       .then(() => {
         alert('포스트잇이 성공적으로 삭제되었습니다.');
       })
@@ -121,10 +120,11 @@ const PostitPage: React.FC = () => {
       });
   };
 
-  const handleUpdatePostit = (postitId: number, content: string) => {
-    updatePostit({ postitId, content })
+  const handleUpdatePostit = (questionId: number, postitId: number, content: string) => {
+    updatePostit({ questionId, postitId, content })
       .then(() => {
         alert('포스트잇이 성공적으로 수정되었습니다.');
+        closeModal();
       })
       .catch(() => {
         alert('포스트잇 수정에 실패했습니다.');
@@ -137,7 +137,7 @@ const PostitPage: React.FC = () => {
 
   const openEditModal = (postit: Postit) => {
     openModal('update');
-    setEditPostit({ postitId: postit.id, content: postit.content });
+    setEditPostit({ questionId: postit.questionId, postitId: postit.id, content: postit.content });
   };
 
   const closeModal = () => {
@@ -232,7 +232,7 @@ const PostitPage: React.FC = () => {
                       />
                       <div className="absolute inset-0 flex flex-col justify-between p-8">
                         <div className="flex items-center">
-                          {!postit.isMine && (
+                          {postit.isMine && (
                             <div className="dropdown">
                               <div
                                 tabIndex={0}
@@ -249,7 +249,9 @@ const PostitPage: React.FC = () => {
                                   <span onClick={() => openEditModal(postit)}>수정하기</span>
                                 </li>
                                 <li>
-                                  <span onClick={() => handleDeletePostit(postit.id)}>
+                                  <span
+                                    onClick={() => handleDeletePostit(postit.questionId, postit.id)}
+                                  >
                                     삭제하기
                                   </span>
                                 </li>

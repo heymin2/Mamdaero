@@ -7,7 +7,7 @@ interface RoleBasedProtectedRouteProps {
 }
 
 const RoleBasedProtectedRoute: React.FC<RoleBasedProtectedRouteProps> = ({
-  allowedRoles = ['내담자', '상담사'],
+  allowedRoles = ['내담자', '상담사', '관리자'],
 }) => {
   const { isAuthenticated, role } = useAuthStore();
   const location = useLocation();

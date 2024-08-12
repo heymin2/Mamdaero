@@ -4,6 +4,7 @@ import com.mamdaero.domain.member.entity.Counselor;
 import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.repository.CounselorRepository;
 import com.mamdaero.domain.member.repository.MemberRepository;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
 import com.mamdaero.domain.member.security.dto.UserDetailsImpl;
 import com.mamdaero.domain.member.security.dto.request.*;
 import com.mamdaero.domain.member.security.repository.CounselorAuthRepository;
@@ -30,6 +31,7 @@ public class MemberAuthService
     private final CounselorRepository counselorRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileService fileService;
+    private final FindUserService findUserService;
 
     //내담자 회원 가입
     public Long memberJoin(MemberSignUpDTO userRequestDto) throws Exception
@@ -142,6 +144,22 @@ public class MemberAuthService
         }
         memberRepository.modifyPassword(passwordEncoder.encode(request.getNewPassword()), email);
         return true;
+    }
+
+    public boolean deleteUser(DeleteMemberDTO request)
+    {
+        Optional <Member> member = memberRepository.findByEmail(request.getEmail());
+        MemberInfoDTO membercheck = findUserService.findMember();
+
+        if(member.isEmpty() || !membercheck.getMemberEmail().equals(request.getEmail()))
+        {
+            return false;
+        }
+        else
+        {
+            memberRepository.modifyUserStatus(request.getEmail());
+            return true;
+        }
     }
 
     public boolean isExistByEmail(String email)
