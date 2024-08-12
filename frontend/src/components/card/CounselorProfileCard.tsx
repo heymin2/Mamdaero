@@ -7,7 +7,7 @@ interface CounselorCardProps {
   counselorName: string;
   counselorIntro: string;
   counselorImage?: string; // 이미지가 선택적이라면 optional로 설정
-  reviewAvgScore: number;
+  reviewRate: number;
   reviewCount: number;
 }
 const CounselorProfileCard: React.FC<CounselorCardProps> = ({
@@ -15,7 +15,7 @@ const CounselorProfileCard: React.FC<CounselorCardProps> = ({
   counselorName,
   counselorIntro,
   counselorImage = DefaultProfile, // 기본 이미지를 제공
-  reviewAvgScore,
+  reviewRate,
   reviewCount,
 }) => {
   return (
@@ -26,7 +26,7 @@ const CounselorProfileCard: React.FC<CounselorCardProps> = ({
             <div className="text-2xl font-bold">{counselorName}</div>
             <div className="flex ms-1">
               <FaStar size={20} color="orange" className="ms-2" />
-              <div className="text-md font-bold mx-1">{reviewAvgScore}</div>
+              <div className="text-md font-bold mx-1">{reviewRate !== null ? reviewRate : 0}</div>
               <div>({reviewCount})</div>
             </div>
           </div>

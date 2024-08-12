@@ -4,6 +4,7 @@ import ProtectedRoute from '@/ProtectedRoute';
 import MainPage from '@/pages/main/MainPage';
 import MainPageClient from '@/pages/main/MainPageClient';
 import MainPageCounselor from '@/pages/main/MainPageCounselor';
+import MainPageAdmin from './pages/main/MainPageAdmin';
 import SignUpChoose from '@/pages/signup/SignUpChoose';
 import SignUpClient from '@/pages/signup/SignUpClient';
 import SignUpCounselor from '@/pages/signup/SignUpCounselor';
@@ -57,10 +58,12 @@ const Router = () => {
   const { isCounselor, isClient, isAdmin, isAuthenticated, getEmail } = useAuthStore();
 
   const getHomePageElement = () => {
-    if (isAuthenticated && (isCounselor() || isAdmin())) {
+    if (isAuthenticated && isCounselor()) {
       return <MainPageCounselor />;
     } else if (isAuthenticated && isClient()) {
       return <MainPageClient />;
+    } else if (isAuthenticated && isAdmin()) {
+      return <MainPageAdmin />;
     }
     return <MainPage />;
   };
