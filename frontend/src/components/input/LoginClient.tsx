@@ -4,7 +4,6 @@ import axiosInstance from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import useAuthStore from '@/stores/authStore';
 import useMemberStore from '@/stores/memberStore';
-import useCounselorStore from '@/stores/couselorStore';
 import { AxiosError } from 'axios';
 
 import Button from '@/components/button/Button.tsx';
@@ -19,7 +18,7 @@ interface LoginInfo {
 const loginUserInfo = async (loginUserInfo: LoginInfo) => {
   const response = await axiosInstance({
     method: 'post',
-    url: 'p/member/login',
+    url: 'p/member/client-login',
     data: loginUserInfo,
   });
   return response;
@@ -31,16 +30,19 @@ const LoginClient: React.FC = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const login = useAuthStore(state => state.login);
-  const { isCounselor } = useAuthStore();
   const fetchMember = useMemberStore(state => state.fetchMember);
 
   const loginMutation = useMutation({
     mutationFn: loginUserInfo,
     onSuccess: async data => {
-      const { accessToken, role } = data.data.result;
-      login(accessToken, role, email);
-      await fetchMember();
-      navigate('/');
+      if (typeof data.data.result === 'string') {
+        setErrorMessage(data.data.result);
+      } else {
+        const { accessToken, role } = data.data.result;
+        login(accessToken, role, email);
+        await fetchMember();
+        navigate('/');
+      }
     },
     onError: (error: AxiosError) => {
       if (error.response) {
@@ -96,10 +98,10 @@ const LoginClient: React.FC = () => {
           className="input input-bordered w-full max-w-xs"
         />
       </label>
-      {errorMessage && <p className="text-red-500 text-sm my-2">{errorMessage}</p>}
-      <div className="pt-6">
-        <Button label="로그인" type="submit" size="full" color="orange" textSize="xl" />
+      <div className="h-6 m-1">
+        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
       </div>
+      <Button label="로그인" type="submit" size="full" color="orange" textSize="xl" />
       <div className="flex pt-4 justify-evenly items-center">
         <GoogleLoginButton />
         <KakaoLoginButton />
