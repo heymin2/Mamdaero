@@ -129,7 +129,7 @@ public class ReservationService {
         Pageable pageable = PageRequest.of(page, size);
 
         if ("내담자".equals(caller)) {
-            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberId(1L, pageable);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberId(member.getMemberId(), pageable);
             return new Pagination<ReservationListResponse>(
                     reservationPage.getContent(),
                     reservationPage.getNumber() + 1,
@@ -139,7 +139,7 @@ public class ReservationService {
 
             );
         } else if ("상담사".equals(caller)) {
-            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorId(16L, pageable);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorId(member.getMemberId(), pageable);
             return new Pagination<ReservationListResponse>(
                     reservationPage.getContent(),
                     reservationPage.getNumber() + 1,
@@ -164,7 +164,7 @@ public class ReservationService {
         Pageable pageable = PageRequest.of(page, size);
 
         if ("내담자".equals(caller)) {
-            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberIdComplete(1L, pageable);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberIdComplete(member.getMemberId(), pageable);
             return new Pagination<ReservationListResponse>(
                     reservationPage.getContent(),
                     reservationPage.getNumber() + 1,
@@ -174,7 +174,7 @@ public class ReservationService {
 
             );
         } else if ("상담사".equals(caller)) {
-            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorIdComplete(16L, pageable);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorIdComplete(member.getMemberId(), pageable);
             return new Pagination<ReservationListResponse>(
                     reservationPage.getContent(),
                     reservationPage.getNumber() + 1,
