@@ -64,7 +64,7 @@ public class NotifyCommentService {
                 eventData.put("createdAt", receiveComment.getCreatedAt().toString());   // 댓글이 달린 시간
                 eventData.put("content", receiveComment.getComment());                 // 댓글 내용
 
-                sseEmitter.send(SseEmitter.event().name("addComment").data(eventData));
+                sseEmitter.send(SseEmitter.event().name("comment").data(eventData));
             } catch (IOException e) {
                 NotificationController.sseEmitters.remove(memberId);
             }

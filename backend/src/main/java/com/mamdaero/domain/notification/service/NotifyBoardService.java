@@ -62,7 +62,7 @@ public class NotifyBoardService {
                 eventData.put("createdAt", comment.getCreatedAt().toString());
                 eventData.put("content", comment.getComment());
 
-                sseEmitter.send(SseEmitter.event().name("addComment").data(eventData));
+                sseEmitter.send(SseEmitter.event().name("comment").data(eventData));
             } catch (IOException e) {
                 NotificationController.sseEmitters.remove(memberId);
             }
