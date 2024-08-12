@@ -1,9 +1,13 @@
 package com.mamdaero.global.config;
 
 import com.mamdaero.domain.consult.handler.AudioWebSocketHandler;
+import org.apache.tomcat.websocket.server.WsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -81,5 +85,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSoc
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(audioWebSocketHandler, "/audio")
                 .setAllowedOriginPatterns("*");
+    }
+
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
+        return factory -> factory.addContextCustomizers(context -> {
+            context.addApplicationListener(WsContextListener.class.getName());
+            context.addParameter("org.apache.tomcat.websocket.textBufferSize", "300000");  // Set text buffer size
+            context.addParameter("org.apache.tomcat.websocket.binaryBufferSize", "300000"); // Set binary buffer size
+        });
     }
 }

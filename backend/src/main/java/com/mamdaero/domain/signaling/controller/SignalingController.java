@@ -1,5 +1,7 @@
 package com.mamdaero.domain.signaling.controller;
 
+import com.mamdaero.domain.consult.service.ConsultService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -10,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class SignalingController {
+    private final ConsultService consultService;
 
     // offer 정보를 주고 받기 위한 websocket
     @MessageMapping("/peer/offer/{memberId}/{roomId}")
@@ -30,6 +34,10 @@ public class SignalingController {
                                          @DestinationVariable(value = "memberId") String memberId, SimpMessageHeaderAccessor headerAccessor) {
         log.info("[ICECANDIDATE] {} : {}", memberId, candidate);
         log.info("Headers: " + headerAccessor.toNativeHeaderMap());
+
+
+        consultService.create(Long.parseLong(roomId));
+
         return candidate;
     }
 
