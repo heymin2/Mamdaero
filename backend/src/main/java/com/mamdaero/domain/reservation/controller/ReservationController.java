@@ -1,6 +1,5 @@
 package com.mamdaero.domain.reservation.controller;
 
-import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.notification.service.notifyCancelReservationService;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
 import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
@@ -9,8 +8,6 @@ import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationController {
     private final ReservationService reservationService;
     private final notifyCancelReservationService notifyCancelReservationService;
-    private final FindUserService findUserService;
     /**
      * 예약하기
      */
