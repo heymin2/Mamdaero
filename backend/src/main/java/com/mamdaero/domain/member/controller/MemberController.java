@@ -24,7 +24,7 @@ public class MemberController {
     @GetMapping(value = "/m/member")
     public ResponseEntity<?> getMember() {
 
-        if (Objects.equals(findUserService.findMemberRole(), "내담자") && Objects.equals(findUserService.findMemberRole(), "상담사")) {
+        if (Objects.equals(findUserService.findMemberRole(), "내담자") || Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
             Long memberId = findUserService.findMemberId();
 
@@ -37,7 +37,7 @@ public class MemberController {
 
     @PatchMapping(value = "/m/member", consumes = "application/json")
     public ResponseEntity<?> patchMemberJson(@RequestBody MemberRequestDto memberRequestDto) {
-        if (Objects.equals(findUserService.findMemberRole(), "내담자") && Objects.equals(findUserService.findMemberRole(), "상담사")) {
+        if (Objects.equals(findUserService.findMemberRole(), "내담자") || Objects.equals(findUserService.findMemberRole(), "상담사")) {
 
             Long memberId = findUserService.findMemberId();
 
