@@ -31,7 +31,7 @@ public class CounselorResponseDto {
         this.introDetail = introDetail;
         this.img = img;
         this.reviewCount = reviewCount;
-        this.reviewRate = reviewRate;
+        this.reviewRate = (reviewRate != null) ? reviewRate : 0.0;
     }
 
     public static CounselorResponseDto toDTO(Counselor counselor) {
