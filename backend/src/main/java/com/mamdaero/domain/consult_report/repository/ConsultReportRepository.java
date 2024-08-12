@@ -18,7 +18,8 @@ public interface ConsultReportRepository extends JpaRepository<ConsultReport, Lo
                     "JOIN WorkTime wt ON r.workTimeId = wt.id " +
                     "JOIN Member m ON r.memberId = m.id " +
                     "JOIN Consult c ON r.id = c.id " +
-                    "LEFT JOIN ConsultReport cr ON c.id = cr.id"
+                    "LEFT JOIN ConsultReport cr ON c.id = cr.id " +
+                    "ORDER BY r.createdAt DESC"
     )
     Page<ConsultReportListResponse> findByClientIdAndCounselorId(@Param("clientId") Long clientId, @Param("counselorId") Long counselorId, Pageable pageable);
 
