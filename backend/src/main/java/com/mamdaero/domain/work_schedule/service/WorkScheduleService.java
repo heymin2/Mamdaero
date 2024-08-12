@@ -12,8 +12,10 @@ import com.mamdaero.domain.work_schedule.repository.WorkScheduleRepository;
 import com.mamdaero.domain.work_schedule.repository.WorkTimeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,9 +81,15 @@ public class WorkScheduleService {
         }
 
 
-        List<WorkSchedule> workSchedules = workScheduleRequestList.stream()
-                .map(WorkScheduleRequest::toEntity)
-                .toList();
+        List<WorkSchedule> workSchedules = new ArrayList<>();
+        for (WorkScheduleRequest request : workScheduleRequestList) {
+            workSchedules.add(WorkSchedule.builder()
+                    .counselorId(member.getMemberId())
+                    .day(request.getDay())
+                    .startTime(request.getStartTime())
+                    .endTime(request.getEndTime())
+                    .build());
+        }
 
         // 근무 일정 등록
         workScheduleRepository.saveAll(workSchedules);
