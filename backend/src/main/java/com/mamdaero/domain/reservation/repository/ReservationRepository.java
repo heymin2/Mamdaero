@@ -18,7 +18,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
             "WHERE r.memberId = :memberId " +
-            "AND r.status != '상담완료'")
+            "AND r.status != '상담완료' " +
+            "ORDER BY r.createdAt DESC")
     Page<ReservationListResponse> findByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
     @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
@@ -26,7 +27,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
             "WHERE ci.counselorId = :counselorId " +
-            "AND r.status != '상담완료'")
+            "AND r.status != '상담완료' " +
+            "ORDER BY r.createdAt DESC")
     Page<ReservationListResponse> findByCounselorId(@Param("counselorId") Long counselorId, Pageable pageable);
 
     @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
@@ -35,7 +37,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
             "WHERE r.memberId = :memberId " +
             "AND r.status = '상담완료' " +
-            "AND r.isDelete = false")
+            "AND r.isDelete = false " +
+            "ORDER BY r.createdAt DESC")
     Page<ReservationListResponse> findByMemberIdComplete(@Param("memberId") Long memberId, Pageable pageable);
 
     @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
@@ -43,7 +46,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
             "WHERE ci.counselorId = :counselorId " +
-            "AND r.status = '상담완료'")
+            "AND r.status = '상담완료' " +
+            "ORDER BY r.createdAt DESC")
     Page<ReservationListResponse> findByCounselorIdComplete(@Param("counselorId") Long counselorId, Pageable pageable);
 
     Reservation findByMemberIdAndId(Long memberId, Long reservationId);
@@ -52,7 +56,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "WHERE wt.date = :date AND wt.time = :time " +
-            "AND r.status = '예약완료'")
+            "AND r.status = '예약완료' " +
+            "ORDER BY r.createdAt DESC")
     List<Reservation> findReservationsBefore(@Param("date") LocalDate date, @Param("time") int time);
 }
 
