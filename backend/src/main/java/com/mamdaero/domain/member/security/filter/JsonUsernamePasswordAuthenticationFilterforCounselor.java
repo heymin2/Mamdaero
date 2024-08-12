@@ -18,9 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Slf4j
-public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter
+public class JsonUsernamePasswordAuthenticationFilterforCounselor extends AbstractAuthenticationProcessingFilter
 {
-    private static final String DEFAULT_LOGIN_REQUEST_URL = "/p/member/client-login";
+    private static final String DEFAULT_LOGIN_REQUEST_URL = "/p/member/counselor-login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
     private final ObjectMapper objectMapper;
@@ -30,7 +30,7 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER =
             new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD); // 로그인 요청 시 POST
 
-    public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper)
+    public JsonUsernamePasswordAuthenticationFilterforCounselor(ObjectMapper objectMapper)
     {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER);
         this.objectMapper = objectMapper;
