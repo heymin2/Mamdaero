@@ -18,18 +18,16 @@ public class ConsultService {
     private final ReservationRepository reservationRepository;
     private final ConsultRepository consultRepository;
 
-    public void enterRoom(Long reservationId) {
+    public void create(Long reservationId) {
+
         // 존재하는 예약인지 확인
         if (!reservationRepository.existsById(reservationId)) {
             throw new ReservationNotFoundException();
         }
-
         // 생성된 상담이 없다면 생성
         if (!consultRepository.existsById(reservationId)) {
             createConsult(reservationId);
         }
-
-        // 상담방 입장 로직
 
     }
 
