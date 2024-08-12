@@ -16,8 +16,8 @@ public class WebSocketSecurityConfig
     @Bean
     public AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
         return messages
-                .simpTypeMatchers(SimpMessageType.CONNECT).authenticated()
-                .simpDestMatchers("/pub/**", "/sub/**", "/signaling/**", "/chatlog/**").authenticated()
+                .simpTypeMatchers(SimpMessageType.CONNECT).permitAll()
+                .simpDestMatchers("/pub/**", "/sub/**", "/signaling/**", "/chatlog/**", "/ws/**").permitAll()
                 .anyMessage().permitAll()
                 .build();
     }

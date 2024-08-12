@@ -47,7 +47,7 @@ public class SecurityConfig
                 )
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/error", "/", "/p/**", "/chatlog/**", "/sub/**", "/pub/**",
-                                "/signaling/**", "/app/**", "/topic/**", "/api/signaling/**").permitAll()
+                                "/signaling/**", "/app/**", "/topic/**", "/api/signaling/**", "/ws/**", "/wss/**").permitAll()
                         .anyRequest().authenticated())
 //                        .requestMatchers("/c/**").hasRole("상담사")
 //                        .requestMatchers("/m/**").hasRole("내담자")
