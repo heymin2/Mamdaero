@@ -19,7 +19,7 @@ public class WorkScheduleController {
     private final WorkScheduleService workScheduleService;
 
     @GetMapping("") // 상담사의 근무 일정 조회
-    public ResponseEntity<List<WorkScheduleResponse>> find(@RequestParam(name = "day", required = false, defaultValue = "1") int day, @RequestParam(name = "counselorId") Long counselorId) {
+    public ResponseEntity<List<WorkScheduleResponse>> find(@RequestParam(name = "day", required = false, defaultValue = "1") int day) {
         return ResponseEntity.ok(workScheduleService.find(day));
     }
 
