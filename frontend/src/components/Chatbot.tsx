@@ -66,7 +66,8 @@ const Chatbot = () => {
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
-          model: 'gpt-3.5-turbo',
+          // model: 'gpt-3.5-turbo',
+          model: 'gpt-4o',
           messages: getPromptEngineering(input),
           temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
           max_tokens: 256, // 응답받을 메시지 최대 토큰(단어) 수 설정
@@ -81,7 +82,7 @@ const Chatbot = () => {
           },
         }
       );
-      console.log('api 호출', response);
+      // console.log('api 호출', response);
       if (response.data && response.data.choices && response.data.choices.length > 0) {
         const reply = response.data.choices[0]?.message.content.trim(); // optional chaining 사용
         if (reply) {
@@ -153,7 +154,7 @@ const Chatbot = () => {
       </h2>
 
       {/* 채팅 메시지를 표시하는 영역 */}
-      <div ref={chatBoxRef} className="card-body flex-grow overflow-y-scroll max-h-[512px]">
+      <div ref={chatBoxRef} className="card-body flex-grow overflow-y-scroll ">
         <div
           ref={chatRef}
           className="flex-grow flex flex-col align-bottom justify-end gap-1 snap-y snap-mandatory "
@@ -206,7 +207,7 @@ const Chatbot = () => {
             </button>
           ))}
         </div>
-        <form onSubmit={handleSubmit} className="w-full px-4">
+        <form onSubmit={handleSubmit} className="w-full p-4">
           <div className="flex p-3 border border-black rounded-full justify-between">
             <input
               type="text"

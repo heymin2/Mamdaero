@@ -23,7 +23,7 @@ const MainPageClient: React.FC = () => {
           </a>
         </div>
       </div>
-      <div id="chatbot" className="carousel-item justify-center h-full">
+      <div className="carousel-item justify-center h-full" id="chatbot">
         <Chatbot />
       </div>
     </div>
