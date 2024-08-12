@@ -1,34 +1,31 @@
 import React from 'react';
 import { Emotion, getEmotionImage } from '@/pages/emotiondiary/emotion';
 import ModalWrapper from '@/components/modal/ModalWrapper';
+import { DiaryResponse, useDeleteEmotionDiary } from '@/hooks/emotionDiary';
 interface DiaryViewModalProps {
   isOpen: boolean;
-  diary: {
-    id: string;
-    date: string;
-    emotion: Emotion;
-    content: string;
-    shareWithCounselor: boolean;
-  } | null;
+  diary?: DiaryResponse;
   onClose: () => void;
   onEdit: () => void;
-  onDelete: (id: string) => void;
 }
 
-const DiaryViewModal: React.FC<DiaryViewModalProps> = ({
-  isOpen,
-  diary,
-  onClose,
-  onEdit,
-  onDelete,
-}) => {
-  if (!isOpen || !diary) return null;
+const DiaryViewModal: React.FC<DiaryViewModalProps> = ({ isOpen, diary, onClose, onEdit }) => {
+  const { mutateAsync: deleteDiary } = useDeleteEmotionDiary();
 
-  const handleDelete = () => {
-    if (window.confirm('정말로 이 일기를 삭제하시겠습니까?')) {
-      onDelete(diary.id);
+  const onDelete = () => {
+    if (!diary) return;
+    const agree = window.confirm('정말로 이 일기를 삭제하시겠습니까?');
+    if (agree) {
+      deleteDiary(diary.id)
+        .then(() => {})
+        .catch(() => {
+          alert('다이어리 삭제에 실패했습니다.');
+        });
     }
+    onClose();
   };
+
+  if (!isOpen || !diary) return null;
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose} size="md">
@@ -49,7 +46,7 @@ const DiaryViewModal: React.FC<DiaryViewModalProps> = ({
           <input
             type="checkbox"
             id="shareWithCounselor"
-            checked={diary.shareWithCounselor}
+            checked={diary.isOpen}
             disabled
             className="mr-2"
           />
@@ -63,7 +60,7 @@ const DiaryViewModal: React.FC<DiaryViewModalProps> = ({
             수정
           </button>
           <button
-            onClick={handleDelete}
+            onClick={onDelete}
             className="px-4 py-2 bg-blue-300 text-white rounded hover:bg-gray-400 transition duration-200"
           >
             삭제

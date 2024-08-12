@@ -4,9 +4,12 @@ import com.mamdaero.domain.member.entity.Counselor;
 import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.repository.CounselorRepository;
 import com.mamdaero.domain.member.repository.MemberRepository;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
 import com.mamdaero.domain.member.security.dto.UserDetailsImpl;
 import com.mamdaero.domain.member.security.dto.request.*;
+import com.mamdaero.domain.member.security.entity.PasswordVerify;
 import com.mamdaero.domain.member.security.repository.CounselorAuthRepository;
+import com.mamdaero.domain.member.security.repository.PasswordVerifyRepository;
 import com.mamdaero.global.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +30,11 @@ public class MemberAuthService
 {
     private final MemberRepository memberRepository;
     private final CounselorAuthRepository counselorAuthRepository;
+    private final PasswordVerifyRepository passwordVerifyRepository;
     private final CounselorRepository counselorRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileService fileService;
+    private final FindUserService findUserService;
 
     //내담자 회원 가입
     public Long memberJoin(MemberSignUpDTO userRequestDto) throws Exception
@@ -141,6 +146,35 @@ public class MemberAuthService
             return false;
         }
         memberRepository.modifyPassword(passwordEncoder.encode(request.getNewPassword()), email);
+        return true;
+    }
+
+    public boolean deleteUser(DeleteMemberDTO request)
+    {
+        Optional <Member> member = memberRepository.findByEmail(request.getEmail());
+        MemberInfoDTO membercheck = findUserService.findMember();
+
+        if(member.isEmpty() || !membercheck.getMemberEmail().equals(request.getEmail()))
+        {
+            return false;
+        }
+        else
+        {
+            memberRepository.modifyUserStatus(request.getEmail());
+            return true;
+        }
+    }
+
+    public boolean noLoginPasswordReset(PasswordEmailResetDTO request)
+    {
+        PasswordVerify passwordVerify = passwordVerifyRepository.findByEmail(request.getEmail());
+
+        if(passwordVerify.getVerifyToken() == null)
+        {
+            return false;
+        }
+        passwordVerifyRepository.deleteByCodeId(passwordVerify.getCodeId());
+        memberRepository.modifyPassword(passwordEncoder.encode(request.getPassword()), request.getEmail());
         return true;
     }
 

@@ -70,8 +70,6 @@ const SupervisionListPage: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
 
-  const posts = pageData?.data || [];
-
   const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
 
   const writePost = () => {

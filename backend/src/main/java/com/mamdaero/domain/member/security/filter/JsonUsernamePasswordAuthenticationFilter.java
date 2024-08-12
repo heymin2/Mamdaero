@@ -20,7 +20,7 @@ import java.util.Map;
 @Slf4j
 public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter
 {
-    private static final String DEFAULT_LOGIN_REQUEST_URL = "/p/member/login";
+    private static final String DEFAULT_LOGIN_REQUEST_URL = "/p/member/client-login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
     private final ObjectMapper objectMapper;
