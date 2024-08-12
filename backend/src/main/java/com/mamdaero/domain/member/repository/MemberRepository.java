@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-//    Optional<Member> findById(Long id);
+    //    Optional<Member> findById(Long id);
     Optional<Member> findByEmail(String email);
     boolean existsByEmail(String email);
     Optional<Member> findById(Long id);
@@ -19,4 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query("UPDATE Member m SET m.password = :password WHERE m.email = :email ")
     void modifyPassword(@Param("password") String password, @Param("email") String email);
+    @Modifying
+    @Query("UPDATE Member m SET m.memberStatus = true WHERE m.email = :email")
+    void modifyUserStatus(@Param("email") String email);
 }
