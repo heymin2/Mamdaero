@@ -53,7 +53,7 @@ public class DiaryService {
                     .map(DiaryResponseDto::toDTO)
                     .toList();
 
-            return new PageImpl<>(diaries);
+            return new PageImpl<>(diaries, pageable, diaries.size());
         }
 
         throw new MemberNotFoundException();
@@ -82,7 +82,7 @@ public class DiaryService {
                     .map(DiaryResponseDto::toDTO)
                     .toList();
 
-            return new PageImpl<>(diaryResponseDtoList);
+            return new PageImpl<>(diaryResponseDtoList, pageable, diaryResponseDtoList.size());
         }
         throw new MemberNotFoundException();
     }

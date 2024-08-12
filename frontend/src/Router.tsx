@@ -25,13 +25,17 @@ import CounselorReservePage from '@/pages/counselor/CounselorReservePage';
 import CommunityListPage from '@/pages/community/CommunityListPage';
 import CommunityDetailPage from '@/pages/community/CommunityDetailPage';
 import CommunityWritePostPage from '@/pages/community/CommunityWritePostPage';
+import CommunityEditPostPage from './pages/community/CommunityEditPostPage';
 import SupervisionListPage from '@/pages/supervision/SupervisionListPage';
 import SupervisionDetailPage from '@/pages/supervision/SupervisionDetailPage';
 import SupervisionWritePostPage from '@/pages/supervision/SupervisionWritePostPage';
 import SupervisionEditPostPage from '@/pages/supervision/SupervisionEditPostPage';
+import NoticeListPage from '@/pages/notice/NoticeListPage';
+import NoticeDetailPage from '@/pages/notice/NoticeDetailPage';
+import NoticeWritePostPage from '@/pages/notice/NoticeWritePostPage';
+import NoticeEditPostPage from '@/pages/notice/NoticeEditPostPage';
 import ClientMyPage from '@/pages/mypage/ClientMyPage';
 import CounselorMyPage from '@/pages/mypage/CounselorMyPage';
-import CounselorEditInformationPage from '@/pages/mypage/CounselorEditInformationPage';
 import CounselorManageProductPage from '@/pages/mypage/CounselorManageProductPage';
 import CounselorManageTimePage from '@/pages/mypage/CounselorManageTimePage';
 import CounselorManageExcludePage from '@/pages/mypage/CounselorManageExcludePage';
@@ -44,26 +48,32 @@ import ClientFaceChat from '@/pages/mycounsel/client/ClientFaceChat';
 import CounselorFaceChat from '@/pages/mycounsel/counselor/CounselorFaceChat';
 import PostitPage from '@/pages/postit/PostitPage';
 import UnauthoriziedPage from '@/pages/UnauthoriziedPage';
-
+import SimpleTestListPage from '@/pages/simpletest/SimpleTestListPage';
 import useAuthStore from '@/stores/authStore';
+import BernardTestPage from './pages/simpletest/BernardTestPage';
+import HTPTestPage from './pages/simpletest/HTPTestPage';
 
 const Router = () => {
-  const { isCounselor, isClient, isAuthenticated } = useAuthStore();
+  const { isCounselor, isClient, isAdmin, isAuthenticated, getEmail } = useAuthStore();
+
   const getHomePageElement = () => {
-    if (isAuthenticated && isCounselor()) {
+    if (isAuthenticated && (isCounselor() || isAdmin())) {
       return <MainPageCounselor />;
     } else if (isAuthenticated && isClient()) {
       return <MainPageClient />;
     }
     return <MainPage />;
   };
+
+  const getMemberId = () => {
+    const email = getEmail();
+    return email ? email.split('@')[0] : 'unknown';
+  };
   return (
     <Routes>
       {/* Main Routes  */}
       <Route path="/" element={getHomePageElement()} />
-      {/* <Route path="/" element={<MainPage />} /> */}
-      {/* <Route path="/client/main" element={<MainPageClient />} /> */}
-      {/* <Route path="/counselor/main" element={<MainPageCounselor />} /> */}
+
       {/* SignUp Routes */}
       <Route path="/signup/choose" element={<SignUpChoose />} />
       <Route path="/signup/client/*" element={<SignUpClient />} />
@@ -91,6 +101,7 @@ const Router = () => {
       <Route path="/community" element={<CommunityListPage />} />
       <Route path="/community/:communityId" element={<CommunityDetailPage />} />
       <Route path="/community/write/post" element={<CommunityWritePostPage />} />
+      <Route path="/community/edit/:communityId" element={<CommunityEditPostPage />} />
 
       {/* Supervision Routes */}
       <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
@@ -100,13 +111,24 @@ const Router = () => {
         <Route path="/supervision/edit/:supervisionId" element={<SupervisionEditPostPage />} />
       </Route>
 
+      {/* Notice Routes */}
+      <Route path="/notice" element={<NoticeListPage />} />
+      <Route path="/notice/:noticeId" element={<NoticeDetailPage />} />
+      <Route path="/notice/write/post" element={<NoticeWritePostPage />} />
+      <Route path="/notice/edit/:noticeId" element={<NoticeEditPostPage />} />
+
       {/* MyPage Routes */}
-      <Route path="/mypage/client" element={<ClientMyPage />} />
-      <Route path="/mypage/counselor" element={<CounselorMyPage />} />
-      <Route path="/mypage/counselor/edit" element={<CounselorEditInformationPage />} />
-      <Route path="/mypage/counselor/product" element={<CounselorManageProductPage />} />
-      <Route path="/mypage/counselor/time" element={<CounselorManageTimePage />} />
-      <Route path="/mypage/counselor/exclude" element={<CounselorManageExcludePage />} />
+      <Route element={<ProtectedRoute allowedRoles={['내담자', '상담사']} />}>
+        <Route
+          path="/mypage/:memberId"
+          element={isCounselor() ? <CounselorMyPage /> : <ClientMyPage />}
+        />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
+        <Route path="/mypage/:memberId/product" element={<CounselorManageProductPage />} />
+        <Route path="/mypage/:memberId/time" element={<CounselorManageTimePage />} />
+        <Route path="/mypage/:memberId/exclude" element={<CounselorManageExcludePage />} />
+      </Route>
 
       {/* EmotionDiary Routes */}
       <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
@@ -131,6 +153,11 @@ const Router = () => {
 
       {/* Unauthorizied */}
       <Route path="/unauthorized" element={<UnauthoriziedPage />} />
+
+      {/* SimpleTest Routes */}
+      <Route path="/simpletest" element={<SimpleTestListPage />} />
+      <Route path="/simpletest/bernard" element={<BernardTestPage />} />
+      <Route path="/simpletest/htp" element={<HTPTestPage />} />
     </Routes>
   );
 };

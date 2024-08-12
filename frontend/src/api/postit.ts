@@ -26,17 +26,25 @@ export const createPostit = ({ questionId, content }: { questionId: number; cont
   });
 };
 
-export const updatePostit = ({ postitId, content }: { postitId: number; content: string }) => {
+export const updatePostit = ({
+  questionId,
+  postitId,
+  content,
+}: {
+  questionId: number;
+  postitId: number;
+  content: string;
+}) => {
   return axiosInstance({
-    url: `/cm/postit/${postitId}`,
-    method: 'PUT',
+    url: `/cm/postit/${questionId}/${postitId}`,
+    method: 'PATCH',
     data: { content },
   });
 };
 
-export const deletePostit = (postitId: number) => {
+export const deletePostit = (questionId: number, postitId: number) => {
   return axiosInstance({
-    url: `/cma/postit/${postitId}`,
+    url: `/cma/postit/${questionId}/${postitId}`,
     method: 'DELETE',
   });
 };

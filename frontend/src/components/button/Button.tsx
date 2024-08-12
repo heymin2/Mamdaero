@@ -2,7 +2,7 @@ import React from 'react';
 
 interface ButtonProps {
   label: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   type?: 'button' | 'submit' | 'reset';
   size?:
     | 'xs'

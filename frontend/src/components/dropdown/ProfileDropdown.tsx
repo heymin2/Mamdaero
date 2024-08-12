@@ -7,11 +7,15 @@ const ProfileDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { logout, email, getRole } = useAuthStore();
+  const { logout, email, isAuthenticated } = useAuthStore();
 
   const toggleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsOpen(prev => !prev);
+    if (isAuthenticated) {
+      setIsOpen(prev => !prev);
+    } else {
+      alert('로그인이 필요합니다.');
+    }
   };
 
   useEffect(() => {
@@ -30,21 +34,19 @@ const ProfileDropdown: React.FC = () => {
   const handleLogout = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      await logout(); // 비동기 작업일 경우를 대비해 await 사용
-      // 추가적인 정리 작업이 필요한 경우 여기에 구현
+      await logout();
       navigate('/');
     } catch (error) {
-      console.error('로그아웃 중 오류 발생:', error);
-      // 오류 처리 로직 (예: 사용자에게 알림)
+      alert(`로그아웃 오류 ${error}`);
     }
   };
 
   const handleMyPage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const role = getRole();
     const memberId = email?.split('@')[0] || 'unknown';
-    const myPagePath = role?.includes('상담사') ? '/mypage/counselor' : `/mypage/${memberId}`;
+    const myPagePath = `/mypage/${memberId}`;
     navigate(myPagePath);
+    setIsOpen(false); // 네비게이션 후 드롭다운을 닫습니다.
   };
 
   return (
@@ -52,7 +54,7 @@ const ProfileDropdown: React.FC = () => {
       <button onClick={toggleDropdown} className="focus:outline-none rounded-full relative z-10">
         <CgProfile size={24} />
       </button>
-      {isOpen && (
+      {isAuthenticated && isOpen && (
         <div className="absolute bottom-full right-0 mb-2 w-24 bg-white rounded-md shadow-xl z-20 border border-gray-200">
           <button
             onClick={handleMyPage}

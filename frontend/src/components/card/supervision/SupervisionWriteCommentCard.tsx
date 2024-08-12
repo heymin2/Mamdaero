@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
 import RegisterButton from '@/components/button/RegisterButton';
+import useMemberStore from '@/stores/memberStore';
 
 interface SupervisionCommentCardProps {
   postId: number;
@@ -28,9 +29,9 @@ const SupervisionWriteCommentCard: React.FC<SupervisionCommentCardProps> = ({
   postId,
   onCommentAdded,
 }) => {
-  const [comment, setComment] = useState<string>('');
   const queryClient = useQueryClient();
-  const nickname = '하늘의 미소';
+  const [comment, setComment] = useState<string>('');
+  const { nickname } = useMemberStore();
 
   const mutation = useMutation({
     mutationFn: (comment: string) => postComment(postId, comment),
@@ -40,7 +41,7 @@ const SupervisionWriteCommentCard: React.FC<SupervisionCommentCardProps> = ({
       queryClient.setQueryData<CommentDetail[]>(['comments', postId], old => {
         const newCommentObj: CommentDetail = {
           id: Date.now(),
-          writer: nickname,
+          writer: nickname || '익명',
           comment: newComment,
           createdAt: new Date().toISOString(),
         };
