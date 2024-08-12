@@ -36,19 +36,16 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
 
-        if (Objects.equals(notice.getMemberId(), memberId)) {
-            if (request.getTitle() != null) {
-                notice.updateTitle(request.getTitle());
-            }
-
-            if (request.getContent() != null) {
-                notice.updateContent(request.getContent());
-            }
-
-            noticeRepository.save(notice);
-            return NoticeDetailResponse.of(notice);
+        if (request.getTitle() != null) {
+            notice.updateTitle(request.getTitle());
         }
-        throw new BoardBadRequestException();
+
+        if (request.getContent() != null) {
+            notice.updateContent(request.getContent());
+        }
+
+        noticeRepository.save(notice);
+        return NoticeDetailResponse.of(notice);
     }
 
     @Transactional
@@ -56,8 +53,6 @@ public class NoticeService {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(BoardNotFoundException::new);
 
-        if (Objects.equals(notice.getMemberId(), memberId)) {
-            noticeRepository.delete(notice);
-        }
+        noticeRepository.delete(notice);
     }
 }
