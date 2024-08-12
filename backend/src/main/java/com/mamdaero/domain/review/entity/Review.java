@@ -22,7 +22,7 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private String review;
     @Column(nullable = false)
-    private Float score;
+    private Double score;
     @Builder.Default
     private Boolean isDelete = false;
 

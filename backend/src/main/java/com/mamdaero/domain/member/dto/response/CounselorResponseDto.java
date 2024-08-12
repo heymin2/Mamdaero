@@ -31,7 +31,11 @@ public class CounselorResponseDto {
         this.introDetail = introDetail;
         this.img = img;
         this.reviewCount = reviewCount;
-        this.reviewRate = (reviewRate != null) ? reviewRate : 0.0;
+        if (reviewRate != null) {
+            this.reviewRate = Math.round(reviewRate * 100.0) / 100.0;
+        } else {
+            this.reviewRate = 0.0;
+        }
     }
 
     public static CounselorResponseDto toDTO(Counselor counselor) {
