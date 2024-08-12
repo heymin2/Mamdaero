@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import FullCalendar from '@fullcalendar/react';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -6,6 +7,7 @@ import { EventClickArg, EventContentArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import MyCounselBar from '@/components/navigation/MyCounselBar';
 import dayjs from 'dayjs';
+import useAuthStore from '@/stores/authStore';
 
 interface ScheduleEntry {
   id: number;
@@ -19,6 +21,9 @@ const CounselorManageExcludePage: React.FC = () => {
   const [schedules, setSchedules] = useState<ScheduleEntry[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTimes, setSelectedTimes] = useState<number[]>([]);
+  const { memberId } = useParams<{ memberId: string }>();
+  const { getEmail } = useAuthStore();
+  const currentMemberId = memberId || getEmail()?.split('@')[0] || 'unknown';
 
   useEffect(() => {
     // 초기 근무 시간 설정 (9시부터 18시까지)
@@ -109,7 +114,7 @@ const CounselorManageExcludePage: React.FC = () => {
           subtitle="예기치 못한 스케줄 변경 시, 근무 일정을 손쉽게 수정하세요!"
           buttonLabel="뒤로가기"
           user="counselor"
-          buttonPath="/mypage/counselor"
+          buttonPath={`/mypage/${currentMemberId}`}
           size="md"
         />
       </div>
