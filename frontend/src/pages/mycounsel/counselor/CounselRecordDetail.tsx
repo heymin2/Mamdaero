@@ -5,8 +5,10 @@ import SelfTestResultTable from '@/components/table/SelfTestResultTable';
 import Button from '@/components/button/Button';
 import { IoIosArrowBack } from 'react-icons/io';
 import MyCounselBar from '@/components/navigation/MyCounselBar';
+import useAuthStore from '@/stores/authStore';
 
 const CounselRecordDetail: React.FC = () => {
+  const { email } = useAuthStore();
   const { clientId } = useParams<{ clientId: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('보고서');
@@ -80,6 +82,7 @@ const CounselRecordDetail: React.FC = () => {
 
   const counselingRecords = clientId ? allCounselingRecords[clientId] || [] : [];
   const client = clientId ? clientInfo[clientId] || { name: '알 수 없음' } : { name: '알 수 없음' };
+  const memberId = email?.split('@')[0] || 'unknown';
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -91,7 +94,7 @@ const CounselRecordDetail: React.FC = () => {
           subtitle="내담자의 기록을 확인하여 개인 맞춤형 상담 서비스를 제공하세요!"
           user="counselor"
           buttonLabel="내담자 목록 보기"
-          buttonPath="/mycounsel/counselor/record"
+          buttonPath={`/mycounsel/${memberId}/record`}
         />
       </div>
       {/* 상담기록 탭목록 */}

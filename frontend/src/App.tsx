@@ -37,6 +37,15 @@ function App() {
       }
     }
 
+    // 나의 상담 경로 처리
+    if (pathname.startsWith('/mycounsel/')) {
+      if (isCounselor()) {
+        return 'bg-blue-50'; // 상담사 마이페이지
+      } else if (isClient()) {
+        return 'bg-orange-50'; // 내담자 마이페이지
+      }
+    }
+
     // 기타 경로 처리
     for (const [route, color] of Object.entries(routeBackgroundColors)) {
       if (pathname.startsWith(route)) {
