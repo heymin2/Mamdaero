@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import DefaultProfile from '@/assets/DefaultProfile.jpg';
 import Button from '@/components/button/Button';
 import axiosInstance from '@/api/axiosInstance';
+import axios, { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface Product {
   counselorItemId: number;
@@ -32,23 +34,16 @@ const fetchProducts = async (counselorId: number): Promise<Product[]> => {
     method: 'get',
     url: `p/counselor-item/${counselorId}`,
   });
-  console.log(response.data);
   return response.data;
 };
 
 const createReservation = async (reservationData: ReservationData) => {
-  try {
-    const response = await axiosInstance({
-      method: 'post',
-      url: 'm/reservation',
-      data: reservationData,
-    });
-    console.log('예약 성공:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('예약 실패:', error);
-    throw error;
-  }
+  const response = await axiosInstance({
+    method: 'post',
+    url: 'm/reservation',
+    data: reservationData,
+  });
+  return response.data;
 };
 
 const CounselorSidebar: React.FC<CounselorSidebarProps> = ({
@@ -56,6 +51,7 @@ const CounselorSidebar: React.FC<CounselorSidebarProps> = ({
   counselorId,
   getReservationData,
 }) => {
+  const navigate = useNavigate();
   const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
   const {
     data: products,
@@ -71,13 +67,24 @@ const CounselorSidebar: React.FC<CounselorSidebarProps> = ({
     if (reservationData) {
       try {
         await createReservation({ ...reservationData, counselorItemId });
-        // 예약 성공 후 처리 (예: 알림 표시, 페이지 리디렉션 등)
+        navigate('/mycounsel');
+        alert('예약이 완료되었습니다.');
       } catch (error) {
-        // 에러 처리
-        console.error('예약 실패:', error);
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          if (axiosError.response?.data === 'RES001') {
+            alert('존재하지 않는 예약 정보입니다.');
+          } else if (axiosError.response?.data === 'RES002') {
+            alert('이미 예약된 시간입니다.');
+          } else if (axiosError.response?.data === 'RES003') {
+            alert('증상 정보를 입력해주세요.');
+          } else if (axiosError.response?.data === 'RES004') {
+            alert('상황 정보를 입력해주세요.');
+          }
+        } else {
+          alert('예약 중 알 수 없는 오류가 발생했습니다.');
+        }
       }
-    } else {
-      console.error('예약 데이터가 없습니다.');
     }
   };
 

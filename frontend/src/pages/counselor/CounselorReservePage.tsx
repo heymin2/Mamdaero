@@ -11,6 +11,11 @@ import RequestSection from '@/components/card/counselor/reserve/RequestSection';
 import CounselorSidebar from '@/components/card/counselor/reserve/CounselorSidebar';
 import axiosInstance from '@/api/axiosInstance';
 
+interface TimeSlot {
+  id: number;
+  time: number;
+}
+
 interface ReservationData {
   workTimeId: number;
   situationIds: number[];
@@ -24,7 +29,7 @@ const CounselorReservePage: React.FC = () => {
   const navigate = useNavigate();
   const { counselorId } = useParams<{ counselorId: string }>();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [availableTimes, setAvailableTimes] = useState<number[]>([]);
+  const [availableTimes, setAvailableTimes] = useState<TimeSlot[]>([]);
   const [selectedTime, setSelectedTime] = useState<number | null>(null);
   const [selectedSituations, setSelectedSituations] = useState<number[]>([]);
   const [selectedSymptoms, setSelectedSymptoms] = useState<number[]>([]);
@@ -37,66 +42,6 @@ const CounselorReservePage: React.FC = () => {
 
   const backToList = () => {
     navigate('/counselor');
-  };
-
-  useEffect(() => {
-    if (selectedTime !== null) {
-      console.log(`선택된 시간: ${selectedTime}:00`);
-    }
-  }, [selectedTime]);
-
-  useEffect(() => {
-    if (selectedSituations.length > 0) {
-      console.log('선택된 상황들:', selectedSituations);
-    }
-  }, [selectedSituations]);
-
-  useEffect(() => {
-    if (selectedSymptoms.length > 0) {
-      console.log('선택된 증상들:', selectedSymptoms);
-    }
-  }, [selectedSymptoms]);
-
-  useEffect(() => {
-    console.log('다이어리 공유 상태:', isDiaryShared);
-  }, [isDiaryShared]);
-
-  const handleReservation = async () => {
-    if (
-      !selectedDate ||
-      selectedTime === null ||
-      !selectedSituations.length ||
-      !selectedSymptoms.length ||
-      diaryConsent === null ||
-      testConsent === null
-    ) {
-      alert('모든 항목을 입력 및 선택해주세요.');
-      return;
-    }
-
-    const reservationData = {
-      date: selectedDate,
-      workTimeId: selectedTime,
-      situations: selectedSituations,
-      symptoms: selectedSymptoms,
-      isDiaryShared,
-      isTestShared,
-      requirement,
-    };
-
-    try {
-      const response = await axiosInstance({
-        method: 'post',
-        url: 'm/reservation',
-        data: reservationData,
-      });
-      console.log('예약 성공:', response.data);
-      alert('예약이 완료되었습니다.');
-      navigate('/mycounsel/client/history');
-    } catch (error) {
-      console.error('예약 실패:', error);
-      alert('예약 중 오류가 발생했습니다. 다시 시도해 주세요.');
-    }
   };
 
   const getReservationData = (): ReservationData | null => {

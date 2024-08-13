@@ -9,7 +9,7 @@ interface CalendarSectionProps {
   counselorId: number;
   selectedDate: string | null;
   setSelectedDate: (date: string) => void;
-  setAvailableTimes: (times: number[]) => void;
+  setAvailableTimes: (times: { id: number; time: number }[]) => void;
 }
 
 interface WorkTime {
@@ -46,7 +46,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
 
       const availableTimes = response.data
         .filter(wt => !wt.isReserved && wt.isWorkTime)
-        .map(wt => wt.time);
+        .map(wt => ({ id: wt.id, time: wt.time }));
 
       setAvailableTimes(availableTimes);
     } catch (error) {
