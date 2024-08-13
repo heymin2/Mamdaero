@@ -19,7 +19,7 @@ const NavClient: React.FC = () => {
   const [isMyCounselOpen, setIsMyCounselOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isCounselor, isClient, isAuthenticated } = useAuthStore();
+  const { isCounselor, isClient, isAuthenticated, email } = useAuthStore();
   const isNavActive = useNavActive();
 
   const isMyCounselActive = isNavActive('/mycounsel/counselor');
@@ -29,6 +29,8 @@ const NavClient: React.FC = () => {
       setIsMyCounselOpen(false);
     }
   }, [location, isMyCounselActive]);
+
+  const memberId = email?.split('@')[0] || 'unknown';
 
   return (
     <div className="flex flex-col w-1.5/12 h-screen bg-white text-gray-800 fixed shadow-lg">
@@ -74,18 +76,31 @@ const NavClient: React.FC = () => {
       </button>
       {isMyCounselOpen && (
         <div className="flex flex-col mt-1 bg-gray-50">
-          <NavLink
-            to="/mycounsel/counselor/history"
-            className={`${navSubStyle} ${isNavActive('/mycounsel/counselor/history') ? activeStyle : ''}`}
-          >
-            상담 내역
-          </NavLink>
-          <NavLink
-            to="/mycounsel/counselor/record"
-            className={`${navSubStyle} ${isNavActive('/mycounsel/counselor/record') ? activeStyle : ''}`}
-          >
-            상담 기록
-          </NavLink>
+          {isCounselor() ? (
+            <>
+              <NavLink
+                to={`/mycounsel/${memberId}/history`}
+                className={`${navSubStyle} ${isNavActive(`/mycounsel/${memberId}/history`) ? activeStyle : ''}`}
+              >
+                상담 내역
+              </NavLink>
+              <NavLink
+                to={`/mycounsel/${memberId}/record`}
+                className={`${navSubStyle} ${isNavActive(`/mycounsel/${memberId}/record`) ? activeStyle : ''}`}
+              >
+                상담 기록
+              </NavLink>
+            </>
+          ) : (
+            isClient() && (
+              <NavLink
+                to={`/mycounsel/${memberId}/history`}
+                className={`${navSubStyle} ${isNavActive(`/mycounsel/${memberId}/history`) ? activeStyle : ''}`}
+              >
+                상담 내역
+              </NavLink>
+            )
+          )}
         </div>
       )}
       <div className="flex justify-evenly mt-auto mb-5">
