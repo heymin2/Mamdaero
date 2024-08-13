@@ -3,25 +3,45 @@ import Button from '@/components/button/Button';
 import { useNavigate } from 'react-router-dom';
 import ChatModal from '@/components/modal/ChatModal';
 
-interface CounselorCompletedCardProps {
-  counselId: string;
-  clientId: string;
-  clientName: string;
+interface Reservation {
+  canceledAt: string | null;
+  canceler: string | null;
   date: string;
-  time: string;
+  isDiaryShared: boolean;
+  isTestShared: boolean;
+  itemFee: number;
+  itemName: string;
+  requirement: string;
+  reservationId: number;
   status: string;
+  time: number;
+  counselorName: string;
+  clientName: string;
+  counselorId: string;
+  clientId: string;
 }
 
-const CounselorCompletedCard: React.FC<CounselorCompletedCardProps> = ({
-  counselId,
-  clientName,
+const CounselorCompletedCard: React.FC<Reservation> = ({
+  reservationId,
+  counselorId,
+  counselorName,
   date,
   time,
   status,
+  itemName,
+  itemFee,
+  requirement,
+  isDiaryShared,
+  isTestShared,
+  canceledAt,
+  canceler,
+  clientName,
   clientId,
 }) => {
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   return (
     <div className="border-b-2 border-blue-300 p-6">
       <h3 className="text-xl font-bold mb-3">{clientName} 님</h3>
@@ -33,7 +53,17 @@ const CounselorCompletedCard: React.FC<CounselorCompletedCardProps> = ({
           <p>현재 상태</p>
         </div>
         <div className="font-apple-sdgothic-semi-bold col-span-4 space-y-3">
-          <p>{counselId}</p>
+          <div className="flex gap-4 items-center">
+            {reservationId}
+            <Button
+              label="상세보기"
+              onClick={() => setIsDetailModalOpen(true)}
+              size="xs"
+              shape="rounded"
+              color="extragray"
+              textSize="xs"
+            />
+          </div>
           <p>{date}</p>
           <p>{time}</p>
           <p className="text-green-600 font-bold">{status}</p>
@@ -61,7 +91,7 @@ const CounselorCompletedCard: React.FC<CounselorCompletedCardProps> = ({
         isOpen={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
         memberName={clientName}
-        reservationId={counselId}
+        reservationId={reservationId.toString()}
         user="counselor"
       />
     </div>

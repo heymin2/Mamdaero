@@ -17,7 +17,9 @@ interface Reservation {
   status: string;
   time: number;
   counselorName: string;
+  clientName: string;
   counselorId: string;
+  clientId: string;
 }
 
 const fetchReservation = async () => {
@@ -37,10 +39,9 @@ const fetchReservation = async () => {
         reservationHistory.push(reservation);
       }
     });
-    console.log(response.data.data);
     return { reservationCompleted, reservationHistory };
   } catch (error) {
-    console.error('Error fetching reservations:', error);
+    alert(`Error fetching reservations: ${error}`);
     throw error;
   }
 };
@@ -58,8 +59,7 @@ const ClientHistory: React.FC = () => {
         setReservationCompleted(reservationCompleted);
         setReservationHistory(reservationHistory);
       } catch (error) {
-        console.error('Failed to fetch reservations:', error);
-        // 여기에 에러 처리 로직을 추가할 수 있습니다 (예: 에러 메시지 표시)
+        alert(`Failed to fetch reservations: ${error}`);
       } finally {
         setIsLoading(false);
       }
@@ -67,6 +67,7 @@ const ClientHistory: React.FC = () => {
 
     fetchData();
   }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <MyCounselBar
