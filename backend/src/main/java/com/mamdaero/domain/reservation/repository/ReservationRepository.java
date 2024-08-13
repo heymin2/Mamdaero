@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, r.itemName, r.itemFee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
+    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, r.itemName, r.itemFee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared, r.isTestShared) " +
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
@@ -22,7 +22,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "ORDER BY r.createdAt DESC")
     Page<ReservationListResponse> findByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
-    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, r.itemName, r.itemFee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
+    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, r.itemName, r.itemFee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared, r.isTestShared) " +
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
@@ -31,7 +31,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "ORDER BY r.createdAt DESC")
     Page<ReservationListResponse> findByCounselorId(@Param("counselorId") Long counselorId, Pageable pageable);
 
-    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, r.itemName, r.itemFee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
+    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, r.itemName, r.itemFee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared, r.isTestShared) " +
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
@@ -41,7 +41,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "ORDER BY r.createdAt DESC")
     Page<ReservationListResponse> findByMemberIdComplete(@Param("memberId") Long memberId, Pageable pageable);
 
-    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, r.itemName, r.itemFee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
+    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, r.itemName, r.itemFee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared, r.isTestShared) " +
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
@@ -49,6 +49,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "AND r.status = '상담완료' " +
             "ORDER BY r.createdAt DESC")
     Page<ReservationListResponse> findByCounselorIdComplete(@Param("counselorId") Long counselorId, Pageable pageable);
+
+    @Query("SELECT r FROM Reservation r " +
+            "JOIN WorkTime wt ON r.workTimeId = wt.id " +
+            "LEFT JOIN r.situations " +
+            "LEFT JOIN r.symptoms WHERE r.id = :id")
+    Reservation findReservationWithDetails(@Param("id") Long id);
+
 
     Reservation findByMemberIdAndId(Long memberId, Long reservationId);
 

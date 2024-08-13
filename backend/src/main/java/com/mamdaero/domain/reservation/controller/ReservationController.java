@@ -3,6 +3,7 @@ package com.mamdaero.domain.reservation.controller;
 import com.mamdaero.domain.notification.service.notifyCancelReservationService;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
 import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
+import com.mamdaero.domain.reservation.dto.response.ReservationResponse;
 import com.mamdaero.domain.reservation.service.ReservationService;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,14 @@ public class ReservationController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(reservationService.getReservationList(page, size));
+    }
+
+    /**
+     * 예약 단건 조회
+     */
+    @GetMapping("/cm/reservation/{reservationId}")
+    public ResponseEntity<ReservationResponse> findReservationById(@PathVariable(name = "reservationId") Long reservationId) {
+        return ResponseEntity.ok(reservationService.getReservation(reservationId));
     }
 
     /**
