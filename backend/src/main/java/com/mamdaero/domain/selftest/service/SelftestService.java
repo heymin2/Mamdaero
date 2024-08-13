@@ -182,6 +182,8 @@ public class SelftestService {
 
     public List<MemberSelftestResponseDto> getMemberSelftestList(Long memberId) {
 
-        return memberSelftestListRepository.findLatestByMemberIdAndSelftestId(memberId);
+        return memberSelftestListRepository.findLatestByMemberIdAndSelftestId(memberId).stream()
+                .map(MemberSelftestResponseDto::toDTO)
+                .collect(Collectors.toList());
     }
 }
