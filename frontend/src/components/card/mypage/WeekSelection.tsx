@@ -2,35 +2,34 @@ import React from 'react';
 
 interface WeekSelectionProps {
   allWeeks: Record<string, number>;
-  weeks: number[];
+  scheduledWeeks: number[];
   selectedWeek: number | null;
-  setWeeks: (week: number) => void;
+  setSelectedWeek: (week: number) => void;
 }
 
 const WeekSelection: React.FC<WeekSelectionProps> = ({
   allWeeks,
-  weeks,
+  scheduledWeeks,
   selectedWeek,
-  setWeeks,
+  setSelectedWeek,
 }) => {
   return (
     <div className="grid grid-cols-1 gap-3">
-      {Object.keys(allWeeks).map((day: string) => {
-        const value = allWeeks[day];
-        const isSelected = weeks.includes(value);
-        const isCurrentlySelected = selectedWeek === value;
+      {Object.entries(allWeeks).map(([day, value]) => {
+        const isScheduled = scheduledWeeks.includes(value);
+        const isSelected = selectedWeek === value;
 
         return (
           <button
             key={day}
-            className={`btn rounded-full w-16 h-16 flex items-center justify-center text-sm font-medium ${
-              isCurrentlySelected
+            className={`btn rounded-full w-14 h-14 flex items-center justify-center text-lg font-medium ${
+              isSelected
                 ? 'bg-gray-300 text-black'
-                : isSelected
+                : isScheduled
                   ? 'bg-blue-500 text-white'
-                  : 'bg-white border border-blue-500'
+                  : 'bg-white border-blue-500 border-2'
             }`}
-            onClick={() => setWeeks(value)}
+            onClick={() => setSelectedWeek(value)}
           >
             {day}
           </button>

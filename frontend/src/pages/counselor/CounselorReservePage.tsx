@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
-import axiosInstance from '@/api/axiosInstance';
-
 import Button from '@/components/button/Button';
 import CalendarSection from '@/components/card/counselor/reserve/CalendarSection';
 import TimeSelection from '@/components/card/counselor/reserve/TimeSelection';
@@ -11,77 +9,60 @@ import SymptomSelection from '@/components/card/counselor/reserve/SymptomSelecti
 import ConsentSection from '@/components/card/counselor/reserve/ConsentSection';
 import RequestSection from '@/components/card/counselor/reserve/RequestSection';
 import CounselorSidebar from '@/components/card/counselor/reserve/CounselorSidebar';
+import axiosInstance from '@/api/axiosInstance';
 
-interface WorkTime {
+interface TimeSlot {
   id: number;
-  counselorId: number;
-  date: string;
-  isReserved: boolean;
-  isWorkTime: boolean;
+  time: number;
 }
 
-const fetchCounselorWorkTimes = async (counselorId: string): Promise<WorkTime[]> => {
-  const response = await axiosInstance({
-    method: 'get',
-    url: `p/counselor/${counselorId}/worktime`,
-  });
-  return response.data;
-};
+interface ReservationData {
+  workTimeId: number;
+  situationIds: number[];
+  symptomIds: number[];
+  isDiaryShared: boolean;
+  isTestShared: boolean;
+  requirement: string;
+}
 
 const CounselorReservePage: React.FC = () => {
   const navigate = useNavigate();
   const { counselorId } = useParams<{ counselorId: string }>();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [availableTimes, setAvailableTimes] = useState<TimeSlot[]>([]);
+  const [selectedTime, setSelectedTime] = useState<number | null>(null);
   const [selectedSituations, setSelectedSituations] = useState<number[]>([]);
   const [selectedSymptoms, setSelectedSymptoms] = useState<number[]>([]);
+  const [isDiaryShared, setIsDiaryShared] = useState<boolean>(false);
   const [diaryConsent, setDiaryConsent] = useState<boolean | null>(null);
-  const [selfDiagnosisConsent, setSelfDiagnosisConsent] = useState<boolean | null>(null);
-  const [selectedDiagnoses, setSelectedDiagnoses] = useState<string[]>([]);
-  const [requestText, setRequestText] = useState<string>('');
+  const [isTestShared, setIsTestShared] = useState<boolean>(false);
+  const [testConsent, setTestConsent] = useState<boolean | null>(null);
+  const [requirement, setRequirement] = useState<string>('');
   const username = '박민준';
 
   const backToList = () => {
     navigate('/counselor');
   };
 
-  useEffect(() => {
-    if (selectedDate) {
-      // 여기에 선택된 날짜에 따른 가능한 시간 계산 로직 추가
-      const allTimes = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`);
-      setAvailableTimes(allTimes);
-      setSelectedTime(null);
-    }
-  }, [selectedDate]);
-
-  const handleReservation = () => {
+  const getReservationData = (): ReservationData | null => {
     if (
       !selectedDate ||
-      !selectedTime ||
-      !selectedSituations.length ||
-      !selectedSymptoms.length ||
-      diaryConsent === null ||
-      selfDiagnosisConsent === null ||
-      (selfDiagnosisConsent && !selectedDiagnoses.length)
+      selectedTime === null ||
+      selectedSituations.length === 0 ||
+      selectedSymptoms.length === 0
     ) {
-      alert('모든 항목을 입력 및 선택해주세요.');
-      return;
+      return null;
     }
-    console.log({
-      date: selectedDate,
-      time: selectedTime,
-      situations: selectedSituations,
-      symptoms: selectedSymptoms,
-      diaryConsent,
-      selfDiagnosisConsent,
-      selectedDiagnoses,
-      requestText,
-    });
-    alert('예약이 완료되었습니다.');
-    navigate('/mycounsel/client/history');
-  };
 
+    return {
+      workTimeId: selectedTime,
+      situationIds: selectedSituations,
+      symptomIds: selectedSymptoms,
+      isDiaryShared,
+      isTestShared,
+      requirement,
+    };
+  };
   return (
     <div className="my-3 mx-24">
       <div className="mb-3">
@@ -104,9 +85,12 @@ const CounselorReservePage: React.FC = () => {
             <span className="text-orange-500">상담</span>
             <span>예약하기</span>
           </div>
-          {/* 캘린더 날짜 선택 */}
-          <CalendarSection selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-          {/* 시간선택 */}
+          <CalendarSection
+            counselorId={parseInt(counselorId || '0', 10)}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            setAvailableTimes={setAvailableTimes}
+          />
           {selectedDate && (
             <TimeSelection
               availableTimes={availableTimes}
@@ -114,39 +98,39 @@ const CounselorReservePage: React.FC = () => {
               setSelectedTime={setSelectedTime}
             />
           )}
-          {/* 상황 선택 */}
-          {selectedTime && (
+          {selectedTime !== null && (
             <SituationSelection
               selectedSituations={selectedSituations}
               setSelectedSituations={setSelectedSituations}
             />
           )}
-          {/* 증상선택 */}
           {selectedSituations.length > 0 && (
             <SymptomSelection
               selectedSymptoms={selectedSymptoms}
               setSelectedSymptoms={setSelectedSymptoms}
             />
           )}
-          {/* 다이어리 및 자가검진 공개 선택 */}
           {selectedSymptoms.length > 0 && (
             <>
               <ConsentSection
                 diaryConsent={diaryConsent}
                 setDiaryConsent={setDiaryConsent}
-                selfDiagnosisConsent={selfDiagnosisConsent}
-                setSelfDiagnosisConsent={setSelfDiagnosisConsent}
-                selectedDiagnoses={selectedDiagnoses}
-                setSelectedDiagnoses={setSelectedDiagnoses}
+                setIsDiaryShared={setIsDiaryShared}
+                testConsent={testConsent}
+                setTestConsent={setTestConsent}
+                setIsTestShared={setIsTestShared}
               />
-              <RequestSection requestText={requestText} setRequestText={setRequestText} />
+              <RequestSection requirement={requirement} setRequirement={setRequirement} />
             </>
           )}
         </div>
-        {/* 사이드바 */}
         <div className="col-span-1 mx-2">
           <div className="sticky top-20 overflow-auto">
-            <CounselorSidebar username={username} handleReservation={handleReservation} />
+            <CounselorSidebar
+              username={username}
+              counselorId={parseInt(counselorId || '0', 10)}
+              getReservationData={getReservationData}
+            />
           </div>
         </div>
       </div>
