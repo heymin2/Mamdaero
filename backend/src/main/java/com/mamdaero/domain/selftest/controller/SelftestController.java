@@ -2,6 +2,7 @@ package com.mamdaero.domain.selftest.controller;
 
 import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.selftest.dto.request.TestRequestDto;
+import com.mamdaero.domain.selftest.dto.response.MemberSelftestResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestQuestionResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestResponseDto;
 import com.mamdaero.domain.selftest.entity.MemberSelftestList;
@@ -48,5 +49,11 @@ public class SelftestController {
         }
 
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/m/selftest")
+    public ResponseEntity<List<MemberSelftestResponseDto>> getSelftestList() {
+
+        return ResponseEntity.ok(selftestService.getMemberSelftestList(findUserService.findMemberId()));
     }
 }

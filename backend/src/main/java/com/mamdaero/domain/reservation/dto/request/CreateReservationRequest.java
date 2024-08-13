@@ -16,6 +16,7 @@ public class CreateReservationRequest {
     private Long workTimeId;
     private String requirement;
     private Boolean isDiaryShared;
+    private Boolean isTestShared;
     private List<Long> symptomIds;
     private List<Long> situationIds;
 }
