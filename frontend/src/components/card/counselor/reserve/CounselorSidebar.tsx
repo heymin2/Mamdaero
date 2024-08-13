@@ -5,6 +5,7 @@ import Button from '@/components/button/Button';
 import axiosInstance from '@/api/axiosInstance';
 import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import useAuthStore from '@/stores/authStore';
 
 interface Product {
   counselorItemId: number;
@@ -52,6 +53,7 @@ const CounselorSidebar: React.FC<CounselorSidebarProps> = ({
   getReservationData,
 }) => {
   const navigate = useNavigate();
+  const { isClient, isAuthenticated } = useAuthStore();
   const [expandedProduct, setExpandedProduct] = useState<string | null>(null);
   const {
     data: products,
@@ -61,8 +63,28 @@ const CounselorSidebar: React.FC<CounselorSidebarProps> = ({
     queryKey: ['counselorProducts', counselorId],
     queryFn: () => fetchProducts(counselorId),
   });
+  // 원화
+  const formatCurrency = (amount: number) => {
+    return (
+      new Intl.NumberFormat('ko-KR', {
+        style: 'decimal',
+        maximumFractionDigits: 0,
+      }).format(amount) + '원'
+    );
+  };
 
+  // 예약
   const handleReservation = async (counselorItemId: number) => {
+    if (!isAuthenticated) {
+      alert('로그인 후 이용해주세요.');
+      navigate('/');
+      return;
+    }
+
+    if (isAuthenticated && !isClient) {
+      alert('일반 회원만 예약 가능합니다.');
+    }
+
     const reservationData = getReservationData();
     if (reservationData) {
       try {
@@ -122,7 +144,7 @@ const CounselorSidebar: React.FC<CounselorSidebarProps> = ({
               />
               <div className="collapse-title text-base font-medium">
                 <div className="font-bold">{product.name}</div>
-                <div>{product.fee}원</div>
+                <div>{formatCurrency(product.fee)}</div>
               </div>
               <div className="collapse-content">
                 <p className="mb-4">{product.description}</p>

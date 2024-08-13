@@ -59,7 +59,7 @@ const ConsentSection: React.FC<ConsentSectionProps> = ({
           </div>
         </div>
       </div>
-      <div>
+      <div className="my-8">
         <div className="flex items-end border-b-4 border-b-orange-400 mb-4 space-x-5">
           <div className="text-xl font-bold">자가진단 검사 제출</div>
         </div>
