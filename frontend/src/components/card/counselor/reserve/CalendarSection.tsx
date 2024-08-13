@@ -1,18 +1,60 @@
-// src/components/counselor/reserve/CalendarSection.tsx
-
-import React from 'react';
+import React, { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import axios from 'axios';
+import axiosInstance from '@/api/axiosInstance';
 
 interface CalendarSectionProps {
+  counselorId: number;
   selectedDate: string | null;
   setSelectedDate: (date: string) => void;
+  setAvailableTimes: (times: number[]) => void;
 }
 
-const CalendarSection: React.FC<CalendarSectionProps> = ({ selectedDate, setSelectedDate }) => {
-  const handleEventClick = (info: { event: { startStr: string } }) => {
-    setSelectedDate(info.event.startStr);
+interface WorkTime {
+  id: number;
+  counselorId: number;
+  date: string;
+  time: number;
+  isReserved: boolean;
+  isWorkTime: boolean;
+}
+
+const CalendarSection: React.FC<CalendarSectionProps> = ({
+  counselorId,
+  selectedDate,
+  setSelectedDate,
+  setAvailableTimes,
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleEventClick = async (info: { event: { startStr: string } }) => {
+    const clickedDate = info.event.startStr;
+    setSelectedDate(clickedDate);
+    await fetchWorkTimes(clickedDate);
+  };
+
+  const fetchWorkTimes = async (date: string) => {
+    setIsLoading(true);
+    try {
+      const response = await axiosInstance<WorkTime[]>({
+        method: 'get',
+        url: `p/counselor/${counselorId}/worktime`,
+        params: { date },
+      });
+
+      const availableTimes = response.data
+        .filter(wt => !wt.isReserved && wt.isWorkTime)
+        .map(wt => wt.time);
+
+      setAvailableTimes(availableTimes);
+    } catch (error) {
+      console.error('Error fetching work times:', error);
+      setAvailableTimes([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderEventContent = (eventInfo: { event: { title: string } }) => (
@@ -68,6 +110,7 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({ selectedDate, setSele
           선택된 날짜: {new Date(selectedDate).toLocaleDateString()}
         </div>
       )}
+      {isLoading && <div className="mt-2 text-sm">로딩 중...</div>}
     </div>
   );
 };

@@ -1,11 +1,9 @@
-// src/components/counselor/reserve/TimeSelection.tsx
-
 import React from 'react';
 
 interface TimeSelectionProps {
-  availableTimes: string[];
-  selectedTime: string | null;
-  setSelectedTime: (time: string) => void;
+  availableTimes: number[];
+  selectedTime: number | null;
+  setSelectedTime: (time: number) => void;
 }
 
 const TimeSelection: React.FC<TimeSelectionProps> = ({
@@ -13,6 +11,11 @@ const TimeSelection: React.FC<TimeSelectionProps> = ({
   selectedTime,
   setSelectedTime,
 }) => {
+  // 시간을 "HH:00" 형식의 문자열로 변환하는 함수
+  const formatTime = (hour: number): string => {
+    return `${String(hour).padStart(2, '0')}:00`;
+  };
+  console.log(availableTimes);
   return (
     <div>
       <div className="flex items-end font-bold border-b-4 border-b-orange-400 mb-4">
@@ -27,7 +30,7 @@ const TimeSelection: React.FC<TimeSelectionProps> = ({
             } rounded-full`}
             onClick={() => setSelectedTime(time)}
           >
-            {time}
+            {formatTime(time)}
           </button>
         ))}
       </div>
