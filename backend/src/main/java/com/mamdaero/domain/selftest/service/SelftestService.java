@@ -180,6 +180,7 @@ public class SelftestService {
         selftestQuestionResponseRepository.save(selftestQuestionResponse);
     }
 
+    @Transactional
     public List<MemberSelftestResponseDto> getMemberSelftestList(Long memberId) {
 
         return memberSelftestListRepository.findLatestByMemberIdAndSelftestId(memberId).stream()
