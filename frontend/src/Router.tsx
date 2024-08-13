@@ -137,19 +137,22 @@ const Router = () => {
       <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
 
       {/* MyCounsel Routes */}
-      {/* MyCounsel Routes */}
-      <Route path="/mycounsel/counselor/history/" element={<CounselHistory />} />
-      <Route
-        path="/mycounsel/counselor/history/facechat/:counsultId/:memberId"
-        element={<CounselorFaceChat />}
-      />
-      <Route path="/mycounsel/counselor/record" element={<CounselRecordList />} />
-      <Route path="/mycounsel/counselor/record/:clientId/*" element={<CounselRecordDetail />} />
-      <Route path="/mycounsel/client/history" element={<ClientHistory />} />
-      <Route
-        path="/mycounsel/client/history/facechat/:counsultId/:memberId"
-        element={<ClientFaceChat />}
-      />
+      <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
+        <Route path="/mycounsel/:memberId/history" element={<CounselHistory />} />
+        <Route
+          path="/mycounsel/:memberId/history/facechat/:counsultId/:clientId"
+          element={<CounselorFaceChat />}
+        />
+        <Route path="/mycounsel/:memberId/record" element={<CounselRecordList />} />
+        <Route path="/mycounsel/:memberId/record/:clientId/*" element={<CounselRecordDetail />} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={['내담자']} />}>
+        <Route path="/mycounsel/:memberId/history" element={<ClientHistory />} />
+        <Route
+          path="/mycounsel/:memberId/history/facechat/:counsultId/:counselorId"
+          element={<ClientFaceChat />}
+        />
+      </Route>
 
       {/* Postit Routes */}
       <Route path="/postit" element={<PostitPage />} />
