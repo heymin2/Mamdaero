@@ -25,13 +25,13 @@ interface Post {
   createdAt: string;
 }
 
-const fetchPosts = async (page: number): Promise<Page<Post>> => {
+const fetchPosts = async (page: number, condition: String): Promise<Page<Post>> => {
   const res = await axiosInstance({
     method: 'get',
     url: 'p/board',
     params: {
       page: page - 1,
-      condition: 'new',
+      condition,
     },
   });
   return {
@@ -48,12 +48,13 @@ const fetchPosts = async (page: number): Promise<Page<Post>> => {
 };
 
 const CommunityListPage: React.FC = () => {
-  const [selectedOption1, setSelectedOption1] = useState('최신순');
+  const [selectedOption1, setSelectedOption1] = useState('new');
   const [selectedOption2, setSelectedOption2] = useState('제목');
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const navigate = useNavigate();
   const options1 = ['최신순', '오래된순', '추천 많은 순', '댓글 많은 순'];
+  const optionsE = ['new', 'old', 'best', 'comment'];
   const options2 = ['제목', '내용', '작성자'];
 
   const {
@@ -61,8 +62,8 @@ const CommunityListPage: React.FC = () => {
     isLoading,
     error,
   } = useQuery<Page<Post>, Error>({
-    queryKey: ['posts', currentPage] as const,
-    queryFn: () => fetchPosts(currentPage),
+    queryKey: ['posts', currentPage, selectedOption1] as const,
+    queryFn: () => fetchPosts(currentPage, selectedOption1),
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -72,6 +73,15 @@ const CommunityListPage: React.FC = () => {
   const writePost = () => {
     navigate('/community/write/post');
   };
+
+  const handleOptionChange = (option: string) => {
+    const condition = optionsE[options1.indexOf(option)];
+    console.log(condition);
+
+    setSelectedOption1(condition);
+    setCurrentPage(1);
+  };
+
   return (
     <div>
       <CommunityBar />
@@ -79,9 +89,9 @@ const CommunityListPage: React.FC = () => {
         <div className="flex justify-between mx-5">
           <div>
             <AlignDropdown
-              selectedOption={selectedOption1}
+              selectedOption={options1[optionsE.indexOf(selectedOption1)]}
               options={options1}
-              onOptionClick={setSelectedOption1}
+              onOptionClick={handleOptionChange}
             />
           </div>
           <div className="text-right">
