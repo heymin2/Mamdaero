@@ -12,6 +12,8 @@ interface Counselor {
   name: string;
   intro: string;
   image: string;
+  level: number;
+  gender: string;
   reviewRate: number;
   reviewCount: number;
 }
