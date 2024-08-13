@@ -41,7 +41,7 @@ const fetchPostDetail = async (postId: number): Promise<PostDetail> => {
 const fetchComments = async (postId: number): Promise<CommentDetail[]> => {
   const response = await axiosInstance({
     method: 'get',
-    url: `cma/board/${postId}/comment`,
+    url: `p/board/${postId}/comment`,
   });
   return Array.isArray(response.data.data) ? response.data.data : [];
 };

@@ -15,7 +15,7 @@ public class BoardCommentController {
     private final BoardCommentService boardCommentService;
     private final NotifyBoardService notifyBoardService;
 
-    @GetMapping("/cma/board/{boardId}/comment")
+    @GetMapping("/p/board/{boardId}/comment")
     public ResponseEntity<?> comment(@RequestParam(name = "page", defaultValue = "0") int page,
                                      @RequestParam(name = "size", defaultValue = "10") int size,
                                      @PathVariable("boardId") Long id) {
