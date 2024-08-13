@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import book from '@/assets/book2.png';
+import useAuthStore from '@/stores/authStore';
 
 interface ClientCardProps {
   clientName: string;
@@ -10,9 +11,10 @@ interface ClientCardProps {
 
 const ClientCard: React.FC<ClientCardProps> = ({ clientName, clientId }) => {
   const navigate = useNavigate();
-
+  const { isCounselor, isClient, isAuthenticated, email } = useAuthStore();
+  const memberId = email?.split('@')[0] || 'unknown';
   const handleViewRecord = () => {
-    navigate(`/mycounsel/counselor/record/${clientId}`);
+    navigate(`/mycounsel/${memberId}/record/${clientId}`);
   };
 
   return (

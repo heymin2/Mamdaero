@@ -4,6 +4,7 @@ import axiosInstance from '@/api/axiosInstance';
 import useAuthStore from '@/stores/authStore';
 
 interface CounselorState {
+  id: number | null; // 새로 추가된 필드
   name: string | null;
   email: string | null;
   nickname: string | null;
@@ -15,6 +16,8 @@ interface CounselorState {
   intro: string | null;
   introDetail: string | null;
   img: string | null;
+  reviewCount: number | null; // 새로 추가된 필드
+  reviewRate: number | null; // 새로 추가된 필드
   isLoading: boolean;
   error: string | null;
 }
@@ -38,6 +41,7 @@ const useCounselorStore = create<
 >()(
   persist(
     (set, get) => ({
+      id: null, // 초기 상태에 추가
       name: null,
       email: null,
       nickname: null,
@@ -49,7 +53,8 @@ const useCounselorStore = create<
       intro: null,
       introDetail: null,
       img: null,
-      //   address: null,
+      reviewCount: null, // 초기 상태에 추가
+      reviewRate: null, // 초기 상태에 추가
       isLoading: false,
       error: null,
 
@@ -182,6 +187,7 @@ const useCounselorStore = create<
 
       clearCounselorInfo: () => {
         set({
+          id: null, // clearCounselorInfo에 추가
           name: null,
           email: null,
           nickname: null,
@@ -193,7 +199,8 @@ const useCounselorStore = create<
           intro: null,
           introDetail: null,
           img: null,
-          //   address: null,
+          reviewCount: null, // clearCounselorInfo에 추가
+          reviewRate: null, // clearCounselorInfo에 추가
           error: null,
         });
       },

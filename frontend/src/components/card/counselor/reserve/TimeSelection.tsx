@@ -1,11 +1,14 @@
-// src/components/counselor/reserve/TimeSelection.tsx
-
 import React from 'react';
 
+interface TimeSlot {
+  id: number;
+  time: number;
+}
+
 interface TimeSelectionProps {
-  availableTimes: string[];
-  selectedTime: string | null;
-  setSelectedTime: (time: string) => void;
+  availableTimes: TimeSlot[];
+  selectedTime: number | null;
+  setSelectedTime: (id: number) => void;
 }
 
 const TimeSelection: React.FC<TimeSelectionProps> = ({
@@ -13,21 +16,26 @@ const TimeSelection: React.FC<TimeSelectionProps> = ({
   selectedTime,
   setSelectedTime,
 }) => {
+  const formatTime = (hour: number): string => {
+    return `${String(hour).padStart(2, '0')}:00`;
+  };
+
   return (
     <div>
       <div className="flex items-end font-bold border-b-4 border-b-orange-400 mb-4">
         <div className="text-xl">시간 선택</div>
       </div>
       <div className="grid grid-cols-6 gap-3">
-        {availableTimes.map(time => (
+        {availableTimes.map(timeSlot => (
           <button
-            key={time}
+            key={timeSlot.id}
             className={`btn ${
-              selectedTime === time ? 'btn-primary' : 'btn-outline btn-primary bg-white'
+              selectedTime === timeSlot.id ? 'btn-primary' : 'btn-outline btn-primary bg-white'
             } rounded-full`}
-            onClick={() => setSelectedTime(time)}
+            onClick={() => setSelectedTime(timeSlot.id)}
+            // disabled={timeSlot.isReserved || !timeSlot.isWorkTime}
           >
-            {time}
+            {formatTime(timeSlot.time)}
           </button>
         ))}
       </div>
