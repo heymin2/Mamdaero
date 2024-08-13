@@ -15,7 +15,8 @@ public class ChatlogConfig implements WebSocketMessageBrokerConfigurer {
 
         // stomp 접속 주소 url = ws://localhost:8080/chatlog
         registry.addEndpoint("/chatlog") // 연결 될 엔드 포인트
-                .setAllowedOrigins("*");
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 
     @Override
