@@ -1,86 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import axiosInstance from '@/api/axiosInstance';
 import Button from '@/components/button/Button';
 import TestBar from '@/components/navigation/TestBar';
 import { FaCheck } from 'react-icons/fa';
-
-interface Option {
-  id: number;
-  selftestQuestionOptionDetail: string;
-  selftestQuestionOptionScore: number;
-}
-
-interface Question {
-  id: number;
-  selftestQuestionDetail: string;
-  options: Option[];
-}
-
-type SelfTest = Question[];
-
-interface SelfTestInfo {
-  id: number;
-  selftestName: string;
-  selftestInfo: string;
-}
-
-const fetchSelfTest = async (): Promise<SelfTest> => {
-  const response = await axiosInstance.get('/p/selftest/3');
-  return response.data;
-};
-
-const fetchSelfTestInfo = async (): Promise<SelfTestInfo[]> => {
-  const response = await axiosInstance.get('/p/selftest');
-  return response.data;
-};
+import useSelfTests from '@/hooks/useSelfTests';
 
 const StressPage: React.FC = () => {
-  const [answers, setAnswers] = useState<{ [key: number]: number }>({});
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const {
-    data: selfTest,
-    isLoading: isLoadingTest,
-    isError: isErrorTest,
-  } = useQuery<SelfTest>({
-    queryKey: ['stressTest'],
-    queryFn: fetchSelfTest,
-  });
+    selfTest,
+    selfTestList,
+    isLoadingTest,
+    isErrorTest,
+    isLoadingList,
+    isErrorList,
+    answers,
+    handleAnswerChange,
+    handleSubmit,
+    isSubmitting,
+    isAuthenticated,
+  } = useSelfTests(3); // 3은 스트레스 테스트의 ID입니다.
 
-  const {
-    data: selfTestInfo,
-    isLoading: isLoadingInfo,
-    isError: isErrorInfo,
-  } = useQuery<SelfTestInfo[]>({
-    queryKey: ['selfTestInfo'],
-    queryFn: fetchSelfTestInfo,
-  });
+  if (isLoadingTest || isLoadingList) return <div>Loading...</div>;
+  if (isErrorTest || isErrorList) return <div>Error loading test</div>;
+  if (!selfTest || selfTest.length === 0 || !selfTestList) return null;
 
-  const handleAnswerChange = (questionId: number, score: number) => {
-    setAnswers(prev => ({ ...prev, [questionId]: score }));
-  };
+  const stressInfo = selfTestList.find(info => info.selftestName === 'stress');
 
-  const handleSubmit = () => {
-    if (!selfTest) return;
-
-    if (Object.keys(answers).length !== selfTest.length) {
-      setAlertMessage('모든 문항에 답변해 주세요.');
-      return;
+  const onSubmit = () => {
+    const result = handleSubmit(1); // 1은 공개를 의미합니다.
+    if (result && !result.error) {
+      navigate('/selftest/stress/result', {
+        state: {
+          totalScore: result.totalScore,
+          checkList: isAuthenticated ? undefined : result.checkList,
+        },
+      });
+    } else if (result && result.error) {
+      alert(result.error);
     }
-
-    const totalScore = Object.values(answers).reduce((acc, score) => acc + score, 0);
-    navigate('/selftest/stress/result', { state: { totalScore } });
   };
-
-  if (isLoadingTest || isLoadingInfo) return <div>Loading...</div>;
-  if (isErrorTest || isErrorInfo) return <div>Error loading test</div>;
-  if (!selfTest || selfTest.length === 0 || !selfTestInfo) return null;
-
-  const stressInfo = selfTestInfo.find(info => info.selftestName === 'stress');
-
   return (
     <div>
       <TestBar
@@ -103,7 +62,7 @@ const StressPage: React.FC = () => {
                 <th className="bg-orange-300 text-orange-300-content text-base text-center align-middle">
                   질문
                 </th>
-                {selfTest[0].options.map(option => (
+                {selfTest[0]?.options.map(option => (
                   <th
                     key={option.id}
                     className="bg-orange-300 text-orange-300-content text-center text-base"
@@ -121,15 +80,13 @@ const StressPage: React.FC = () => {
                 >
                   <td className="font-bold text-base rounded-l">{qIndex + 1}</td>
                   <td className="text-base text-left">{question.selftestQuestionDetail}</td>
-                  {question.options.map(option => (
+                  {question.options.map((option, optionIndex) => (
                     <td key={option.id} className="text-center">
                       <input
                         type="radio"
                         name={`question-${question.id}`}
-                        value={option.selftestQuestionOptionScore}
-                        onChange={() =>
-                          handleAnswerChange(question.id, option.selftestQuestionOptionScore)
-                        }
+                        checked={answers[question.id] === optionIndex}
+                        onChange={() => handleAnswerChange(question.id, optionIndex)}
                         className="radio radio-primary"
                       />
                     </td>
@@ -140,26 +97,13 @@ const StressPage: React.FC = () => {
           </table>
         </div>
       </div>
-      {alertMessage && (
-        <div role="alert" className="alert alert-warning mt-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 shrink-0 stroke-current"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-          <span>{alertMessage}</span>
-        </div>
-      )}
       <div className="flex justify-center w-full mt-8">
-        <Button onClick={handleSubmit} label="결과보기" color="orange" />
+        <Button
+          onClick={onSubmit}
+          label={isSubmitting ? '제출 중...' : '결과보기'}
+          color="orange"
+          disabled={isSubmitting}
+        />
       </div>
     </div>
   );
