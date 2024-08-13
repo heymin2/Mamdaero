@@ -3,6 +3,9 @@ package com.mamdaero.domain.consult.service;
 import com.mamdaero.domain.consult.dto.response.ClientListResponse;
 import com.mamdaero.domain.consult.entity.Consult;
 import com.mamdaero.domain.consult.repository.ConsultRepository;
+import com.mamdaero.domain.member.exception.AccessDeniedException;
+import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
+import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.reservation.exception.ReservationNotFoundException;
 import com.mamdaero.domain.reservation.repository.ReservationRepository;
 import com.mamdaero.global.dto.Pagination;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class ConsultService {
     private final ReservationRepository reservationRepository;
     private final ConsultRepository consultRepository;
+    private final FindUserService findUserService;
 
     public void create(Long reservationId) {
 
@@ -39,7 +43,12 @@ public class ConsultService {
 
     public Pagination<ClientListResponse> findMyClientList(int page, int size, String name) {
         //TODO: 토큰으로부터 진짜 상담사ID 가져오기
-        Long counselorId = 16L;
+        MemberInfoDTO member = findUserService.findMember();
+        if (member == null || !member.getMemberRole().equals("상담사")) {
+            throw new AccessDeniedException();
+        }
+
+        Long counselorId = member.getMemberId();
         Pageable pageable = PageRequest.of(page, size);
 
 
