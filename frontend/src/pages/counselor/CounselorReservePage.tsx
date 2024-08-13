@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { IoIosArrowBack } from 'react-icons/io';
 import Button from '@/components/button/Button';
 import CalendarSection from '@/components/card/counselor/reserve/CalendarSection';
@@ -9,7 +9,10 @@ import SymptomSelection from '@/components/card/counselor/reserve/SymptomSelecti
 import ConsentSection from '@/components/card/counselor/reserve/ConsentSection';
 import RequestSection from '@/components/card/counselor/reserve/RequestSection';
 import CounselorSidebar from '@/components/card/counselor/reserve/CounselorSidebar';
-import axiosInstance from '@/api/axiosInstance';
+
+interface NameState {
+  counselorName: string;
+}
 
 interface TimeSlot {
   id: number;
@@ -27,6 +30,8 @@ interface ReservationData {
 
 const CounselorReservePage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { counselorId } = useParams<{ counselorId: string }>();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [availableTimes, setAvailableTimes] = useState<TimeSlot[]>([]);
@@ -38,11 +43,41 @@ const CounselorReservePage: React.FC = () => {
   const [isTestShared, setIsTestShared] = useState<boolean>(false);
   const [testConsent, setTestConsent] = useState<boolean | null>(null);
   const [requirement, setRequirement] = useState<string>('');
-  const username = '박민준';
+  const { counselorName } = (location.state as NameState) || { counselorName: '' };
 
   const backToList = () => {
     navigate('/counselor');
   };
+
+  const timeSelectionRef = useRef<HTMLDivElement>(null);
+  const situationSelectionRef = useRef<HTMLDivElement>(null);
+  const symptomSelectionRef = useRef<HTMLDivElement>(null);
+  const consentSectionRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (selectedDate && timeSelectionRef.current) {
+      timeSelectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (selectedTime !== null && situationSelectionRef.current) {
+      situationSelectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedTime]);
+
+  useEffect(() => {
+    if (selectedSituations.length > 0 && symptomSelectionRef.current) {
+      symptomSelectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedSituations]);
+
+  useEffect(() => {
+    if (selectedSymptoms.length > 0 && consentSectionRef.current) {
+      consentSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedSymptoms]);
 
   const getReservationData = (): ReservationData | null => {
     if (
@@ -92,26 +127,32 @@ const CounselorReservePage: React.FC = () => {
             setAvailableTimes={setAvailableTimes}
           />
           {selectedDate && (
-            <TimeSelection
-              availableTimes={availableTimes}
-              selectedTime={selectedTime}
-              setSelectedTime={setSelectedTime}
-            />
+            <div ref={timeSelectionRef}>
+              <TimeSelection
+                availableTimes={availableTimes}
+                selectedTime={selectedTime}
+                setSelectedTime={setSelectedTime}
+              />
+            </div>
           )}
           {selectedTime !== null && (
-            <SituationSelection
-              selectedSituations={selectedSituations}
-              setSelectedSituations={setSelectedSituations}
-            />
+            <div ref={situationSelectionRef}>
+              <SituationSelection
+                selectedSituations={selectedSituations}
+                setSelectedSituations={setSelectedSituations}
+              />
+            </div>
           )}
           {selectedSituations.length > 0 && (
-            <SymptomSelection
-              selectedSymptoms={selectedSymptoms}
-              setSelectedSymptoms={setSelectedSymptoms}
-            />
+            <div ref={symptomSelectionRef}>
+              <SymptomSelection
+                selectedSymptoms={selectedSymptoms}
+                setSelectedSymptoms={setSelectedSymptoms}
+              />
+            </div>
           )}
           {selectedSymptoms.length > 0 && (
-            <>
+            <div ref={consentSectionRef}>
               <ConsentSection
                 diaryConsent={diaryConsent}
                 setDiaryConsent={setDiaryConsent}
@@ -121,13 +162,13 @@ const CounselorReservePage: React.FC = () => {
                 setIsTestShared={setIsTestShared}
               />
               <RequestSection requirement={requirement} setRequirement={setRequirement} />
-            </>
+            </div>
           )}
         </div>
         <div className="col-span-1 mx-2">
           <div className="sticky top-20 overflow-auto">
             <CounselorSidebar
-              username={username}
+              username={counselorName}
               counselorId={parseInt(counselorId || '0', 10)}
               getReservationData={getReservationData}
             />

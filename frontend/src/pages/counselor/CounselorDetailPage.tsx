@@ -84,6 +84,12 @@ const CounselorDetailPage = () => {
     navigate('/counselor');
   };
 
+  const goReservation = () => {
+    navigate(`/counselor/${counselorId}/reservation`, {
+      state: { counselorName: name },
+    });
+  };
+
   const { name, intro, introDetail, tel, gender, level, img, reviewCount, reviewRate } =
     counselorInfo;
 
@@ -168,7 +174,7 @@ const CounselorDetailPage = () => {
             />{' '}
             <div className="flex my-4 justify-start">
               <div className="flex items-end">
-                <div className="text-2xl font-bold">{name}</div>
+                <div className="text-3xl font-bold">{name}</div>
                 <div className="text-base font-bold ml-2">상담사</div>
                 <div className="flex ms-1">
                   <FaStar size={20} color="orange" className="ms-1" />
@@ -179,9 +185,7 @@ const CounselorDetailPage = () => {
             <div>
               <Button
                 label="예약하기"
-                onClick={() => {
-                  navigate(`/counselor/${counselorId}/reservation`);
-                }}
+                onClick={goReservation}
                 size="예약하기"
                 color="orange"
                 textSize="xl"
