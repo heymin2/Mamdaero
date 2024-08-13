@@ -2,8 +2,33 @@ import React from 'react';
 import { FaCheck } from 'react-icons/fa';
 import SelfTestCard from '@/components/card/SelfTestCard';
 import TestBar from '@/components/navigation/TestBar';
+import useSelfTests from '@/hooks/useSelfTests';
+
+type MentalType = 'depressed' | 'unrest' | 'stress' | 'ptsd' | 'bipolar';
+
+const convertToMentalType = (name: string): MentalType => {
+  switch (name) {
+    case 'depressed':
+      return 'depressed';
+    case 'unrest':
+      return 'unrest';
+    case 'stress':
+      return 'stress';
+    case 'ptsd':
+      return 'ptsd';
+    case 'bipolar':
+      return 'bipolar';
+    default:
+      return 'depressed'; // 기본값 설정
+  }
+};
 
 const SelfTestListPage: React.FC = () => {
+  const { selfTestList, isLoadingList, isErrorList } = useSelfTests();
+
+  if (isLoadingList) return <div>Loading...</div>;
+  if (isErrorList) return <div>Error loading self tests</div>;
+
   return (
     <div>
       <TestBar
@@ -17,13 +42,13 @@ const SelfTestListPage: React.FC = () => {
       </div>
 
       <div className="flex flex-wrap justify-center gap-10 w-full h-full mb-10">
-        <SelfTestCard mental="depressed" />
-        <SelfTestCard mental="unrest" />
-        <SelfTestCard mental="stress" />
-      </div>
-      <div className="flex flex-wrap justify-center gap-10 w-full h-full">
-        <SelfTestCard mental="ptsd" />
-        <SelfTestCard mental="bipolar" />
+        {selfTestList?.map(test => (
+          <SelfTestCard
+            key={test.id}
+            mental={convertToMentalType(test.selftestName)}
+            testId={test.id}
+          />
+        ))}
       </div>
     </div>
   );
