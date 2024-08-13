@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '@/api/axiosInstance';
-
 import Button from '@/components/button/Button';
 import ChatModal from '@/components/modal/ChatModal';
 import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
+import axiosInstance from '@/api/axiosInstance';
 
 interface Reservation {
   canceledAt: string | null;
