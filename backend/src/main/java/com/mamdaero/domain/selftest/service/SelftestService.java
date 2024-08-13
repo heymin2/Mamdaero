@@ -3,6 +3,7 @@ package com.mamdaero.domain.selftest.service;
 import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.selftest.dto.request.TestRequestDto;
+import com.mamdaero.domain.selftest.dto.response.MemberSelftestResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestQuestionResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestResponseDto;
 import com.mamdaero.domain.selftest.entity.*;
@@ -54,6 +55,7 @@ public class SelftestService {
                     .member(member)
                     .selftest(selftest)
                     .memberSelftestDate(LocalDateTime.now())
+                    .isPublic(requestDto.getIsPublic())
                     .build();
 
             memberSelftestListRepository.save(memberSelftestList);
@@ -176,5 +178,10 @@ public class SelftestService {
                 .build();
 
         selftestQuestionResponseRepository.save(selftestQuestionResponse);
+    }
+
+    public List<MemberSelftestResponseDto> getMemberSelftestList(Long memberId) {
+
+        return memberSelftestListRepository.findLatestByMemberIdAndSelftestId(memberId);
     }
 }

@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ReservationListResponse {
+@NoArgsConstructor
+public class ReservationResponse {
     private Long reservationId;
     private LocalDate date;
     private Integer time;
@@ -23,4 +24,6 @@ public class ReservationListResponse {
     private String requirement;
     private Boolean isDiaryShared;
     private Boolean isTestShared;
+    private List<SituationResponse> situations;
+    private List<SymptomResponse> symptoms;
 }
