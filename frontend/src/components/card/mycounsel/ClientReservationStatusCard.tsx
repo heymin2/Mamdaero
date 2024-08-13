@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import Button from '@/components/button/Button';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '@/api/axiosInstance';
+
+import Button from '@/components/button/Button';
 import ChatModal from '@/components/modal/ChatModal';
 import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
-import axiosInstance from '@/api/axiosInstance';
 
 interface Reservation {
   canceledAt: string | null;
@@ -18,6 +19,7 @@ interface Reservation {
   status: string;
   time: number;
   counselorName: string;
+  clientName: string;
   counselorId: string;
 }
 
@@ -29,7 +31,21 @@ const fetchReservationDetail = async (reservationId: number) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching reservation detail:', error);
+    alert(`Error fetching reservation detail: ${error}`);
+
+    throw error;
+  }
+};
+
+const deleteReservation = async (reservationId: number) => {
+  try {
+    const response = await axiosInstance({
+      method: 'delete',
+      url: `cm/reservation/${reservationId}`,
+    });
+    return response.data;
+  } catch (error) {
+    alert(`Error canceling reservation: ${error}`);
     throw error;
   }
 };
@@ -37,25 +53,40 @@ const fetchReservationDetail = async (reservationId: number) => {
 const CounselorReservationStatusCard: React.FC<Reservation> = ({
   reservationId,
   counselorId,
+  clientName,
   counselorName,
   date,
   time,
   status,
   canceledAt,
-  ...otherProps
 }) => {
   const [isDeleted, setIsDeleted] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [reservationDetail, setReservationDetail] = useState<Reservation | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  const handleCancelReservation = () => {
+  const handleCancelReservation = async () => {
     const isConfirmed = window.confirm('정말 예약을 취소하시겠습니까?');
     if (isConfirmed) {
-      setIsDeleted(true);
+      setIsLoading(true);
+      try {
+        await deleteReservation(reservationId);
+        setIsDeleted(true);
+        alert('예약이 성공적으로 취소되었습니다.');
+      } catch (error) {
+        alert('예약 취소에 실패했습니다. 다시 시도해 주세요.');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
+
+  if (isDeleted) {
+    return null;
+  }
 
   const handleOpenDetailModal = async () => {
     try {
@@ -63,14 +94,9 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
       setReservationDetail(detail);
       setIsDetailModalOpen(true);
     } catch (error) {
-      console.error('Failed to fetch reservation detail:', error);
-      // 에러 처리 (예: 사용자에게 알림 표시)
+      alert(`Failed to fetch reservation detail: ${error}`);
     }
   };
-
-  if (isDeleted) {
-    return null;
-  }
 
   return (
     <div className="border-b-2 border-orange-300 p-6">
