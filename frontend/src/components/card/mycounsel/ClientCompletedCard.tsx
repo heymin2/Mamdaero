@@ -33,7 +33,6 @@ const ClientCompletedCard: React.FC<Reservation> = ({
   isTestShared,
   canceledAt,
   canceler,
-  ...otherProps
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);

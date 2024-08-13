@@ -60,7 +60,6 @@ const ClientMyPage: React.FC = () => {
       setAlertMessage('프로필이 성공적으로 업데이트되었습니다.');
       setShowAlert(true);
     } catch (error) {
-      console.error('프로필 업데이트 중 오류 발생:', error);
       setAlertMessage('프로필 업데이트에 실패했습니다.');
       setShowAlert(true);
     }
@@ -156,12 +155,9 @@ const ClientMyPage: React.FC = () => {
           url: 'cm/member/del',
         });
         alert('회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.');
-        // 로그아웃 처리 (예: 로컬 스토리지 클리어)
         localStorage.clear();
-        // 홈페이지로 리다이렉트
         navigate('/');
       } catch (error) {
-        console.error('회원 탈퇴 중 오류 발생:', error);
         alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
       }
     }
