@@ -138,16 +138,17 @@ const Router = () => {
 
       {/* MyCounsel Routes */}
       <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
-        <Route path="/mycounsel/:memberId/history" element={<CounselHistory />} />
+        <Route path="/mycounsel/cs" element={<CounselHistory />} />
         <Route
           path="/mycounsel/:memberId/history/facechat/:counsultId/:clientId"
           element={<CounselorFaceChat />}
         />
-        <Route path="/mycounsel/:memberId/record" element={<CounselRecordList />} />
+        <Route path="/mycounsel/record" element={<CounselRecordList />} />
         <Route path="/mycounsel/:memberId/record/:clientId/*" element={<CounselRecordDetail />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['내담자']} />}>
-        <Route path="/mycounsel/:memberId/history" element={<ClientHistory />} />
+        <Route path="/mycounsel" element={<ClientHistory />} />
+
         <Route
           path="/mycounsel/:memberId/history/facechat/:counsultId/:counselorId"
           element={<ClientFaceChat />}
