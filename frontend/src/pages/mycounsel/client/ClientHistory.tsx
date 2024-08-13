@@ -1,49 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ClientReservationStatusCard from '@/components/card/mycounsel/ClientReservationStatusCard';
 import ClientCompletedCard from '@/components/card/mycounsel/ClientCompletedCard';
 import MyCounselBar from '@/components/navigation/MyCounselBar';
+import axiosInstance from '@/api/axiosInstance';
 
+interface Reservation {
+  canceledAt: string | null;
+  canceler: string | null;
+  date: string;
+  isDiaryShared: boolean;
+  isTestShared: boolean;
+  itemFee: number;
+  itemName: string;
+  requirement: string;
+  reservationId: number;
+  status: string;
+  time: number;
+  counselorName: string;
+  counselorId: string;
+}
+
+const fetchReservation = async () => {
+  try {
+    const response = await axiosInstance({
+      method: 'get',
+      url: 'cm/reservation',
+    });
+
+    const reservationCompleted: Reservation[] = [];
+    const reservationHistory: Reservation[] = [];
+
+    response.data.data.forEach((reservation: Reservation) => {
+      if (reservation.status === '상담완료') {
+        reservationCompleted.push(reservation);
+      } else {
+        reservationHistory.push(reservation);
+      }
+    });
+    console.log(response.data.data);
+    return { reservationCompleted, reservationHistory };
+  } catch (error) {
+    console.error('Error fetching reservations:', error);
+    throw error;
+  }
+};
 const ClientHistory: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'reservation' | 'completed'>('reservation');
+  const [reservationCompleted, setReservationCompleted] = useState<Reservation[]>([]);
+  const [reservationHistory, setReservationHistory] = useState<Reservation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 예시 데이터를 상태로 관리
-  const [reservationData, setReservationData] = useState([
-    {
-      counselId: '1113',
-      counselorId: '7',
-      counselorName: '박민준',
-      date: '2024년 7월 19일',
-      time: '10:00',
-      status: '예약 완료',
-    },
-  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const { reservationCompleted, reservationHistory } = await fetchReservation();
+        setReservationCompleted(reservationCompleted);
+        setReservationHistory(reservationHistory);
+      } catch (error) {
+        console.error('Failed to fetch reservations:', error);
+        // 여기에 에러 처리 로직을 추가할 수 있습니다 (예: 에러 메시지 표시)
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  const completedData = [
-    {
-      counselId: '1001',
-      counselorId: '1',
-      counselorName: '신혜민',
-      date: '2024년 7월 10일',
-      time: '14:00',
-      status: '상담 완료',
-    },
-    {
-      counselId: '1002',
-      counselorId: '5',
-      counselorName: '허세령',
-      date: '2024년 7월 11일',
-      time: '11:00',
-      status: '상담 완료',
-    },
-  ];
-
-  // 예약 취소 핸들러
-  const handleCancelReservation = (counselId: string) => {
-    setReservationData(prevData =>
-      prevData.filter(reservation => reservation.counselId !== counselId)
-    );
-  };
-
+    fetchData();
+  }, []);
   return (
     <div className="flex flex-col min-h-screen">
       <MyCounselBar
@@ -71,13 +94,9 @@ const ClientHistory: React.FC = () => {
 
       {activeTab === 'reservation' ? (
         <div className="px-4">
-          {reservationData.length > 0 ? (
-            reservationData.map(data => (
-              <ClientReservationStatusCard
-                key={data.counselId}
-                {...data}
-                onDelete={handleCancelReservation}
-              />
+          {reservationHistory.length > 0 ? (
+            reservationHistory.map(reservation => (
+              <ClientReservationStatusCard key={reservation.reservationId} {...reservation} />
             ))
           ) : (
             <p className="text-center text-gray-500 py-4">예약된 상담이 없습니다.</p>
@@ -85,8 +104,10 @@ const ClientHistory: React.FC = () => {
         </div>
       ) : (
         <div className="px-4">
-          {completedData.length > 0 ? (
-            completedData.map(data => <ClientCompletedCard key={data.counselId} {...data} />)
+          {reservationCompleted.length > 0 ? (
+            reservationCompleted.map(reservation => (
+              <ClientCompletedCard key={reservation.reservationId} {...reservation} />
+            ))
           ) : (
             <p className="text-center text-gray-500 py-4">완료된 상담이 없습니다.</p>
           )}

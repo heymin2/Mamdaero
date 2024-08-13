@@ -12,14 +12,29 @@ const activeStyle = 'bg-orange-100 border-l-4 border-orange-500';
 
 const NavClient = () => {
   const navigate = useNavigate();
-  const { isClient, isAuthenticated } = useAuthStore();
+  const { isAuthenticated, accessToken } = useAuthStore();
   const isNavActive = useNavActive();
+  const handleMyCounselClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (isAuthenticated && accessToken) {
+      // accessToken을 상태로 저장하고 mycounsel 페이지로 이동
+      useAuthStore.getState().getAccessToken();
+      navigate('/mycounsel');
+    } else {
+      alert('로그인이 필요합니다.');
+      navigate('/', { state: { from: '/mycounsel' } });
+    }
+  };
 
   return (
     <div className="flex flex-col w-1.5/12 h-screen bg-white text-gray-800 fixed shadow-lg">
       <div className="flex justify-center items-center">
         <NavLink to="/">
-          <img src={logo} alt="로고" className="my-3 h-12" />
+          <img
+            src={logo}
+            alt="로고"
+            className="my-3 h-12 transition-transform transform hover:-translate-y-0.5"
+          />
         </NavLink>
       </div>
       <NavLink
@@ -56,19 +71,22 @@ const NavClient = () => {
         감정 일기
       </NavLink>
       <NavLink
-        to="mycounsel"
+        to="/mycounsel"
         className={`${navStyle} ${isNavActive('/mycounsel') ? activeStyle : ''}`}
+        onClick={handleMyCounselClick}
       >
         나의 상담
       </NavLink>
       <div className="flex justify-evenly mt-auto mb-5">
         <Link to="/notice" className="font-bold">
-          공지사항
+          <div className="transition-transform transform hover:-translate-y-0.5">공지사항</div>
         </Link>
         <Link to="/alarm">
           <LuBellRing size={24} />
         </Link>
-        <ProfileDropdown />
+        <div className="transition-transform transform hover:-translate-y-0.5">
+          <ProfileDropdown />
+        </div>
       </div>
     </div>
   );
