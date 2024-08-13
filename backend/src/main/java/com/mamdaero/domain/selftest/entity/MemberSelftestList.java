@@ -24,6 +24,8 @@ public class MemberSelftestList {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "selftest_id")
     private Selftest selftest;
+    @Builder.Default
+    private Boolean isPublic = Boolean.TRUE;
     private Integer selftestTotalScore;
     @CreatedDate
     private LocalDateTime memberSelftestDate;
