@@ -25,13 +25,20 @@ interface Post {
   createdAt: string;
 }
 
-const fetchPosts = async (page: number, condition: String): Promise<Page<Post>> => {
+const fetchPosts = async (
+  page: number,
+  condition: String,
+  searchField: string,
+  searchValue: string
+): Promise<Page<Post>> => {
   const res = await axiosInstance({
     method: 'get',
     url: 'p/board',
     params: {
       page: page - 1,
       condition,
+      searchField,
+      searchValue,
     },
   });
   return {
@@ -49,21 +56,24 @@ const fetchPosts = async (page: number, condition: String): Promise<Page<Post>> 
 
 const CommunityListPage: React.FC = () => {
   const [selectedOption1, setSelectedOption1] = useState('new');
-  const [selectedOption2, setSelectedOption2] = useState('제목');
+  const [selectedOption2, setSelectedOption2] = useState('title');
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const navigate = useNavigate();
   const options1 = ['최신순', '오래된순', '추천 많은 순', '댓글 많은 순'];
   const optionsE = ['new', 'old', 'best', 'comment'];
   const options2 = ['제목', '내용', '작성자'];
+  const options2E = ['title', 'content', 'name'];
 
   const {
     data: pageData,
     isLoading,
     error,
+    refetch,
   } = useQuery<Page<Post>, Error>({
     queryKey: ['posts', currentPage, selectedOption1] as const,
-    queryFn: () => fetchPosts(currentPage, selectedOption1),
+    queryFn: () => fetchPosts(currentPage, selectedOption1, selectedOption2, searchTerm),
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -80,6 +90,20 @@ const CommunityListPage: React.FC = () => {
 
     setSelectedOption1(condition);
     setCurrentPage(1);
+  };
+
+  const handleOptionChange2 = (option: string) => {
+    const searchField = options2E[options2.indexOf(option)];
+    setSelectedOption2(searchField);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = () => {
+    refetch();
+  };
+
+  const handleChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -103,6 +127,12 @@ const CommunityListPage: React.FC = () => {
           currentPage={currentPage}
           totalPages={pageData?.totalPages || 1}
           paginate={paginate}
+          selectedOption2={options2[options2E.indexOf(selectedOption2)]}
+          options2={options2}
+          handleOptionChange2={handleOptionChange2}
+          searchTerm={searchTerm}
+          handleChange={handleChange}
+          handleSearchChange={handleSearchChange}
         />
       </div>
     </div>
