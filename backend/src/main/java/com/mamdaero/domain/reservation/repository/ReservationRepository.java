@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
+    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared, false) " +
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
@@ -21,7 +21,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "AND r.status != '상담완료'")
     Page<ReservationListResponse> findByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
-    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
+    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared, false) " +
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
@@ -29,19 +29,23 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "AND r.status != '상담완료'")
     Page<ReservationListResponse> findByCounselorId(@Param("counselorId") Long counselorId, Pageable pageable);
 
-    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
+    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared, " +
+            "CASE WHEN rv IS NULL OR rv.isDelete = true THEN false ELSE true END) " +
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
+            "LEFT JOIN Review rv ON r.id = rv.id " +
             "WHERE r.memberId = :memberId " +
             "AND r.status = '상담완료' " +
             "AND r.isDelete = false")
     Page<ReservationListResponse> findByMemberIdComplete(@Param("memberId") Long memberId, Pageable pageable);
 
-    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared) " +
+    @Query("SELECT new com.mamdaero.domain.reservation.dto.response.ReservationListResponse(r.id, wt.date, wt.time, r.status, ci.name, ci.fee, r.canceler, r.canceledAt, r.requirement, r.isDiaryShared, " +
+            "CASE WHEN rv IS NULL OR rv.isDelete = true THEN false ELSE true END) " +
             "FROM Reservation r " +
             "JOIN WorkTime wt ON r.workTimeId = wt.id " +
             "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
+            "LEFT JOIN Review rv ON r.id = rv.id " +
             "WHERE ci.counselorId = :counselorId " +
             "AND r.status = '상담완료'")
     Page<ReservationListResponse> findByCounselorIdComplete(@Param("counselorId") Long counselorId, Pageable pageable);
