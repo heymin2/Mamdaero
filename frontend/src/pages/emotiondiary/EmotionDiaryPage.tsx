@@ -12,6 +12,7 @@ import EmotionStatisticsBar from '@/components/navigation/EmotionStatisticsBar';
 import EmotionBar from '@/components/navigation/EmotionBar';
 import { DiaryResponse, useGetEmotionDiaryList } from '@/hooks/emotionDiary';
 import dayjs from 'dayjs';
+import useMemberStore from '@/stores/memberStore';
 
 const getCurrentDate = () => {
   return dayjs().format('YYYY-MM-DD');
@@ -29,6 +30,8 @@ const EmotionDiaryPage: React.FC = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const calendarRef = useRef<FullCalendar | null>(null);
+
+  const { name } = useMemberStore();
 
   const { data: diaryList = [], isLoading: isDairyListLoading } = useGetEmotionDiaryList(
     date.year,
@@ -158,7 +161,7 @@ const EmotionDiaryPage: React.FC = () => {
         <div className="w-2/5">
           <div className="card bg-base-100 shadow-xl p-4">
             <div className="card-body">
-              <h2 className="card-title text-2xl font-bold mb-2">{'username'}님</h2>
+              <h2 className="card-title text-2xl font-bold mb-2">{name}님</h2>
               <p className="mb-4">오늘 하루는 어떤 기분이었나요?</p>
               <button
                 className="btn bg-orange-200 hover:bg-orange-300 text-gray-700 w-full"
