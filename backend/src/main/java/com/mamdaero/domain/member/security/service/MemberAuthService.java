@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Optional;
 
 @Service
@@ -177,7 +176,7 @@ public class MemberAuthService
         {
             return false;
         }
-        passwordVerifyRepository.deleteByCodeId(passwordVerify.getCodeId());
+        passwordVerifyRepository.deleteByCodeId(passwordVerify.getEmail());
         memberRepository.modifyPassword(passwordEncoder.encode(request.getPassword()), request.getEmail());
         return true;
     }
