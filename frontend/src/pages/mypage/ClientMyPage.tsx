@@ -20,6 +20,12 @@ const isValidGender = (value: string | null): value is Gender => {
   return value === 'M' || value === 'F' || value === null;
 };
 
+const Spinner = () => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
+  </div>
+);
+
 const ClientMyPage: React.FC = () => {
   const navigate = useNavigate();
   const { name, email, nickname, birth, tel, gender, fetchMember, updateMember, isLoading, error } =
@@ -137,7 +143,7 @@ const ClientMyPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <Spinner />;
   }
 
   if (error) {

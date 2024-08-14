@@ -10,6 +10,7 @@ import useAuthStore from '@/stores/authStore';
 import useCounselorStore from '@/stores/couselorStore';
 import { useCounselorWorktime } from '@/hooks/useCounselorWorktime';
 import dayjs from 'dayjs';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const CounselorManageExcludePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(dayjs().format('YYYY-MM-DD'));
@@ -69,8 +70,8 @@ const CounselorManageExcludePage: React.FC = () => {
   };
 
   if (!counselorId) return <div>Counselor information not available</div>;
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading work times</div>;
+  if (isLoading) return <LoadingIndicator />;
+  if (isError) return <ErrorMessage message="FAILED TO LOAD" />;
 
   return (
     <div className="flex flex-col min-h-screen">

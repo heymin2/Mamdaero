@@ -11,6 +11,7 @@ import {
   WorkSchedule,
 } from '@/hooks/useCounselorSchedule';
 import useAuthStore from '@/stores/authStore';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const allWeeks = {
   월: 1,
@@ -59,8 +60,8 @@ const CounselorManageTimePage: React.FC = () => {
 
   const scheduledWeeks = [...new Set(allSchedules.map(schedule => schedule.day))];
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading schedules. Please try again later.</div>;
+  if (isLoading) return <LoadingIndicator />;
+  if (isError) return <ErrorMessage message="FAILED TO LOAD" />;
 
   return (
     <div className="flex flex-col min-h-screen">
