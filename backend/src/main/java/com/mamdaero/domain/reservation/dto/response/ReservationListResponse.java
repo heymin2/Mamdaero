@@ -25,4 +25,5 @@ public class ReservationListResponse {
     private Boolean isTestShared;
     private String memberName;
     private String counselorName;
+    private boolean isRead;
 }
