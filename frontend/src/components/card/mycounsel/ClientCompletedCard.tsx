@@ -2,41 +2,33 @@ import React, { useState } from 'react';
 import Button from '@/components/button/Button';
 import ReviewWriteModal from '@/components/modal/ReviewWriteModal';
 import ChatModal from '@/components/modal/ChatModal';
+import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
 
-interface Reservation {
-  canceledAt: string | null;
-  canceler: string | null;
-  date: string;
-  isDiaryShared: boolean;
-  isTestShared: boolean;
-  itemFee: number;
-  itemName: string;
-  requirement: string;
-  reservationId: number;
-  status: string;
-  time: number;
-  counselorName: string;
-  counselorId: string;
-}
+import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
+import { fetchReservationDetail } from '@/pages/mycounsel/props/reservationApis';
 
 const ClientCompletedCard: React.FC<Reservation> = ({
   reservationId,
-  counselorId,
   counselorName,
   date,
   time,
   status,
-  itemName,
-  itemFee,
-  requirement,
-  isDiaryShared,
-  isTestShared,
-  canceledAt,
-  canceler,
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [reservationDetail, setReservationDetail] = useState<Reservation | null>(null);
+
+  const handleOpenDetailModal = async () => {
+    try {
+      const detail = await fetchReservationDetail(reservationId);
+      setReservationDetail(detail);
+      setIsDetailModalOpen(true);
+    } catch (error) {
+      alert(`Failed to fetch reservation detail: ${error}`);
+    }
+  };
+
   return (
     <div className="border-b-2 border-orange-300 p-6">
       <h3 className="text-xl font-bold mb-3">{counselorName} 상담사님</h3>
@@ -52,7 +44,7 @@ const ClientCompletedCard: React.FC<Reservation> = ({
             {reservationId}
             <Button
               label="상세보기"
-              onClick={() => setIsDetailModalOpen(true)}
+              onClick={handleOpenDetailModal}
               size="xs"
               shape="rounded"
               color="extragray"
@@ -94,6 +86,13 @@ const ClientCompletedCard: React.FC<Reservation> = ({
         reservationId={reservationId.toString()}
         user="client"
       />
+      {reservationDetail && (
+        <ReservationDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          reservationDetail={reservationDetail}
+        />
+      )}
     </div>
   );
 };
