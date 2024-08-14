@@ -176,7 +176,8 @@ public class MemberAuthService
         {
             return false;
         }
-        passwordVerifyRepository.deleteByCodeId(passwordVerify.getEmail());
+        log.info(passwordVerify.getEmail());
+        passwordVerifyRepository.deleteByEmail(passwordVerify.getEmail());
         memberRepository.modifyPassword(passwordEncoder.encode(request.getPassword()), request.getEmail());
         return true;
     }
