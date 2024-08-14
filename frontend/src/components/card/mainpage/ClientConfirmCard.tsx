@@ -46,7 +46,7 @@ const ReservConfirmCard: React.FC = () => {
               {displayedReservations.length > 0 ? (
                 displayedReservations.map(reservation => (
                   <li key={reservation.reservationId}>
-                    {reservation.date} {reservation.formatTime} <u>{reservation.memberName}</u> 님
+                    {reservation.date} {reservation.formatTime} <u>{reservation.counselorName}</u>님
                   </li>
                 ))
               ) : (
