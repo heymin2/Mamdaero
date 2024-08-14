@@ -1,33 +1,32 @@
-// src/components/counselor/reserve/ConsentSection.tsx
-
 import React from 'react';
 import { FaCheck } from 'react-icons/fa';
-
-const diagnoses = ['우울', '불안', '스트레스', 'PTSD', '조울증'];
 
 interface ConsentSectionProps {
   diaryConsent: boolean | null;
   setDiaryConsent: (consent: boolean) => void;
-  selfDiagnosisConsent: boolean | null;
-  setSelfDiagnosisConsent: (consent: boolean) => void;
-  selectedDiagnoses: string[];
-  setSelectedDiagnoses: React.Dispatch<React.SetStateAction<string[]>>;
+  setIsDiaryShared: (isShared: boolean) => void;
+  testConsent: boolean | null;
+  setTestConsent: (consent: boolean) => void;
+  setIsTestShared: (isShared: boolean) => void;
 }
 
 const ConsentSection: React.FC<ConsentSectionProps> = ({
   diaryConsent,
   setDiaryConsent,
-  selfDiagnosisConsent,
-  setSelfDiagnosisConsent,
-  selectedDiagnoses,
-  setSelectedDiagnoses,
+  setIsDiaryShared,
+  testConsent,
+  setTestConsent,
+  setIsTestShared,
 }) => {
-  const handleToggleSelection = (diagnosis: string) => {
-    setSelectedDiagnoses(prev =>
-      prev.includes(diagnosis) ? prev.filter(d => d !== diagnosis) : [...prev, diagnosis]
-    );
+  const handleDiaryConsent = (consent: boolean) => {
+    setDiaryConsent(consent);
+    setIsDiaryShared(consent);
   };
 
+  const handleTestConsent = (consent: boolean) => {
+    setTestConsent(consent);
+    setIsTestShared(consent);
+  };
   return (
     <>
       <div>
@@ -45,7 +44,7 @@ const ConsentSection: React.FC<ConsentSectionProps> = ({
               className={`btn ${
                 diaryConsent === false ? 'btn-primary' : 'btn-outline btn-primary bg-white'
               } rounded-full`}
-              onClick={() => setDiaryConsent(false)}
+              onClick={() => handleDiaryConsent(false)}
             >
               비동의
             </button>
@@ -53,14 +52,14 @@ const ConsentSection: React.FC<ConsentSectionProps> = ({
               className={`btn ${
                 diaryConsent === true ? 'btn-primary' : 'btn-outline btn-primary bg-white'
               } rounded-full`}
-              onClick={() => setDiaryConsent(true)}
+              onClick={() => handleDiaryConsent(true)}
             >
               동의
             </button>
           </div>
         </div>
       </div>
-      <div>
+      <div className="my-8">
         <div className="flex items-end border-b-4 border-b-orange-400 mb-4 space-x-5">
           <div className="text-xl font-bold">자가진단 검사 제출</div>
         </div>
@@ -75,42 +74,21 @@ const ConsentSection: React.FC<ConsentSectionProps> = ({
             <div className="text-sm font-bold">자가진단 검사를 제출하시겠습니까?</div>
             <button
               className={`btn ${
-                selfDiagnosisConsent === false ? 'btn-primary' : 'btn-outline btn-primary bg-white'
+                testConsent === false ? 'btn-primary' : 'btn-outline btn-primary bg-white'
               } rounded-full`}
-              onClick={() => setSelfDiagnosisConsent(false)}
+              onClick={() => handleTestConsent(false)}
             >
               비동의
             </button>
             <button
               className={`btn ${
-                selfDiagnosisConsent === true ? 'btn-primary' : 'btn-outline btn-primary bg-white'
+                testConsent === true ? 'btn-primary' : 'btn-outline btn-primary bg-white'
               } rounded-full`}
-              onClick={() => setSelfDiagnosisConsent(true)}
+              onClick={() => handleTestConsent(true)}
             >
               동의
             </button>
           </div>
-          {selfDiagnosisConsent && (
-            <div>
-              <div className="text-sm">* 중복 선택이 가능합니다.</div>
-              <div className="flex justify-around gap-3 rounded bg-orange-50">
-                {diagnoses.map(diagnosis => (
-                  <label
-                    key={diagnosis}
-                    className="flex font-bold items-center space-x-2 p-2 rounded-full text-sm"
-                  >
-                    <span>{diagnosis}</span>
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-primary"
-                      checked={selectedDiagnoses.includes(diagnosis)}
-                      onChange={() => handleToggleSelection(diagnosis)}
-                    />
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </>
