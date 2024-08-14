@@ -11,7 +11,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
   counselorId,
   counselorName,
   date,
-  time,
+  formatTime,
   status: initialStatus,
   canceledAt: initialCanceledAt,
 }) => {
@@ -76,7 +76,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
             />
           </div>
           <p>{date}</p>
-          <p>{time}:00</p>
+          <p>{formatTime}</p>
           <div className="flex gap-4 items-center">
             {status}
             {status === '예약완료' && (
