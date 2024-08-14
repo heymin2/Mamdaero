@@ -81,7 +81,7 @@ const NavClient = () => {
         <Link to="/notice" className="font-bold">
           <div className="transition-transform transform hover:-translate-y-0.5">공지사항</div>
         </Link>
-        <Link to="/alarm">
+        <Link to="/alarm" className="transition-transform transform hover:-translate-y-0.5">
           <LuBellRing size={24} />
         </Link>
         <div className="transition-transform transform hover:-translate-y-0.5">

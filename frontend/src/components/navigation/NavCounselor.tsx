@@ -7,6 +7,7 @@ import logo from '@/assets/MamdaeroLogo.svg';
 import { LuBellRing } from 'react-icons/lu';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import ProfileDropdown from '@/components/dropdown/ProfileDropdown';
+import AlarmModal from '@/components/modal/AlarmModal';
 
 const navStyle =
   'p-3 text-lg font-semibold hover:bg-gray-200 text-center transition-colors duration-300';
@@ -49,6 +50,12 @@ const NavClient: React.FC = () => {
     } else {
       navigate('/', { state: { from: '/mycounsel/record' } });
     }
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleAlarmClick = () => {
+    setIsModalOpen(true);
   };
 
   return (
@@ -121,9 +128,19 @@ const NavClient: React.FC = () => {
         <Link to="/notice" className="font-bold">
           <div className="transition-transform transform hover:-translate-y-0.5">공지사항</div>
         </Link>
-        <Link to="/alarm">
+        {/* <button
+          onClick={handleAlarmClick}
+          className="transition-transform transform hover:-translate-y-0.5"
+        >
           <LuBellRing size={24} />
-        </Link>
+        </button>
+        <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
+        <div>
+          <button onClick={() => setIsModalOpen(true)}>
+            <LuBellRing size={24} />
+          </button>
+          {/* <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
+        </div>
         <div className="transition-transform transform hover:-translate-y-0.5">
           <ProfileDropdown />
         </div>

@@ -20,6 +20,7 @@ const ClientCompletedCard: React.FC<Reservation> = ({
   date,
   formatTime,
   status,
+  isReview,
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
@@ -87,13 +88,19 @@ const ClientCompletedCard: React.FC<Reservation> = ({
           <p className="text-green-600 font-bold">{status}</p>
         </div>
         <div className="flex flex-col col-span-2 items-center mt-4 gap-3">
-          <Button
-            label="리뷰쓰기"
-            onClick={() => setIsReviewModalOpen(true)}
-            size="lg"
-            shape="rounded"
-            color="orange"
-          />
+          {isReview ? (
+            <div className="text-gray-600 w-40 h-10 font-bold rounded-full bg-gray-200 flex items-center justify-center">
+              리뷰 작성 완료
+            </div>
+          ) : (
+            <Button
+              label="리뷰쓰기"
+              onClick={() => setIsReviewModalOpen(true)}
+              size="lg"
+              shape="rounded"
+              color="orange"
+            />
+          )}
           <Button
             label="1:1 메신저 채팅"
             onClick={() => setIsChatModalOpen(true)}

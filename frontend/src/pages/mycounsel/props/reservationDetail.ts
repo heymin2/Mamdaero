@@ -25,6 +25,7 @@ export interface Reservation {
   canceler: string | null;
   situations: Situation[];
   symptoms: Symptom[];
+  isReview: boolean;
 }
 
 // 시간을 2자리 문자열로 포맷팅
