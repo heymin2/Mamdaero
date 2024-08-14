@@ -3,57 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import ChatModal from '@/components/modal/ChatModal';
 import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
-import axiosInstance from '@/api/axiosInstance';
-
-interface Reservation {
-  canceledAt: string | null;
-  canceler: string | null;
-  date: string;
-  isDiaryShared: boolean;
-  isTestShared: boolean;
-  itemFee: number;
-  itemName: string;
-  requirement: string;
-  reservationId: number;
-  status: string;
-  time: number;
-  counselorName: string;
-  clientName: string;
-  counselorId: string;
-}
-
-const fetchReservationDetail = async (reservationId: number) => {
-  try {
-    const response = await axiosInstance({
-      method: 'get',
-      url: `cm/reservation/${reservationId}`,
-    });
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    alert(`Error fetching reservation detail: ${error}`);
-
-    throw error;
-  }
-};
-
-const deleteReservation = async (reservationId: number) => {
-  try {
-    const response = await axiosInstance({
-      method: 'delete',
-      url: `cm/reservation/${reservationId}`,
-    });
-    return response.data;
-  } catch (error) {
-    alert(`Error canceling reservation: ${error}`);
-    throw error;
-  }
-};
+import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
+import { fetchReservationDetail, deleteReservation } from '@/pages/mycounsel/props/reservationApis';
 
 const CounselorReservationStatusCard: React.FC<Reservation> = ({
   reservationId,
   counselorId,
-  clientName,
   counselorName,
   date,
   time,
