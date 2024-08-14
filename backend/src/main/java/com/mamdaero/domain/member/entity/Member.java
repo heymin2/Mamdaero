@@ -3,7 +3,10 @@ package com.mamdaero.domain.member.entity;
 import com.mamdaero.domain.member.dto.request.MemberRequestDto;
 import com.mamdaero.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
@@ -48,6 +51,7 @@ public class Member extends BaseEntity {
         this.nickname = requestDto.getNickname();
         this.birth = requestDto.getBirth();
         this.tel = requestDto.getTel();
+        this.gender = requestDto.getGender();
     }
 
     public void destroyRefreshToken()

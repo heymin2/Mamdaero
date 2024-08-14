@@ -22,5 +22,8 @@ public class ReservationListResponse {
     private LocalDateTime canceledAt;
     private String requirement;
     private Boolean isDiaryShared;
-
+    private Boolean isTestShared;
+    private String memberName;
+    private String counselorName;
+    private Boolean isReview;
 }
