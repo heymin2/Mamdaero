@@ -1,5 +1,6 @@
 package com.mamdaero.domain.reservation.service;
 
+import com.mamdaero.domain.code.repository.CodeRepository;
 import com.mamdaero.domain.counselor_item.entity.CounselorItem;
 import com.mamdaero.domain.counselor_item.exception.CounselorItemNotFoundException;
 import com.mamdaero.domain.counselor_item.repository.CounselorItemRepository;
@@ -8,6 +9,9 @@ import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
 import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
 import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
+import com.mamdaero.domain.reservation.dto.response.ReservationResponse;
+import com.mamdaero.domain.reservation.dto.response.SituationResponse;
+import com.mamdaero.domain.reservation.dto.response.SymptomResponse;
 import com.mamdaero.domain.reservation.entity.Reservation;
 import com.mamdaero.domain.reservation.entity.ReservationSituation;
 import com.mamdaero.domain.reservation.entity.ReservationSymptom;
@@ -26,7 +30,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -35,6 +41,7 @@ public class ReservationService {
     private final CounselorItemRepository counselorItemRepository;
     private final WorkTimeRepository workTimeRepository;
     private final FindUserService findUserService;
+    private final CodeRepository codeRepository;
 
     @Transactional
     public void createReservation(CreateReservationRequest request) {
@@ -72,6 +79,7 @@ public class ReservationService {
                 .workTimeId(request.getWorkTimeId())
                 .requirement(request.getRequirement())
                 .isDiaryShared(request.getIsDiaryShared())
+                .isTestShared(request.getIsTestShared())
                 .itemName(counselorItem.getName())
                 .itemFee(counselorItem.getFee())
                 .symptoms(new ArrayList<>())
@@ -90,7 +98,6 @@ public class ReservationService {
             situation.setSituationId(situationId);
             reservation.addSituation(situation);
         }
-
         reservationRepository.save(reservation);
     }
 
@@ -129,7 +136,7 @@ public class ReservationService {
         Pageable pageable = PageRequest.of(page, size);
 
         if ("내담자".equals(caller)) {
-            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberId(1L, pageable);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberId(member.getMemberId(), pageable);
             return new Pagination<ReservationListResponse>(
                     reservationPage.getContent(),
                     reservationPage.getNumber() + 1,
@@ -139,7 +146,7 @@ public class ReservationService {
 
             );
         } else if ("상담사".equals(caller)) {
-            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorId(16L, pageable);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorId(member.getMemberId(), pageable);
             return new Pagination<ReservationListResponse>(
                     reservationPage.getContent(),
                     reservationPage.getNumber() + 1,
@@ -164,7 +171,7 @@ public class ReservationService {
         Pageable pageable = PageRequest.of(page, size);
 
         if ("내담자".equals(caller)) {
-            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberIdComplete(1L, pageable);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByMemberIdComplete(member.getMemberId(), pageable);
             return new Pagination<ReservationListResponse>(
                     reservationPage.getContent(),
                     reservationPage.getNumber() + 1,
@@ -174,7 +181,7 @@ public class ReservationService {
 
             );
         } else if ("상담사".equals(caller)) {
-            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorIdComplete(16L, pageable);
+            Page<ReservationListResponse> reservationPage = reservationRepository.findByCounselorIdComplete(member.getMemberId(), pageable);
             return new Pagination<ReservationListResponse>(
                     reservationPage.getContent(),
                     reservationPage.getNumber() + 1,
@@ -186,6 +193,38 @@ public class ReservationService {
         } else {
             throw new RuntimeException("예약 목록 조회 권한이 없습니다.");
         }
+    }
+
+    @Transactional
+    public ReservationResponse getReservation(Long reservationId) {
+
+        Reservation reservation = reservationRepository.findReservationWithDetails(reservationId);
+
+        WorkTime workTime = workTimeRepository.getReferenceById(reservation.getWorkTimeId());
+
+        List<SituationResponse> situationResponses = reservation.getSituations().stream()
+                .map(situation -> new SituationResponse(codeRepository.findCodeById(situation.getSituationId()).getName()))
+                .collect(Collectors.toList());
+
+        List<SymptomResponse> symptomResponses = reservation.getSymptoms().stream()
+                .map(symptom -> new SymptomResponse(codeRepository.findCodeById(symptom.getSymptomId()).getName()))
+                .collect(Collectors.toList());
+
+        return new ReservationResponse(
+                reservation.getId(),
+                workTime.getDate(),
+                workTime.getTime(),
+                reservation.getStatus(),
+                reservation.getItemName(),
+                reservation.getItemFee(),
+                reservation.getCanceler(),
+                reservation.getCanceledAt(),
+                reservation.getRequirement(),
+                reservation.getIsDiaryShared(),
+                reservation.getIsTestShared(),
+                situationResponses,
+                symptomResponses
+        );
     }
 
     @Transactional
