@@ -23,4 +23,6 @@ public class ReservationListResponse {
     private String requirement;
     private Boolean isDiaryShared;
     private Boolean isTestShared;
+    private String memberName;
+    private String counselorName;
 }
