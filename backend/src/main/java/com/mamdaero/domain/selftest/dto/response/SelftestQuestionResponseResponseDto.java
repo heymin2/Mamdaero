@@ -15,14 +15,16 @@ public class SelftestQuestionResponseResponseDto {
     private Integer memberSelftestId;
     private String selftestQuestion;
     private Integer selftestMemberQuestionScore;
+    private String selftestMemberQuestionAnswer;
 
 
-    public static SelftestQuestionResponseResponseDto toDTO(SelftestQuestionResponse SelftestQuestionResponse) {
+    public static SelftestQuestionResponseResponseDto toDTO(SelftestQuestionResponse selftestQuestionResponse) {
         return SelftestQuestionResponseResponseDto.builder()
-                .selftestQuestionResponseId(SelftestQuestionResponse.getId())
-                .memberSelftestId(SelftestQuestionResponse.getMemberSelftestList().getId())
-                .selftestQuestion(SelftestQuestionResponse.getSelftestQuestion().getSelftestQuestionDetail())
-                .selftestMemberQuestionScore(SelftestQuestionResponse.getSelftestMemberQuestionScore())
+                .selftestQuestionResponseId(selftestQuestionResponse.getId())
+                .memberSelftestId(selftestQuestionResponse.getMemberSelftestList().getId())
+                .selftestQuestion(selftestQuestionResponse.getSelftestQuestion().getSelftestQuestionDetail())
+                .selftestMemberQuestionScore(selftestQuestionResponse.getSelftestMemberQuestionScore())
+                .selftestMemberQuestionAnswer(selftestQuestionResponse.getSelftestQuestionOption().getSelftestQuestionOptionDetail())
                 .build();
     }
 }
