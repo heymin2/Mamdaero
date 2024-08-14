@@ -131,10 +131,19 @@ public class MailService
         if(check.isPresent())
         {
             String temp_token = createTempPassword();
-            PasswordVerify passwordVerify = new PasswordVerify();
-            passwordVerify.setEmail(request.getEmail());
-            passwordVerify.setVerifyToken(temp_token);
-            passwordVerifyRepository.save(passwordVerify);
+            PasswordVerify exist_email_check = passwordVerifyRepository.findByEmail(request.getEmail());
+
+            if(exist_email_check == null)
+            {
+                PasswordVerify passwordVerify = new PasswordVerify();
+                passwordVerify.setEmail(request.getEmail());
+                passwordVerify.setVerifyToken(temp_token);
+                passwordVerifyRepository.save(passwordVerify);
+            }
+            else
+            {
+                passwordVerifyRepository.updateVeryfiy(temp_token, request.getEmail());
+            }
             sendPasswordMail(temp_token, request.getEmail());
             return true;
         }
