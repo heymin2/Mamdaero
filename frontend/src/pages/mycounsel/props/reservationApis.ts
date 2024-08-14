@@ -1,12 +1,13 @@
 import axiosInstance from '@/api/axiosInstance';
-import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
+import { Reservation, createReservation } from '@/pages/mycounsel/props/reservationDetail';
 
 export const fetchReservation = async (): Promise<Reservation[]> => {
   const response = await axiosInstance({
     method: 'get',
     url: 'cm/reservation',
   });
-  return response.data.data;
+  console.log(response.data.data);
+  return response.data.data.map((item: Omit<Reservation, 'formatTime'>) => createReservation(item));
 };
 
 export const fetchCompletedReservation = async (): Promise<Reservation[]> => {
@@ -14,15 +15,15 @@ export const fetchCompletedReservation = async (): Promise<Reservation[]> => {
     method: 'get',
     url: 'cm/consult',
   });
-  return response.data.data;
+  return response.data.data.map((item: Omit<Reservation, 'formatTime'>) => createReservation(item));
 };
 
-export const fetchReservationDetail = async (reservationId: number) => {
+export const fetchReservationDetail = async (reservationId: number): Promise<Reservation> => {
   const response = await axiosInstance({
     method: 'get',
     url: `cm/reservation/${reservationId}`,
   });
-  return response.data;
+  return createReservation(response.data);
 };
 
 export const deleteReservation = async (reservationId: number) => {
