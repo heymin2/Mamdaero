@@ -197,7 +197,7 @@ public class SelftestService {
     public Page<MemberSelftestResultResponseDto> getMemberSelftestListAll(Long memberId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        List<MemberSelftestResultResponseDto> memberSelftestLists = memberSelftestListRepository.findByMemberId(memberId).stream()
+        List<MemberSelftestResultResponseDto> memberSelftestLists = memberSelftestListRepository.findByMemberIdAndIsPublic(memberId, true).stream()
                 .map(MemberSelftestResultResponseDto::toDTO)
                 .collect(Collectors.toList());
 
@@ -208,7 +208,7 @@ public class SelftestService {
     public MemberSelftestResponseDto getMemberSelftestDetail(Long memberId, Integer resultId) {
 
         if (memberSelftestListRepository.findById(resultId).isPresent()) {
-            return MemberSelftestResponseDto.toDTO(memberSelftestListRepository.findByMemberIdAndId(memberId, resultId));
+            return MemberSelftestResponseDto.toDTO(memberSelftestListRepository.findByMemberIdAndIdAAndIsPublic(memberId, resultId, true));
 
         }
         throw new RuntimeException("Member selftest not found");
