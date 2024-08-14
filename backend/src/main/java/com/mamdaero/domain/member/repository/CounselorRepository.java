@@ -15,8 +15,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CounselorRepository extends JpaRepository<Counselor, Long>, JpaSpecificationExecutor<Counselor> {
 
-    Page<Counselor> findAllByNameContains(String counselorName, Pageable pageable);
-
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Counselor SET img = :img WHERE id = :id")
