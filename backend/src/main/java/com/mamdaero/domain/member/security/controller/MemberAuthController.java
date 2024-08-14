@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.core.Is;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -211,6 +212,7 @@ public class MemberAuthController
 
         if(check)
         {
+            SecurityContextHolder.clearContext();
             return ApiResponse.onSuccess(ResultDTO.builder().message("로그아웃 완료").build());
         }
         else
