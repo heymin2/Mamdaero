@@ -208,7 +208,7 @@ public class SelftestService {
     public MemberSelftestResponseDto getMemberSelftestDetail(Long memberId, Integer resultId) {
 
         if (memberSelftestListRepository.findById(resultId).isPresent()) {
-            return MemberSelftestResponseDto.toDTO(memberSelftestListRepository.findByMemberIdAndIdAAndIsPublic(memberId, resultId, true));
+            return MemberSelftestResponseDto.toDTO(memberSelftestListRepository.findByMemberIdAndIdAndIsPublic(memberId, resultId, true));
 
         }
         throw new RuntimeException("Member selftest not found");

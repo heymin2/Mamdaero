@@ -19,5 +19,5 @@ public interface MemberSelftestListRepository extends JpaRepository<MemberSelfte
 
     List<MemberSelftestList> findByMemberIdAndIsPublic(@Param("memberId") Long memberId, @Param("isPublic") Boolean isPublic);
 
-    MemberSelftestList findByMemberIdAndIdAAndIsPublic(@Param("memberId") Long memberId, @Param("id") Integer id, @Param("isPublic") Boolean isPublic);
+    MemberSelftestList findByMemberIdAndIdAndIsPublic(@Param("memberId") Long memberId, @Param("id") Integer id, @Param("isPublic") Boolean isPublic);
 }
