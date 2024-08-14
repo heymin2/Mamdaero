@@ -6,14 +6,12 @@ import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.member.security.apiresult.ApiResponse;
 import com.mamdaero.domain.member.security.dto.request.*;
-import com.mamdaero.domain.member.security.dto.response.IsDuplicateDTO;
-import com.mamdaero.domain.member.security.dto.response.IsSuccessDTO;
-import com.mamdaero.domain.member.security.dto.response.MemberSignUpResponseDTO;
-import com.mamdaero.domain.member.security.dto.response.ResultDTO;
+import com.mamdaero.domain.member.security.dto.response.*;
 import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.member.security.service.MailService;
 import com.mamdaero.domain.member.security.service.MemberAuthService;
 import com.mamdaero.domain.work_schedule.service.WorkTimeService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -203,6 +201,36 @@ public class MemberAuthController
         else
         {
             return ApiResponse.onSuccess(ResultDTO.builder().message("비밀번호 재설정 실패").build());
+        }
+    }
+
+    @PatchMapping("/cma/member/logout")
+    public ApiResponse<ResultDTO> logOut(@RequestBody EmailCheckRequestDTO request) throws Exception
+    {
+        boolean check = memberService.logOutMember(request);
+
+        if(check)
+        {
+            return ApiResponse.onSuccess(ResultDTO.builder().message("로그아웃 완료").build());
+        }
+        else
+        {
+            return ApiResponse.onSuccess(ResultDTO.builder().message("유효하지 않은 토큰").build());
+        }
+    }
+
+    @PatchMapping("/cma/member/reIssue")
+    public ApiResponse<TokenResponseDTO> reIssueToken(@RequestBody EmailCheckRequestDTO request, HttpServletResponse response) throws Exception
+    {
+        TokenResponseDTO check = memberService.reissueToken(request, response);
+
+        if(check != null)
+        {
+            return ApiResponse.onSuccess(TokenResponseDTO.builder().access_token(check.getAccess_token()).refresh_token(check.getRefresh_token()).message("정상 재발급").build());
+        }
+        else
+        {
+            return ApiResponse.onSuccess(TokenResponseDTO.builder().access_token("").refresh_token("").message("재발급 불가").build());
         }
     }
 
