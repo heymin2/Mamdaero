@@ -36,6 +36,7 @@ const PostitWriteModal: React.FC<PostitWriteModalProps> = ({
     if (type === 'update' && postit) {
       onUpdate(postit.questionId, postit.postitId, content);
     }
+    onClose();
   };
 
   const closeModal = () => {
@@ -44,12 +45,14 @@ const PostitWriteModal: React.FC<PostitWriteModalProps> = ({
   };
 
   useEffect(() => {
-    if (postit) {
-      setContent(postit.content);
-    } else {
-      setContent('');
+    if (isOpen) {
+      if (type === 'update' && postit) {
+        setContent(postit.content);
+      } else {
+        setContent('');
+      }
     }
-  }, [postit]);
+  }, [isOpen, type, postit]);
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={closeModal} size="sm">

@@ -14,10 +14,11 @@ const CounselorProfileCard: React.FC<CounselorCardProps> = ({
   counselorId,
   counselorName,
   counselorIntro,
-  counselorImage = DefaultProfile, // 기본 이미지를 제공
+  counselorImage, // 기본 이미지를 제공
   reviewRate,
   reviewCount,
 }) => {
+  console.log(counselorImage);
   return (
     <div className="border-b-2 border-b-gray-300">
       <div className="w-full p-6 grid grid-cols-6">
@@ -39,7 +40,11 @@ const CounselorProfileCard: React.FC<CounselorCardProps> = ({
         </div>
 
         <div className="col-span-2 flex justify-end items-start">
-          <img src={DefaultProfile} className="w-32 h-40 object-cover rounded-lg" alt="" />
+          <img
+            src={counselorImage || DefaultProfile}
+            className="w-32 h-40 object-cover rounded-lg"
+            alt="프로필 이미지"
+          />
         </div>
       </div>
     </div>
