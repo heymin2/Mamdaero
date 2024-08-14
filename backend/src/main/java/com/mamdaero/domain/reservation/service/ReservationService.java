@@ -4,7 +4,9 @@ import com.mamdaero.domain.code.repository.CodeRepository;
 import com.mamdaero.domain.counselor_item.entity.CounselorItem;
 import com.mamdaero.domain.counselor_item.exception.CounselorItemNotFoundException;
 import com.mamdaero.domain.counselor_item.repository.CounselorItemRepository;
+import com.mamdaero.domain.member.entity.Counselor;
 import com.mamdaero.domain.member.exception.AccessDeniedException;
+import com.mamdaero.domain.member.repository.CounselorRepository;
 import com.mamdaero.domain.member.security.dto.MemberInfoDTO;
 import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
@@ -42,6 +44,7 @@ public class ReservationService {
     private final WorkTimeRepository workTimeRepository;
     private final FindUserService findUserService;
     private final CodeRepository codeRepository;
+    private final CounselorRepository counselorRepository;
 
     @Transactional
     public void createReservation(CreateReservationRequest request) {
@@ -202,6 +205,10 @@ public class ReservationService {
 
         WorkTime workTime = workTimeRepository.getReferenceById(reservation.getWorkTimeId());
 
+        CounselorItem counselorItem = counselorItemRepository.getReferenceById(reservation.getCounselorItemId());
+
+        Counselor counselor = counselorRepository.getReferenceById(counselorItem.getCounselorId());
+
         List<SituationResponse> situationResponses = reservation.getSituations().stream()
                 .map(situation -> new SituationResponse(codeRepository.findCodeById(situation.getSituationId()).getName()))
                 .collect(Collectors.toList());
@@ -212,6 +219,8 @@ public class ReservationService {
 
         return new ReservationResponse(
                 reservation.getId(),
+                reservation.getMemberId(),
+                counselor.getId(),
                 workTime.getDate(),
                 workTime.getTime(),
                 reservation.getStatus(),
