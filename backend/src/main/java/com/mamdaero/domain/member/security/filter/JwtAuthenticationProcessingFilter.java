@@ -66,21 +66,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
     private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
     {
         log.info("checkAccessTokenAndAuthentication IN");
-//        jwtService.extractAccessToken(request).filter(jwtService::isTokenValid).ifPresent(
-//                accessToken -> jwtService.extractEmail(accessToken).ifPresent(
-//                        email -> memberRepository.findByEmail(email).ifPresent(
-//                                users -> saveAuthentication(users)
-//                        )
-//                )
-//        );
 
         log.info("request : " + request);
         // Extract access token
         Optional<String> accessTokenOpt = jwtService.extractAccessToken(request);
         if (accessTokenOpt.isEmpty()) {
             log.info("Access token not found");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access token not found");
             filterChain.doFilter(request, response);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access token not found");
             return;
         }
 
@@ -89,8 +82,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
         // Validate access token
         if (!jwtService.isTokenValid(accessToken)) {
             log.info("Invalid access token");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
             filterChain.doFilter(request, response);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
             return;
         }
 
@@ -98,8 +91,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
         Optional<String> emailOpt = jwtService.extractEmail(accessToken);
         if (emailOpt.isEmpty()) {
             log.info("Email not found in token");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Email not found in token");
             filterChain.doFilter(request, response);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Email not found in token");
             return;
         }
 
