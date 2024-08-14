@@ -28,6 +28,7 @@ interface CounselorSidebarProps {
   username: string;
   counselorId: number;
   getReservationData: () => ReservationData | null;
+  counselorImg: string;
 }
 
 const fetchProducts = async (counselorId: number): Promise<Product[]> => {
@@ -51,6 +52,7 @@ const CounselorSidebar: React.FC<CounselorSidebarProps> = ({
   username,
   counselorId,
   getReservationData,
+  counselorImg,
 }) => {
   const navigate = useNavigate();
   const { isClient, isAuthenticated } = useAuthStore();
@@ -116,9 +118,14 @@ const CounselorSidebar: React.FC<CounselorSidebarProps> = ({
   return (
     <div className="sticky top-20 overflow-auto">
       <img
-        src={DefaultProfile}
+        src={counselorImg || DefaultProfile}
+        alt={`${username} 프로필 이미지`}
         className="w-full h-64 object-cover rounded-lg"
-        alt="프로필 이미지"
+        onError={e => {
+          const target = e.target as HTMLImageElement;
+          target.onerror = null; // 무한 루프 방지
+          target.src = DefaultProfile;
+        }}
       />
       <div className="flex my-4 justify-start">
         <div className="flex items-end">

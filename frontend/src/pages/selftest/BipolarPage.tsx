@@ -1,94 +1,50 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import axiosInstance from '@/api/axiosInstance';
 import Button from '@/components/button/Button';
 import TestBar from '@/components/navigation/TestBar';
 import { FaCheck } from 'react-icons/fa';
-
-interface Option {
-  id: number;
-  selftestQuestionOptionDetail: string;
-  selftestQuestionOptionScore: number;
-}
-
-interface Question {
-  id: number;
-  selftestQuestionDetail: string;
-  options: Option[];
-}
-
-type SelfTest = Question[];
-
-interface SelfTestInfo {
-  id: number;
-  selftestName: string;
-  selftestInfo: string;
-}
-
-const fetchSelfTest = async (): Promise<SelfTest> => {
-  const response = await axiosInstance.get('/p/selftest/5');
-  return response.data;
-};
-
-const fetchSelfTestInfo = async (): Promise<SelfTestInfo[]> => {
-  const response = await axiosInstance.get('/p/selftest');
-  return response.data;
-};
+import useSelfTests from '@/hooks/useSelfTests';
+import useAuthStore from '@/stores/authStore';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const BipolarPage: React.FC = () => {
-  const [answers, setAnswers] = useState<{ [key: number]: number }>({});
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const { isAuthenticated } = useAuthStore();
+  const [isPublic, setIsPublic] = useState(true);
   const {
-    data: selfTest,
-    isLoading: isLoadingTest,
-    isError: isErrorTest,
-  } = useQuery<SelfTest>({
-    queryKey: ['bipolarTest'],
-    queryFn: fetchSelfTest,
-  });
+    selfTest,
+    selfTestList,
+    isLoadingTest,
+    isErrorTest,
+    isLoadingList,
+    isErrorList,
+    answers,
+    handleAnswerChange,
+    handleSubmit,
+    isSubmitting,
+  } = useSelfTests(5);
 
-  const {
-    data: selfTestInfo,
-    isLoading: isLoadingInfo,
-    isError: isErrorInfo,
-  } = useQuery<SelfTestInfo[]>({
-    queryKey: ['selfTestInfo'],
-    queryFn: fetchSelfTestInfo,
-  });
+  if (isLoadingTest || isLoadingList) return <LoadingIndicator />;
+  if (isErrorTest || isErrorList) return <ErrorMessage message="FAILED TO LOAD TEST" />;
+  if (!selfTest || selfTest.length === 0 || !selfTestList) return null;
 
-  const handleAnswerChange = (questionId: number, score: number) => {
-    setAnswers(prev => ({ ...prev, [questionId]: score }));
-  };
-
-  const handleSubmit = () => {
-    if (!selfTest) return;
-
-    if (Object.keys(answers).length !== selfTest.length) {
-      setAlertMessage('모든 문항에 답변해 주세요.');
-      return;
-    }
-
-    const totalScore = Object.entries(answers).reduce((acc, [_, score]) => acc + score, 0);
-
-    const detailedAnswers = Object.entries(answers).map(([questionId, score]) => ({
-      selftest_id: selfTestInfo?.find(info => info.selftestName === 'bipolar')?.id,
-      question_id: Number(questionId),
-      answer: score,
-    }));
-
-    navigate('/selftest/bipolar/result', { state: { totalScore, detailedAnswers } });
-  };
-
-  if (isLoadingTest || isLoadingInfo) return <div>Loading...</div>;
-  if (isErrorTest || isErrorInfo) return <div>Error loading test</div>;
-  if (!selfTest || selfTest.length === 0 || !selfTestInfo) return null;
-
-  const bipolarInfo = selfTestInfo.find(info => info.selftestName === 'bipolar');
+  const bipolarInfo = selfTestList.find(info => info.selftestName === 'bipolar');
   const mainQuestions = selfTest.slice(0, 13);
   const additionalQuestions = selfTest.slice(13);
+
+  const onSubmit = () => {
+    const result = handleSubmit(isPublic ? 1 : 0);
+    if (result && !result.error) {
+      navigate('/selftest/bipolar/result', {
+        state: {
+          totalScore: result.totalScore,
+          checkList: isAuthenticated ? undefined : result.checkList,
+        },
+      });
+    } else if (result && result.error) {
+      alert(result.error);
+    }
+  };
 
   return (
     <div>
@@ -97,10 +53,25 @@ const BipolarPage: React.FC = () => {
         subtitle="기분이 지나치게 들뜨거나 가라앉는 경험을 자주 하시나요?"
         showBackButton={true}
       />
-      <div className="flex text-sm space-x-5 m-12 justify-center">
+      <div className="flex text-sm space-x-5 mt-12 justify-center">
         <FaCheck />
         <div>{bipolarInfo ? bipolarInfo.selftestInfo : ''}</div>
       </div>
+      {isAuthenticated && (
+        <div className="flex justify-center mb-4">
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text mr-2">상담사 공개</span>
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={() => setIsPublic(!isPublic)}
+                className="checkbox checkbox-primary"
+              />
+            </label>
+          </div>
+        </div>
+      )}
       <div className="flex justify-center w-full">
         <div className="w-full max-w-4xl px-4">
           <table className="table w-full rounded-lg overflow-hidden">
@@ -130,15 +101,13 @@ const BipolarPage: React.FC = () => {
                 >
                   <td className="font-bold text-base rounded-l">{qIndex + 1}</td>
                   <td className="text-base text-left">{question.selftestQuestionDetail}</td>
-                  {question.options.map(option => (
+                  {question.options.map((option, optionIndex) => (
                     <td key={option.id} className="text-center">
                       <input
                         type="radio"
                         name={`question-${question.id}`}
-                        value={option.selftestQuestionOptionScore}
-                        onChange={() =>
-                          handleAnswerChange(question.id, option.selftestQuestionOptionScore)
-                        }
+                        checked={answers[question.id] === optionIndex}
+                        onChange={() => handleAnswerChange(question.id, optionIndex)}
                         className="radio radio-primary"
                       />
                     </td>
@@ -151,24 +120,22 @@ const BipolarPage: React.FC = () => {
       </div>
       <div className="flex flex-col justify-center items-center w-full mt-8">
         <h3 className="text-xl font-bold mb-4">추가 질문</h3>
-        {additionalQuestions.map(question => (
+        {additionalQuestions.map((question, index) => (
           <div
             key={question.id}
             className="w-4/5 mb-6 p-4 bg-white shadow-md rounded-lg hover:shadow-primary transition-shadow duration-200"
           >
             <label className="block text-base font-normal mb-2">
-              {question.id}. {question.selftestQuestionDetail}
+              {mainQuestions.length + index + 1}. {question.selftestQuestionDetail}
             </label>
             <div className="flex space-x-4">
-              {question.options.map(option => (
+              {question.options.map((option, optionIndex) => (
                 <label key={option.id} className="flex items-center space-x-2">
                   <input
                     type="radio"
                     name={`question-${question.id}`}
-                    value={option.selftestQuestionOptionScore}
-                    onChange={() =>
-                      handleAnswerChange(question.id, option.selftestQuestionOptionScore)
-                    }
+                    checked={answers[question.id] === optionIndex}
+                    onChange={() => handleAnswerChange(question.id, optionIndex)}
                     className="radio radio-primary"
                   />
                   <span className="text-base font-normal">
@@ -180,26 +147,13 @@ const BipolarPage: React.FC = () => {
           </div>
         ))}
       </div>
-      {alertMessage && (
-        <div role="alert" className="alert alert-warning mt-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 shrink-0 stroke-current"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-          <span>{alertMessage}</span>
-        </div>
-      )}
       <div className="flex justify-center w-full mt-8">
-        <Button onClick={handleSubmit} label="결과보기" color="orange" />
+        <Button
+          onClick={onSubmit}
+          label={isSubmitting ? '제출 중...' : '결과보기'}
+          color="orange"
+          disabled={isSubmitting}
+        />
       </div>
     </div>
   );

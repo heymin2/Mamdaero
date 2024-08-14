@@ -53,6 +53,7 @@ import SimpleTestListPage from '@/pages/simpletest/SimpleTestListPage';
 import useAuthStore from '@/stores/authStore';
 import BernardTestPage from './pages/simpletest/BernardTestPage';
 import HTPTestPage from './pages/simpletest/HTPTestPage';
+import FindPasswordPage from './pages/findpassword/FindPasswordPage';
 
 const Router = () => {
   const { isCounselor, isClient, isAdmin, isAuthenticated, getEmail } = useAuthStore();
@@ -138,16 +139,17 @@ const Router = () => {
 
       {/* MyCounsel Routes */}
       <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
-        <Route path="/mycounsel/:memberId/history" element={<CounselHistory />} />
+        <Route path="/mycounsel/cs" element={<CounselHistory />} />
         <Route
           path="/mycounsel/:memberId/history/facechat/:counsultId/:clientId"
           element={<CounselorFaceChat />}
         />
-        <Route path="/mycounsel/:memberId/record" element={<CounselRecordList />} />
-        <Route path="/mycounsel/:memberId/record/:clientId/*" element={<CounselRecordDetail />} />
+        <Route path="/mycounsel/record" element={<CounselRecordList />} />
+        <Route path="/mycounsel/record/:clientId/*" element={<CounselRecordDetail />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['내담자']} />}>
-        <Route path="/mycounsel/:memberId/history" element={<ClientHistory />} />
+        <Route path="/mycounsel" element={<ClientHistory />} />
+
         <Route
           path="/mycounsel/:memberId/history/facechat/:counsultId/:counselorId"
           element={<ClientFaceChat />}
@@ -164,6 +166,9 @@ const Router = () => {
       <Route path="/simpletest" element={<SimpleTestListPage />} />
       <Route path="/simpletest/bernard" element={<BernardTestPage />} />
       <Route path="/simpletest/htp" element={<HTPTestPage />} />
+
+      {/* FindPassword Routes */}
+      <Route path="find/password" element={<FindPasswordPage />} />
     </Routes>
   );
 };
