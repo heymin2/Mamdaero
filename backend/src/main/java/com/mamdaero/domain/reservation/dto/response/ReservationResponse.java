@@ -14,6 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ReservationResponse {
     private Long reservationId;
+    private Long memberId;
+    private Long CounselorId;
     private LocalDate date;
     private Integer time;
     private Status status;
