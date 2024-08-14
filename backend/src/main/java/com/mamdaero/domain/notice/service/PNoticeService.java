@@ -31,7 +31,7 @@ public class PNoticeService {
         if (!searchField.isEmpty() && !searchValue.isEmpty()) {
             boardPage = findBoardsBySearch(searchField, searchValue, pageable);
         } else {
-            boardPage = noticeRepository.findAll(pageable);
+            boardPage = noticeRepository.findAllByOrderByCreatedAtDesc(pageable);
         }
 
         List<NoticeResponse> noticeResponses = convertToBoardResponses(boardPage.getContent());

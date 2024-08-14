@@ -26,7 +26,8 @@ import java.util.Map;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class NotifyReservationService {
+public class
+NotifyReservationService {
 
     private final NotificationRepository notificationRepository;
     private final ReservationRepository reservationRepository;
@@ -120,9 +121,7 @@ public class NotifyReservationService {
             try {
                 Map<String, String> eventData = new HashMap<>();
                 eventData.put("message", "상담 15분 전입니다");
-                eventData.put("dateTime", threshold.toString());
-                eventData.put("memberId", memberId.toString());
-                eventData.put("counselorId", counselorId.toString());
+                eventData.put("createdAt", reservation.getCanceledAt().toString());
 
                 sseEmitter.send(SseEmitter.event().name("reservation").data(eventData));
             } catch (IOException e) {

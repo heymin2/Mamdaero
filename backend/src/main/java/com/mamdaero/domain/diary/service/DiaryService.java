@@ -49,15 +49,11 @@ public class DiaryService {
                 month = LocalDate.now().getMonthValue();
             }
 
-            if (diaryRepository.findAllByMemberAndDateYearAndDateMonth(member, year, month, pageable).isEmpty()) {
-                throw new DiaryNotFoundException();
-            }
-
             List<DiaryResponseDto> diaries = diaryRepository.findAllByMemberAndDateYearAndDateMonth(member, year, month, pageable).stream()
                     .map(DiaryResponseDto::toDTO)
                     .toList();
 
-            return new PageImpl<>(diaries);
+            return new PageImpl<>(diaries, pageable, diaries.size());
         }
 
         throw new MemberNotFoundException();
@@ -81,16 +77,12 @@ public class DiaryService {
                 month = LocalDate.now().getMonthValue();
             }
 
-            if (diaryRepository.findAllByMemberAndDateYearAndDateMonthAndIsOpen(member, year, month, isOpen, pageable).isEmpty()) {
-                throw new DiaryNotFoundException();
-            }
-
             List<DiaryResponseDto> diaryResponseDtoList = diaryRepository.findAllByMemberAndDateYearAndDateMonthAndIsOpen(member, year, month, isOpen, pageable)
                     .stream()
                     .map(DiaryResponseDto::toDTO)
                     .toList();
 
-            return new PageImpl<>(diaryResponseDtoList);
+            return new PageImpl<>(diaryResponseDtoList, pageable, diaryResponseDtoList.size());
         }
         throw new MemberNotFoundException();
     }

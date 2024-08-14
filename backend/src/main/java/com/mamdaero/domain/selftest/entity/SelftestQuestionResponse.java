@@ -17,7 +17,7 @@ public class SelftestQuestionResponse {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "selftest_question_option_id")
     private SelftestQuestionOption selftestQuestionOption;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "member_selftest_id")
     private MemberSelftestList memberSelftestList;
     @OneToOne(fetch = FetchType.LAZY)

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDateTime;
@@ -45,18 +46,26 @@ public class Reservation extends BaseEntity {
     @Column(name = "is_diary_shared")
     private Boolean isDiaryShared;
 
+    private Boolean isTestShared;
+
     @Column(name = "is_delete", nullable = false)
     private Boolean isDelete;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 15)
     private List<ReservationSymptom> symptoms;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 15)
     private List<ReservationSituation> situations;
 
 
     @Builder
-    public Reservation(Long memberId, Long counselorItemId, Long workTimeId, String itemName, Integer itemFee, String requirement, Boolean isDiaryShared, List<ReservationSituation> situations, List<ReservationSymptom> symptoms) {
+    public Reservation(Long memberId, Long counselorItemId, Long workTimeId,
+                       String itemName, Integer itemFee, String requirement,
+                       Boolean isDiaryShared, Boolean isTestShared,
+                       List<ReservationSituation> situations,
+                       List<ReservationSymptom> symptoms) {
         this.memberId = memberId;
         this.counselorItemId = counselorItemId;
         this.workTimeId = workTimeId;
@@ -64,6 +73,7 @@ public class Reservation extends BaseEntity {
         this.itemFee = itemFee;
         this.requirement = requirement;
         this.isDiaryShared = isDiaryShared;
+        this.isTestShared = isTestShared;
         this.status = Status.예약완료;
         this.isDelete = false;
         this.situations = situations;

@@ -8,17 +8,18 @@ import com.mamdaero.domain.member.exception.FileNotFoundException;
 import com.mamdaero.domain.member.exception.MemberNotFoundException;
 import com.mamdaero.domain.member.repository.CounselorRepository;
 import com.mamdaero.global.service.FileService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,32 +29,30 @@ public class CounselorService {
     private final CounselorRepository counselorRepository;
     private final FileService fileService;
 
-    public Page<CounselorResponseDto> findAll() {
+    @PersistenceContext
+    private EntityManager entityManager;
 
-        List<CounselorResponseDto> counselorResponseDtoList = counselorRepository.findAll().stream()
-                .map(CounselorResponseDto::toDTO)
-                .toList();
-
-        return new PageImpl<>(counselorResponseDtoList);
+    public Page<CounselorResponseDto> searchCounselorsByName(String name, String gender, Integer level, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        return counselorRepository.searchCounselors(name, gender, level, pageable);
     }
 
-    public Page<CounselorResponseDto> findAllByName(String name, int page, int size) {
+    public Page<CounselorResponseDto> searchCounselorsByReviews(String name, String gender, Integer level, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        return counselorRepository.searchCounselorsOrderByReviewCount(name, gender, level, pageable);
+    }
 
-        List<CounselorResponseDto> counselorResponseDtoList = counselorRepository.findAllByNameContains(name, pageable).stream()
-                .map(CounselorResponseDto::toDTO)
-                .toList();
-
-        return new PageImpl<>(counselorResponseDtoList);
+    public Page<CounselorResponseDto> searchCounselorsByRating(String name, String gender, Integer level, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return counselorRepository.searchCounselorsOrderByReviewRating(name, gender, level, pageable);
     }
 
     public CounselorResponseDto find(final Long id) {
         Optional<Counselor> optionalCounselor = counselorRepository.findById(id);
-
         if (optionalCounselor.isPresent()) {
             Counselor counselor = optionalCounselor.get();
 
-            return CounselorResponseDto.toDTO(counselor);
+            return counselorRepository.findCounselorReviewSummaryById(counselor.getId());
         }
 
         throw new MemberNotFoundException();

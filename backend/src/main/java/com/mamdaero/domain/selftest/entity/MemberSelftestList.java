@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,9 +25,15 @@ public class MemberSelftestList {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "selftest_id")
     private Selftest selftest;
+    @Builder.Default
+    private Boolean isPublic = Boolean.TRUE;
     private Integer selftestTotalScore;
     @CreatedDate
     private LocalDateTime memberSelftestDate;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_selftest_id")
+    private List<SelftestQuestionResponse> selftestQuestionResponses;
 
 
     public void updateScore(Integer selftestTotalScore) {

@@ -21,6 +21,7 @@ public interface WorkTimeRepository extends JpaRepository<WorkTime, Long> {
 
 
     @Query("SELECT new com.mamdaero.domain.work_schedule.dto.response.WorkTimeResponse(w.id, w.counselorId, w.date,w.time, w.isReserved, w.isWorkTime) " +
-            "FROM WorkTime w WHERE w.counselorId = :counselorId AND w.date = :date")
+            "FROM WorkTime w WHERE w.counselorId = :counselorId AND w.date = :date " +
+            "ORDER BY w.time ASC")
     List<WorkTimeResponse> findByCounselorIdAndDate(@Param("counselorId") Long counselorId, @Param("date") LocalDate date);
 }

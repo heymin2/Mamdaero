@@ -3,7 +3,6 @@ package com.mamdaero.domain.postit.controller;
 import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.postit.service.PostitLikeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,7 +20,7 @@ public class PostitLikeController {
 
     @PostMapping("/cm/postit/{postitId}/like")
     public ResponseEntity<?> like(@PathVariable("postitId") Long id) {
-        if (Objects.equals(findUserService.findMemberRole(), "내담자") && Objects.equals(findUserService.findMemberRole(), "상담사")) {
+        if (Objects.equals(findUserService.findMemberRole(), "내담자") || Objects.equals(findUserService.findMemberRole(), "상담사")) {
             if (postitLikeService.like(findUserService.findMemberId(), id)) {
                 return ResponseEntity.ok("좋아요 클릭");
             }

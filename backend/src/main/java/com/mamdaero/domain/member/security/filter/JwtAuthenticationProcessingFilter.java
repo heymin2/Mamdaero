@@ -33,12 +33,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
-    private final String NO_CHECK_URL = "/p/member/login";
+    private final String NO_CHECK_URL = "/p/member/client-login";
+    private final String NO_CHECK_URL_CON = "/p/member/counselor-login";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
     {
-        if(request.getRequestURI().equals(NO_CHECK_URL))
+        if(request.getRequestURI().equals(NO_CHECK_URL) || request.getRequestURI().equals(NO_CHECK_URL_CON))
         {
             filterChain.doFilter(request, response);
             return;
@@ -63,14 +64,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
     private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
     {
         log.info("checkAccessTokenAndAuthentication IN");
-//        jwtService.extractAccessToken(request).filter(jwtService::isTokenValid).ifPresent(
-//                accessToken -> jwtService.extractEmail(accessToken).ifPresent(
-//                        email -> memberRepository.findByEmail(email).ifPresent(
-//                                users -> saveAuthentication(users)
-//                        )
-//                )
-//        );
-
         log.info("request : " + request);
         // Extract access token
         Optional<String> accessTokenOpt = jwtService.extractAccessToken(request);

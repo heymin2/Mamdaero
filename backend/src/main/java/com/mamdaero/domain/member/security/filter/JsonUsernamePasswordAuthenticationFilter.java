@@ -20,7 +20,7 @@ import java.util.Map;
 @Slf4j
 public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter
 {
-    private static final String DEFAULT_LOGIN_REQUEST_URL = "/p/member/login";
+    private static final String DEFAULT_LOGIN_REQUEST_URL = "/p/member/client-login";
     private static final String HTTP_METHOD = "POST";
     private static final String CONTENT_TYPE = "application/json";
     private final ObjectMapper objectMapper;
@@ -39,7 +39,7 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException
     {
-        if(request.getContentType() == null || !request.getContentType().equals(CONTENT_TYPE)  )
+        if(request.getContentType() == null || !request.getContentType().equals(CONTENT_TYPE))
         {
             throw new AuthenticationServiceException("Authentication Type not supported: " + request.getContentType());
         }
