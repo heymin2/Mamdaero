@@ -13,6 +13,7 @@ import {
 } from '@/hooks/useCounselorItem';
 import { CounselorItem } from '@/api/counselorItem';
 import useAuthStore from '@/stores/authStore';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const CounselorManageProductPage: React.FC = () => {
   const { memberId } = useParams<{ memberId: string }>();
@@ -71,7 +72,7 @@ const CounselorManageProductPage: React.FC = () => {
     products?.filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
     [];
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingIndicator />;
 
   return (
     <div className="flex flex-col min-h-screen">
