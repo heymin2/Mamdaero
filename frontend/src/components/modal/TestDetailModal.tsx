@@ -51,7 +51,7 @@ const TestDetailModal: React.FC<TestDetailModalProps> = ({ isOpen, onClose, clie
     <ModalWrapper isOpen={isOpen} onClose={onClose} size="lg">
       <div className="max-h-[80vh] overflow-y-auto p-4 z-50">
         <h2 className="text-2xl  font-bold mb-4 text-center">
-          <span className="text-orange-500">
+          <span className="text-blue-500">
             {testNameMap[data?.selftestName || ''] || data?.selftestName}{' '}
           </span>
           검사 결과
@@ -61,10 +61,10 @@ const TestDetailModal: React.FC<TestDetailModalProps> = ({ isOpen, onClose, clie
         <table className="table w-full">
           <thead>
             <tr>
-              <th className="bg-orange-300 text-orange-300-content text-base text-center">번호</th>
-              <th className="bg-orange-300 text-orange-300-content text-base text-center">질문</th>
-              <th className="bg-orange-300 text-orange-300-content text-base text-center">답변</th>
-              <th className="bg-orange-300 text-orange-300-content text-base text-center">점수</th>
+              <th className="bg-blue-300 text-blue-300-content text-base text-center">번호</th>
+              <th className="bg-blue-300 text-blue-300-content text-base text-center">질문</th>
+              <th className="bg-blue-300 text-blue-300-content text-base text-center">답변</th>
+              <th className="bg-blue-300 text-blue-300-content text-base text-center">점수</th>
             </tr>
           </thead>
           <tbody>
