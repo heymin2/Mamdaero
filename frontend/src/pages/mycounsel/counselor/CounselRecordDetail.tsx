@@ -1,19 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import ReportInfoTable from '@/components/table/ReportInfoTable';
 import SelfTestResultTable from '@/components/table/SelfTestResultTable';
+import DiaryTable from '@/components/table/DiaryTable';
 import MyCounselBar from '@/components/navigation/MyCounselBar';
 import useAuthStore from '@/stores/authStore';
+import useClientList from '@/hooks/useClientList';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const CounselRecordDetail: React.FC = () => {
   const { email } = useAuthStore();
   const { clientId } = useParams<{ clientId: string }>();
   const [activeTab, setActiveTab] = useState('보고서');
+  const { data: clientListData, isLoading, isError, error } = useClientList();
 
-  // 클라이언트 정보를 가져오는 로직 (예: API 호출)
-  const clientName = '클라이언트 이름'; // 실제로는 API에서 가져와야 합니다
+  const clientName = useMemo(() => {
+    if (clientListData?.data && clientId) {
+      const client = clientListData.data.find(c => c.id.toString() === clientId);
+      return client ? client.name : '알 수 없는 클라이언트';
+    }
+    return '알 수 없는 클라이언트';
+  }, [clientListData, clientId]);
 
   const memberId = email?.split('@')[0] || 'unknown';
+
+  if (isLoading) return <LoadingIndicator />;
+  if (isError)
+    return (
+      <ErrorMessage message={error?.message || '클라이언트 정보를 불러오는데 실패했습니다.'} />
+    );
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -37,7 +52,7 @@ const CounselRecordDetail: React.FC = () => {
             role="tab"
             className="tab font-bold border-4 border-blue-300"
             aria-label="보고서"
-            defaultChecked
+            checked={activeTab === '보고서'}
             onChange={() => setActiveTab('보고서')}
           />
           <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
@@ -52,6 +67,7 @@ const CounselRecordDetail: React.FC = () => {
             role="tab"
             className="tab font-bold border-4 border-blue-300"
             aria-label="자가진단검사결과"
+            checked={activeTab === '자가진단검사결과'}
             onChange={() => setActiveTab('자가진단검사결과')}
           />
           <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
@@ -59,6 +75,21 @@ const CounselRecordDetail: React.FC = () => {
               {activeTab === '자가진단검사결과' && (
                 <SelfTestResultTable clientId={clientId || ''} />
               )}
+            </div>
+          </div>
+
+          <input
+            type="radio"
+            name="records"
+            role="tab"
+            className="tab font-bold border-4 border-blue-300"
+            aria-label="일기"
+            checked={activeTab === '일기'}
+            onChange={() => setActiveTab('일기')}
+          />
+          <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
+            <div className="h-[600px] overflow-y-auto">
+              {activeTab === '일기' && <DiaryTable clientId={clientId || ''} />}
             </div>
           </div>
         </div>
