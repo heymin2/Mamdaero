@@ -73,7 +73,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
         if (accessTokenOpt.isEmpty()) {
             log.info("Access token not found");
             filterChain.doFilter(request, response);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access token not found");
+//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access token not found");
             return;
         }
 
@@ -83,7 +83,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
         if (!jwtService.isTokenValid(accessToken)) {
             log.info("Invalid access token");
             filterChain.doFilter(request, response);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
+//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
             return;
         }
 
@@ -92,7 +92,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
         if (emailOpt.isEmpty()) {
             log.info("Email not found in token");
             filterChain.doFilter(request, response);
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Email not found in token");
+//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Email not found in token");
             return;
         }
 
