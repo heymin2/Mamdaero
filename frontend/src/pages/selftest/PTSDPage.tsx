@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import TestBar from '@/components/navigation/TestBar';
 import { FaCheck } from 'react-icons/fa';
 import useSelfTests from '@/hooks/useSelfTests';
+import useAuthStore from '@/stores/authStore';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const PTSDPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+  const [isPublic, setIsPublic] = useState(true);
   const {
     selfTest,
     selfTestList,
@@ -18,17 +22,16 @@ const PTSDPage: React.FC = () => {
     handleAnswerChange,
     handleSubmit,
     isSubmitting,
-    isAuthenticated,
   } = useSelfTests(4); // 4는 PTSD 테스트의 ID라고 가정합니다.
 
-  if (isLoadingTest || isLoadingList) return <div>Loading...</div>;
-  if (isErrorTest || isErrorList) return <div>Error loading test</div>;
+  if (isLoadingTest || isLoadingList) return <LoadingIndicator />;
+  if (isErrorTest || isErrorList) return <ErrorMessage message="FAILED TO LOAD TEST" />;
   if (!selfTest || selfTest.length === 0 || !selfTestList) return null;
 
   const ptsdInfo = selfTestList.find(info => info.selftestName === 'ptsd');
 
   const onSubmit = () => {
-    const result = handleSubmit();
+    const result = handleSubmit(isPublic ? 1 : 0);
     if (result && !result.error) {
       navigate('/selftest/ptsd/result', {
         state: {
@@ -48,10 +51,25 @@ const PTSDPage: React.FC = () => {
         subtitle="그 사건 후 지속적인 스트레스와 불안감을 느끼고 계신가요?"
         showBackButton={true}
       />
-      <div className="flex text-sm space-x-5 m-12 justify-center">
+      <div className="flex text-sm space-x-5 mt-12 justify-center">
         <FaCheck />
         <div>{ptsdInfo ? ptsdInfo.selftestInfo : ''}</div>
       </div>
+      {isAuthenticated && (
+        <div className="flex justify-center mb-4">
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text mr-2">상담사 공개</span>
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={() => setIsPublic(!isPublic)}
+                className="checkbox checkbox-primary"
+              />
+            </label>
+          </div>
+        </div>
+      )}
       <div className="flex justify-center w-full">
         <div className="w-full max-w-4xl px-4">
           <table className="table w-full rounded-lg overflow-hidden">

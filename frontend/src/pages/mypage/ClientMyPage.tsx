@@ -6,6 +6,7 @@ import Prince from '@/assets/hi_prince.png';
 import useMemberStore from '@/stores/memberStore';
 import axiosInstance from '@/api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 type Gender = 'M' | 'F' | null;
 
@@ -143,11 +144,11 @@ const ClientMyPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <Spinner />;
+    return <LoadingIndicator />;
   }
 
   if (error) {
-    return <div>에러 발생: {error}</div>;
+    return <ErrorMessage message="FAILED TO LOAD" />;
   }
 
   const handleDeleteMember = async () => {

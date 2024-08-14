@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import TestBar from '@/components/navigation/TestBar';
 import { FaCheck } from 'react-icons/fa';
 import useSelfTests from '@/hooks/useSelfTests';
+import useAuthStore from '@/stores/authStore';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const StressPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+  const [isPublic, setIsPublic] = useState(true);
   const {
     selfTest,
     selfTestList,
@@ -18,17 +22,16 @@ const StressPage: React.FC = () => {
     handleAnswerChange,
     handleSubmit,
     isSubmitting,
-    isAuthenticated,
   } = useSelfTests(3); // 3은 스트레스 테스트의 ID입니다.
 
-  if (isLoadingTest || isLoadingList) return <div>Loading...</div>;
-  if (isErrorTest || isErrorList) return <div>Error loading test</div>;
+  if (isLoadingTest || isLoadingList) return <LoadingIndicator />;
+  if (isErrorTest || isErrorList) return <ErrorMessage message="FAILED TO LOAD TEST" />;
   if (!selfTest || selfTest.length === 0 || !selfTestList) return null;
 
   const stressInfo = selfTestList.find(info => info.selftestName === 'stress');
 
   const onSubmit = () => {
-    const result = handleSubmit(1); // 1은 공개를 의미합니다.
+    const result = handleSubmit(isPublic ? 1 : 0);
     if (result && !result.error) {
       navigate('/selftest/stress/result', {
         state: {
@@ -40,6 +43,7 @@ const StressPage: React.FC = () => {
       alert(result.error);
     }
   };
+
   return (
     <div>
       <TestBar
@@ -47,10 +51,25 @@ const StressPage: React.FC = () => {
         subtitle="요즘 스트레스에 시달리고 계신가요?"
         showBackButton={true}
       />
-      <div className="flex text-sm space-x-5 m-12 justify-center">
+      <div className="flex text-sm space-x-5 mt-12 justify-center">
         <FaCheck />
         <div>{stressInfo ? stressInfo.selftestInfo : ''}</div>
       </div>
+      {isAuthenticated && (
+        <div className="flex justify-center mb-4">
+          <div className="form-control">
+            <label className="label cursor-pointer">
+              <span className="label-text mr-2">상담사 공개</span>
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={() => setIsPublic(!isPublic)}
+                className="checkbox checkbox-primary"
+              />
+            </label>
+          </div>
+        </div>
+      )}
       <div className="flex justify-center w-full">
         <div className="w-full max-w-4xl px-4">
           <table className="table w-full rounded-lg overflow-hidden">
