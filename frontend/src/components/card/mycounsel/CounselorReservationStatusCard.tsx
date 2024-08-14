@@ -11,11 +11,9 @@ import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
 const CounselorReservationStatusCard: React.FC<Reservation> = ({
   reservationId,
   memberName,
-  counselorName,
   memberId,
-  counselorId,
   date,
-  time,
+  formatTime,
   status,
   canceledAt,
 }) => {
@@ -82,7 +80,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
             />
           </div>
           <p>{date}</p>
-          <p>{time}:00</p>
+          <p>{formatTime}</p>
           <div className="flex gap-4 items-center">
             {status}
             {status === '예약완료' && (

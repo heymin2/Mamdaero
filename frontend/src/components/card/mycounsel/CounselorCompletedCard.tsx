@@ -10,7 +10,7 @@ import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
 const CounselorCompletedCard: React.FC<Reservation> = ({
   reservationId,
   date,
-  time,
+  formatTime,
   status,
   memberName,
   memberId,
@@ -53,7 +53,7 @@ const CounselorCompletedCard: React.FC<Reservation> = ({
             />
           </div>
           <p>{date}</p>
-          <p>{time}:00</p>
+          <p>{formatTime}</p>
           <p className="text-green-600 font-bold">{status}</p>
         </div>
         <div className="flex flex-col col-span-2 items-center mt-4 gap-3">

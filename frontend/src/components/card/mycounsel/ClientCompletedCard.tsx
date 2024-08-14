@@ -11,7 +11,7 @@ const ClientCompletedCard: React.FC<Reservation> = ({
   reservationId,
   counselorName,
   date,
-  time,
+  formatTime,
   status,
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -52,7 +52,7 @@ const ClientCompletedCard: React.FC<Reservation> = ({
             />
           </div>
           <p>{date}</p>
-          <p>{time}:00</p>
+          <p>{formatTime}</p>
           <p className="text-green-600 font-bold">{status}</p>
         </div>
         <div className="flex flex-col col-span-2 items-center mt-4 gap-3">
@@ -77,7 +77,7 @@ const ClientCompletedCard: React.FC<Reservation> = ({
         onClose={() => setIsReviewModalOpen(false)}
         counselorName={counselorName}
         date={date}
-        time={`${time}:00`}
+        time={formatTime}
       />
       <ChatModal
         isOpen={isChatModalOpen}
