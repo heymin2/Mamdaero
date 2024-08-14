@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
 import { fetchReservationDetail } from '@/pages/mycounsel/props/reservationApis';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import Button from '@/components/button/Button';
 import ChatModal from '@/components/modal/ChatModal';
 import ReviewWriteModal from '@/components/modal/ReviewWriteModal';
 import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
+import axiosInstance from '@/api/axiosInstance';
+
+interface ReviewData {
+  review: string;
+  score: number;
+}
 
 const ClientCompletedCard: React.FC<Reservation> = ({
   reservationId,
@@ -19,6 +26,26 @@ const ClientCompletedCard: React.FC<Reservation> = ({
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [reservationDetail, setReservationDetail] = useState<Reservation | null>(null);
 
+  const queryClient = useQueryClient();
+
+  const postReview = useMutation<void, Error, ReviewData>({
+    mutationFn: async (reviewData: ReviewData) => {
+      await axiosInstance({
+        method: 'post',
+        url: `m/review/${reservationId}`,
+        data: reviewData,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['completedReservations'] });
+      alert('리뷰가 성공적으로 작성되었습니다.');
+      setIsReviewModalOpen(false);
+    },
+    onError: error => {
+      alert(`리뷰 작성에 실패했습니다: ${error.message}`);
+    },
+  });
+
   const handleOpenDetailModal = async () => {
     try {
       const detail = await fetchReservationDetail(reservationId);
@@ -27,6 +54,10 @@ const ClientCompletedCard: React.FC<Reservation> = ({
     } catch (error) {
       alert(`Failed to fetch reservation detail: ${error}`);
     }
+  };
+
+  const handleReviewSubmit = (review: string, score: number) => {
+    postReview.mutate({ review, score });
   };
 
   return (
@@ -78,6 +109,7 @@ const ClientCompletedCard: React.FC<Reservation> = ({
         counselorName={counselorName}
         date={date}
         time={formatTime}
+        onSubmit={handleReviewSubmit}
       />
       <ChatModal
         isOpen={isChatModalOpen}
