@@ -2,9 +2,7 @@ package com.mamdaero.domain.member.security.filter;
 
 import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.repository.MemberRepository;
-import com.mamdaero.domain.member.security.apiresult.ApiResponse;
 import com.mamdaero.domain.member.security.dto.UserDetailsImpl;
-import com.mamdaero.domain.member.security.dto.response.ResultDTO;
 import com.mamdaero.domain.member.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -66,14 +64,12 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
     private void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
     {
         log.info("checkAccessTokenAndAuthentication IN");
-
         log.info("request : " + request);
         // Extract access token
         Optional<String> accessTokenOpt = jwtService.extractAccessToken(request);
         if (accessTokenOpt.isEmpty()) {
             log.info("Access token not found");
             filterChain.doFilter(request, response);
-//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access token not found");
             return;
         }
 
@@ -83,7 +79,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
         if (!jwtService.isTokenValid(accessToken)) {
             log.info("Invalid access token");
             filterChain.doFilter(request, response);
-//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid access token");
             return;
         }
 
@@ -92,7 +87,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter
         if (emailOpt.isEmpty()) {
             log.info("Email not found in token");
             filterChain.doFilter(request, response);
-//            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Email not found in token");
             return;
         }
 
