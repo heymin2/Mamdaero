@@ -45,19 +45,19 @@ const CounselRecordDetail: React.FC = () => {
       </div>
       {/* 상담기록 탭목록 */}
       <div className="w-full flex flex-col items-center">
-        <div role="tablist" className="w-4/5 tabs tabs-lifted">
+        <div role="tablist" className="w-4/5 tabs tabs-lifted tabs-lg">
           <input
             type="radio"
             name="records"
             role="tab"
-            className="tab font-bold border-4 border-blue-300"
+            className={`tab font-bold border-4 ${activeTab === '보고서' ? 'tab-active text-secondary' : 'border-blue-300'}`}
             aria-label="보고서"
             checked={activeTab === '보고서'}
             onChange={() => setActiveTab('보고서')}
           />
           <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
             <div className="h-[600px] overflow-y-auto">
-              {/* {activeTab === '보고서' && <ReportInfoTable clientId={clientId || ''} />} */}
+              {activeTab === '보고서' && <ReportInfoTable clientId={clientId || ''} />}
             </div>
           </div>
 
@@ -65,7 +65,7 @@ const CounselRecordDetail: React.FC = () => {
             type="radio"
             name="records"
             role="tab"
-            className="tab font-bold border-4 border-blue-300"
+            className={`tab font-bold border-4 ${activeTab === '자가진단검사결과' ? 'tab-active text-secondary' : 'border-blue-300'}`}
             aria-label="자가진단검사결과"
             checked={activeTab === '자가진단검사결과'}
             onChange={() => setActiveTab('자가진단검사결과')}
@@ -82,7 +82,7 @@ const CounselRecordDetail: React.FC = () => {
             type="radio"
             name="records"
             role="tab"
-            className="tab font-bold border-4 border-blue-300"
+            className={`tab font-bold border-4 ${activeTab === '일기' ? 'tab-active text-secondary' : 'border-blue-300'}`}
             aria-label="일기"
             checked={activeTab === '일기'}
             onChange={() => setActiveTab('일기')}

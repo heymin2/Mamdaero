@@ -4,39 +4,54 @@ import axiosInstance from '@/api/axiosInstance';
 import Button from '@/components/button/Button';
 import ModalWrapper from '@/components/modal/ModalWrapper';
 
-interface ReportWriteModalProps {
+interface ReportEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   consultId: number;
+  initialData: {
+    title: string;
+    detail: string;
+    opinion: string;
+  };
 }
 
-interface ReportSubmitData {
+interface ReportEditData {
   title: string;
   content: string;
   opinion: string;
 }
 
-const submitReport = async (consultId: number, data: ReportSubmitData) => {
-  const response = await axiosInstance.post(`/c/consult-report/${consultId}`, data);
+const editReport = async (consultId: number, data: ReportEditData) => {
+  const response = await axiosInstance.patch(`/c/consult-report/${consultId}`, {
+    title: data.title,
+    detail: data.content, // content 대신 detail을 사용
+    opinion: data.opinion,
+  });
   return response.data;
 };
 
-const ReportWriteModal: React.FC<ReportWriteModalProps> = ({ isOpen, onClose, consultId }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [opinion, setOpinion] = useState('');
+const ReportEditModal: React.FC<ReportEditModalProps> = ({
+  isOpen,
+  onClose,
+  consultId,
+  initialData,
+}) => {
+  const [title, setTitle] = useState(initialData.title);
+  const [content, setContent] = useState(initialData.detail);
+  const [opinion, setOpinion] = useState(initialData.opinion);
 
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (data: ReportSubmitData) => submitReport(consultId, data),
+    mutationFn: (data: ReportEditData) => editReport(consultId, data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reportDetail', consultId] });
       queryClient.invalidateQueries({ queryKey: ['reportInfo'] });
       onClose();
     },
     onError: error => {
-      console.error('Error submitting report:', error);
-      alert('보고서 제출 중 오류가 발생했습니다.');
+      console.error('Error editing report:', error);
+      alert('보고서 수정 중 오류가 발생했습니다.');
     },
   });
 
@@ -52,7 +67,7 @@ const ReportWriteModal: React.FC<ReportWriteModalProps> = ({ isOpen, onClose, co
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose} size="lg">
       <div className="max-h-[80vh] overflow-y-auto p-8 bg-blue-50 rounded-lg">
-        <h2 className="text-3xl font-bold mb-6 text-center">상담 보고서 작성</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center">상담 보고서 수정</h2>
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <div className="mb-4">
             <label className="block font-bold mb-2">보고서 제목</label>
@@ -79,9 +94,9 @@ const ReportWriteModal: React.FC<ReportWriteModalProps> = ({ isOpen, onClose, co
             />
           </div>
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center space-x-4">
           <Button
-            label={mutation.isPending ? '제출 중...' : '작성완료'}
+            label={mutation.isPending ? '수정 중...' : '수정완료'}
             onClick={handleSubmit}
             size="md"
             shape="rounded"
@@ -89,10 +104,18 @@ const ReportWriteModal: React.FC<ReportWriteModalProps> = ({ isOpen, onClose, co
             textSize="sm"
             disabled={mutation.isPending}
           />
+          <Button
+            label="취소"
+            onClick={onClose}
+            size="md"
+            shape="rounded"
+            color="gray"
+            textSize="sm"
+          />
         </div>
       </div>
     </ModalWrapper>
   );
 };
 
-export default ReportWriteModal;
+export default ReportEditModal;
