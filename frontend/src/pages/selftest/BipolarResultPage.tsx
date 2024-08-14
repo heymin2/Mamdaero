@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import TestBar from '@/components/navigation/TestBar';
 import talk from '@/assets/fox_talk.png';
 import Button from '@/components/button/Button';
+import useMemberStore from '@/stores/memberStore';
 
 interface LocationState {
   totalScore: number;
@@ -21,6 +22,8 @@ const BipolarResultPage: React.FC = () => {
   const { totalScore = 0 } = (location.state as LocationState) || {};
   const resultMessage = getResultMessage(totalScore);
   const navigate = useNavigate();
+  const { name } = useMemberStore();
+  const displayName = name || '사용자';
 
   const handleRetry = () => {
     navigate('/selftest/bipolar');
@@ -42,7 +45,7 @@ const BipolarResultPage: React.FC = () => {
             <div className="card-body items-center text-center">
               <h2 className="card-title text-3xl font-bold">검사 점수</h2>
               <div className="divider"></div>
-              <p className="text-lg">{'username'}님의 조울증척도 점수는 </p>
+              <p className="text-lg">{displayName}님의 조울증척도 점수는 </p>
               <p className="text-lg mb-4">
                 <span className="font-bold text-primary text-4xl">{totalScore}점</span> 입니다.
               </p>

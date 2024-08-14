@@ -1,90 +1,92 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import Button from '@/components/button/Button';
 import depressed from '@/assets/depressed.png';
 import unrest from '@/assets/unrest.png';
 import stress from '@/assets/stress.png';
 import ptsd from '@/assets/ptsd.png';
 import bipolar from '@/assets/bipolar.png';
-import axiosInstance from '@/api/axiosInstance';
+import useSelfTests from '@/hooks/useSelfTests';
 
 interface SelfTestCardProps {
-  mental: 'depressed' | 'unrest' | 'stress' | 'ptsd' | 'bipolar';
+  mental: string;
+  testId: number;
 }
 
-interface SelfTestItem {
-  id: number;
-  selftestName: string;
-  selftestInfo: string;
-}
-
-interface MentalData {
-  [key: string]: {
-    title: string;
-    image: string;
-    description?: string;
-  };
-}
-
-const initialMentalData: MentalData = {
-  depressed: { title: '우울', image: depressed },
-  unrest: { title: '불안', image: unrest },
-  stress: { title: '스트레스', image: stress },
-  ptsd: { title: 'PTSD', image: ptsd },
-  bipolar: { title: '조울증', image: bipolar },
+const mentalImages: { [key: string]: string } = {
+  depressed,
+  unrest,
+  stress,
+  ptsd,
+  bipolar,
 };
 
-const fetchSelfTestList = async (): Promise<SelfTestItem[]> => {
-  const response = await axiosInstance.get('/p/selftest');
-  return response.data;
+const mentalTitles: { [key: string]: string } = {
+  depressed: '우울',
+  unrest: '불안',
+  stress: '스트레스',
+  ptsd: 'PTSD',
+  bipolar: '조울증',
 };
 
-const SelfTestCard: React.FC<SelfTestCardProps> = ({ mental }) => {
+const SelfTestCard: React.FC<SelfTestCardProps> = ({ mental, testId }) => {
   const navigate = useNavigate();
-
   const {
-    data: selfTestList,
-    isError,
-    error,
-  } = useQuery<SelfTestItem[], Error>({
-    queryKey: ['selfTests'],
-    queryFn: fetchSelfTestList,
-  });
+    selfTestList,
+    isLoadingList,
+    isErrorList,
+    previousTestResults,
+    isLoadingPreviousResults,
+    isErrorPreviousResults,
+    isAuthenticated,
+  } = useSelfTests();
 
-  // useMemo: selfTestList가 변경될때만 mentalData를 재계산
-  const mentalData = React.useMemo(() => {
-    if (!selfTestList) return initialMentalData;
+  const mentalData = useMemo(() => {
+    if (!selfTestList) return { title: mentalTitles[mental], image: mentalImages[mental] };
 
-    const updatedMentalData = { ...initialMentalData };
-    selfTestList.forEach(item => {
-      if (updatedMentalData[item.selftestName]) {
-        const descriptionMatch = item.selftestInfo.match(
-          /(.*?척도(?:\s+\S+)?(?:\([^)]+\))?)\s*(?:-|$)/
-        );
-        const description = descriptionMatch ? descriptionMatch[1].trim() : '';
-        updatedMentalData[item.selftestName].description = description;
-      }
-    });
-    return updatedMentalData;
-  }, [selfTestList]);
+    const testInfo = selfTestList.find(item => item.id === testId);
+    if (!testInfo) return { title: mentalTitles[mental], image: mentalImages[mental] };
+
+    const descriptionMatch = testInfo.selftestInfo.match(
+      /(.*?척도(?:\s+\S+)?(?:\([^)]+\))?)\s*(?:-|$)/
+    );
+    const description = descriptionMatch ? descriptionMatch[1].trim() : '';
+
+    return {
+      title: mentalTitles[mental],
+      image: mentalImages[mental],
+      description: description,
+    };
+  }, [selfTestList, mental, testId]);
 
   const handleButtonClick = () => {
-    navigate(`/selftest/${mental}`);
+    if (isAuthenticated && previousTestResults) {
+      const previousResult = previousTestResults.find(result => result.selftestName === mental);
+      if (previousResult) {
+        navigate(`/selftest/${mental}/result`, {
+          state: {
+            totalScore: previousResult.selftestTotalScore,
+            isPreviousResult: true,
+          },
+        });
+      } else {
+        navigate(`/selftest/${mental}`, { state: { testId } });
+      }
+    } else {
+      navigate(`/selftest/${mental}`, { state: { testId } });
+    }
   };
 
-  if (isError) {
-    console.error('API 요청 실패:', error);
-    // 에러 처리 UI를 여기에 추가할 수 있습니다.
-  }
+  if (isLoadingList || isLoadingPreviousResults) return <div>Loading...</div>;
+  if (isErrorList || isErrorPreviousResults) return <div>Error loading test information</div>;
 
-  const { title, image, description } = mentalData[mental];
+  const { title, image, description } = mentalData;
 
   return (
     <div className="card bg-white w-72 shadow-xl">
       <div className="card-body items-center text-center">
         <h2 className="card-title text-2xl">{title}</h2>
-        <figure className="px-10 ">
+        <figure className="px-10">
           <div className="flex items-end justify-center h-40 w-full">
             <img src={image} alt={title} className="rounded-xl max-h-full object-contain" />
           </div>
@@ -93,7 +95,11 @@ const SelfTestCard: React.FC<SelfTestCardProps> = ({ mental }) => {
         <div className="card-actions">
           <Button
             onClick={handleButtonClick}
-            label="검진하기"
+            label={
+              isAuthenticated && previousTestResults?.some(result => result.selftestName === mental)
+                ? '결과보기'
+                : '검진하기'
+            }
             size="sm"
             color="orange"
             textSize="sm"

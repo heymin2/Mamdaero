@@ -11,7 +11,9 @@ interface Counselor {
   id: string;
   name: string;
   intro: string;
-  image: string;
+  img: string;
+  level: number;
+  gender: string;
   reviewRate: number;
   reviewCount: number;
 }
@@ -21,6 +23,7 @@ const fetchCounselor = async (): Promise<Counselor[]> => {
     method: 'get',
     url: 'p/counselor',
   });
+  console.log(response.data.content);
   return response.data.content;
 };
 
@@ -84,7 +87,7 @@ const CounselorListPage: React.FC = () => {
               counselorId={counselor.id}
               counselorName={counselor.name}
               counselorIntro={counselor.intro}
-              counselorImage={counselor.image || DefaultProfile}
+              counselorImage={counselor.img}
               reviewRate={counselor.reviewRate}
               reviewCount={counselor.reviewCount}
             />
