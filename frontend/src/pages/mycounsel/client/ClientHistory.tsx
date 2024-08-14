@@ -1,44 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import axiosInstance from '@/api/axiosInstance';
+import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
+import {
+  fetchReservation,
+  fetchCompletedReservation,
+} from '@/pages/mycounsel/props/reservationApis';
 
 import MyCounselBar from '@/components/navigation/MyCounselBar';
 import ClientReservationStatusCard from '@/components/card/mycounsel/ClientReservationStatusCard';
 import ClientCompletedCard from '@/components/card/mycounsel/ClientCompletedCard';
 
-interface Reservation {
-  canceledAt: string | null;
-  canceler: string | null;
-  date: string;
-  isDiaryShared: boolean;
-  isTestShared: boolean;
-  itemFee: number;
-  itemName: string;
-  requirement: string;
-  reservationId: number;
-  status: string;
-  time: number;
-  counselorName: string;
-  clientName: string;
-  counselorId: string;
-  clientId: string;
-}
-
-const fetchReservation = async () => {
-  const response = await axiosInstance({
-    method: 'get',
-    url: 'cm/reservation',
-  });
-  return response.data.data;
-};
-
-const fetchCompletedReservation = async () => {
-  const response = await axiosInstance({
-    method: 'get',
-    url: 'cm/consult',
-  });
-  return response.data.data;
-};
 const ClientHistory: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'reservation' | 'completed'>('reservation');
 
