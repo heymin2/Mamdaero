@@ -28,6 +28,7 @@ const fetchReservationDetail = async (reservationId: number) => {
       method: 'get',
       url: `cm/reservation/${reservationId}`,
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     alert(`Error fetching reservation detail: ${error}`);
@@ -56,10 +57,11 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
   counselorName,
   date,
   time,
-  status,
-  canceledAt,
+  status: initialStatus,
+  canceledAt: initialCanceledAt,
 }) => {
-  const [isDeleted, setIsDeleted] = useState(false);
+  const [status, setStatus] = useState(initialStatus);
+  const [canceledAt, setCanceledAt] = useState(initialCanceledAt);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [reservationDetail, setReservationDetail] = useState<Reservation | null>(null);
@@ -73,7 +75,8 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
       setIsLoading(true);
       try {
         await deleteReservation(reservationId);
-        setIsDeleted(true);
+        setStatus('예약취소');
+        setCanceledAt(new Date().toISOString());
         alert('예약이 성공적으로 취소되었습니다.');
       } catch (error) {
         alert('예약 취소에 실패했습니다. 다시 시도해 주세요.');
@@ -82,10 +85,6 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
       }
     }
   };
-
-  if (isDeleted) {
-    return null;
-  }
 
   const handleOpenDetailModal = async () => {
     try {
@@ -133,6 +132,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
                 shape="rounded"
                 color="red"
                 textSize="xs"
+                disabled={isLoading}
               />
             )}
             {status === '예약취소' && canceledAt && (

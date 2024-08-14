@@ -63,7 +63,7 @@ const ClientCompletedCard: React.FC<Reservation> = ({
           <p>{time}:00</p>
           <p className="text-green-600 font-bold">{status}</p>
         </div>
-        <div className="flex flex-col col-span-2 items-center mt-3 gap-3">
+        <div className="flex flex-col col-span-2 items-center mt-4 gap-3">
           <Button
             label="리뷰쓰기"
             onClick={() => setIsReviewModalOpen(true)}
