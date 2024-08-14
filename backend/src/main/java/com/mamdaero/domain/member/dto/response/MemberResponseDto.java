@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class MemberResponseDto {
 
+    private Long id;
     private String email;
     private String name;
     private String nickname;
@@ -20,6 +21,7 @@ public class MemberResponseDto {
 
     public static MemberResponseDto toDTO(Member member) {
         return MemberResponseDto.builder()
+                .id(member.getId())
                 .email(member.getEmail())
                 .name(member.getName())
                 .nickname(member.getNickname())
