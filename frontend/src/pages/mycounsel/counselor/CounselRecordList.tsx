@@ -4,11 +4,28 @@ import Button from '@/components/button/Button';
 import useClientList from '@/hooks/useClientList';
 import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
+// 클라이언트 타입 정의
+interface Client {
+  id: number;
+  name: string;
+}
+
+// API 응답 타입 정의
+interface ClientListResponse {
+  data: Client[];
+  totalPages: number;
+}
+
 const CounselRecordList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isLoading, isError, error } = useClientList(currentPage, searchTerm);
+  const { data, isLoading, isError, error } = useClientList() as {
+    data: ClientListResponse | undefined;
+    isLoading: boolean;
+    isError: boolean;
+    error: Error | null;
+  };
 
   const handleSearch = () => {
     setCurrentPage(1);
