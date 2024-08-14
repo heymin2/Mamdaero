@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import Button from '@/components/button/Button';
-import { changePassword } from '@/api/client';
+import { changePassword } from '@/api/password';
 
 interface PasswordChangeData {
   currentPassword: string;

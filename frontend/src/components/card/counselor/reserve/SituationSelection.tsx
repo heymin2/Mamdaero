@@ -42,13 +42,13 @@ const SituationSelection: React.FC<SituationSelectionProps> = ({
     <div>
       <div className="flex items-end border-b-4 border-b-orange-400 mb-4 space-x-5">
         <div className="text-xl font-bold">상황 선택</div>
-        <div className="text-sm">중복 선택이 가능합니다.</div>
+        <div className="text-sm mb-1">중복 선택이 가능합니다.</div>
       </div>
       <div className="grid grid-cols-4 gap-3">
         {situations.map(situation => (
           <button
             key={situation.id}
-            className={`btn ${
+            className={`btn text-base ${
               selectedSituations.includes(situation.id)
                 ? 'btn-secondary'
                 : 'btn-outline btn-secondary bg-white'

@@ -3,11 +3,11 @@
 import React from 'react';
 
 interface RequestSectionProps {
-  requestText: string;
-  setRequestText: (text: string) => void;
+  requirement: string;
+  setRequirement: (text: string) => void;
 }
 
-const RequestSection: React.FC<RequestSectionProps> = ({ requestText, setRequestText }) => {
+const RequestSection: React.FC<RequestSectionProps> = ({ requirement, setRequirement }) => {
   return (
     <div>
       <div className="flex items-end border-b-4 border-b-orange-400 mb-4 space-x-5">
@@ -16,8 +16,8 @@ const RequestSection: React.FC<RequestSectionProps> = ({ requestText, setRequest
       <textarea
         className="textarea textarea-bordered w-full h-24 rounded-2xl"
         placeholder="상담사에게 요청하실 사항이 있다면 적어주세요."
-        value={requestText}
-        onChange={e => setRequestText(e.target.value)}
+        value={requirement}
+        onChange={e => setRequirement(e.target.value)}
       />
     </div>
   );

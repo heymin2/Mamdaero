@@ -4,6 +4,9 @@ import useAuthStore from '@/stores/authStore';
 import NavClient from '@/components/navigation/NavClient';
 import NavCounselor from '@/components/navigation/NavCounselor';
 import Router from '@/Router';
+import AlarmConnect from './pages/alarm/AlarmConnect';
+import toast, { Toaster } from 'react-hot-toast';
+
 
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
@@ -27,6 +30,15 @@ function App() {
 
     // 마이페이지 경로 처리
     if (pathname.startsWith('/mypage/')) {
+      if (isCounselor()) {
+        return 'bg-blue-50'; // 상담사 마이페이지
+      } else if (isClient()) {
+        return 'bg-orange-50'; // 내담자 마이페이지
+      }
+    }
+
+    // 나의 상담 경로 처리
+    if (pathname.startsWith('/mycounsel/')) {
       if (isCounselor()) {
         return 'bg-blue-50'; // 상담사 마이페이지
       } else if (isClient()) {
@@ -58,6 +70,8 @@ function App() {
     <div className="App grid grid-cols-8 min-h-screen">
       <div className="fixed flex min-h-screen col-span-1">{renderNavigation()}</div>
       <div className={`col-start-2 col-span-7 px-16 py-6 ${backgroundColor}`}>
+        <AlarmConnect />
+        <Toaster position="bottom-right" reverseOrder={false} />
         <Router />
       </div>
     </div>

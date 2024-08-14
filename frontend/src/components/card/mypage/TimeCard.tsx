@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Time from '@/pages/mypage/props/time';
+import { WorkSchedule } from '@/hooks/useCounselorSchedule';
 import { FiX, FiPlusCircle } from 'react-icons/fi';
 
 const generateTimeOptions = () => {
@@ -10,21 +10,22 @@ interface TimeCardProps {
   week: number;
   startTime: number;
   endTime: number;
-  times: Time[];
+  times: WorkSchedule[];
   setEndTime: (endTime: number) => void;
   setStartTime: (startTime: number) => void;
-  setTimes: (times: Time[]) => void;
-  addTime: (time: Time) => void;
+  addTime: (time: Omit<WorkSchedule, 'workScheduleId' | 'counselorId'>) => void;
+  onDeleteTime: (scheduleId: number) => void;
 }
 
 const TimeCard: React.FC<TimeCardProps> = ({
+  week,
   startTime,
   endTime,
   times,
   setEndTime,
   setStartTime,
-  setTimes,
   addTime,
+  onDeleteTime,
 }) => {
   const [startTimeOptions, setStartTimeOptions] = useState<string[]>(generateTimeOptions());
   const [endTimeOptions, setEndTimeOptions] = useState<string[]>(generateTimeOptions());
@@ -43,8 +44,8 @@ const TimeCard: React.FC<TimeCardProps> = ({
       return;
     }
 
-    const newTimeSlot: Time = {
-      week: 0,
+    const newTimeSlot: Omit<WorkSchedule, 'workScheduleId' | 'counselorId'> = {
+      day: week,
       startTime,
       endTime,
     };
@@ -61,20 +62,11 @@ const TimeCard: React.FC<TimeCardProps> = ({
       return;
     }
 
-    // 오름차순으로 정렬된 시간을 유지하면서 배열에 추가
-    const updatedTimes = [...times, newTimeSlot].sort((a, b) => a.startTime - b.startTime);
-    setTimes(updatedTimes);
-
     addTime(newTimeSlot);
 
     setAlertMessage(null);
     setStartTime(endTime);
     setEndTime(endTime + 1);
-  };
-
-  const handleRemoveTime = (index: number) => {
-    const newTimes = times.filter((_, i) => i !== index);
-    setTimes(newTimes);
   };
 
   return (
@@ -99,15 +91,15 @@ const TimeCard: React.FC<TimeCardProps> = ({
         </div>
       )}
       <div className="flex flex-col gap-2 mb-2">
-        {times.map((time, index) => (
+        {times.map(time => (
           <div
-            key={index}
+            key={time.workScheduleId}
             className="flex justify-between items-center font-bold text-center bg-blue-200 border rounded-full py-2 px-4"
           >
             <span>{`${time.startTime < 10 ? '0' + time.startTime : time.startTime}:00 ~ ${
               time.endTime < 10 ? '0' + time.endTime : time.endTime
             }:00`}</span>
-            <button onClick={() => handleRemoveTime(index)}>
+            <button onClick={() => onDeleteTime(time.workScheduleId)}>
               <FiX />
             </button>
           </div>

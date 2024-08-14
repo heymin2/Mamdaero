@@ -75,11 +75,9 @@ public class notifyCancelReservationService {
             try {
                 Map<String, String> eventData = new HashMap<>();
                 eventData.put("message", "예약이 취소되었습니다");
-                eventData.put("canceledAt", reservation.getCanceledAt().toString());
-                eventData.put("memberId", memberId.toString());
-                eventData.put("counselorId", counselorId.toString());
+                eventData.put("createdAt", reservation.getCanceledAt().toString());
 
-                sseEmitter.send(SseEmitter.event().name("cancelReservation").data(eventData));
+                sseEmitter.send(SseEmitter.event().name("reservation").data(eventData));
             } catch (IOException e) {
                 NotificationController.sseEmitters.remove(memberId);
             }

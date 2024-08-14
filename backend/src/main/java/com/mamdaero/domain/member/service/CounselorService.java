@@ -8,11 +8,14 @@ import com.mamdaero.domain.member.exception.FileNotFoundException;
 import com.mamdaero.domain.member.exception.MemberNotFoundException;
 import com.mamdaero.domain.member.repository.CounselorRepository;
 import com.mamdaero.global.service.FileService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,20 +29,22 @@ public class CounselorService {
     private final CounselorRepository counselorRepository;
     private final FileService fileService;
 
-    public Page<CounselorResponseDto> findAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    @PersistenceContext
+    private EntityManager entityManager;
 
-        Page<CounselorResponseDto> counselorResponseDtoList = counselorRepository.findCounselorReviewSummary(pageable);
-
-        return counselorResponseDtoList;
+    public Page<CounselorResponseDto> searchCounselorsByName(String name, String gender, Integer level, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        return counselorRepository.searchCounselors(name, gender, level, pageable);
     }
 
-    public Page<CounselorResponseDto> findAllByName(String name, int page, int size) {
+    public Page<CounselorResponseDto> searchCounselorsByReviews(String name, String gender, Integer level, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        return counselorRepository.searchCounselorsOrderByReviewCount(name, gender, level, pageable);
+    }
 
-        Page<CounselorResponseDto> counselorResponseDtoList = counselorRepository.findCounselorReviewSummary(name, pageable);
-
-        return counselorResponseDtoList;
+    public Page<CounselorResponseDto> searchCounselorsByRating(String name, String gender, Integer level, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return counselorRepository.searchCounselorsOrderByReviewRating(name, gender, level, pageable);
     }
 
     public CounselorResponseDto find(final Long id) {
