@@ -4,6 +4,7 @@ import axiosInstance from '@/api/axiosInstance';
 import Button from '@/components/button/Button';
 import { FiChevronDown } from 'react-icons/fi';
 import CounselorDiaryViewModal from '@/components/modal/CounselorDiaryViewModal';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 type Emotion = '행복해요' | '화나요' | '우울해요' | '짜증나요' | '불안해요' | '슬퍼요';
 
@@ -80,8 +81,8 @@ const DiaryTable: React.FC<DiaryTableProps> = ({ clientId }) => {
     setSelectedDiary(null);
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading diary entries</div>;
+  if (isLoading) return <LoadingIndicator />;
+  if (isError) return <ErrorMessage message="FAILED TO LOAD" />;
   if (data?.content.length === 0) {
     return <div className="text-center py-4">일기 기록이 없습니다.</div>;
   }
@@ -89,7 +90,7 @@ const DiaryTable: React.FC<DiaryTableProps> = ({ clientId }) => {
   return (
     <div className="flex flex-col items-center">
       <table className="table w-full text-center">
-        <thead>
+        <thead className="text-base">
           <tr>
             <th></th>
             <th className="relative">
@@ -137,7 +138,7 @@ const DiaryTable: React.FC<DiaryTableProps> = ({ clientId }) => {
             <th>상세보기</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-base">
           {filteredAndSortedDiaries.map((diary, index) => (
             <tr key={diary.id}>
               <td>{filteredAndSortedDiaries.length - index}</td>
