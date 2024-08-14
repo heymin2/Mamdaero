@@ -1,20 +1,6 @@
 import React from 'react';
-import ModalWrapper from '@/components/modal/ModalWrapper'; // 기본 모달 컴포넌트
-
-interface Reservation {
-  reservationId: number;
-  counselorName: string;
-  itemName: string;
-  itemFee: number;
-  requirement: string;
-  isDiaryShared: boolean;
-  isTestShared: boolean;
-  date: string;
-  time: number;
-  status: string;
-  canceledAt: string | null;
-  canceler: string | null;
-}
+import ModalWrapper from '@/components/modal/ModalWrapper';
+import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
 
 interface ReservationDetailModalProps {
   isOpen: boolean;
@@ -29,17 +15,13 @@ const ReservationDetailModal: React.FC<ReservationDetailModalProps> = ({
 }) => {
   const {
     reservationId,
-    counselorName,
     itemName,
     itemFee,
     requirement,
     isDiaryShared,
     isTestShared,
-    date,
-    time,
-    status,
-    canceledAt,
-    canceler,
+    symptoms,
+    situations,
   } = reservationDetail;
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
@@ -52,6 +34,8 @@ const ReservationDetailModal: React.FC<ReservationDetailModalProps> = ({
           <div>일기 공유</div>
           <div>검사 공유</div>
           <div>요구사항</div>
+          <div>증상</div>
+          <div>상황</div>
         </div>
         <div className="space-y-2">
           <div>{reservationId}</div>
@@ -60,6 +44,8 @@ const ReservationDetailModal: React.FC<ReservationDetailModalProps> = ({
           <div>{isDiaryShared ? '예' : '아니오'}</div>
           <div>{isTestShared ? '예' : '아니오'}</div>
           <div>{requirement || '없음'}</div>
+          <div>{symptoms.map(symptom => symptom.symptomName).join(', ') || '없음'}</div>
+          <div>{situations.map(situation => situation.situationName).join(', ') || '없음'}</div>
         </div>
       </div>
     </ModalWrapper>

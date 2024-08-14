@@ -1,72 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
+import {
+  fetchReservation,
+  fetchCompletedReservation,
+} from '@/pages/mycounsel/props/reservationApis';
+
+import MyCounselBar from '@/components/navigation/MyCounselBar';
 import ClientReservationStatusCard from '@/components/card/mycounsel/ClientReservationStatusCard';
 import ClientCompletedCard from '@/components/card/mycounsel/ClientCompletedCard';
-import MyCounselBar from '@/components/navigation/MyCounselBar';
-import axiosInstance from '@/api/axiosInstance';
 
-interface Reservation {
-  canceledAt: string | null;
-  canceler: string | null;
-  date: string;
-  isDiaryShared: boolean;
-  isTestShared: boolean;
-  itemFee: number;
-  itemName: string;
-  requirement: string;
-  reservationId: number;
-  status: string;
-  time: number;
-  counselorName: string;
-  clientName: string;
-  counselorId: string;
-  clientId: string;
-}
-
-const fetchReservation = async () => {
-  try {
-    const response = await axiosInstance({
-      method: 'get',
-      url: 'cm/reservation',
-    });
-
-    const reservationCompleted: Reservation[] = [];
-    const reservationHistory: Reservation[] = [];
-
-    response.data.data.forEach((reservation: Reservation) => {
-      if (reservation.status === '상담완료') {
-        reservationCompleted.push(reservation);
-      } else {
-        reservationHistory.push(reservation);
-      }
-    });
-    return { reservationCompleted, reservationHistory };
-  } catch (error) {
-    alert(`Error fetching reservations: ${error}`);
-    throw error;
-  }
-};
 const ClientHistory: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'reservation' | 'completed'>('reservation');
-  const [reservationCompleted, setReservationCompleted] = useState<Reservation[]>([]);
-  const [reservationHistory, setReservationHistory] = useState<Reservation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const { reservationCompleted, reservationHistory } = await fetchReservation();
-        setReservationCompleted(reservationCompleted);
-        setReservationHistory(reservationHistory);
-      } catch (error) {
-        alert(`Failed to fetch reservations: ${error}`);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const reservationsQuery = useQuery<Reservation[], Error>({
+    queryKey: ['reservations'],
+    queryFn: fetchReservation,
+    enabled: activeTab === 'reservation',
+  });
 
-    fetchData();
-  }, []);
+  const completedReservationsQuery = useQuery<Reservation[], Error>({
+    queryKey: ['completedReservations'],
+    queryFn: fetchCompletedReservation,
+    enabled: activeTab === 'completed',
+  });
+
+  const isLoading =
+    (activeTab === 'reservation' && reservationsQuery.isLoading) ||
+    (activeTab === 'completed' && completedReservationsQuery.isLoading);
+
+  const error =
+    (activeTab === 'reservation' && reservationsQuery.error) ||
+    (activeTab === 'completed' && completedReservationsQuery.error);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -93,10 +58,14 @@ const ClientHistory: React.FC = () => {
         </div>
       </div>
 
-      {activeTab === 'reservation' ? (
+      {isLoading ? (
+        <p className="text-center text-gray-500 py-4">Loading...</p>
+      ) : error ? (
+        <p className="text-center text-red-500 py-4">Error: {error.message}</p>
+      ) : activeTab === 'reservation' ? (
         <div className="px-4">
-          {reservationHistory.length > 0 ? (
-            reservationHistory.map(reservation => (
+          {reservationsQuery.data && reservationsQuery.data.length > 0 ? (
+            reservationsQuery.data.map(reservation => (
               <ClientReservationStatusCard key={reservation.reservationId} {...reservation} />
             ))
           ) : (
@@ -105,8 +74,8 @@ const ClientHistory: React.FC = () => {
         </div>
       ) : (
         <div className="px-4">
-          {reservationCompleted.length > 0 ? (
-            reservationCompleted.map(reservation => (
+          {completedReservationsQuery.data && completedReservationsQuery.data.length > 0 ? (
+            completedReservationsQuery.data.map(reservation => (
               <ClientCompletedCard key={reservation.reservationId} {...reservation} />
             ))
           ) : (

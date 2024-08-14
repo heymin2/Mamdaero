@@ -3,63 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@/components/button/Button';
 import ChatModal from '@/components/modal/ChatModal';
 import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
-import axiosInstance from '@/api/axiosInstance';
-
-interface Reservation {
-  canceledAt: string | null;
-  canceler: string | null;
-  date: string;
-  isDiaryShared: boolean;
-  isTestShared: boolean;
-  itemFee: number;
-  itemName: string;
-  requirement: string;
-  reservationId: number;
-  status: string;
-  time: number;
-  counselorName: string;
-  clientName: string;
-  counselorId: string;
-}
-
-const fetchReservationDetail = async (reservationId: number) => {
-  try {
-    const response = await axiosInstance({
-      method: 'get',
-      url: `cm/reservation/${reservationId}`,
-    });
-    return response.data;
-  } catch (error) {
-    alert(`Error fetching reservation detail: ${error}`);
-
-    throw error;
-  }
-};
-
-const deleteReservation = async (reservationId: number) => {
-  try {
-    const response = await axiosInstance({
-      method: 'delete',
-      url: `cm/reservation/${reservationId}`,
-    });
-    return response.data;
-  } catch (error) {
-    alert(`Error canceling reservation: ${error}`);
-    throw error;
-  }
-};
+import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
+import { fetchReservationDetail, deleteReservation } from '@/pages/mycounsel/props/reservationApis';
 
 const CounselorReservationStatusCard: React.FC<Reservation> = ({
   reservationId,
   counselorId,
-  clientName,
   counselorName,
   date,
-  time,
-  status,
-  canceledAt,
+  formatTime,
+  status: initialStatus,
+  canceledAt: initialCanceledAt,
 }) => {
-  const [isDeleted, setIsDeleted] = useState(false);
+  const [status, setStatus] = useState(initialStatus);
+  const [canceledAt, setCanceledAt] = useState(initialCanceledAt);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [reservationDetail, setReservationDetail] = useState<Reservation | null>(null);
@@ -73,7 +30,8 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
       setIsLoading(true);
       try {
         await deleteReservation(reservationId);
-        setIsDeleted(true);
+        setStatus('예약취소');
+        setCanceledAt(new Date().toISOString());
         alert('예약이 성공적으로 취소되었습니다.');
       } catch (error) {
         alert('예약 취소에 실패했습니다. 다시 시도해 주세요.');
@@ -82,10 +40,6 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
       }
     }
   };
-
-  if (isDeleted) {
-    return null;
-  }
 
   const handleOpenDetailModal = async () => {
     try {
@@ -122,7 +76,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
             />
           </div>
           <p>{date}</p>
-          <p>{time}:00</p>
+          <p>{formatTime}</p>
           <div className="flex gap-4 items-center">
             {status}
             {status === '예약완료' && (
@@ -133,6 +87,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
                 shape="rounded"
                 color="red"
                 textSize="xs"
+                disabled={isLoading}
               />
             )}
             {status === '예약취소' && canceledAt && (

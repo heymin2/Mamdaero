@@ -1,64 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
+import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
+import { fetchReservationDetail, deleteReservation } from '@/pages/mycounsel/props/reservationApis';
 
 import Button from '@/components/button/Button';
 import ChatModal from '@/components/modal/ChatModal';
 import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
 
-interface Reservation {
-  canceledAt: string | null;
-  canceler: string | null;
-  date: string;
-  isDiaryShared: boolean;
-  isTestShared: boolean;
-  itemFee: number;
-  itemName: string;
-  requirement: string;
-  reservationId: number;
-  status: string;
-  time: number;
-  counselorName: string;
-  clientName: string;
-  counselorId: string;
-  clientId: string;
-}
-
-const fetchReservationDetail = async (reservationId: number) => {
-  try {
-    const response = await axiosInstance({
-      method: 'get',
-      url: `cm/reservation/${reservationId}`,
-    });
-    return response.data;
-  } catch (error) {
-    alert(`Error fetching reservation detail: ${error}`);
-
-    throw error;
-  }
-};
-
-const deleteReservation = async (reservationId: number) => {
-  try {
-    const response = await axiosInstance({
-      method: 'delete',
-      url: `cm/reservation/${reservationId}`,
-    });
-    return response.data;
-  } catch (error) {
-    alert(`Error canceling reservation: ${error}`);
-    throw error;
-  }
-};
-
 const CounselorReservationStatusCard: React.FC<Reservation> = ({
   reservationId,
-  clientName,
-  counselorName,
-  clientId,
-  counselorId,
+  memberName,
+  memberId,
   date,
-  time,
+  formatTime,
   status,
   canceledAt,
 }) => {
@@ -103,7 +58,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
   return (
     <div className="border-b-2 border-blue-300 p-6">
       <div className="flex gap-4">
-        <h3 className="text-xl font-bold mb-3">{clientName} 님</h3>
+        <h3 className="text-xl font-bold mb-3">{memberName} 님</h3>
       </div>
       <div className="grid grid-cols-7 gap-4">
         <div className="text-gray-500 col-span-1 space-y-3">
@@ -125,7 +80,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
             />
           </div>
           <p>{date}</p>
-          <p>{time}</p>
+          <p>{formatTime}</p>
           <div className="flex gap-4 items-center">
             {status}
             {status === '예약완료' && (
@@ -151,7 +106,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
               <Button
                 label="1:1 화상 채팅"
                 onClick={() =>
-                  navigate(`/mycounsel/counselor/history/facechat/${reservationId}/${clientId}`)
+                  navigate(`/mycounsel/counselor/history/facechat/${reservationId}/${memberId}`)
                 }
                 size="lg"
                 shape="rounded"
@@ -171,8 +126,8 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
       <ChatModal
         isOpen={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
-        memberName={clientName}
-        reservationId={counselorId}
+        memberName={memberName}
+        reservationId={reservationId.toString()}
         user="counselor"
       />
       {reservationDetail && (

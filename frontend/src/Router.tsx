@@ -53,6 +53,7 @@ import SimpleTestListPage from '@/pages/simpletest/SimpleTestListPage';
 import useAuthStore from '@/stores/authStore';
 import BernardTestPage from './pages/simpletest/BernardTestPage';
 import HTPTestPage from './pages/simpletest/HTPTestPage';
+import FindPasswordPage from './pages/findpassword/FindPasswordPage';
 
 const Router = () => {
   const { isCounselor, isClient, isAdmin, isAuthenticated, getEmail } = useAuthStore();
@@ -165,6 +166,9 @@ const Router = () => {
       <Route path="/simpletest" element={<SimpleTestListPage />} />
       <Route path="/simpletest/bernard" element={<BernardTestPage />} />
       <Route path="/simpletest/htp" element={<HTPTestPage />} />
+
+      {/* FindPassword Routes */}
+      <Route path="find/password" element={<FindPasswordPage />} />
     </Routes>
   );
 };
