@@ -27,7 +27,7 @@ interface Post {
 const fetchPosts = async (page: number): Promise<Page<Post>> => {
   const res = await axiosInstance({
     method: 'get',
-    url: 'p/notice',
+    url: `p/notice?page=${page}`,
   });
   return {
     ...res.data,
@@ -41,7 +41,7 @@ const fetchPosts = async (page: number): Promise<Page<Post>> => {
 };
 
 const NoticeListPage: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const navigate = useNavigate();
   const { isAdmin } = useAuthStore();
   const {
@@ -56,7 +56,7 @@ const NoticeListPage: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
 
-  const paginate = (pageNumber: number): void => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number): void => setCurrentPage(pageNumber - 1);
 
   const writePost = () => {
     navigate('/notice/write/post');
@@ -76,7 +76,7 @@ const NoticeListPage: React.FC = () => {
         </div>
         <NoticeListCard
           posts={pageData?.data || []}
-          currentPage={currentPage}
+          currentPage={currentPage + 1}
           totalPages={pageData?.totalPages || 1}
           paginate={paginate}
         />
