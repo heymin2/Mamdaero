@@ -66,7 +66,7 @@ public class SelftestController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping("/c/selftest/result")
+    @GetMapping("/c/selftest/result/{memberId}")
     public ResponseEntity<Page<MemberSelftestResultResponseDto>> getSelftestQuestionList(@PathVariable(name = "memberId") Long memberId,
                                                                                          @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                                                          @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
@@ -77,7 +77,7 @@ public class SelftestController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping("/c/selftest/result/{resultId}")
+    @GetMapping("/c/selftest/result/{memberId}/{resultId}")
     public ResponseEntity<MemberSelftestResponseDto> getSelftestQuestionList(@PathVariable(name = "memberId") Long memberId,
                                                                              @PathVariable(name = "resultId") Integer resultId) {
 
