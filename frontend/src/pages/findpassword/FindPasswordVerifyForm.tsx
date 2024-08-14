@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
 import Button from '@/components/button/Button';
@@ -8,6 +7,10 @@ interface AuthFormData {
   name: string;
   email: string;
   auth_token: string;
+}
+
+interface FindPasswordVerifyFormProps {
+  onVerificationSuccess: (email: string) => void;
 }
 
 const resetRequest = async (data: Pick<AuthFormData, 'name' | 'email'>) => {
@@ -28,20 +31,21 @@ const resetVerify = async (data: Pick<AuthFormData, 'email' | 'auth_token'>) => 
   return response.data;
 };
 
-const FindPasswordVerifyForm = () => {
+const FindPasswordVerifyForm: React.FC<FindPasswordVerifyFormProps> = ({
+  onVerificationSuccess,
+}) => {
   const [formData, setFormData] = useState<AuthFormData>({
     name: '',
     email: '',
     auth_token: '',
   });
 
-  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [emailConfirmation, setEmailConfirmation] = useState<string | null>(null);
   const [verificationConfirmation, setVerificationConfirmation] = useState<string | null>(null);
-  const [isVerified, setIsVerified] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [showAuthInput, setShowAuthInput] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -52,14 +56,13 @@ const FindPasswordVerifyForm = () => {
   };
 
   useEffect(() => {
-    setIsVerified(false);
     setVerificationConfirmation(null);
   }, [formData.auth_token]);
 
   const resetRequestMutation = useMutation({
     mutationFn: resetRequest,
     onSuccess: data => {
-      if (data) {
+      if (data.result.isDuplicate) {
         setEmailConfirmation('이메일로 인증번호가 발송되었습니다.');
         setIsEmailSent(true);
         setShowAuthInput(true);
@@ -75,14 +78,12 @@ const FindPasswordVerifyForm = () => {
   const resetVerifyMutation = useMutation({
     mutationFn: resetVerify,
     onSuccess: data => {
-      if (data) {
+      if (data.result.isDuplicate) {
         setVerificationConfirmation('인증이 완료되었습니다.');
         setIsVerified(true);
-        setError(null);
       } else {
         setVerificationConfirmation(null);
-        setIsVerified(false);
-        setError('인증번호가 일치하지 않습니다.');
+        setError('인증에 실패했습니다. 인증번호를 확인해주세요.');
       }
     },
     onError: () => {
@@ -111,9 +112,13 @@ const FindPasswordVerifyForm = () => {
       auth_token: formData.auth_token,
     });
   };
+
+  const handleSetNewPassword = () => {
+    onVerificationSuccess(formData.email);
+  };
+
   return (
     <div>
-      {' '}
       <div className="w-full m-auto my-6 max-w-lg bg-white p-12 rounded-lg shadow-md text-gray-700">
         <div className="mb-4">
           <div className="relative mb-4">
@@ -203,6 +208,11 @@ const FindPasswordVerifyForm = () => {
         </div>
         {error && (
           <div className="w-full bg-red-200 text-sm text-red-700 p-2 rounded mt-4">{error}</div>
+        )}
+        {isVerified && (
+          <div className="mt-6 mx-auto">
+            <Button label="새로운 비밀번호 설정하기" onClick={handleSetNewPassword} size="full" />
+          </div>
         )}
       </div>
     </div>
