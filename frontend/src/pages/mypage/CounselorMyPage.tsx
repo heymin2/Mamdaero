@@ -7,7 +7,7 @@ import defaultImage from '@/assets/DefaultProfile.jpg';
 import useCounselorStore from '@/stores/couselorStore';
 import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 import axiosInstance from '@/api/axiosInstance';
-
+import useAuthStore from '@/stores/authStore';
 type Gender = 'M' | 'F' | null;
 
 interface EditedCounselor {
@@ -55,7 +55,7 @@ const CounselorMyPage: React.FC = () => {
     isLoading,
     error,
   } = useCounselorStore();
-
+  const { logout } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>('');
@@ -258,11 +258,13 @@ const CounselorMyPage: React.FC = () => {
     if (isConfirmed) {
       try {
         await axiosInstance({
-          method: 'delete',
+          method: 'patch',
           url: 'cm/member/del',
+          data: { email },
         });
         alert('회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.');
         localStorage.clear();
+        logout();
         navigate('/');
       } catch (error) {
         alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
