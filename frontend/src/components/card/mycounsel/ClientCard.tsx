@@ -14,7 +14,7 @@ const ClientCard: React.FC<ClientCardProps> = ({ clientName, clientId }) => {
   const { isCounselor, isClient, isAuthenticated, email } = useAuthStore();
   const memberId = email?.split('@')[0] || 'unknown';
   const handleViewRecord = () => {
-    navigate(`/mycounsel/${memberId}/record/${clientId}`);
+    navigate(`/mycounsel/record/${clientId}`);
   };
 
   return (
