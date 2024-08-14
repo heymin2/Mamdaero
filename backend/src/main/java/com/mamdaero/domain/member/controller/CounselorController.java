@@ -23,15 +23,20 @@ public class CounselorController {
 
     @GetMapping(value = "/p/counselor")
     public ResponseEntity<Page<CounselorResponseDto>> getCounselors(@RequestParam(name = "counselorName", required = false) String counselorName,
+                                                                    @RequestParam(name = "filter", required = false, defaultValue = "name") String filter,
+                                                                    @RequestParam(name = "gender", required = false) String gender,
+                                                                    @RequestParam(name = "level", required = false) Integer level,
                                                                     @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                                     @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
-        Page<CounselorResponseDto> counselors;
-        if (counselorName == null || counselorName.isEmpty()) {
-            counselors = counselorService.findAll(page, size);
-        } else {
-            counselors = counselorService.findAllByName(counselorName, page, size);
-        }
-        return new ResponseEntity<>(counselors, HttpStatus.OK);
+
+        Page<CounselorResponseDto> result = switch (filter) {
+            case "reviews" -> counselorService.searchCounselorsByReviews(counselorName, gender, level, page, size);
+            case "rating" -> counselorService.searchCounselorsByRating(counselorName, gender, level, page, size);
+            default -> // 이름순 정렬
+                    counselorService.searchCounselorsByName(counselorName, gender, level, page, size);
+        };
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping(value = "/p/counselor/{counselorId}")
