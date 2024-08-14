@@ -195,6 +195,7 @@ public class ReservationService {
         }
     }
 
+    @Transactional
     public ReservationResponse getReservation(Long reservationId) {
 
         Reservation reservation = reservationRepository.findReservationWithDetails(reservationId);
