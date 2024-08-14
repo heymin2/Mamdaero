@@ -19,5 +19,5 @@ public interface PasswordVerifyRepository extends JpaRepository<PasswordVerify, 
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM PasswordVerify p WHERE p.email = :email")
-    void deleteByCodeId(@Param("email") String email);
+    void deleteByEmail(@Param("email") String email);
 }
