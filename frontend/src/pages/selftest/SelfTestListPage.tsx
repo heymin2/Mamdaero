@@ -3,6 +3,7 @@ import { FaCheck } from 'react-icons/fa';
 import SelfTestCard from '@/components/card/SelfTestCard';
 import TestBar from '@/components/navigation/TestBar';
 import useSelfTests from '@/hooks/useSelfTests';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 type MentalType = 'depressed' | 'unrest' | 'stress' | 'ptsd' | 'bipolar';
 
@@ -26,8 +27,8 @@ const convertToMentalType = (name: string): MentalType => {
 const SelfTestListPage: React.FC = () => {
   const { selfTestList, isLoadingList, isErrorList } = useSelfTests();
 
-  if (isLoadingList) return <div>Loading...</div>;
-  if (isErrorList) return <div>Error loading self tests</div>;
+  if (isLoadingList) return <LoadingIndicator />;
+  if (isErrorList) return <ErrorMessage message="FAILED TO LOAD" />;
 
   return (
     <div>

@@ -5,6 +5,7 @@ import Button from '@/components/button/Button';
 import PasswordChangeModal from '@/components/modal/PasswordChangeModal';
 import defaultImage from '@/assets/DefaultProfile.jpg';
 import useCounselorStore from '@/stores/couselorStore';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 interface EditedCounselor {
   nickname: string | null;
@@ -187,11 +188,11 @@ const CounselorMyPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <LoadingIndicator />;
   }
 
   if (error) {
-    return <div>에러 발생: {error}</div>;
+    return <ErrorMessage message="FAILED TO LOAD" />;
   }
 
   const fieldConfigs: FieldConfig[] = [
