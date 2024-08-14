@@ -52,11 +52,11 @@ public class Reservation extends BaseEntity {
     private Boolean isDelete;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    @BatchSize(size = 20)
+    @BatchSize(size = 15)
     private List<ReservationSymptom> symptoms;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
-    @BatchSize(size = 20)
+    @BatchSize(size = 15)
     private List<ReservationSituation> situations;
 
 
