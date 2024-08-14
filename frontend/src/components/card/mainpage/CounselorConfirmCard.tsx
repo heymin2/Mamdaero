@@ -27,6 +27,7 @@ const ReservConfirmCard: React.FC = () => {
   if (error) return <div>Error: {error.message}</div>;
 
   const displayedReservations = reservations?.slice(0, 4) || [];
+  const hasReservations = displayedReservations.length > 0;
 
   return (
     <div
@@ -54,15 +55,17 @@ const ReservConfirmCard: React.FC = () => {
               )}
             </ul>
           </div>
-          <div>
-            <Button
-              label="예약 내역 자세히보기"
-              onClick={goMyCounsel}
-              size="목록보기"
-              textSize="sm"
-              color="blue"
-            />
-          </div>
+          {hasReservations && (
+            <div>
+              <Button
+                label="예약 내역 자세히보기"
+                onClick={goMyCounsel}
+                size="목록보기"
+                textSize="sm"
+                color="orange"
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

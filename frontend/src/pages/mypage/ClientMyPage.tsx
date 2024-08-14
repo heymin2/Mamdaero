@@ -4,6 +4,7 @@ import Button from '@/components/button/Button';
 import PasswordChangeModal from '@/components/modal/PasswordChangeModal';
 import Prince from '@/assets/hi_prince.png';
 import useMemberStore from '@/stores/memberStore';
+import useAuthStore from '@/stores/authStore';
 import axiosInstance from '@/api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
@@ -31,6 +32,7 @@ const ClientMyPage: React.FC = () => {
   const navigate = useNavigate();
   const { name, email, nickname, birth, tel, gender, fetchMember, updateMember, isLoading, error } =
     useMemberStore();
+  const { logout } = useAuthStore();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedUser, setEditedUser] = useState<EditableUserData>({
     nickname,
@@ -158,11 +160,13 @@ const ClientMyPage: React.FC = () => {
     if (isConfirmed) {
       try {
         await axiosInstance({
-          method: 'delete',
+          method: 'patch',
           url: 'cm/member/del',
+          data: { email },
         });
         alert('회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.');
         localStorage.clear();
+        logout();
         navigate('/');
       } catch (error) {
         alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
