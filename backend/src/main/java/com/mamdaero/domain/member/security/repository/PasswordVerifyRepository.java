@@ -18,10 +18,6 @@ public interface PasswordVerifyRepository extends JpaRepository<PasswordVerify, 
     String verifyToken(@Param("verify_Token") String verify_Token, @Param("email") String email);
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("DELETE FROM PasswordVerify p WHERE p.codeId = :id")
-    void deleteByCodeId(@Param("id") Long id);
-//    @Transactional
-//    @Modifying(clearAutomatically = true)
-//    @Query(value = "INSERT INTO PasswordVerify (email, verifyToken) VALUES (:email, :verify_token)")
-//    void insertVerify(@Param("email") String email, @Param("verify_token") String verify_token);
+    @Query("DELETE FROM PasswordVerify p WHERE p.email = :email")
+    void deleteByCodeId(@Param("email") String email);
 }
