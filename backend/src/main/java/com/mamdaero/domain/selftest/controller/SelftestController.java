@@ -3,11 +3,13 @@ package com.mamdaero.domain.selftest.controller;
 import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.selftest.dto.request.TestRequestDto;
 import com.mamdaero.domain.selftest.dto.response.MemberSelftestResponseDto;
+import com.mamdaero.domain.selftest.dto.response.MemberSelftestResultResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestQuestionResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestResponseDto;
 import com.mamdaero.domain.selftest.entity.MemberSelftestList;
 import com.mamdaero.domain.selftest.service.SelftestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,9 +53,25 @@ public class SelftestController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
+    /*
+    가장 최근 심리검사 리스트 조회
+     */
     @GetMapping("/m/selftest")
     public ResponseEntity<List<MemberSelftestResponseDto>> getSelftestList() {
 
         return ResponseEntity.ok(selftestService.getMemberSelftestList(findUserService.findMemberId()));
+    }
+
+    @GetMapping("/m/selftest/result")
+    public ResponseEntity<Page<MemberSelftestResultResponseDto>> getSelftestQuestionList(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+
+        return ResponseEntity.ok(selftestService.getMemberSelftestListAll(findUserService.findMemberId(), page, size));
+    }
+
+    @GetMapping("/m/selftest/result/{resultId}")
+    public ResponseEntity<MemberSelftestResponseDto> getSelftestQuestionList(@PathVariable(name = "resultId") Integer resultId) {
+
+        return ResponseEntity.ok(selftestService.getMemberSelftestDetail(findUserService.findMemberId(), resultId));
     }
 }
