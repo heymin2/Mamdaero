@@ -1,50 +1,38 @@
 import React, { useState } from 'react';
-import Button from '@/components/button/Button';
 import { useNavigate } from 'react-router-dom';
-import ChatModal from '@/components/modal/ChatModal';
+import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
+import { fetchReservationDetail } from '@/pages/mycounsel/props/reservationApis';
 
-interface Reservation {
-  canceledAt: string | null;
-  canceler: string | null;
-  date: string;
-  isDiaryShared: boolean;
-  isTestShared: boolean;
-  itemFee: number;
-  itemName: string;
-  requirement: string;
-  reservationId: number;
-  status: string;
-  time: number;
-  counselorName: string;
-  clientName: string;
-  counselorId: string;
-  clientId: string;
-}
+import Button from '@/components/button/Button';
+import ChatModal from '@/components/modal/ChatModal';
+import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
 
 const CounselorCompletedCard: React.FC<Reservation> = ({
   reservationId,
-  counselorId,
-  counselorName,
   date,
   time,
   status,
-  itemName,
-  itemFee,
-  requirement,
-  isDiaryShared,
-  isTestShared,
-  canceledAt,
-  canceler,
-  clientName,
-  clientId,
+  memberName,
+  memberId,
 }) => {
   const navigate = useNavigate();
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [reservationDetail, setReservationDetail] = useState<Reservation | null>(null);
+
+  const handleOpenDetailModal = async () => {
+    try {
+      const detail = await fetchReservationDetail(reservationId);
+      setReservationDetail(detail);
+      setIsDetailModalOpen(true);
+    } catch (error) {
+      alert(`Failed to fetch reservation detail: ${error}`);
+    }
+  };
+
   return (
     <div className="border-b-2 border-blue-300 p-6">
-      <h3 className="text-xl font-bold mb-3">{clientName} 님</h3>
+      <h3 className="text-xl font-bold mb-3">{memberName} 님</h3>
       <div className="grid grid-cols-7 gap-4">
         <div className="text-gray-500 col-span-1 space-y-3">
           <p>상담ID</p>
@@ -57,7 +45,7 @@ const CounselorCompletedCard: React.FC<Reservation> = ({
             {reservationId}
             <Button
               label="상세보기"
-              onClick={() => setIsDetailModalOpen(true)}
+              onClick={handleOpenDetailModal}
               size="xs"
               shape="rounded"
               color="extragray"
@@ -65,14 +53,14 @@ const CounselorCompletedCard: React.FC<Reservation> = ({
             />
           </div>
           <p>{date}</p>
-          <p>{time}</p>
+          <p>{time}:00</p>
           <p className="text-green-600 font-bold">{status}</p>
         </div>
-        <div className="flex flex-col col-span-2 items-center mt-3 gap-3">
+        <div className="flex flex-col col-span-2 items-center mt-4 gap-3">
           <Button
             label="상담 기록 보기"
             onClick={() => {
-              navigate(`/mycounsel/counselor/record/${clientId}`);
+              navigate(`/mycounsel/counselor/record/${memberId}`);
             }}
             size="lg"
             shape="rounded"
@@ -90,10 +78,17 @@ const CounselorCompletedCard: React.FC<Reservation> = ({
       <ChatModal
         isOpen={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
-        memberName={clientName}
+        memberName={memberName}
         reservationId={reservationId.toString()}
         user="counselor"
       />
+      {reservationDetail && (
+        <ReservationDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          reservationDetail={reservationDetail}
+        />
+      )}
     </div>
   );
 };
