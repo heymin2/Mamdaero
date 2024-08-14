@@ -119,7 +119,7 @@ const SignUpClientInput: React.FC = () => {
     return regex.test(tel);
   };
 
-  // 이름, 생년월일, 전화번호
+  // 비밀번호, 생년월일, 전화번호
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });

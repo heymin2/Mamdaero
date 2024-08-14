@@ -12,6 +12,7 @@ import CounselorSidebar from '@/components/card/counselor/reserve/CounselorSideb
 
 interface NameState {
   counselorName: string;
+  counselorImg: string;
 }
 
 interface TimeSlot {
@@ -43,7 +44,10 @@ const CounselorReservePage: React.FC = () => {
   const [isTestShared, setIsTestShared] = useState<boolean>(false);
   const [testConsent, setTestConsent] = useState<boolean | null>(null);
   const [requirement, setRequirement] = useState<string>('');
-  const { counselorName } = (location.state as NameState) || { counselorName: '' };
+  const { counselorName, counselorImg } = (location.state as NameState) || {
+    counselorName: '',
+    counselorImg: '',
+  };
 
   const backToList = () => {
     navigate('/counselor');
@@ -171,6 +175,7 @@ const CounselorReservePage: React.FC = () => {
               username={counselorName}
               counselorId={parseInt(counselorId || '0', 10)}
               getReservationData={getReservationData}
+              counselorImg={counselorImg}
             />
           </div>
         </div>

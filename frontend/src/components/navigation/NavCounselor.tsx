@@ -7,6 +7,7 @@ import logo from '@/assets/MamdaeroLogo.svg';
 import { LuBellRing } from 'react-icons/lu';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import ProfileDropdown from '@/components/dropdown/ProfileDropdown';
+import AlarmModal from '@/components/modal/AlarmModal';
 
 const navStyle =
   'p-3 text-lg font-semibold hover:bg-gray-200 text-center transition-colors duration-300';
@@ -19,24 +20,53 @@ const NavClient: React.FC = () => {
   const [isMyCounselOpen, setIsMyCounselOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { isCounselor, isClient, isAuthenticated, email } = useAuthStore();
+  const { isAuthenticated, accessToken } = useAuthStore();
   const isNavActive = useNavActive();
 
   const isMyCounselActive = isNavActive('/mycounsel/counselor');
 
   useEffect(() => {
-    if (!isMyCounselActive) {
-      setIsMyCounselOpen(false);
-    }
-  }, [location, isMyCounselActive]);
+    const shouldOpenMyCounsel = ['/mycounsel/cs', '/mycounsel/record'].some(path =>
+      location.pathname.startsWith(path)
+    );
+    setIsMyCounselOpen(shouldOpenMyCounsel);
+  }, [location]);
 
-  const memberId = email?.split('@')[0] || 'unknown';
+  const handleMyCounselClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (isAuthenticated && accessToken) {
+      useAuthStore.getState().getAccessToken();
+      navigate('/mycounsel/cs');
+    } else {
+      navigate('/', { state: { from: '/mycounsel/cs' } });
+    }
+  };
+
+  const handleMyRecordClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (isAuthenticated && accessToken) {
+      useAuthStore.getState().getAccessToken();
+      navigate('/mycounsel/record');
+    } else {
+      navigate('/', { state: { from: '/mycounsel/record' } });
+    }
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleAlarmClick = () => {
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="flex flex-col w-1.5/12 h-screen bg-white text-gray-800 fixed shadow-lg">
       <div className="flex justify-center items-center">
         <NavLink to="/">
-          <img src={logo} alt="로고" className="my-3 h-12" />
+          <img
+            src={logo}
+            alt="로고"
+            className="my-3 h-12 transition-transform transform hover:-translate-y-0.5"
+          />
         </NavLink>
       </div>
       <NavLink
@@ -76,41 +106,44 @@ const NavClient: React.FC = () => {
       </button>
       {isMyCounselOpen && (
         <div className="flex flex-col mt-1 bg-gray-50">
-          {isCounselor() ? (
-            <>
-              <NavLink
-                to={`/mycounsel/${memberId}/history`}
-                className={`${navSubStyle} ${isNavActive(`/mycounsel/${memberId}/history`) ? activeStyle : ''}`}
-              >
-                상담 내역
-              </NavLink>
-              <NavLink
-                to={`/mycounsel/${memberId}/record`}
-                className={`${navSubStyle} ${isNavActive(`/mycounsel/${memberId}/record`) ? activeStyle : ''}`}
-              >
-                상담 기록
-              </NavLink>
-            </>
-          ) : (
-            isClient() && (
-              <NavLink
-                to={`/mycounsel/${memberId}/history`}
-                className={`${navSubStyle} ${isNavActive(`/mycounsel/${memberId}/history`) ? activeStyle : ''}`}
-              >
-                상담 내역
-              </NavLink>
-            )
-          )}
+          <>
+            <NavLink
+              to={'/mycounsel/cs'}
+              className={`${navSubStyle} ${isNavActive('/mycounsel/cs') ? activeStyle : ''}`}
+              onClick={handleMyCounselClick}
+            >
+              상담 내역
+            </NavLink>
+            <NavLink
+              to={'/mycounsel/record'}
+              className={`${navSubStyle} ${isNavActive('/mycounsel/record') ? activeStyle : ''}`}
+              onClick={handleMyRecordClick}
+            >
+              상담 기록
+            </NavLink>
+          </>
         </div>
       )}
       <div className="flex justify-evenly mt-auto mb-5">
         <Link to="/notice" className="font-bold">
-          공지사항
+          <div className="transition-transform transform hover:-translate-y-0.5">공지사항</div>
         </Link>
-        <Link to="/alarm">
+        {/* <button
+          onClick={handleAlarmClick}
+          className="transition-transform transform hover:-translate-y-0.5"
+        >
           <LuBellRing size={24} />
-        </Link>
-        <ProfileDropdown />
+        </button>
+        <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
+        <div>
+          <button onClick={() => setIsModalOpen(true)}>
+            <LuBellRing size={24} />
+          </button>
+          {/* <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
+        </div>
+        <div className="transition-transform transform hover:-translate-y-0.5">
+          <ProfileDropdown />
+        </div>
       </div>
     </div>
   );

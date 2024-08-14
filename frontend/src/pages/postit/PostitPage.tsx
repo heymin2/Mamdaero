@@ -19,6 +19,7 @@ import {
   useLikePostit,
   useUpdatePostit,
 } from '@/hooks/postit';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const postitImages = [Postit, Postit2, Postit3];
 
@@ -175,8 +176,8 @@ const PostitPage: React.FC = () => {
     };
   }, [data]);
 
-  if (isQuestionLoading) return <div>Loading...</div>;
-  if (questionError) return <div>An error occurred: {questionError?.message}</div>;
+  if (isQuestionLoading) return <LoadingIndicator />;
+  if (questionError) return <ErrorMessage message="FAILED TO LOAD" />;
 
   return (
     <div className="flex flex-col min-h-screen">

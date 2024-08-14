@@ -26,11 +26,13 @@ const genderMap = {
   M: '남자',
   F: '여자',
 };
+
 interface CounselorReview {
   id: number;
   review: string;
   score: number;
 }
+
 interface CounselorReviewResponse {
   data: CounselorReview[];
   currentPage: number;
@@ -86,7 +88,7 @@ const CounselorDetailPage = () => {
 
   const goReservation = () => {
     navigate(`/counselor/${counselorId}/reservation`, {
-      state: { counselorName: name },
+      state: { counselorName: name, counselorImg: img },
     });
   };
 

@@ -1,5 +1,6 @@
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
+import axiosInstance from '@/api/axiosInstance';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -15,6 +16,17 @@ interface AuthState {
   isClient: () => boolean;
   isAdmin: () => boolean;
 }
+
+// const logoutAPI = async () => {
+//   try {
+//     await axiosInstance({
+//       method: 'post',
+//       url: '/cma/member/logou',
+//     });
+//   } catch (error) {
+//     alert('로그아웃에 실패했습니다.');
+//   }
+// };
 
 const useAuthStore = create<AuthState>()(
   persist(
@@ -37,6 +49,8 @@ const useAuthStore = create<AuthState>()(
         }
       },
       logout: async () => {
+        // await logoutAPI();
+
         set({
           isAuthenticated: false,
           accessToken: null,
