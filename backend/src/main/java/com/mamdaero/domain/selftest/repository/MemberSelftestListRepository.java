@@ -17,4 +17,7 @@ public interface MemberSelftestListRepository extends JpaRepository<MemberSelfte
             ")")
     List<MemberSelftestList> findLatestByMemberIdAndSelftestId(@Param("memberId") Long memberId);
 
+    List<MemberSelftestList> findByMemberId(@Param("memberId") Long memberId);
+
+    MemberSelftestList findByMemberIdAndId(@Param("memberId") Long memberId, @Param("id") Integer id);
 }
