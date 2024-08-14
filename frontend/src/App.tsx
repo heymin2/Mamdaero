@@ -4,6 +4,7 @@ import useAuthStore from '@/stores/authStore';
 import NavClient from '@/components/navigation/NavClient';
 import NavCounselor from '@/components/navigation/NavCounselor';
 import Router from '@/Router';
+import ScrollToTop from './components/ScrollToTop';
 
 const routeBackgroundColors: { [key: string]: string } = {
   '/signup/counselor': 'bg-blue-50',
@@ -67,6 +68,7 @@ function App() {
     <div className="App grid grid-cols-8 min-h-screen">
       <div className="fixed flex min-h-screen col-span-1">{renderNavigation()}</div>
       <div className={`col-start-2 col-span-7 px-16 py-6 ${backgroundColor}`}>
+        <ScrollToTop />
         <Router />
       </div>
     </div>
