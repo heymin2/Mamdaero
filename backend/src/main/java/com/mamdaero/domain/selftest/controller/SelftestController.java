@@ -59,19 +59,31 @@ public class SelftestController {
     @GetMapping("/m/selftest")
     public ResponseEntity<List<MemberSelftestResponseDto>> getSelftestList() {
 
-        return ResponseEntity.ok(selftestService.getMemberSelftestList(findUserService.findMemberId()));
+        if (Objects.equals(findUserService.findMemberRole(), "내담자")) {
+            return ResponseEntity.ok(selftestService.getMemberSelftestList(findUserService.findMemberId()));
+        }
+
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping("/m/selftest/result")
-    public ResponseEntity<Page<MemberSelftestResultResponseDto>> getSelftestQuestionList(@RequestParam(name = "page", required = false, defaultValue = "0") int page,
+    @GetMapping("/c/selftest/result")
+    public ResponseEntity<Page<MemberSelftestResultResponseDto>> getSelftestQuestionList(@PathVariable(name = "memberId") Long memberId,
+                                                                                         @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                                                          @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
 
-        return ResponseEntity.ok(selftestService.getMemberSelftestListAll(findUserService.findMemberId(), page, size));
+        if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
+            return ResponseEntity.ok(selftestService.getMemberSelftestListAll(memberId, page, size));
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping("/m/selftest/result/{resultId}")
-    public ResponseEntity<MemberSelftestResponseDto> getSelftestQuestionList(@PathVariable(name = "resultId") Integer resultId) {
+    @GetMapping("/c/selftest/result/{resultId}")
+    public ResponseEntity<MemberSelftestResponseDto> getSelftestQuestionList(@PathVariable(name = "memberId") Long memberId,
+                                                                             @PathVariable(name = "resultId") Integer resultId) {
 
-        return ResponseEntity.ok(selftestService.getMemberSelftestDetail(findUserService.findMemberId(), resultId));
+        if (Objects.equals(findUserService.findMemberRole(), "상담사")) {
+            return ResponseEntity.ok(selftestService.getMemberSelftestDetail(memberId, resultId));
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 }
