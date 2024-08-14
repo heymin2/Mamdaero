@@ -12,13 +12,16 @@ import org.springframework.data.repository.query.Param;
 public interface ConsultReportRepository extends JpaRepository<ConsultReport, Long> {
     @Query(
             "SELECT new com.mamdaero.domain.consult_report.dto.response.ConsultReportListResponse(" +
-                    "m.name, wt.date, wt.time, c.scriptUrl, c.summarizedScriptUrl, cr.id" +
+                    "m.name, wt.date, wt.time, c.scriptUrl, c.summarizedScriptUrl, c.id," +
+                    "CASE WHEN cr.id IS NULL THEN false ELSE true END " +
                     ") " +
                     "FROM Reservation r " +
                     "JOIN WorkTime wt ON r.workTimeId = wt.id " +
                     "JOIN Member m ON r.memberId = m.id " +
                     "JOIN Consult c ON r.id = c.id " +
+                    "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
                     "LEFT JOIN ConsultReport cr ON c.id = cr.id " +
+                    "WHERE r.memberId = :clientId AND ci.counselorId = :counselorId " +
                     "ORDER BY r.createdAt DESC"
     )
     Page<ConsultReportListResponse> findByClientIdAndCounselorId(@Param("clientId") Long clientId, @Param("counselorId") Long counselorId, Pageable pageable);
