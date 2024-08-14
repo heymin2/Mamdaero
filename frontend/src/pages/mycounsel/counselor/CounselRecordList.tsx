@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import ClientCard from '@/components/card/mycounsel/ClientCard';
 import Button from '@/components/button/Button';
 import useClientList from '@/hooks/useClientList';
@@ -27,6 +27,11 @@ const CounselRecordList: React.FC = () => {
     error: Error | null;
   };
 
+  const filteredClients = useMemo(() => {
+    if (!data) return [];
+    return data.data.filter(client => client.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [data, searchTerm]);
+
   const handleSearch = () => {
     setCurrentPage(1);
   };
@@ -39,6 +44,12 @@ const CounselRecordList: React.FC = () => {
 
   if (isLoading) return <LoadingIndicator />;
   if (isError) return <ErrorMessage message={error?.message || '오류가 발생했습니다.'} />;
+
+  const itemsPerPage = 9; // 한 페이지당 보여줄 아이템 수
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredClients.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -72,7 +83,7 @@ const CounselRecordList: React.FC = () => {
       <div className="w-full flex flex-col items-center">
         <div className="w-full max-w-4xl px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
-            {data?.data.map(client => (
+            {currentItems.map(client => (
               <ClientCard
                 key={client.id}
                 clientName={client.name}
@@ -84,18 +95,17 @@ const CounselRecordList: React.FC = () => {
       </div>
       {/* 페이지네이션 */}
       <div className="flex justify-center mt-4">
-        {data &&
-          Array.from({ length: data.totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentPage(i + 1)}
-              className={`mx-1 px-3 py-1 border rounded ${
-                currentPage === i + 1 ? 'bg-blue-400 text-white' : 'bg-white'
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`mx-1 px-3 py-1 border rounded ${
+              currentPage === i + 1 ? 'bg-blue-400 text-white' : 'bg-white'
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
       </div>
     </div>
   );

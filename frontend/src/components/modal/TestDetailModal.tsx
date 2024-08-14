@@ -12,6 +12,7 @@ interface TestDetailResponse {
     memberSelftestId: number;
     selftestQuestion: string;
     selftestMemberQuestionScore: number;
+    selftestMemberQuestionAnswer: string;
   }[];
 }
 
@@ -27,6 +28,14 @@ const fetchTestDetail = async (clientId: string, testId: number): Promise<TestDe
   return response.data;
 };
 
+const testNameMap: { [key: string]: string } = {
+  depressed: '우울',
+  unrest: '불안',
+  stress: '스트레스',
+  ptsd: 'PTSD',
+  bipolar: '조울증',
+};
+
 const TestDetailModal: React.FC<TestDetailModalProps> = ({ isOpen, onClose, clientId, testId }) => {
   const { data, isLoading, isError } = useQuery<TestDetailResponse, Error>({
     queryKey: ['testDetail', clientId, testId],
@@ -39,29 +48,39 @@ const TestDetailModal: React.FC<TestDetailModalProps> = ({ isOpen, onClose, clie
   if (isError) return <div>Error loading test details</div>;
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} size="md">
+    <ModalWrapper isOpen={isOpen} onClose={onClose} size="lg">
       <div className="max-h-[80vh] overflow-y-auto p-4 z-50">
-        <h2 className="text-xl font-bold mb-4">{data?.selftestName} 검사 결과</h2>
-        <p>총점: {data?.selftestTotalScore}</p>
-        <table className="w-full mt-4">
+        <h2 className="text-2xl  font-bold mb-4 text-center">
+          <span className="text-orange-500">
+            {testNameMap[data?.selftestName || ''] || data?.selftestName}{' '}
+          </span>
+          검사 결과
+        </h2>
+        <div className="divider"></div>
+        <p className="text-md mb-4 font-bold">총점: {data?.selftestTotalScore}</p>
+        <table className="table w-full">
           <thead>
             <tr>
-              <th>질문</th>
-              <th>점수</th>
+              <th className="bg-orange-300 text-orange-300-content text-base text-center">번호</th>
+              <th className="bg-orange-300 text-orange-300-content text-base text-center">질문</th>
+              <th className="bg-orange-300 text-orange-300-content text-base text-center">답변</th>
+              <th className="bg-orange-300 text-orange-300-content text-base text-center">점수</th>
             </tr>
           </thead>
           <tbody>
-            {data?.selftestResponseResDtos.map(item => (
-              <tr key={item.selftestQuestionResponseId}>
+            {data?.selftestResponseResDtos.map((item, index) => (
+              <tr
+                key={item.selftestQuestionResponseId}
+                className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+              >
+                <td className="text-center">{index + 1}</td>
                 <td>{item.selftestQuestion}</td>
-                <td>{item.selftestMemberQuestionScore}</td>
+                <td className="text-center">{item.selftestMemberQuestionAnswer}</td>
+                <td className="text-center">{item.selftestMemberQuestionScore}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded" onClick={onClose}>
-          닫기
-        </button>
       </div>
     </ModalWrapper>
   );

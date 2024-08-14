@@ -7,11 +7,8 @@ interface Client {
 }
 
 export interface ClientListResponse {
-  content: Client[];
+  data: Client[];
   totalPages: number;
-  totalElements: number;
-  size: number;
-  number: number;
 }
 
 const fetchClients = async (): Promise<ClientListResponse> => {
