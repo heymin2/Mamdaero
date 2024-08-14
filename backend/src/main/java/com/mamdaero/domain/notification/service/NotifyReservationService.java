@@ -26,7 +26,8 @@ import java.util.Map;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class NotifyReservationService {
+public class
+NotifyReservationService {
 
     private final NotificationRepository notificationRepository;
     private final ReservationRepository reservationRepository;

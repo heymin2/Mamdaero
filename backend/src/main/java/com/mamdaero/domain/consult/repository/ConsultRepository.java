@@ -11,15 +11,13 @@ import org.springframework.data.repository.query.Param;
 public interface ConsultRepository extends JpaRepository<Consult, Long> {
 
     @Query(
-            "SELECT new com.mamdaero.domain.consult.dto.response.ClientListResponse(" +
+            "SELECT distinct new com.mamdaero.domain.consult.dto.response.ClientListResponse(" +
                     "m.id, m.name" +
                     ") " +
                     "FROM Reservation r " +
                     "JOIN Member m ON r.memberId = m.id " +
                     "JOIN CounselorItem ci ON r.counselorItemId = ci.counselorItemId " +
                     "WHERE (:name IS NULL OR m.name LIKE CONCAT('%', :name, '%'))" +
-                    "AND ci.counselorId = :counselorId " +
-                    "AND r.status = '상담완료'"
-    )
+                    "AND ci.counselorId = :counselorId")
     Page<ClientListResponse> findMyClientList(@Param("counselorId") Long counselorId, @Param("name") String name, Pageable pageable);
 }
