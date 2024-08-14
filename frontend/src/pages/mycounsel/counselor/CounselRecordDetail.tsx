@@ -94,7 +94,7 @@ const CounselRecordDetail: React.FC = () => {
           subtitle="내담자의 기록을 확인하여 개인 맞춤형 상담 서비스를 제공하세요!"
           user="counselor"
           buttonLabel="내담자 목록 보기"
-          buttonPath={`/mycounsel/${memberId}/record`}
+          buttonPath="/mycounsel/record"
         />
       </div>
       {/* 상담기록 탭목록 */}

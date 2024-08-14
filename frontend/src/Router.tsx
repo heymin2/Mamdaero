@@ -145,7 +145,7 @@ const Router = () => {
           element={<CounselorFaceChat />}
         />
         <Route path="/mycounsel/record" element={<CounselRecordList />} />
-        <Route path="/mycounsel/:memberId/record/:clientId/*" element={<CounselRecordDetail />} />
+        <Route path="/mycounsel/record/:clientId/*" element={<CounselRecordDetail />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['내담자']} />}>
         <Route path="/mycounsel" element={<ClientHistory />} />
