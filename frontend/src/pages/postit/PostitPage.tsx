@@ -19,6 +19,7 @@ import {
   useLikePostit,
   useUpdatePostit,
 } from '@/hooks/postit';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const postitImages = [Postit, Postit2, Postit3];
 
@@ -175,8 +176,8 @@ const PostitPage: React.FC = () => {
     };
   }, [data]);
 
-  if (isQuestionLoading) return <div>Loading...</div>;
-  if (questionError) return <div>An error occurred: {questionError?.message}</div>;
+  if (isQuestionLoading) return <LoadingIndicator />;
+  if (questionError) return <ErrorMessage message="FAILED TO LOAD" />;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -195,7 +196,7 @@ const PostitPage: React.FC = () => {
               <div className="relative flex flex-col items-center justify-center">
                 <img src={Bubble} alt="Bubble" className="w-full h-auto" />
                 <div className="absolute inset-0 flex flex-col justify-between items-center text-center py-8 p-8 h-52">
-                  <h2 className="text-xl font-bold text-orange-500">질문</h2>
+                  <h2 className="text-xl font-bold text-orange-500">오늘의 질문</h2>
                   <p className="text-lg font-bold w-full">
                     {questionData?.content || '질문 데이터가 없습니다.'}
                   </p>

@@ -8,6 +8,7 @@ import Button from '@/components/button/Button';
 
 import { IoIosArrowBack } from 'react-icons/io';
 import { FaStar } from 'react-icons/fa6';
+import { LoadingIndicator, ErrorMessage, NoDataIndicator } from '@/components/StatusIndicators';
 
 interface CounselorInfo {
   id: number;
@@ -26,11 +27,13 @@ const genderMap = {
   M: '남자',
   F: '여자',
 };
+
 interface CounselorReview {
   id: number;
   review: string;
   score: number;
 }
+
 interface CounselorReviewResponse {
   data: CounselorReview[];
   currentPage: number;
@@ -76,9 +79,9 @@ const CounselorDetailPage = () => {
     enabled: !!counselorId,
   });
 
-  if (isInfoLoading || isReviewsLoading) return <div>정보를 불러오는 중...</div>;
-  if (isInfoError || isReviewsError) return <div>정보를 불러오는데 실패했습니다.</div>;
-  if (!counselorInfo) return <div>상담사 정보가 없습니다.</div>;
+  if (isInfoLoading || isReviewsLoading) return <LoadingIndicator />;
+  if (isInfoError || isReviewsError) return <ErrorMessage message="정보불러오기 실패" />;
+  if (!counselorInfo) return <NoDataIndicator message="상담사 정보 없음" />;
 
   const backToList = () => {
     navigate('/counselor');
@@ -86,7 +89,7 @@ const CounselorDetailPage = () => {
 
   const goReservation = () => {
     navigate(`/counselor/${counselorId}/reservation`, {
-      state: { counselorName: name },
+      state: { counselorName: name, counselorImg: img },
     });
   };
 

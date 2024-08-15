@@ -4,6 +4,10 @@ import Button from '@/components/button/Button';
 import PasswordChangeModal from '@/components/modal/PasswordChangeModal';
 import Prince from '@/assets/hi_prince.png';
 import useMemberStore from '@/stores/memberStore';
+import useAuthStore from '@/stores/authStore';
+import axiosInstance from '@/api/axiosInstance';
+import { useNavigate } from 'react-router-dom';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 type Gender = 'M' | 'F' | null;
 
@@ -18,9 +22,17 @@ const isValidGender = (value: string | null): value is Gender => {
   return value === 'M' || value === 'F' || value === null;
 };
 
+const Spinner = () => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
+  </div>
+);
+
 const ClientMyPage: React.FC = () => {
+  const navigate = useNavigate();
   const { name, email, nickname, birth, tel, gender, fetchMember, updateMember, isLoading, error } =
     useMemberStore();
+  const { logout } = useAuthStore();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedUser, setEditedUser] = useState<EditableUserData>({
     nickname,
@@ -30,6 +42,8 @@ const ClientMyPage: React.FC = () => {
   });
   const [birthError, setBirthError] = useState<string | null>(null);
   const [telError, setTelError] = useState<string | null>(null);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>('');
 
   useEffect(() => {
     fetchMember();
@@ -52,12 +66,22 @@ const ClientMyPage: React.FC = () => {
     try {
       await updateMember(editedUser);
       setIsEditing(false);
-      alert('프로필이 성공적으로 업데이트되었습니다.');
+      setAlertMessage('프로필이 성공적으로 업데이트되었습니다.');
+      setShowAlert(true);
     } catch (error) {
-      console.error('프로필 업데이트 중 오류 발생:', error);
-      alert('프로필 업데이트에 실패했습니다.');
+      setAlertMessage('프로필 업데이트에 실패했습니다.');
+      setShowAlert(true);
     }
   };
+
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
 
   const handleCancel = (): void => {
     setEditedUser({
@@ -122,33 +146,38 @@ const ClientMyPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div>로딩 중...</div>;
+    return <LoadingIndicator />;
   }
 
   if (error) {
-    return <div>에러 발생: {error}</div>;
+    return <ErrorMessage message="FAILED TO LOAD" />;
   }
 
+  const handleDeleteMember = async () => {
+    const isConfirmed = window.confirm(
+      '정말로 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.'
+    );
+    if (isConfirmed) {
+      try {
+        await axiosInstance({
+          method: 'patch',
+          url: 'cm/member/del',
+          data: { email },
+        });
+        alert('회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.');
+        localStorage.clear();
+        logout();
+        navigate('/');
+      } catch (error) {
+        alert('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
+    }
+  };
   return (
     <>
       <header className="sticky bg-orange-50 top-0 z-10 border-b-2 mb-5">
         <div className="flex flex-col my-6 mx-16 justify-end">
           <div className="flex justify-between items-center">
-            {!isEditing ? (
-              <Button
-                label={
-                  <span className="flex items-center mx-6">
-                    <FiEdit />
-                    <div className="ms-2 mt-0.5">프로필 수정하기</div>
-                  </span>
-                }
-                onClick={handleEdit}
-                size="lg"
-                textSize="sm"
-                shape="rounded"
-                color="orange"
-              />
-            ) : null}
             <div className="flex flex-col text-right text-gray-500 flex-grow">
               <div>사용자님의 정보를 관리해주세요!</div>
             </div>
@@ -159,15 +188,30 @@ const ClientMyPage: React.FC = () => {
         </div>
       </header>
       <main className="flex justify-around">
-        <div className="w-full md:w-1/3 px-4 mb-8">
+        <div className="w-full md:w-1/3 px-4">
           <div className="bg-white p-6 rounded-lg shadow-md h-full flex flex-col justify-between">
-            <div className="text-center space-y-10">
+            <div className="text-center space-y-11">
               <p className="text-2xl font-bold my-4">
                 <span className="text-orange-500 text-4xl">{name || ''}</span>님!
                 <br />
                 오늘도 좋은 하루 되세요
               </p>
               <img src={Prince} alt="Chat Prince" className="w-4/5 mx-auto" />
+              {!isEditing ? (
+                <Button
+                  label={
+                    <span className="flex items-center mx-6">
+                      <FiEdit />
+                      <div className="ms-2 mt-0.5">프로필 수정하기</div>
+                    </span>
+                  }
+                  onClick={handleEdit}
+                  size="lg"
+                  textSize="sm"
+                  shape="rounded"
+                  color="orange"
+                />
+              ) : null}
             </div>
 
             {isEditing && (
@@ -182,7 +226,7 @@ const ClientMyPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-full md:w-2/3 px-4">
+        <div className="w-full h-full md:w-2/3 px-4">
           <div className="bg-white p-6 rounded-lg shadow-md h-full">
             <ul className="flex flex-col h-full">
               <form onSubmit={e => e.preventDefault()}>
@@ -201,7 +245,7 @@ const ClientMyPage: React.FC = () => {
                       </label>
                       {isEditing && !field.readOnly ? (
                         field.key === 'gender' ? (
-                          <div className="space-x-5">
+                          <div className="space-x-5 mx-auto">
                             <Button
                               label="남"
                               onClick={() => handleGenderChange('M')}
@@ -216,7 +260,7 @@ const ClientMyPage: React.FC = () => {
                             />
                           </div>
                         ) : (
-                          <div className="flex flex-col w-full max-w-xs">
+                          <div className="flex flex-col w-full max-w-xs mx-auto">
                             <input
                               type={field.type}
                               name={field.key}
@@ -246,6 +290,38 @@ const ClientMyPage: React.FC = () => {
                 ))}
               </form>
             </ul>
+          </div>
+          <div className="flex justify-between items-start mt-3">
+            <div className="w-1/2">
+              {showAlert && (
+                <div role="alert" className="alert shadow-lg w-full">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 shrink-0 stroke-current"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <h3 className="font-bold text-center">프로필이 저장되었습니다.</h3>
+                </div>
+              )}
+            </div>
+            <div>
+              <Button
+                label="회원 탈퇴"
+                onClick={handleDeleteMember}
+                color="red"
+                shape="rounded"
+                size="sm"
+                textSize="sm"
+              />
+            </div>
           </div>
         </div>
       </main>

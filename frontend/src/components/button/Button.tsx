@@ -16,7 +16,7 @@ interface ButtonProps {
     | '검색'
     | '수정';
   shape?: 'rounded' | 'square';
-  color?: 'blue' | 'orange' | 'gray' | 'red';
+  color?: 'blue' | 'orange' | 'gray' | 'red' | 'extragray';
   textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   disabled?: boolean;
 }
@@ -42,11 +42,12 @@ const shapeClasses: Record<'rounded' | 'square', string> = {
   square: 'rounded-md',
 };
 
-const colorClasses: Record<'blue' | 'orange' | 'gray' | 'red', string> = {
+const colorClasses: Record<'blue' | 'orange' | 'gray' | 'red' | 'extragray', string> = {
   blue: 'bg-blue-200 hover:bg-blue-300 transition',
   orange: 'bg-orange-200 hover:bg-orange-300 transition',
   gray: 'bg-gray-200 hover:bg-gray-300 transition',
   red: 'bg-red-200 hover:bg-red-300 transition',
+  extragray: 'bg-gray-300 hover:bg-gray-400 transition',
 };
 
 const textSizeClasses: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', string> = {

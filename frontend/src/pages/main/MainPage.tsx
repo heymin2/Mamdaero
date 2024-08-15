@@ -16,7 +16,7 @@ const MainPage = () => {
             <LoginCard />
           </div>
         </div>
-        <div className="mx-auto mt-32 animate-bounce">
+        <div className="mx-auto mt-28 animate-bounce">
           <a href="#chatbot">
             <SlArrowDown size={30} />
           </a>

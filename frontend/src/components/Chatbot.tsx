@@ -45,12 +45,21 @@ const Chatbot = () => {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]); // 채팅 히스토리 관리
   const [isHide, setIsHide] = useState<boolean>(false);
   const chatBoxRef = useRef<HTMLDivElement>(null);
-  const chatRef = useRef<HTMLDivElement>(null);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
-  const getPromptEngineering = (input: string) => {
-    return chatHistory.length == 1
-      ? [{ role: 'system', content: context }]
-      : [{ role: 'user', content: input }];
+  const chatRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!isInitialized) {
+      setChatHistory([{ role: 'assistant', content: '오늘 하루는 어떠셨나요?' }]);
+      setIsInitialized(true);
+    }
+  }, [isInitialized]);
+  // useEffect(() => {
+  //   setChatHistory([{ role: 'assistant', content: '오늘 하루는 어떠셨나요?' }]);
+  // }, []);
+
+  const getPromptEngineering = () => {
+    return [{ role: 'system', content: context }, ...chatHistory];
   };
   const handleQuickReply = (reply: string) => {
     setIsHide(true);
@@ -68,7 +77,7 @@ const Chatbot = () => {
         {
           // model: 'gpt-3.5-turbo',
           model: 'gpt-4o',
-          messages: getPromptEngineering(input),
+          messages: [...getPromptEngineering(), { role: 'user', content: input }],
           temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
           max_tokens: 256, // 응답받을 메시지 최대 토큰(단어) 수 설정
           top_p: 1, // 토큰 샘플링 확률을 설정, 높을수록 다양한 출력을 유도
@@ -107,16 +116,7 @@ const Chatbot = () => {
         { role: 'system', content: '에러가 발생했으니 잠시만 기다려주세요.' },
       ]);
       if (axios.isAxiosError(error)) {
-        if (error.response) {
-          console.error('API 오류 상태:', error.response.status);
-          console.error('API 오류 데이터:', error.response.data);
-        } else if (error.request) {
-          console.error('응답을 받지 못했습니다:', error.request);
-        } else {
-          console.error('요청 설정 오류:', error.message);
-        }
-      } else {
-        console.error('알 수 없는 오류:', error);
+        alert(`오류가 발생했습니다. ${error}`);
       }
     }
   };
@@ -148,10 +148,10 @@ const Chatbot = () => {
   }, [chatHistory]);
 
   return (
-    <section className="card w-1/2 min-w-[50%] bg-white h-full">
-      <h2 className="card-title justify-center text-2xl font-bold pt-5">
-        오늘의 기분을 표현해주세요
-      </h2>
+    <section className="card w-1/2 min-w-[50%] bg-white h-full mt-4 shadow-lg">
+      <span className="flex justify-center bg-blue-50 border-b-4 border-blue-200 text-2xl font-bold py-2">
+        <span className="text-blue-500">맘대로</span>에 오신걸 환영해요!
+      </span>
 
       {/* 채팅 메시지를 표시하는 영역 */}
       <div ref={chatBoxRef} className="card-body flex-grow overflow-y-scroll ">
@@ -165,19 +165,19 @@ const Chatbot = () => {
               className={`flex items-center snap-center ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {message.role === 'user' && (
-                <div className="flex items-end max-w-[70%]">
+                <div className="flex items-end max-w-[70%] my-1">
                   <div className="bg-orange-200 rounded-lg py-2 px-3 mr-2">
                     <p className="text-sm">{message.content}</p>
                   </div>
                   <div className="flex-shrink-0 w-10 h-10">
-                    <img src={chatPrince} alt="당신" className="w-full h-full rounded-full" />
+                    <img src={chatFox} alt="당신" className="w-full h-full rounded-full" />
                   </div>
                 </div>
               )}
               {message.role === 'assistant' && (
-                <div className="flex items-end max-w-[70%]">
+                <div className="flex items-end max-w-[70%] my-1">
                   <div className="flex-shrink-0 w-10 h-10 mr-2">
-                    <img src={chatFox} alt="도우미" className="w-full h-full rounded-full" />
+                    <img src={chatPrince} alt="도우미" className="w-full h-full rounded-full" />
                   </div>
                   <div className="bg-blue-200 rounded-lg py-2 px-3">
                     <ReactMarkdown className="text-sm">{message.content}</ReactMarkdown>
@@ -201,14 +201,14 @@ const Chatbot = () => {
             <button
               key={reply}
               onClick={() => handleQuickReply(reply)}
-              className={`btn bg-gray-200 hover:bg-orange-400 text-sm ${isHide ? 'hidden' : 'block'}`}
+              className={` bg-gray-200 rounded-full h-9 w-20 font-bold text-gray-600 hover:bg-blue-200 text-sm ${isHide ? 'hidden' : 'block'}`}
             >
               {reply}
             </button>
           ))}
         </div>
-        <form onSubmit={handleSubmit} className="w-full p-4">
-          <div className="flex p-3 border border-black rounded-full justify-between">
+        <form onSubmit={handleSubmit} className="w-full p-7 pt-2">
+          <div className="flex px-5 py-3 border-2 border-gray-400 rounded-full justify-between">
             <input
               type="text"
               value={userInput}

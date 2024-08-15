@@ -91,6 +91,10 @@ public class Reservation extends BaseEntity {
         this.canceledAt = LocalDateTime.now();
     }
 
+    public void update() {
+        this.status = Status.상담완료;
+    }
+
     public void addSymptom(ReservationSymptom symptom) {
         symptoms.add(symptom);
         symptom.setReservation(this);
