@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -9,6 +9,7 @@ import MyCounselBar from '@/components/navigation/MyCounselBar';
 import useAuthStore from '@/stores/authStore';
 import useCounselorStore from '@/stores/couselorStore';
 import { useCounselorWorktime } from '@/hooks/useCounselorWorktime';
+import { useAllCounselorSchedules } from '@/hooks/useCounselorSchedule';
 import dayjs from 'dayjs';
 import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
@@ -20,13 +21,7 @@ const CounselorManageExcludePage: React.FC = () => {
   const counselorId = useCounselorStore(state => state.id);
 
   const { workTimes, isLoading, isError, updateWorkTimes } = useCounselorWorktime();
-  const [originalWorkTimes, setOriginalWorkTimes] = useState<typeof workTimes>([]);
-
-  useEffect(() => {
-    if (workTimes.length > 0 && originalWorkTimes.length === 0) {
-      setOriginalWorkTimes(workTimes);
-    }
-  }, [workTimes, originalWorkTimes]);
+  const scheduleQueries = useAllCounselorSchedules();
 
   const handleEventClick = (arg: EventClickArg) => {
     const clickedDate = dayjs(arg.event.start).format('YYYY-MM-DD');
@@ -52,9 +47,9 @@ const CounselorManageExcludePage: React.FC = () => {
   const getEventDates = useMemo(() => {
     const events = [];
     const startDate = dayjs();
-    const endDate = startDate.add(4, 'week');
+    const endDate = startDate.add(27, 'day');
 
-    for (let d = startDate; d.isBefore(endDate); d = d.add(1, 'day')) {
+    for (let d = startDate; d.isBefore(endDate) || d.isSame(endDate, 'day'); d = d.add(1, 'day')) {
       const date = d.format('YYYY-MM-DD');
       const dayWorkTimes = workTimes.filter(wt => wt.date === date);
       const hasWorkTime = dayWorkTimes.some(wt => wt.isWorkTime);
@@ -85,11 +80,28 @@ const CounselorManageExcludePage: React.FC = () => {
     updateWorkTimes(updates);
   };
 
+  const getOriginalSchedule = useCallback(() => {
+    const dayOfWeek = dayjs(selectedDate).day();
+    const scheduleDay = dayOfWeek === 0 ? 7 : dayOfWeek;
+    const daySchedule = scheduleQueries[scheduleDay - 1].data || [];
+
+    return daySchedule.reduce(
+      (acc, schedule) => {
+        for (let i = schedule.startTime; i < schedule.endTime; i++) {
+          acc[i] = true;
+        }
+        return acc;
+      },
+      {} as Record<number, boolean>
+    );
+  }, [selectedDate, scheduleQueries]);
+
   const handleReset = () => {
-    const selectedWorkTimes = originalWorkTimes.filter(wt => wt.date === selectedDate);
+    const originalSchedule = getOriginalSchedule();
+    const selectedWorkTimes = workTimes.filter(wt => wt.date === selectedDate);
     const updates = selectedWorkTimes.map(wt => ({
       workTimeId: wt.id,
-      isWorkTime: wt.isWorkTime,
+      isWorkTime: !!originalSchedule[wt.time],
     }));
     updateWorkTimes(updates);
   };
@@ -100,12 +112,10 @@ const CounselorManageExcludePage: React.FC = () => {
   }, [workTimes, selectedDate]);
 
   const hasChanges = useMemo(() => {
-    const selectedOriginalWorkTimes = originalWorkTimes.filter(wt => wt.date === selectedDate);
-    const selectedCurrentWorkTimes = workTimes.filter(wt => wt.date === selectedDate);
-    return !selectedOriginalWorkTimes.every(
-      (owt, index) => owt.isWorkTime === selectedCurrentWorkTimes[index]?.isWorkTime
-    );
-  }, [workTimes, originalWorkTimes, selectedDate]);
+    const originalSchedule = getOriginalSchedule();
+    const selectedWorkTimes = workTimes.filter(wt => wt.date === selectedDate);
+    return selectedWorkTimes.some(wt => wt.isWorkTime !== !!originalSchedule[wt.time]);
+  }, [workTimes, selectedDate, getOriginalSchedule]);
 
   if (!counselorId) return <div>Counselor information not available</div>;
   if (isLoading) return <LoadingIndicator />;
@@ -141,7 +151,7 @@ const CounselorManageExcludePage: React.FC = () => {
                 }}
                 validRange={{
                   start: dayjs().toDate(),
-                  end: dayjs().add(4, 'week').toDate(),
+                  end: dayjs().add(27, 'day').toDate(),
                 }}
                 titleFormat={{ year: 'numeric', month: 'numeric' }}
                 height="100%"
@@ -186,9 +196,9 @@ const CounselorManageExcludePage: React.FC = () => {
                   </div>
                   <div className="flex justify-end mr-4">
                     <Button
-                      label="되돌리기"
+                      label="원래 스케줄로 되돌리기"
                       onClick={handleReset}
-                      size="sm"
+                      size="full"
                       textSize="sm"
                       color="gray"
                       disabled={!hasChanges}
