@@ -36,7 +36,8 @@ public interface CounselorRepository extends JpaRepository<Counselor, Long>, Jpa
             "LEFT JOIN Review r ON res.id = r.id " +
             "WHERE (:name IS NULL OR c.name LIKE %:name%) " +
             "AND (:gender IS NULL OR c.gender = :gender) " +
-            "AND (:level IS NULL OR c.level = :level)" +
+            "AND (:level IS NULL OR c.level = :level) " +
+            "AND c.memberStatus = FALSE " +
             "GROUP BY c.id")
     Page<CounselorResponseDto> searchCounselors(@Param("name") String name, @Param("gender") String gender, @Param("level") Integer level, Pageable pageable);
 
@@ -47,7 +48,8 @@ public interface CounselorRepository extends JpaRepository<Counselor, Long>, Jpa
             "LEFT JOIN Review r ON res.id = r.id " +
             "WHERE (:name IS NULL OR c.name LIKE %:name%) " +
             "AND (:gender IS NULL OR c.gender = :gender) " +
-            "AND (:level IS NULL OR c.level = :level)" +
+            "AND (:level IS NULL OR c.level = :level) " +
+            "AND c.memberStatus = FALSE " +
             "GROUP BY c.id " +
             "ORDER BY COUNT(r.id) DESC, c.name")
     Page<CounselorResponseDto> searchCounselorsOrderByReviewCount(@Param("name") String name, @Param("gender") String gender, @Param("level") Integer level, Pageable pageable);
@@ -59,7 +61,8 @@ public interface CounselorRepository extends JpaRepository<Counselor, Long>, Jpa
             "LEFT JOIN Review r ON res.id = r.id " +
             "WHERE (:name IS NULL OR c.name LIKE %:name%) " +
             "AND (:gender IS NULL OR c.gender = :gender) " +
-            "AND (:level IS NULL OR c.level = :level)" +
+            "AND (:level IS NULL OR c.level = :level) " +
+            "AND c.memberStatus = FALSE " +
             "GROUP BY c.id " +
             "ORDER BY AVG(r.score) DESC, c.name")
     Page<CounselorResponseDto> searchCounselorsOrderByReviewRating(@Param("name") String name, @Param("gender") String gender, @Param("level") Integer level, Pageable pageable);
