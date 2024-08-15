@@ -45,16 +45,21 @@ const Chatbot = () => {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]); // 채팅 히스토리 관리
   const [isHide, setIsHide] = useState<boolean>(false);
   const chatBoxRef = useRef<HTMLDivElement>(null);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
   const chatRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    setChatHistory([{ role: 'assistant', content: '오늘 하루는 어떠셨나요?' }]);
-  }, []);
+    if (!isInitialized) {
+      setChatHistory([{ role: 'assistant', content: '오늘 하루는 어떠셨나요?' }]);
+      setIsInitialized(true);
+    }
+  }, [isInitialized]);
+  // useEffect(() => {
+  //   setChatHistory([{ role: 'assistant', content: '오늘 하루는 어떠셨나요?' }]);
+  // }, []);
 
-  const getPromptEngineering = (input: string) => {
-    return chatHistory.length == 1
-      ? [{ role: 'system', content: context }]
-      : [{ role: 'user', content: input }];
+  const getPromptEngineering = () => {
+    return [{ role: 'system', content: context }, ...chatHistory];
   };
   const handleQuickReply = (reply: string) => {
     setIsHide(true);
@@ -72,7 +77,7 @@ const Chatbot = () => {
         {
           // model: 'gpt-3.5-turbo',
           model: 'gpt-4o',
-          messages: getPromptEngineering(input),
+          messages: [...getPromptEngineering(), { role: 'user', content: input }],
           temperature: 0.8, // 답변의 창의성, 무작위성. 낮을수록 T
           max_tokens: 256, // 응답받을 메시지 최대 토큰(단어) 수 설정
           top_p: 1, // 토큰 샘플링 확률을 설정, 높을수록 다양한 출력을 유도
@@ -160,7 +165,7 @@ const Chatbot = () => {
               className={`flex items-center snap-center ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {message.role === 'user' && (
-                <div className="flex items-end max-w-[70%]">
+                <div className="flex items-end max-w-[70%] my-1">
                   <div className="bg-orange-200 rounded-lg py-2 px-3 mr-2">
                     <p className="text-sm">{message.content}</p>
                   </div>
@@ -170,7 +175,7 @@ const Chatbot = () => {
                 </div>
               )}
               {message.role === 'assistant' && (
-                <div className="flex items-end max-w-[70%]">
+                <div className="flex items-end max-w-[70%] my-1">
                   <div className="flex-shrink-0 w-10 h-10 mr-2">
                     <img src={chatPrince} alt="도우미" className="w-full h-full rounded-full" />
                   </div>
