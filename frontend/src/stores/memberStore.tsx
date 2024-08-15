@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import axiosInstance from '@/api/axiosInstance';
 import useAuthStore from '@/stores/authStore';
