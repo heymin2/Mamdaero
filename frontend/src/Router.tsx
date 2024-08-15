@@ -53,6 +53,8 @@ import SimpleTestListPage from '@/pages/simpletest/SimpleTestListPage';
 import useAuthStore from '@/stores/authStore';
 import BernardTestPage from './pages/simpletest/BernardTestPage';
 import HTPTestPage from './pages/simpletest/HTPTestPage';
+import { FaceChat } from './pages/mycounsel/faceChat/FaceChat';
+import { FaceChat2 } from './pages/mycounsel/faceChat/FaceChat2';
 import FindPasswordPage from './pages/findpassword/FindPasswordPage';
 
 const Router = () => {
@@ -138,6 +140,10 @@ const Router = () => {
       <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
 
       {/* MyCounsel Routes */}
+
+      {/* TODO: RTC 테스트하고 지우기 */}
+      <Route path="/mycounsel/client/facechat" element={<FaceChat />} />
+      <Route path="/mycounsel/client/facechat2" element={<FaceChat2 />} />
       <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
         <Route path="/mycounsel/cs" element={<CounselHistory />} />
         <Route
