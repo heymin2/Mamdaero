@@ -404,7 +404,7 @@ export const CounselorFaceChat2: React.FC = () => {
           <div className=" bg-gray-100 h-[95%] rounded-lg p-4 shadow-md relative">
             {remoteStreams.size === 0 ? (
               <div className="w-full h-full  rounded-lg bg-gray-300 flex items-center justify-center">
-                <p>상담사 기다리는 중...</p>
+                <p>내담자 기다리는 중...</p>
               </div>
             ) : (
               [...remoteStreams.entries()].map(([key, stream]) => (
