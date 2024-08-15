@@ -8,6 +8,7 @@ import com.mamdaero.domain.reservation.service.ReservationService;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +51,14 @@ public class ReservationController {
     @GetMapping("/cm/reservation/{reservationId}")
     public ResponseEntity<ReservationResponse> findReservationById(@PathVariable(name = "reservationId") Long reservationId) {
         return ResponseEntity.ok(reservationService.getReservation(reservationId));
+    }
+
+    @PatchMapping("/cm/reservation/{reservationId}")
+    public ResponseEntity<ReservationResponse> changeReservationState(@PathVariable(name = "reservationId") Long reservationId) {
+
+        reservationService.updateState(reservationId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
