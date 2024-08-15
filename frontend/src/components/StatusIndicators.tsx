@@ -34,3 +34,22 @@ export const ErrorMessage: React.FC<{ message: string }> = ({ message }) => (
     </div>
   </div>
 );
+
+export const NoDataIndicator: React.FC<{ message: string }> = ({ message }) => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="flex flex-col items-center">
+      <div className="flex space-x-1 mb-4">
+        {message.split('').map((letter, index) => (
+          <span
+            key={index}
+            className="text-3xl font-bold text-orange-500 animate-pulse"
+            style={{ animationDelay: `${index * 0.1}s` }}
+          >
+            {letter}
+          </span>
+        ))}
+      </div>
+      <p className="text-orange-600">요청하신 정보를 찾을 수 없습니다.</p>
+    </div>
+  </div>
+);
