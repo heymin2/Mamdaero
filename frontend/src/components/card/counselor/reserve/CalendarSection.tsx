@@ -70,13 +70,13 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
     <div className="flex justify-center items-center h-full">
       <button
         className="btn btn-xs btn-primary text-xs p-1"
-        onClick={e => {
-          e.stopPropagation(); // 이벤트 버블링 방지
-          if (!isAuthenticated) {
-            alert('로그인 후 이용해주세요.');
-            navigate('/');
-          }
-        }}
+        // onClick={e => {
+        //   e.stopPropagation(); // 이벤트 버블링 방지
+        //   if (!isAuthenticated) {
+        //     alert('로그인 후 이용해주세요.');
+        //     navigate('/');
+        //   }
+        // }}
       >
         {eventInfo.event.title}
       </button>
