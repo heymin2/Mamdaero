@@ -1,10 +1,17 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuthStore from '@/stores/authStore';
+
 interface ButtonProps {
   onClick: () => void;
   color: 'blue' | 'orange' | 'gray';
   disabled: boolean;
 }
 
-const RegisterBUtton = ({ onClick, color, disabled }: ButtonProps) => {
+const RegisterButton = ({ onClick, color, disabled }: ButtonProps) => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+
   const colorClasses = {
     blue: 'bg-blue-200 hover:bg-blue-300',
     orange: 'bg-orange-200 hover:bg-orange-300',
@@ -12,10 +19,19 @@ const RegisterBUtton = ({ onClick, color, disabled }: ButtonProps) => {
   };
   const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : '';
 
+  const handleClick = () => {
+    if (!isAuthenticated) {
+      alert('로그인 후 이용해주세요.');
+      navigate('/');
+    } else {
+      onClick();
+    }
+  };
+
   return (
     <div>
       <button
-        onClick={onClick}
+        onClick={handleClick}
         className={`rounded-md ${colorClasses[color]} ${disabledClass}`}
         disabled={disabled}
       >
@@ -25,4 +41,4 @@ const RegisterBUtton = ({ onClick, color, disabled }: ButtonProps) => {
   );
 };
 
-export default RegisterBUtton;
+export default RegisterButton;
