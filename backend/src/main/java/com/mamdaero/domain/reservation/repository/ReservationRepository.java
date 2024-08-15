@@ -68,6 +68,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             "LEFT JOIN r.symptoms WHERE r.id = :id")
     Reservation findReservationWithDetails(@Param("id") Long id);
 
+    Reservation findByCounselorItemIdAndId(Long counselorItemId, Long reservationId);
+
     Reservation findByMemberIdAndId(Long memberId, Long reservationId);
 
     @Query("SELECT r " +
