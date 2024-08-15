@@ -257,7 +257,7 @@ public class ReservationService {
     @Transactional
     public void updateState(Long consultId) {
         MemberInfoDTO member = findUserService.findMember();
-        if(member == null || !(member.getMemberRole().equals("내담자") || member.getMemberRole().equals("상담사"))) {
+        if (member == null || !(member.getMemberRole().equals("상담사"))) {
             throw new AccessDeniedException();
         }
 
