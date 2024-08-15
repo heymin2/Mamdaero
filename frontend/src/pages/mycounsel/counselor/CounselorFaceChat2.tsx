@@ -1,7 +1,7 @@
 import Button from '@/components/button/Button';
 import MyCounselBar from '@/components/navigation/MyCounselBar';
 import React, { useState, useEffect, useRef, memo } from 'react';
-import { FaMicrophone, FaSyncAlt, FaVideo } from 'react-icons/fa';
+import { FaCheck, FaFileAudio, FaMicrophone, FaSyncAlt, FaVideo } from 'react-icons/fa';
 import fox from '@/assets/chat_fox.png';
 import prince from '@/assets/chat_prince.png';
 import { Client } from '@stomp/stompjs';
@@ -9,7 +9,8 @@ import { useWebRTCStore } from '@/stores/webRTCStore';
 import useMemberStore from '@/stores/memberStore';
 import SockJS from 'sockjs-client';
 import dayjs from 'dayjs';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { completeConsult } from '@/api/consult';
 
 interface Chat {
   sender: number;
@@ -31,9 +32,24 @@ export const CounselorFaceChat2: React.FC = () => {
   const [chatLog, setChatLog] = useState<Chat[]>([]);
 
   const pendingCandidatesMap = new Map<string, RTCIceCandidateInit[]>();
+  const navigate = useNavigate();
 
   const { reservationId } = useParams();
   const { id: memberId } = useMemberStore();
+
+  const handleComplete = () => {
+    if (!reservationId) return;
+    const agree = window.confirm('상담을 완료하시겠습니까?');
+    if (!agree) return;
+    completeConsult(+reservationId)
+      .then(() => {
+        window.alert('상담이 완료되었습니다.');
+        navigate('/');
+      })
+      .catch(() => window.alert('상담 완료에 실패했습니다.'));
+  };
+
+  const recording = () => {};
 
   // 메시지 전송
   const sendMessage = (e: React.FormEvent<HTMLFormElement>) => {
@@ -439,6 +455,20 @@ export const CounselorFaceChat2: React.FC = () => {
             >
               <FaSyncAlt className="mr-1.5 text-sm" />
               <span>연결</span>
+            </button>
+            <button
+              onClick={recording}
+              className="flex items-center px-3 py-1.5 rounded-lg text-xs bg-gray-300  text-gray-700"
+            >
+              <FaFileAudio className="mr-1.5 text-sm" />
+              <span>녹음</span>
+            </button>
+            <button
+              onClick={handleComplete}
+              className="flex items-center px-3 py-1.5 rounded-lg text-xs bg-gray-300  text-gray-700"
+            >
+              <FaCheck className="mr-1.5 text-sm" />
+              <span>상담완료</span>
             </button>
           </div>
         </div>
