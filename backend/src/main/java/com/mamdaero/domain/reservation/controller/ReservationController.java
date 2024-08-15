@@ -53,7 +53,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.getReservation(reservationId));
     }
 
-    @PatchMapping("/cm/reservation/{reservationId}")
+    @PatchMapping("/c/reservation/{reservationId}")
     public ResponseEntity<ReservationResponse> changeReservationState(@PathVariable(name = "reservationId") Long reservationId) {
 
         reservationService.updateState(reservationId);
