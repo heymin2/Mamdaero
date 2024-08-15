@@ -68,10 +68,6 @@ const LoginClient: React.FC = () => {
     loginMutation.mutate({ email, password });
   };
 
-  const signUpLink = () => {
-    navigate('/signup/choose');
-  };
-
   return (
     <form onSubmit={handleSubmit} className="max-w-sm w-full bg-gray-50">
       <label className="w-full max-w-xs">
@@ -102,12 +98,18 @@ const LoginClient: React.FC = () => {
         {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
       </div>
       <Button label="로그인" type="submit" size="full" color="orange" textSize="xl" />
-      <div className="flex pt-4 justify-evenly items-center">
-        <GoogleLoginButton />
-        <KakaoLoginButton />
-        <Button type="button" onClick={signUpLink} label="회원가입" size="lg" color="gray" />
+      <div className="flex font-bold justify-center text-sm mt-4 space-x-2">
+        <div className="text-gray-600">
+          아직 <u>맘대로</u> 회원이 아니신가요?
+        </div>
+        <Link
+          to="/signup/choose"
+          className="font-bold text-orange-500 transition-all duration-300 transform hover:-translate-y-0.5"
+        >
+          회원가입
+        </Link>
       </div>
-      <div className="flex justify-center text-xs mt-4 space-x-2">
+      <div className="flex justify-center text-xs mt-3 space-x-2">
         <div>비밀번호를 잊으셨나요? </div>
         <Link
           to="/find/password"
@@ -116,6 +118,7 @@ const LoginClient: React.FC = () => {
           비밀번호 찾기
         </Link>
       </div>
+      {/* </div> */}
     </form>
   );
 };
