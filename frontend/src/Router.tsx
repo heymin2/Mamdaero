@@ -56,6 +56,8 @@ import HTPTestPage from './pages/simpletest/HTPTestPage';
 import { FaceChat } from './pages/mycounsel/faceChat/FaceChat';
 import { FaceChat2 } from './pages/mycounsel/faceChat/FaceChat2';
 import FindPasswordPage from './pages/findpassword/FindPasswordPage';
+import { ClientFaceChat2 } from './pages/mycounsel/client/ClientFaceChat2';
+import { CounselorFaceChat2 } from './pages/mycounsel/counselor/CounselorFaceChat2';
 
 const Router = () => {
   const { isCounselor, isClient, isAdmin, isAuthenticated, getEmail } = useAuthStore();
@@ -140,9 +142,6 @@ const Router = () => {
       <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
 
       {/* MyCounsel Routes */}
-
-      {/* TODO: RTC 테스트하고 지우기 */}
-      <Route path="/mycounsel/client/facechat" element={<FaceChat />} />
       <Route path="/mycounsel/client/facechat2" element={<FaceChat2 />} />
       <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
         <Route path="/mycounsel/cs" element={<CounselHistory />} />
@@ -150,11 +149,17 @@ const Router = () => {
           path="/mycounsel/:memberId/history/facechat/:counsultId/:clientId"
           element={<CounselorFaceChat />}
         />
+        <Route
+          path="/mycounsel/counselor/facechat/:reservationId"
+          element={<CounselorFaceChat2 />}
+        />
+
         <Route path="/mycounsel/record" element={<CounselRecordList />} />
         <Route path="/mycounsel/record/:clientId/*" element={<CounselRecordDetail />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['내담자']} />}>
         <Route path="/mycounsel" element={<ClientHistory />} />
+        <Route path="/mycounsel/client/facechat/:reservationId" element={<ClientFaceChat2 />} />
 
         <Route
           path="/mycounsel/:memberId/history/facechat/:counsultId/:counselorId"
