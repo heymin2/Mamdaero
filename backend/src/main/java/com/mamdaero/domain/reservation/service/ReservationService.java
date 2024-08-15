@@ -261,9 +261,9 @@ public class ReservationService {
             throw new AccessDeniedException();
         }
 
-        Long memberId = member.getMemberId();
+        CounselorItem counselorItem = counselorItemRepository.getReferenceById(consultId);
 
-        Reservation reservation = reservationRepository.findByMemberIdAndId(memberId, consultId);
+        Reservation reservation = reservationRepository.findByMemberIdAndId(counselorItem.getCounselorId(), consultId);
 
         if (reservation == null) {
             throw new ReservationNotFoundException();
