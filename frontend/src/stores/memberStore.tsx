@@ -4,6 +4,7 @@ import axiosInstance from '@/api/axiosInstance';
 import useAuthStore from '@/stores/authStore';
 
 interface MemberState {
+  id: number | null;
   name: string | null;
   email: string | null;
   nickname: string | null;
@@ -20,6 +21,7 @@ interface MemberState {
 const useMemberStore = create<MemberState>()(
   persist(
     (set, get) => ({
+      id: null,
       name: null,
       email: null,
       nickname: null,
@@ -44,6 +46,7 @@ const useMemberStore = create<MemberState>()(
             headers: { Authorization: `Bearer ${accessToken}` },
           });
           set({
+            id: response.data.id,
             name: response.data.name,
             email: response.data.email,
             nickname: response.data.nickname,
@@ -88,6 +91,7 @@ const useMemberStore = create<MemberState>()(
       },
       clearMember: () =>
         set({
+          id: null,
           name: null,
           email: null,
           nickname: null,
