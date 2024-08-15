@@ -12,15 +12,13 @@ public class ScriptController {
 
     private final ScriptService scriptService;
 
-    @GetMapping("/c/script")
-    // @GetMapping("/c/script/{consultId}")
+    @GetMapping("/c/script/{consultId}")
     public ResponseEntity<String> getScript() {
         String script = scriptService.speechToText();
         return ResponseEntity.ok(script);
     }
 
-    @GetMapping("/c/summarized-script")
-    // @GetMapping("/c/summarized-script/{consultId}")
+    @GetMapping("/c/summarized-script/{consultId}")
     public ResponseEntity<String> getSummarizedScript() {
 
         String script = scriptService.summaryFromGPT();
