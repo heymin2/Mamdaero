@@ -30,15 +30,12 @@ const HTPTestPage = () => {
         <SimpleTestBar testName="HTP" />
       </header>
 
-      <main className="mx-auto font-bold min-h-[70%] text-gray-700 space-y-7 flex flex-col justify-evenly items-center">
-        <section className="border bg-orange-100 rounded-md p-5">
-          <p>준비물(검사도구): A4용지 3장, HB연필, 지우개</p>
-          <p>1. 한 장의 종이에 하나씩 모두 3장의 그림을 그려야 합니다.</p>
-          <p>2. 먼저, 종이를 가로로 두고 집을 그려주세요.</p>
-          <p>3. 그리고, 종이를 세로로 두고 나무를 그려주세요.</p>
-          <p>4. 마지막으로 세로로 사람의 전신을 그려주세요.</p>
+      <main className="mx-auto font-bold min-h-[70%] text-gray-700 space-y-11 flex flex-col justify-evenly items-center">
+        <section className="border text-lg bg-orange-100 rounded-md p-5">
+          <p>1. 그림을 그릴 수 있는 종이와 펜을 준비해주세요.</p>
+          <p>2. 집, 나무, 사람 총 3개의 그림을 그려주세요.</p>
           <p>
-            5. <u>결과보기</u> 를 클릭해서 결과를 확인합니다.
+            3. 3개의 그림을 다 그렸다면 <u>결과보기</u> 버튼을 눌러주세요!
           </p>
         </section>
         <section>
@@ -47,7 +44,7 @@ const HTPTestPage = () => {
             <BiSolidTree size="30%" />
             <BsPersonRaisedHand size="30%" />
           </div>
-          <div className="flex justify-center items-center mt-3">
+          <div className="flex justify-center items-center mt-6">
             <Button
               label="결과보기"
               textSize="xl"
