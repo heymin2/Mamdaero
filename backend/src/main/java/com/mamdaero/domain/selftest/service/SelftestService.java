@@ -3,12 +3,18 @@ package com.mamdaero.domain.selftest.service;
 import com.mamdaero.domain.member.entity.Member;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.selftest.dto.request.TestRequestDto;
+import com.mamdaero.domain.selftest.dto.response.MemberSelftestResponseDto;
+import com.mamdaero.domain.selftest.dto.response.MemberSelftestResultResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestQuestionResponseDto;
 import com.mamdaero.domain.selftest.dto.response.SelftestResponseDto;
 import com.mamdaero.domain.selftest.entity.*;
 import com.mamdaero.domain.selftest.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -54,6 +60,7 @@ public class SelftestService {
                     .member(member)
                     .selftest(selftest)
                     .memberSelftestDate(LocalDateTime.now())
+                    .isPublic(requestDto.getIsPublic())
                     .build();
 
             memberSelftestListRepository.save(memberSelftestList);
@@ -176,5 +183,34 @@ public class SelftestService {
                 .build();
 
         selftestQuestionResponseRepository.save(selftestQuestionResponse);
+    }
+
+    @Transactional
+    public List<MemberSelftestResponseDto> getMemberSelftestList(Long memberId) {
+
+        return memberSelftestListRepository.findLatestByMemberIdAndSelftestId(memberId).stream()
+                .map(MemberSelftestResponseDto::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Page<MemberSelftestResultResponseDto> getMemberSelftestListAll(Long memberId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<MemberSelftestResultResponseDto> memberSelftestLists = memberSelftestListRepository.findByMemberIdAndIsPublic(memberId, true).stream()
+                .map(MemberSelftestResultResponseDto::toDTO)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(memberSelftestLists, pageable, memberSelftestLists.size());
+    }
+
+    @Transactional
+    public MemberSelftestResponseDto getMemberSelftestDetail(Long memberId, Integer resultId) {
+
+        if (memberSelftestListRepository.findById(resultId).isPresent()) {
+            return MemberSelftestResponseDto.toDTO(memberSelftestListRepository.findByMemberIdAndIdAndIsPublic(memberId, resultId, true));
+
+        }
+        throw new RuntimeException("Member selftest not found");
     }
 }

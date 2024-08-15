@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
 import ModalWrapper from '@/components/modal/ModalWrapper';
 import Button from '@/components/button/Button';
-
-interface Product {
-  counselor_item_id: number;
-  counselor_id: number;
-  name: string;
-  description: string | null;
-  fee: number;
-  is_delete: boolean;
-}
+import { CounselorItem } from '@/api/counselorItem';
 
 interface ProductEditModalProps {
   isOpen: boolean;
   onClose: () => void;
-  product: Product;
-  onSave: (editedProduct: Product) => void;
+  product: CounselorItem;
+  onSave: (editedProduct: CounselorItem) => void;
 }
 
 const ProductEditModal: React.FC<ProductEditModalProps> = ({
@@ -24,7 +16,7 @@ const ProductEditModal: React.FC<ProductEditModalProps> = ({
   product,
   onSave,
 }) => {
-  const [editedProduct, setEditedProduct] = useState<Product>(product);
+  const [editedProduct, setEditedProduct] = useState<CounselorItem>(product);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

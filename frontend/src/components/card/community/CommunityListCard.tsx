@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import AlignDropdown from '@/components/dropdown/AlignDropdown';
+
 interface Post {
   id: number;
   title: string;
@@ -15,6 +17,12 @@ interface BoardTableProps {
   currentPage: number;
   totalPages: number;
   paginate: (pageNumber: number) => void;
+  selectedOption2: string;
+  options2: string[];
+  handleOptionChange2: (option: string) => void;
+  searchTerm: string;
+  handleChange: any;
+  handleSearchChange: () => void;
 }
 
 const CommunityListCard: React.FC<BoardTableProps> = ({
@@ -22,6 +30,12 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
   currentPage,
   totalPages,
   paginate,
+  selectedOption2,
+  options2,
+  handleOptionChange2,
+  searchTerm,
+  handleSearchChange,
+  handleChange,
 }) => {
   return (
     <div className="container mx-auto p-4">
@@ -64,6 +78,23 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center mt-4">
+        <AlignDropdown
+          selectedOption={selectedOption2}
+          options={options2}
+          onOptionClick={handleOptionChange2}
+        />
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleChange}
+          placeholder="검색어를 입력해주세요"
+          className=" w-1/4 m-w-4xl p-1.5 rounded-l-lg focus:outline-none focus:ring-0"
+        />
+        <button onClick={handleSearchChange} className="px-4 rounded-r-lg bg-orange-100">
+          검색
+        </button>
+      </div>
       <div className="flex justify-center mt-4">
         {Array.from({ length: totalPages }, (_, i) => (
           <button

@@ -55,6 +55,7 @@ import BernardTestPage from './pages/simpletest/BernardTestPage';
 import HTPTestPage from './pages/simpletest/HTPTestPage';
 import { FaceChat } from './pages/mycounsel/faceChat/FaceChat';
 import { FaceChat2 } from './pages/mycounsel/faceChat/FaceChat2';
+import FindPasswordPage from './pages/findpassword/FindPasswordPage';
 
 const Router = () => {
   const { isCounselor, isClient, isAdmin, isAuthenticated, getEmail } = useAuthStore();
@@ -139,22 +140,27 @@ const Router = () => {
       <Route path="/emotiondiary" element={<EmotionDiaryPage />} />
 
       {/* MyCounsel Routes */}
-      {/* MyCounsel Routes */}
-      <Route path="/mycounsel/counselor/history/" element={<CounselHistory />} />
-      <Route
-        path="/mycounsel/counselor/history/facechat/:counsultId/:memberId"
-        element={<CounselorFaceChat />}
-      />
-      <Route path="/mycounsel/counselor/record" element={<CounselRecordList />} />
-      <Route path="/mycounsel/counselor/record/:clientId/*" element={<CounselRecordDetail />} />
-      <Route path="/mycounsel/client/history" element={<ClientHistory />} />
-      <Route
-        path="/mycounsel/client/history/facechat/:counsultId/:memberId"
-        element={<ClientFaceChat />}
-      />
+
       {/* TODO: RTC 테스트하고 지우기 */}
       <Route path="/mycounsel/client/facechat" element={<FaceChat />} />
       <Route path="/mycounsel/client/facechat2" element={<FaceChat2 />} />
+      <Route element={<ProtectedRoute allowedRoles={['상담사']} />}>
+        <Route path="/mycounsel/cs" element={<CounselHistory />} />
+        <Route
+          path="/mycounsel/:memberId/history/facechat/:counsultId/:clientId"
+          element={<CounselorFaceChat />}
+        />
+        <Route path="/mycounsel/record" element={<CounselRecordList />} />
+        <Route path="/mycounsel/record/:clientId/*" element={<CounselRecordDetail />} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={['내담자']} />}>
+        <Route path="/mycounsel" element={<ClientHistory />} />
+
+        <Route
+          path="/mycounsel/:memberId/history/facechat/:counsultId/:counselorId"
+          element={<ClientFaceChat />}
+        />
+      </Route>
 
       {/* Postit Routes */}
       <Route path="/postit" element={<PostitPage />} />
@@ -166,6 +172,9 @@ const Router = () => {
       <Route path="/simpletest" element={<SimpleTestListPage />} />
       <Route path="/simpletest/bernard" element={<BernardTestPage />} />
       <Route path="/simpletest/htp" element={<HTPTestPage />} />
+
+      {/* FindPassword Routes */}
+      <Route path="find/password" element={<FindPasswordPage />} />
     </Routes>
   );
 };

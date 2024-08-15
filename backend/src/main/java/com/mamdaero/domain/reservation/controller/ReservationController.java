@@ -1,16 +1,14 @@
 package com.mamdaero.domain.reservation.controller;
 
-import com.mamdaero.domain.member.security.service.FindUserService;
 import com.mamdaero.domain.notification.service.notifyCancelReservationService;
 import com.mamdaero.domain.reservation.dto.request.CreateReservationRequest;
 import com.mamdaero.domain.reservation.dto.response.ReservationListResponse;
+import com.mamdaero.domain.reservation.dto.response.ReservationResponse;
 import com.mamdaero.domain.reservation.service.ReservationService;
 import com.mamdaero.global.dto.Pagination;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationController {
     private final ReservationService reservationService;
     private final notifyCancelReservationService notifyCancelReservationService;
-    private final FindUserService findUserService;
     /**
      * 예약하기
      */
@@ -45,6 +42,14 @@ public class ReservationController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(reservationService.getReservationList(page, size));
+    }
+
+    /**
+     * 예약 단건 조회
+     */
+    @GetMapping("/cm/reservation/{reservationId}")
+    public ResponseEntity<ReservationResponse> findReservationById(@PathVariable(name = "reservationId") Long reservationId) {
+        return ResponseEntity.ok(reservationService.getReservation(reservationId));
     }
 
     /**

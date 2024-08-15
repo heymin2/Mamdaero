@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import Button from '@/components/button/Button';
-import { changePassword } from '@/api/client';
+import { changePassword } from '@/api/password';
 
 interface PasswordChangeData {
   currentPassword: string;
@@ -34,6 +34,13 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ user }) => {
     }
   };
 
+  const resetForm = () => {
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setError(null);
+  };
+
   const changePasswordMutation = useMutation<ApiResponse, Error, PasswordChangeData>({
     mutationFn: changePassword,
     onSuccess: data => {
@@ -41,6 +48,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ user }) => {
         setError('현재 비밀번호가 올바르지 않습니다. 다시 확인해 주세요.');
       } else {
         alert('비밀번호가 성공적으로 변경되었습니다.');
+        resetForm();
         const modal = document.getElementById('changePwdModal');
         if (modal instanceof HTMLDialogElement) {
           modal.close();
@@ -74,7 +82,7 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ user }) => {
         size="lg"
         shape="rounded"
         color="gray"
-        textSize="md"
+        textSize="sm"
       />
       <dialog className="modal" id="changePwdModal">
         <div className="modal-box">
@@ -149,11 +157,16 @@ const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({ user }) => {
             </div>
           </form>
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            <button
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              onClick={resetForm}
+            >
+              ✕
+            </button>
           </form>
         </div>
         <form method="dialog" className="modal-backdrop">
-          <button>close</button>
+          <button onClick={resetForm}>close</button>
         </form>
       </dialog>
     </>

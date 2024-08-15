@@ -14,10 +14,10 @@ const SimpleTestList = () => {
     <div>
       <SimpleTestBar testName="간단 그림 심리" />
       <div className="mx-72 my-24 space-y-10">
-        <div className="collapse p-4 bg-blue-50 border-gray-200 border shadow-md">
-          <input type="radio" name="my-accordion-1" defaultChecked />
+        <div className="collapse  p-4 bg-white border-gray-200 border shadow-md">
+          <input type="radio" name="my-accordion-1" />
           <div className="collapse-title text-3xl font-bold">
-            <span className="text-blue-400">베르나르 베르베르</span> 테스트
+            <span className="text-orange-400">베르나르 베르베르</span> 테스트
           </div>
           <div className="collapse-content ">
             <p>
@@ -32,15 +32,15 @@ const SimpleTestList = () => {
                 label="검사 하러가기"
                 size="lg"
                 textSize="lg"
-                color="blue"
+                color="orange"
               />
             </div>
           </div>
         </div>
-        <div className="collapse p-4 bg-blue-50 border-gray-200 border shadow-md">
+        <div className="collapse p-4 bg-white border-gray-200 border shadow-md">
           <input type="radio" name="my-accordion-1" />
           <div className="collapse-title text-3xl font-bold">
-            <span className="text-blue-400">HTP</span> 테스트
+            <span className="text-orange-400">HTP</span> 테스트
           </div>
           <div className="collapse-content ">
             <p>
@@ -49,7 +49,13 @@ const SimpleTestList = () => {
               감정, 내면의 갈등, 그리고 자아 인식을 탐구하기 위해 사용됩니다.
             </p>
             <div className="text-center mt-6">
-              <Button onClick={goHTP} label="검사 하러가기" size="lg" textSize="lg" color="blue" />
+              <Button
+                onClick={goHTP}
+                label="검사 하러가기"
+                size="lg"
+                textSize="lg"
+                color="orange"
+              />
             </div>
           </div>
         </div>

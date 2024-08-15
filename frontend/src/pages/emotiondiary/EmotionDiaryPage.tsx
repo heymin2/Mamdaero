@@ -13,7 +13,7 @@ import EmotionBar from '@/components/navigation/EmotionBar';
 import { DiaryResponse, useGetEmotionDiaryList } from '@/hooks/emotionDiary';
 import dayjs from 'dayjs';
 import useMemberStore from '@/stores/memberStore';
-
+import useAuthStore from '@/stores/authStore';
 const getCurrentDate = () => {
   return dayjs().format('YYYY-MM-DD');
 };
@@ -23,15 +23,17 @@ const EmotionDiaryPage: React.FC = () => {
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
   });
+  const { name } = useMemberStore();
+  const { isAuthenticated } = useAuthStore();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedDiary, setSelectedDiary] = useState<DiaryResponse | null>(null);
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const calendarRef = useRef<FullCalendar | null>(null);
 
-  const { name } = useMemberStore();
 
   const { data: diaryList = [], isLoading: isDairyListLoading } = useGetEmotionDiaryList(
     date.year,
@@ -68,6 +70,21 @@ const EmotionDiaryPage: React.FC = () => {
     }
   };
 
+  const handleWriteDiaryClick = () => {
+    if (!isAuthenticated) {
+      alert('로그인 후 이용해주세요.');
+    } else {
+      const currentDate = getCurrentDate();
+      const isDiaryExist = diaryList?.some(diary => diary.date === currentDate);
+      if (!isDiaryExist) {
+        setSelectedDate(currentDate);
+        setIsWriteModalOpen(true);
+      } else {
+        alert('오늘 일기는 이미 작성되었습니다.');
+      }
+    }
+  };
+
   const renderEventContent = (eventInfo: EventContentArg) => (
     <div className="flex w-full justify-center items-center">
       <img
@@ -97,7 +114,6 @@ const EmotionDiaryPage: React.FC = () => {
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>오늘 일기는 이미 작성되었습니다.</span>
         </div>
       )}
       <div className="container p-4 flex space-x-16">
@@ -161,20 +177,16 @@ const EmotionDiaryPage: React.FC = () => {
         <div className="w-2/5">
           <div className="card bg-base-100 shadow-xl p-4">
             <div className="card-body">
-              <h2 className="card-title text-2xl font-bold mb-2">{name}님</h2>
-              <p className="mb-4">오늘 하루는 어떤 기분이었나요?</p>
+
+              {isAuthenticated ? (
+                <h2 className="card-title text-2xl font-bold mb-2">{name}님</h2>
+              ) : (
+                <div className="card-title">로그인 후 일기를 작성해 보세요!</div>
+              )}
+              <p className="my-2">오늘 하루는 어떤 기분이었나요?</p>
               <button
                 className="btn bg-orange-200 hover:bg-orange-300 text-gray-700 w-full"
-                onClick={() => {
-                  const currentDate = getCurrentDate();
-                  const isDiaryExist = diaryList?.some(diary => diary.date === currentDate);
-                  if (!isDiaryExist) {
-                    setSelectedDate(currentDate);
-                    setIsWriteModalOpen(true);
-                  } else {
-                    setShowAlert(true);
-                  }
-                }}
+                onClick={handleWriteDiaryClick}
               >
                 오늘의 일기 쓰기
               </button>

@@ -3,6 +3,7 @@ package com.mamdaero.domain.member.security.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mamdaero.domain.member.repository.MemberRepository;
 import com.mamdaero.domain.member.security.filter.JsonUsernamePasswordAuthenticationFilter;
+import com.mamdaero.domain.member.security.filter.JsonUsernamePasswordAuthenticationFilterforCounselor;
 import com.mamdaero.domain.member.security.filter.JwtAuthenticationProcessingFilter;
 import com.mamdaero.domain.member.security.handler.LoginFailureHandler;
 import com.mamdaero.domain.member.security.handler.LoginSuccessJWTProvideHandler;
@@ -41,12 +42,12 @@ public class SecurityConfig
                 .formLogin(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp -> csp
-                                .policyDirectives("frame-ancestors 'self' https://mamdaero.o-r.kr") // Content-Security-Policy 설정
+                                .policyDirectives("frame-ancestors 'self' https://mamdaero.o-r.kr http://127.0.0.1:5500") // Content-Security-Policy 설정
                         )
                 )
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/error", "/", "/p/**", "/chatlog/**", "/sub/**", "/pub/**",
-                                "/signaling/**", "/app/**", "/topic/**").permitAll()
+                                "/signaling/**").permitAll()
                         .anyRequest().authenticated())
 //                        .requestMatchers("/c/**").hasRole("상담사")
 //                        .requestMatchers("/m/**").hasRole("내담자")
@@ -57,13 +58,14 @@ public class SecurityConfig
 //                        .requestMatchers("/error", "/", "/p/**").permitAll()
 //                        .anyRequest().authenticated())
                 .logout((logout) -> logout
-                        .logoutSuccessUrl("/p/member/login")
+                        .logoutSuccessUrl("/p/member/client-login")
                         .invalidateHttpSession(true))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
         http
                 .addFilterAfter(jsonUsernamePasswordLoginFilter(), LogoutFilter.class)
+                .addFilterAfter(jsonUsernamePasswordAuthenticationFilterforCounselor(), LogoutFilter.class)
                 .addFilterBefore(jwtAuthenticationProcessingFilter(), JsonUsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -110,6 +112,16 @@ public class SecurityConfig
         jsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessJWTProvideHandler());
         jsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
         return jsonUsernamePasswordLoginFilter;
+    }
+
+    @Bean
+    public JsonUsernamePasswordAuthenticationFilterforCounselor jsonUsernamePasswordAuthenticationFilterforCounselor() throws Exception
+    {
+        JsonUsernamePasswordAuthenticationFilterforCounselor jsonUsernamePasswordAuthenticationFilterforCounselor = new JsonUsernamePasswordAuthenticationFilterforCounselor(objectMapper);
+        jsonUsernamePasswordAuthenticationFilterforCounselor.setAuthenticationManager(authenticationManager());
+        jsonUsernamePasswordAuthenticationFilterforCounselor.setAuthenticationSuccessHandler(loginSuccessJWTProvideHandler());
+        jsonUsernamePasswordAuthenticationFilterforCounselor.setAuthenticationFailureHandler(loginFailureHandler());
+        return jsonUsernamePasswordAuthenticationFilterforCounselor;
     }
 
     @Bean

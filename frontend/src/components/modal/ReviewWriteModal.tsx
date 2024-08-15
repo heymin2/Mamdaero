@@ -9,6 +9,7 @@ interface ReviewWriteModalProps {
   counselorName: string;
   date: string;
   time: string;
+  onSubmit: (review: string, score: number) => void;
 }
 
 const ReviewWriteModal: React.FC<ReviewWriteModalProps> = ({
@@ -17,21 +18,24 @@ const ReviewWriteModal: React.FC<ReviewWriteModalProps> = ({
   counselorName,
   date,
   time,
+  onSubmit,
 }) => {
-  const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState('');
+  const [score, setScore] = useState(0);
   const [hover, setHover] = useState<number | null>(null);
 
   const handleSubmit = () => {
-    const currentTime = new Date().toLocaleString();
-    console.log({
-      counselorName,
-      date: `${date} ${time}`,
-      rating,
-      review,
-      reviewTime: currentTime,
-    });
-    onClose();
+    if (review.trim() === '') {
+      alert('리뷰 내용을 입력해주세요.');
+      return;
+    }
+    if (score === 0) {
+      alert('별점을 선택해주세요.');
+      return;
+    }
+    onSubmit(review, score);
+    setReview('');
+    setScore(0);
   };
 
   return (
@@ -58,12 +62,12 @@ const ReviewWriteModal: React.FC<ReviewWriteModalProps> = ({
                       type="radio"
                       name="rating"
                       value={ratingValue}
-                      onClick={() => setRating(ratingValue)}
+                      onClick={() => setScore(ratingValue)}
                       className="hidden"
                     />
                     <FaStar
                       className="cursor-pointer"
-                      color={ratingValue <= (hover || rating) ? '#ffc107' : '#e4e5e9'}
+                      color={ratingValue <= (hover || score) ? '#ffc107' : '#e4e5e9'}
                       size={30}
                       onMouseEnter={() => setHover(ratingValue)}
                       onMouseLeave={() => setHover(null)}
