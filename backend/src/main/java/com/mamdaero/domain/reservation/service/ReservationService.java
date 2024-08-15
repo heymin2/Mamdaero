@@ -255,20 +255,20 @@ public class ReservationService {
     }
 
     @Transactional
-    public void updateState(Long consultId) {
+    public void updateState(Long reservationId) {
         MemberInfoDTO member = findUserService.findMember();
         if (member == null || !(member.getMemberRole().equals("상담사"))) {
             throw new AccessDeniedException();
         }
 
-        CounselorItem counselorItem = counselorItemRepository.getReferenceById(consultId);
+        Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
 
-        Reservation reservation = reservationRepository.findByMemberIdAndId(counselorItem.getCounselorId(), consultId);
+        if (optionalReservation.isPresent()) {
+            Reservation reservation = optionalReservation.get();
 
-        if (reservation == null) {
+            reservation.update();
+        } else {
             throw new ReservationNotFoundException();
         }
-
-        reservation.update();
     }
 }
