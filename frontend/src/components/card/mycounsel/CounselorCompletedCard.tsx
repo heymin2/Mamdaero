@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Reservation } from '@/pages/mycounsel/props/reservationDetail';
 import { fetchReservationDetail } from '@/pages/mycounsel/props/reservationApis';
@@ -13,20 +13,30 @@ const CounselorCompletedCard: React.FC<Reservation> = ({
   formatTime,
   status,
   memberName,
-  memberId,
 }) => {
   const navigate = useNavigate();
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [reservationDetail, setReservationDetail] = useState<Reservation | null>(null);
 
-  const handleOpenDetailModal = async () => {
-    try {
-      const detail = await fetchReservationDetail(reservationId);
-      setReservationDetail(detail);
+  useEffect(() => {
+    const fetchDetail = async () => {
+      try {
+        const detail = await fetchReservationDetail(reservationId);
+        setReservationDetail(detail);
+      } catch (error) {
+        console.error('Error fetching reservation detail:', error);
+      }
+    };
+
+    fetchDetail();
+  }, [reservationId]);
+
+  const handleOpenDetailModal = () => {
+    if (reservationDetail) {
       setIsDetailModalOpen(true);
-    } catch (error) {
-      alert(`Failed to fetch reservation detail: ${error}`);
+    } else {
+      console.error('Reservation detail not available');
     }
   };
 
@@ -60,7 +70,11 @@ const CounselorCompletedCard: React.FC<Reservation> = ({
           <Button
             label="상담 기록 보기"
             onClick={() => {
-              navigate(`/mycounsel/counselor/record/${memberId}`);
+              if (reservationDetail && reservationDetail.memberId) {
+                navigate(`/mycounsel/record/${reservationDetail.memberId}`);
+              } else {
+                console.error('Member ID not available');
+              }
             }}
             size="lg"
             shape="rounded"
