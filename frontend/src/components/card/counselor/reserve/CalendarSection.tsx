@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import axios from 'axios';
 import axiosInstance from '@/api/axiosInstance';
+import useAuthStore from '@/stores/authStore';
+import { useNavigate } from 'react-router-dom';
 
 interface CalendarSectionProps {
   counselorId: number;
@@ -28,8 +29,16 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
   setAvailableTimes,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleEventClick = async (info: { event: { startStr: string } }) => {
+    if (!isAuthenticated) {
+      alert('로그인 후 이용해주세요.');
+      navigate('/');
+      return;
+    }
+
     const clickedDate = info.event.startStr;
     setSelectedDate(clickedDate);
     await fetchWorkTimes(clickedDate);
@@ -59,7 +68,18 @@ const CalendarSection: React.FC<CalendarSectionProps> = ({
 
   const renderEventContent = (eventInfo: { event: { title: string } }) => (
     <div className="flex justify-center items-center h-full">
-      <button className="btn btn-xs btn-primary text-xs p-1">{eventInfo.event.title}</button>
+      <button
+        className="btn btn-xs btn-primary text-xs p-1"
+        onClick={e => {
+          e.stopPropagation(); // 이벤트 버블링 방지
+          if (!isAuthenticated) {
+            alert('로그인 후 이용해주세요.');
+            navigate('/');
+          }
+        }}
+      >
+        {eventInfo.event.title}
+      </button>
     </div>
   );
 

@@ -27,7 +27,7 @@ interface Post {
 
 const fetchPosts = async (
   page: number,
-  condition: String,
+  condition: string,
   searchField: string,
   searchValue: string
 ): Promise<Page<Post>> => {

@@ -31,7 +31,7 @@ const SupervisionWriteCommentCard: React.FC<SupervisionCommentCardProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const [comment, setComment] = useState<string>('');
-  const { nickname } = useMemberStore();
+  const { name } = useMemberStore();
 
   const mutation = useMutation({
     mutationFn: (comment: string) => postComment(postId, comment),
@@ -41,7 +41,7 @@ const SupervisionWriteCommentCard: React.FC<SupervisionCommentCardProps> = ({
       queryClient.setQueryData<CommentDetail[]>(['comments', postId], old => {
         const newCommentObj: CommentDetail = {
           id: Date.now(),
-          writer: nickname || '익명',
+          writer: name || '익명',
           comment: newComment,
           createdAt: new Date().toISOString(),
         };
@@ -71,7 +71,7 @@ const SupervisionWriteCommentCard: React.FC<SupervisionCommentCardProps> = ({
   return (
     <div className="mx-8 my-6 border rounded-md bg-zinc-50 border-gray-300 shadow-sm">
       <div className="px-8">
-        <div className="font-bold text-lg mb-2 mt-3">{nickname}</div>
+        <div className="font-bold text-lg mb-2 mt-3">{name}</div>
         <div className="bg-zinc-50">
           <textarea
             value={comment}
