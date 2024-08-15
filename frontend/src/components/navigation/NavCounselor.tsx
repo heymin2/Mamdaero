@@ -52,10 +52,11 @@ const NavClient: React.FC = () => {
     }
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleAlarmClick = () => {
-    setIsModalOpen(true);
+    const modal = document.getElementById('alarm_modal') as HTMLDialogElement | null;
+    if (modal) {
+      modal.showModal();
+    }
   };
 
   return (
@@ -125,22 +126,19 @@ const NavClient: React.FC = () => {
         </div>
       )}
       <div className="flex justify-evenly mt-auto mb-5">
+        {/* 공지사항 */}
         <Link to="/notice" className="font-bold">
           <div className="transition-transform transform hover:-translate-y-0.5">공지사항</div>
         </Link>
+        {/* 알람 */}
         <div
           onClick={handleAlarmClick}
           className="transition-transform transform hover:-translate-y-0.5 cursor-pointer"
         >
           <LuBellRing size={24} />
         </div>
-        <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        {/* <div>
-          <button onClick={() => setIsModalOpen(true)}>
-            <LuBellRing size={24} />
-          </button>
-          <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        </div> */}
+        <AlarmModal />
+        {/* 마이페이지 */}
         <div className="transition-transform transform hover:-translate-y-0.5">
           <ProfileDropdown />
         </div>
