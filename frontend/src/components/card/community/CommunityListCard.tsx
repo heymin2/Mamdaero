@@ -37,15 +37,20 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
   handleSearchChange,
   handleChange,
 }) => {
+  const truncateTitle = (title: string, maxLength: number = 26) => {
+    if (title.length <= maxLength) return title;
+    return `${title.slice(0, maxLength)}...`;
+  };
+
   return (
     <div className="container mx-auto p-4">
       <table className="min-w-full table-fixed">
         <colgroup>
           <col className="w-[10%]" />
           <col className="w-[40%]" />
-          <col className="w-[16%]" />
-          <col className="w-[7%]" />
-          <col className="w-[7%]" />
+          <col className="w-[14%]" />
+          <col className="w-[8%]" />
+          <col className="w-[8%]" />
           <col className="w-[20%]" />
         </colgroup>
         <thead>
@@ -66,8 +71,8 @@ const CommunityListCard: React.FC<BoardTableProps> = ({
             >
               <td className="px-4 py-2 text-center truncate">{post.id}</td>
               <td className="px-4 py-2 text-center truncate">
-                <Link to={`/community/${post.id}`} className="hover:underline">
-                  {post.title}
+                <Link to={`/community/${post.id}`} className="hover:underline" title={post.title}>
+                  {truncateTitle(post.title)}
                 </Link>
               </td>
               <td className="px-4 py-2 text-center truncate">{post.writer}</td>

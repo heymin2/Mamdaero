@@ -12,7 +12,7 @@ interface ReportWriteModalProps {
 
 interface ReportSubmitData {
   title: string;
-  content: string;
+  detail: string;
   opinion: string;
 }
 
@@ -23,7 +23,7 @@ const submitReport = async (consultId: number, data: ReportSubmitData) => {
 
 const ReportWriteModal: React.FC<ReportWriteModalProps> = ({ isOpen, onClose, consultId }) => {
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [detail, setDetail] = useState('');
   const [opinion, setOpinion] = useState('');
 
   const queryClient = useQueryClient();
@@ -35,18 +35,17 @@ const ReportWriteModal: React.FC<ReportWriteModalProps> = ({ isOpen, onClose, co
       onClose();
     },
     onError: error => {
-      console.error('Error submitting report:', error);
       alert('보고서 제출 중 오류가 발생했습니다.');
     },
   });
 
   const handleSubmit = () => {
-    if (!title || !content || !opinion) {
+    if (!title || !detail || !opinion) {
       alert('모든 필드를 작성해주세요.');
       return;
     }
 
-    mutation.mutate({ title, content, opinion });
+    mutation.mutate({ title, detail, opinion });
   };
 
   return (
@@ -66,8 +65,8 @@ const ReportWriteModal: React.FC<ReportWriteModalProps> = ({ isOpen, onClose, co
             <label className="block font-bold mb-2">상담 내용</label>
             <textarea
               className="w-full h-32 p-2 border rounded"
-              value={content}
-              onChange={e => setContent(e.target.value)}
+              value={detail}
+              onChange={e => setDetail(e.target.value)}
             />
           </div>
           <div className="mb-4">
