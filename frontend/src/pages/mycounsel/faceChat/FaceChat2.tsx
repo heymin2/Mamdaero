@@ -3,7 +3,6 @@ import { useWebRTCStore } from '@/stores/webRTCStore';
 import { Client } from '@stomp/stompjs';
 import React, { useEffect } from 'react';
 import SockJS from 'sockjs-client';
-import { Chat } from './Chat';
 const myKey = Math.random().toString(36).substr(2, 11);
 const roomId = '2';
 export const FaceChat2: React.FC = () => {

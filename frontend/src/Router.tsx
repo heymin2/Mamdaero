@@ -53,7 +53,6 @@ import SimpleTestListPage from '@/pages/simpletest/SimpleTestListPage';
 import useAuthStore from '@/stores/authStore';
 import BernardTestPage from './pages/simpletest/BernardTestPage';
 import HTPTestPage from './pages/simpletest/HTPTestPage';
-import { FaceChat } from './pages/mycounsel/faceChat/FaceChat';
 import { FaceChat2 } from './pages/mycounsel/faceChat/FaceChat2';
 import FindPasswordPage from './pages/findpassword/FindPasswordPage';
 import { ClientFaceChat2 } from './pages/mycounsel/client/ClientFaceChat2';
