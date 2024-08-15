@@ -21,6 +21,7 @@ const ReservConfirmCard: React.FC = () => {
   } = useQuery<Reservation[], Error>({
     queryKey: ['reservations'],
     queryFn: fetchReservation,
+    select: res => res?.filter(reservation => reservation.status === '예약완료'),
   });
 
   if (isLoading) return <div>Loading...</div>;
