@@ -41,7 +41,7 @@ const DiaryWriteModal: React.FC<DiaryWriteModalProps> = ({ isOpen, date, onClose
       <div className="bg-gray-100 p-4 rounded-lg shadow-lg mx-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">날짜</h2>
-          <div className="bg-orange-200 px-4 py-2 rounded">{date}</div>
+          <div className="bg-orange-200 px-4 py-2 rounded font-bold">{date}</div>
           <div className="flex items-center">
             <span className="mr-2">오늘의 감정</span>
             {Object.keys(emotionImages).map(key => (
@@ -78,7 +78,7 @@ const DiaryWriteModal: React.FC<DiaryWriteModalProps> = ({ isOpen, date, onClose
           />
 
           <div className="flex justify-center mt-4">
-            <button type="submit" className="px-6 py-2 bg-orange-300 text-white rounded-full">
+            <button type="submit" className="px-6 py-2 bg-orange-300 font-bold rounded-full">
               작성 완료
             </button>
           </div>

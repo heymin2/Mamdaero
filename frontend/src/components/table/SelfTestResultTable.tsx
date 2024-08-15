@@ -4,6 +4,7 @@ import axiosInstance from '@/api/axiosInstance';
 import Button from '@/components/button/Button';
 import { FiChevronDown } from 'react-icons/fi';
 import TestDetailModal from '@/components/modal/TestDetailModal';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 interface SelfTestResult {
   memberSelfTestId: number;
@@ -86,8 +87,8 @@ const SelfTestResultTable: React.FC<SelfTestResultTableProps> = ({ clientId }) =
     setSelectedTestResult(null);
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading self-test results</div>;
+  if (isLoading) return <LoadingIndicator />;
+  if (isError) return <ErrorMessage message="FAILED TO LOAD" />;
   if (data?.content.length === 0) {
     return <div className="text-center py-4">검사 결과가 없습니다.</div>;
   }
@@ -95,7 +96,7 @@ const SelfTestResultTable: React.FC<SelfTestResultTableProps> = ({ clientId }) =
   return (
     <div className="flex flex-col items-center">
       <table className="table w-full text-center">
-        <thead>
+        <thead className="text-base">
           <tr>
             <th></th>
             <th className="relative">
@@ -141,7 +142,7 @@ const SelfTestResultTable: React.FC<SelfTestResultTableProps> = ({ clientId }) =
             <th>결과 상세보기</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-base">
           {filteredAndSortedResults.map((selfTestResult, index) => (
             <tr key={selfTestResult.memberSelfTestId}>
               <td>{filteredAndSortedResults.length - index}</td>

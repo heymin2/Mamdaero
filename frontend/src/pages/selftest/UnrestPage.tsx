@@ -56,8 +56,8 @@ const UnrestPage: React.FC = () => {
         <FaCheck />
         <div>{unrestInfo ? unrestInfo.selftestInfo : ''}</div>
       </div>
-      {isAuthenticated && (
-        <div className="flex justify-center mb-4">
+      <div className="flex justify-center m-4">
+        {isAuthenticated && (
           <div className="form-control">
             <label className="label cursor-pointer">
               <span className="label-text mr-2">상담사 공개</span>
@@ -69,8 +69,8 @@ const UnrestPage: React.FC = () => {
               />
             </label>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       <div className="flex justify-center w-full">
         <div className="w-full max-w-4xl px-4">
           <table className="table w-full rounded-lg overflow-hidden">
