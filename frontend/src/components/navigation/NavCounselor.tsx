@@ -128,19 +128,19 @@ const NavClient: React.FC = () => {
         <Link to="/notice" className="font-bold">
           <div className="transition-transform transform hover:-translate-y-0.5">공지사항</div>
         </Link>
-        {/* <button
+        <div
           onClick={handleAlarmClick}
-          className="transition-transform transform hover:-translate-y-0.5"
+          className="transition-transform transform hover:-translate-y-0.5 cursor-pointer"
         >
           <LuBellRing size={24} />
-        </button>
-        <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
-        <div>
+        </div>
+        <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        {/* <div>
           <button onClick={() => setIsModalOpen(true)}>
             <LuBellRing size={24} />
           </button>
-          {/* <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} /> */}
-        </div>
+          <AlarmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        </div> */}
         <div className="transition-transform transform hover:-translate-y-0.5">
           <ProfileDropdown />
         </div>
