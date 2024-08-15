@@ -7,6 +7,7 @@ import { fetchReservationDetail, deleteReservation } from '@/pages/mycounsel/pro
 import Button from '@/components/button/Button';
 import ChatModal from '@/components/modal/ChatModal';
 import ReservationDetailModal from '@/components/modal/ReservationDetailModal';
+import { useWebRTCStore } from '@/stores/webRTCStore';
 
 const CounselorReservationStatusCard: React.FC<Reservation> = ({
   reservationId,
@@ -24,6 +25,8 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const { setReservationId } = useWebRTCStore();
 
   const handleCancelReservation = async () => {
     const isConfirmed = window.confirm('정말 예약을 취소하시겠습니까?');
@@ -53,6 +56,11 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
     } catch (error) {
       alert(`Failed to fetch reservation detail: ${error}`);
     }
+  };
+
+  const enterFaceChat = () => {
+    setReservationId(reservationId);
+    navigate(`/mycounsel/counselor/facechat/${reservationId}`);
   };
 
   return (
@@ -105,9 +113,7 @@ const CounselorReservationStatusCard: React.FC<Reservation> = ({
             <>
               <Button
                 label="1:1 화상 채팅"
-                onClick={() =>
-                  navigate(`/mycounsel/counselor/history/facechat/${reservationId}/${memberId}`)
-                }
+                onClick={enterFaceChat}
                 size="lg"
                 shape="rounded"
                 color="blue"
