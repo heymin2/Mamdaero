@@ -102,7 +102,7 @@ const CounselorListPage: React.FC = () => {
             나에게 딱 맞는 상담사를 만나보세요.
           </div>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center position z-10 ">
           <AlignDropdown
             selectedOption={selectedOption1}
             options={options1}

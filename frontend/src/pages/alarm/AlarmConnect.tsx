@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 import toast, { Toaster } from 'react-hot-toast';
 import AlarmToast from './BoardAlarmToast.tsx';
 import ReservationAlarmToast from './ReservationAlarmToast.tsx';
@@ -11,9 +11,9 @@ const AlarmConnect = () => {
   const accessToken = parsedData ? parsedData.state.accessToken : null;
   const queryClient = useQueryClient();
 
-  console.log(storedData);
-  console.log(storedData);
-  console.log(accessToken);
+  // console.log(storedData);
+  // console.log(storedData);
+  // console.log(accessToken);
 
   useEffect(() => {
     // const EventSource = EventSourcePolyfill || NativeEventSource;
@@ -26,7 +26,6 @@ const AlarmConnect = () => {
           'Accept': 'text/event-stream',
           'X-Accel-Buffering': 'no',
         },
-        heartbeatTimeout: 86400000,
         withCredentials: true,
       }
     );

@@ -33,7 +33,7 @@ const CounselorProfileCard: React.FC<CounselorCardProps> = ({
           </div>
           <div className="text-md mt-3">{counselorIntro}</div>
           <div className="mt-auto transition-transform transform hover:-translate-y-1">
-            <Link to={`/counselor/${counselorId}`} className="text-orange-400 font-bold ">
+            <Link to={`/counselor/${counselorId}`} className="text-orange-400 font-bold">
               상담사 프로필 보기
             </Link>
           </div>

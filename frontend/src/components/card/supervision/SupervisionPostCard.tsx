@@ -172,7 +172,6 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
     }
     toggleLikeMutation.mutate();
   };
-
   return (
     <div className="space-y-3">
       {/* 게시글 제목 헤더 */}
@@ -220,7 +219,7 @@ const SupervisionPostCard: React.FC<SupervisionPostCardProps> = ({ postDetail, q
 
       <div className="bottom-3 right-5 flex justify-between text-base gap-1 py-2 ps-10 pr-12">
         <div>
-          {file && (
+          {file.length > 0 && (
             <div>
               <span className="font-bold mr-2">첨부 파일</span>
               <a
