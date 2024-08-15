@@ -5,13 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient, InvalidateQueryFilters } from '@tanstack/react-query';
 
 import parse, { DOMNode, Element } from 'html-react-parser';
-import { BsThreeDots } from 'react-icons/bs';
-import { IoMdHeart, IoMdHeartEmpty } from 'react-icons/io';
 import EditButton from '@/components/button/EditButton';
 import DeleteButton from '@/components/button/DeleteButton';
-import ReportButton from '@/components/button/ReportButton';
 import useAuthStore from '@/stores/authStore';
-
 interface NoticePostCardProps {
   postDetail: {
     noticeId: number;
@@ -28,7 +24,7 @@ const NoticePostCard: React.FC<NoticePostCardProps> = ({ postDetail, queryKey })
   const queryClient = useQueryClient();
   const { noticeId, title, content, view } = postDetail;
   const createdAt = dayjs(postDetail.createdAt).format('YYYY-MM-DD HH:mm:ss');
-  const { isAuthenticated } = useAuthStore();
+  const { isAdmin } = useAuthStore();
   // 이미지 로딩 핸들러
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.style.maxWidth = '100%'; // 이미지가 컨테이너에 맞게 조정됨
@@ -52,7 +48,6 @@ const NoticePostCard: React.FC<NoticePostCardProps> = ({ postDetail, queryKey })
             );
           }
         }
-        // 기본적으로는 domNode를 그대로 반환
         return domNode;
       },
     });
@@ -104,12 +99,14 @@ const NoticePostCard: React.FC<NoticePostCardProps> = ({ postDetail, queryKey })
               <span className="font-bold">{view}</span>
             </div>
           </div>
-          <div className="justify-end">
-            <div className="flex gap-2">
-              <EditButton color="gray" onClick={handleArticleEdit} />
-              <DeleteButton onClick={handleArticleDelete} />
+          {isAdmin() && (
+            <div className="justify-end">
+              <div className="flex gap-2">
+                <EditButton color="gray" onClick={handleArticleEdit} />
+                <DeleteButton onClick={handleArticleDelete} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       {/* 게시글 내용 */}

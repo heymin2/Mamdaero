@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import useAuthStore from '@/stores/authStore';
@@ -106,6 +106,15 @@ const LoginClient: React.FC = () => {
         <GoogleLoginButton />
         <KakaoLoginButton />
         <Button type="button" onClick={signUpLink} label="회원가입" size="lg" color="gray" />
+      </div>
+      <div className="flex justify-center text-xs mt-4 space-x-2">
+        <div>비밀번호를 잊으셨나요? </div>
+        <Link
+          to="/find/password"
+          className="font-bold text-orange-400 transition-all duration-300 transform hover:-translate-y-0.5"
+        >
+          비밀번호 찾기
+        </Link>
       </div>
     </form>
   );

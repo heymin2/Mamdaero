@@ -1,53 +1,69 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '@/api/axiosInstance';
 import Button from '@/components/button/Button';
 import ReportWriteModal from '@/components/modal/ReportWriteModal';
 import ReportViewModal from '@/components/modal/ReportViewModal';
 import ScriptSummaryModal from '@/components/modal/ScriptSummaryModal';
 import ScriptViewModal from '@/components/modal/ScriptViewModal';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
-interface Record {
+interface ConsultReport {
+  clientName: string;
   date: string;
-  time: string;
-  report?: { title: string; detail: string; opinion: string };
-  script: string;
+  time: number;
+  scriptUrl: string | null;
+  summarizedScriptUrl: string | null;
+  consultId: number;
+  hasReport: boolean;
+}
+
+interface ReportInfoResponse {
+  data: ConsultReport[];
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  totalItems: number;
 }
 
 interface ReportInfoProps {
-  records: Record[];
-  clientName: string;
+  clientId: string;
 }
 
-const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => {
+const fetchReportInfo = async (clientId: string): Promise<ReportInfoResponse> => {
+  const response = await axiosInstance.get(`/c/${clientId}/consult-report`);
+  return response.data;
+};
+
+const ReportInfoTable: React.FC<ReportInfoProps> = ({ clientId }) => {
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isScriptModalOpen, setIsScriptModalOpen] = useState(false);
   const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<Record | null>(null);
+  const [selectedReport, setSelectedReport] = useState<ConsultReport | null>(null);
 
-  // Sort records by date in descending order
-  const sortedRecords = useMemo(() => {
-    return [...records].sort((a, b) => {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    });
-  }, [records]);
+  const { data, isLoading, isError } = useQuery<ReportInfoResponse, Error>({
+    queryKey: ['reportInfo', clientId],
+    queryFn: () => fetchReportInfo(clientId),
+  });
 
-  const handleOpenWriteModal = (record: Record) => {
-    setSelectedRecord(record);
+  const handleOpenWriteModal = (report: ConsultReport) => {
+    setSelectedReport(report);
     setIsWriteModalOpen(true);
   };
 
-  const handleOpenViewModal = (record: Record) => {
-    setSelectedRecord(record);
+  const handleOpenViewModal = (report: ConsultReport) => {
+    setSelectedReport(report);
     setIsViewModalOpen(true);
   };
 
-  const handleOpenScriptModal = (record: Record) => {
-    setSelectedRecord(record);
+  const handleOpenScriptModal = (report: ConsultReport) => {
+    setSelectedReport(report);
     setIsScriptModalOpen(true);
   };
 
-  const handleOpenSummaryModal = (record: Record) => {
-    setSelectedRecord(record);
+  const handleOpenSummaryModal = (report: ConsultReport) => {
+    setSelectedReport(report);
     setIsSummaryModalOpen(true);
   };
 
@@ -56,13 +72,18 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
     setIsViewModalOpen(false);
     setIsScriptModalOpen(false);
     setIsSummaryModalOpen(false);
-    setSelectedRecord(null);
+    setSelectedReport(null);
   };
 
+  if (isLoading) return <LoadingIndicator />;
+  if (isError) return <ErrorMessage message="FAILED TO LOAD" />;
+  if (data?.data.length === 0) {
+    return <div className="text-center py-4">완료된 상담이 없습니다.</div>;
+  }
   return (
     <div className="overflow-x-auto">
       <table className="table w-full text-center">
-        <thead>
+        <thead className="text-base">
           <tr>
             <th></th>
             <th>날짜</th>
@@ -71,33 +92,33 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
             <th>보고서</th>
           </tr>
         </thead>
-        <tbody>
-          {sortedRecords.map((record, index) => (
-            <tr key={sortedRecords.length - index}>
-              <td>{sortedRecords.length - index}</td>
-              <td>{record.date}</td>
-              <td>{record.time}</td>
+        <tbody className="text-base">
+          {data?.data.map((report, index) => (
+            <tr key={report.consultId}>
+              <td>{index + 1}</td>
+              <td>{report.date}</td>
+              <td>{report.time}:00</td>
               <td className="space-x-3">
                 <Button
                   label="전체 보기"
-                  onClick={() => handleOpenScriptModal(record)}
+                  onClick={() => handleOpenScriptModal(report)}
                   size="sm"
                   color="blue"
                   textSize="xs"
                 />
                 <Button
                   label="요약 보기"
-                  onClick={() => handleOpenSummaryModal(record)}
+                  onClick={() => handleOpenSummaryModal(report)}
                   size="sm"
                   color="blue"
                   textSize="xs"
                 />
               </td>
               <td>
-                {record.report ? (
+                {report.hasReport ? (
                   <Button
                     label="보고서 보기"
-                    onClick={() => handleOpenViewModal(record)}
+                    onClick={() => handleOpenViewModal(report)}
                     size="sm"
                     color="blue"
                     textSize="xs"
@@ -105,7 +126,7 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
                 ) : (
                   <Button
                     label="보고서 작성"
-                    onClick={() => handleOpenWriteModal(record)}
+                    onClick={() => handleOpenWriteModal(report)}
                     size="sm"
                     color="orange"
                     textSize="xs"
@@ -116,42 +137,27 @@ const ReportInfoTable: React.FC<ReportInfoProps> = ({ records, clientName }) => 
           ))}
         </tbody>
       </table>
-      {selectedRecord && (
+      {selectedReport && (
         <>
           <ReportWriteModal
             isOpen={isWriteModalOpen}
-            onClose={handleCloseModal}
-            clientName={clientName}
-            date={selectedRecord.date}
-            time={selectedRecord.time}
+            onClose={() => setIsWriteModalOpen(false)}
+            consultId={selectedReport?.consultId || 0}
           />
-          {selectedRecord.report && (
-            <ReportViewModal
-              isOpen={isViewModalOpen}
-              onClose={handleCloseModal}
-              clientName={clientName}
-              date={selectedRecord.date}
-              time={selectedRecord.time}
-              title={selectedRecord.report.title}
-              detail={selectedRecord.report.detail}
-              opinion={selectedRecord.report.opinion}
-            />
-          )}
+          <ReportViewModal
+            isOpen={isViewModalOpen}
+            onClose={() => setIsViewModalOpen(false)}
+            consultId={selectedReport?.consultId || 0}
+          />
           <ScriptViewModal
             isOpen={isScriptModalOpen}
-            onClose={handleCloseModal}
-            clientName={clientName}
-            date={selectedRecord.date}
-            time={selectedRecord.time}
-            script={selectedRecord.script}
+            onClose={() => setIsScriptModalOpen(false)}
+            consultId={selectedReport?.consultId || 0}
           />
           <ScriptSummaryModal
             isOpen={isSummaryModalOpen}
-            onClose={handleCloseModal}
-            clientName={clientName}
-            date={selectedRecord.date}
-            time={selectedRecord.time}
-            script={selectedRecord.script}
+            onClose={() => setIsSummaryModalOpen(false)}
+            consultId={selectedReport?.consultId || 0}
           />
         </>
       )}

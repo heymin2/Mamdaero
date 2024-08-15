@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -10,6 +10,7 @@ import useAuthStore from '@/stores/authStore';
 import useCounselorStore from '@/stores/couselorStore';
 import { useCounselorWorktime } from '@/hooks/useCounselorWorktime';
 import dayjs from 'dayjs';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 const CounselorManageExcludePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(dayjs().format('YYYY-MM-DD'));
@@ -19,6 +20,13 @@ const CounselorManageExcludePage: React.FC = () => {
   const counselorId = useCounselorStore(state => state.id);
 
   const { workTimes, isLoading, isError, updateWorkTimes } = useCounselorWorktime();
+  const [originalWorkTimes, setOriginalWorkTimes] = useState<typeof workTimes>([]);
+
+  useEffect(() => {
+    if (workTimes.length > 0 && originalWorkTimes.length === 0) {
+      setOriginalWorkTimes(workTimes);
+    }
+  }, [workTimes, originalWorkTimes]);
 
   const handleEventClick = (arg: EventClickArg) => {
     const clickedDate = dayjs(arg.event.start).format('YYYY-MM-DD');
@@ -33,7 +41,7 @@ const CounselorManageExcludePage: React.FC = () => {
     return (
       <div className="flex justify-center items-center h-full">
         <button
-          className={`btn btn-sm ${hasWorkTime ? 'btn-primary' : 'btn-secondary'} text-gray-50 text-md p-1 w-12`}
+          className={`btn btn-sm ${hasWorkTime ? 'btn-secondary' : 'btn-primary'} text-gray-50 text-md p-1 w-12`}
         >
           {hasWorkTime ? '근무' : '휴무'}
         </button>
@@ -68,9 +76,40 @@ const CounselorManageExcludePage: React.FC = () => {
     }
   };
 
+  const handleAllToggle = (isWorkTime: boolean) => {
+    const selectedWorkTimes = workTimes.filter(wt => wt.date === selectedDate && !wt.isReserved);
+    const updates = selectedWorkTimes.map(wt => ({
+      workTimeId: wt.id,
+      isWorkTime: isWorkTime,
+    }));
+    updateWorkTimes(updates);
+  };
+
+  const handleReset = () => {
+    const selectedWorkTimes = originalWorkTimes.filter(wt => wt.date === selectedDate);
+    const updates = selectedWorkTimes.map(wt => ({
+      workTimeId: wt.id,
+      isWorkTime: wt.isWorkTime,
+    }));
+    updateWorkTimes(updates);
+  };
+
+  const isAllSelected = useMemo(() => {
+    const selectedWorkTimes = workTimes.filter(wt => wt.date === selectedDate && !wt.isReserved);
+    return selectedWorkTimes.every(wt => wt.isWorkTime);
+  }, [workTimes, selectedDate]);
+
+  const hasChanges = useMemo(() => {
+    const selectedOriginalWorkTimes = originalWorkTimes.filter(wt => wt.date === selectedDate);
+    const selectedCurrentWorkTimes = workTimes.filter(wt => wt.date === selectedDate);
+    return !selectedOriginalWorkTimes.every(
+      (owt, index) => owt.isWorkTime === selectedCurrentWorkTimes[index]?.isWorkTime
+    );
+  }, [workTimes, originalWorkTimes, selectedDate]);
+
   if (!counselorId) return <div>Counselor information not available</div>;
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading work times</div>;
+  if (isLoading) return <LoadingIndicator />;
+  if (isError) return <ErrorMessage message="FAILED TO LOAD" />;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -104,6 +143,7 @@ const CounselorManageExcludePage: React.FC = () => {
                   start: dayjs().toDate(),
                   end: dayjs().add(4, 'week').toDate(),
                 }}
+                titleFormat={{ year: 'numeric', month: 'numeric' }}
                 height="100%"
                 eventColor="#ffffff"
                 aspectRatio={1.35}
@@ -114,7 +154,18 @@ const CounselorManageExcludePage: React.FC = () => {
                 <h2 className="text-xl font-bold mt-2">시간 선택</h2>
                 <div className="divider"></div>
                 <div className="min-h-[400px] flex flex-col justify-center">
-                  <p className="text-blue-500 mb-4">선택된 날짜: {selectedDate}</p>
+                  <p className="text-blue-500 font-bold">선택된 날짜: {selectedDate}</p>
+                  <div className="flex items-center justify-between mb-2 text-sm">
+                    <label className="cursor-pointer label">
+                      <span className="label-text mr-2">전체 선택</span>
+                      <input
+                        type="checkbox"
+                        checked={isAllSelected}
+                        onChange={e => handleAllToggle(e.target.checked)}
+                        className="checkbox checkbox-secondary"
+                      />
+                    </label>
+                  </div>
                   <div className="grid grid-cols-2 gap-2 mb-4 max-h-80 overflow-y-auto">
                     {workTimes
                       .filter(wt => wt.date === selectedDate)
@@ -132,6 +183,16 @@ const CounselorManageExcludePage: React.FC = () => {
                           {workTime.time.toString().padStart(2, '0')}:00
                         </button>
                       ))}
+                  </div>
+                  <div className="flex justify-end mr-4">
+                    <Button
+                      label="되돌리기"
+                      onClick={handleReset}
+                      size="sm"
+                      textSize="sm"
+                      color="gray"
+                      disabled={!hasChanges}
+                    />
                   </div>
                 </div>
               </div>
