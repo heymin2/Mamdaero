@@ -11,9 +11,9 @@ const AlarmConnect = () => {
   const accessToken = parsedData ? parsedData.state.accessToken : null;
   const queryClient = useQueryClient();
 
-  console.log(storedData);
-  console.log(storedData);
-  console.log(accessToken);
+  // console.log(storedData);
+  // console.log(storedData);
+  // console.log(accessToken);
 
   useEffect(() => {
     // const EventSource = EventSourcePolyfill || NativeEventSource;

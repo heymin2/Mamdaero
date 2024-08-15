@@ -20,6 +20,8 @@ import {
   useUpdatePostit,
 } from '@/hooks/postit';
 import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
+import useAuthStore from '@/stores/authStore';
+import { useNavigate } from 'react-router-dom';
 
 const postitImages = [Postit, Postit2, Postit3];
 
@@ -38,14 +40,20 @@ interface Question {
   content: string;
 }
 
+interface EditPostitState {
+  questionId: number;
+  postitId: number;
+  content: string;
+}
+
 const PostitPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
   const [modalState, setModalState] = useState<{ type: 'create' | 'update'; isOpen: boolean }>({
     type: 'create',
     isOpen: false,
   });
-  const [editPostit, setEditPostit] = useState<
-    { questionId: number; postitId: number; content: string } | undefined
-  >(undefined);
+  const [editPostit, setEditPostit] = useState<EditPostitState | undefined>(undefined);
   const nextFetchTargetRef = useRef<HTMLDivElement | null>(null);
 
   const { mutateAsync: complaintPostit } = useComplaintPostit();
@@ -54,7 +62,6 @@ const PostitPage: React.FC = () => {
   const { mutateAsync: updatePostit } = useUpdatePostit();
   const { mutateAsync: deletePostit } = useDeletePostit();
 
-  // 질문 가져오기
   const {
     data: questionData,
     isLoading: isQuestionLoading,
@@ -64,7 +71,6 @@ const PostitPage: React.FC = () => {
     queryFn: getQuestion,
   });
 
-  // 포스트잇 가져오기
   const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteQuery({
     initialPageParam: 0,
     enabled: !!questionData,
@@ -78,7 +84,17 @@ const PostitPage: React.FC = () => {
     },
   });
 
+  const checkAuth = () => {
+    if (!isAuthenticated) {
+      alert('로그인 후 이용해주세요.');
+      navigate('/');
+      return false;
+    }
+    return true;
+  };
+
   const handleLike = (id: number) => {
+    if (!checkAuth()) return;
     likePostit(id)
       .then(() => {})
       .catch(() => {
@@ -87,6 +103,7 @@ const PostitPage: React.FC = () => {
   };
 
   const handleComplaint = (id: number) => {
+    if (!checkAuth()) return;
     complaintPostit(id)
       .then(() => {
         alert('신고가 성공적으로 등록되었습니다.');
@@ -97,6 +114,7 @@ const PostitPage: React.FC = () => {
   };
 
   const handleCreatePostit = (content: string) => {
+    if (!checkAuth()) return;
     if (!questionData?.id) {
       alert('질문이 없습니다.');
       return;
@@ -112,6 +130,7 @@ const PostitPage: React.FC = () => {
   };
 
   const handleDeletePostit = (questionId: number, id: number) => {
+    if (!checkAuth()) return;
     deletePostit({ questionId, id })
       .then(() => {
         alert('포스트잇이 성공적으로 삭제되었습니다.');
@@ -122,6 +141,7 @@ const PostitPage: React.FC = () => {
   };
 
   const handleUpdatePostit = (questionId: number, postitId: number, content: string) => {
+    if (!checkAuth()) return;
     updatePostit({ questionId, postitId, content })
       .then(() => {
         alert('포스트잇이 성공적으로 수정되었습니다.');
@@ -133,10 +153,12 @@ const PostitPage: React.FC = () => {
   };
 
   const openModal = (type: 'create' | 'update') => {
+    if (!checkAuth()) return;
     setModalState({ type, isOpen: true });
   };
 
   const openEditModal = (postit: Postit) => {
+    if (!checkAuth()) return;
     openModal('update');
     setEditPostit({ questionId: postit.questionId, postitId: postit.id, content: postit.content });
   };
@@ -146,7 +168,6 @@ const PostitPage: React.FC = () => {
     setEditPostit(undefined);
   };
 
-  // 데이터 무한스크롤
   useEffect(() => {
     const options = {
       root: null,
@@ -179,6 +200,7 @@ const PostitPage: React.FC = () => {
   if (isQuestionLoading) return <LoadingIndicator />;
   if (questionError) return <ErrorMessage message="FAILED TO LOAD" />;
 
+  // 여기서부터 return 문이 시작됩니다...
   return (
     <div className="flex flex-col min-h-screen">
       <div className="sticky top-0 z-10 bg-orange-50 shadow-[0_4px_2px_-2px_rgba(0,0,0,0.1)]">

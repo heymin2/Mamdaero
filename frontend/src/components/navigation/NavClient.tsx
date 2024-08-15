@@ -5,6 +5,7 @@ import useAuthStore from '@/stores/authStore';
 import logo from '@/assets/MamdaeroLogo.svg';
 import { LuBellRing } from 'react-icons/lu';
 import ProfileDropdown from '@/components/dropdown/ProfileDropdown';
+import AlarmModal from '@/components/modal/AlarmModal';
 
 const navStyle =
   'p-3 text-lg font-semibold hover:bg-gray-200 text-center transition-colors duration-300';
@@ -23,6 +24,17 @@ const NavClient = () => {
     } else {
       alert('로그인이 필요합니다.');
       navigate('/', { state: { from: '/mycounsel' } });
+    }
+  };
+
+  const handleAlarmClick = () => {
+    if (!isAuthenticated) {
+      alert('로그인이 필요합니다.');
+    } else {
+      const modal = document.getElementById('alarm_modal') as HTMLDialogElement | null;
+      if (modal) {
+        modal.showModal();
+      }
     }
   };
 
@@ -78,12 +90,19 @@ const NavClient = () => {
         나의 상담
       </NavLink>
       <div className="flex justify-evenly mt-auto mb-5">
+        {/* 공지사항 */}
         <Link to="/notice" className="font-bold">
           <div className="transition-transform transform hover:-translate-y-0.5">공지사항</div>
         </Link>
-        <Link to="/alarm" className="transition-transform transform hover:-translate-y-0.5">
+        {/* 알람 */}
+        <div
+          onClick={handleAlarmClick}
+          className="transition-transform transform hover:-translate-y-0.5 cursor-pointer"
+        >
           <LuBellRing size={24} />
-        </Link>
+        </div>
+        <AlarmModal />
+        {/* 마이페이지 */}
         <div className="transition-transform transform hover:-translate-y-0.5">
           <ProfileDropdown />
         </div>
