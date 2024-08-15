@@ -28,6 +28,7 @@ export const useCounselorWorktime = () => {
   const counselorId = useCounselorStore(state => state.id);
   const queryClient = useQueryClient();
 
+  // 오늘 날짜부터 27일 후까지의 날짜 배열 생성 (총 28일)
   const dates = Array.from({ length: 28 }, (_, i) => dayjs().add(i, 'day').format('YYYY-MM-DD'));
 
   const worktimeQueries = useQueries({

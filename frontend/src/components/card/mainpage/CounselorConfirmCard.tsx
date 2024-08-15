@@ -62,7 +62,7 @@ const ReservConfirmCard: React.FC = () => {
                 onClick={goMyCounsel}
                 size="목록보기"
                 textSize="sm"
-                color="orange"
+                color="blue"
               />
             </div>
           )}

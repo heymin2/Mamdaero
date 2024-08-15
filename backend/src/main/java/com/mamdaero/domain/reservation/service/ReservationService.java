@@ -255,15 +255,15 @@ public class ReservationService {
     }
 
     @Transactional
-    public void updateState(Long consultId) {
+    public void updateState(Long reservationId) {
         MemberInfoDTO member = findUserService.findMember();
-        if(member == null || !(member.getMemberRole().equals("내담자") || member.getMemberRole().equals("상담사"))) {
+        if (member == null || !(member.getMemberRole().equals("상담사"))) {
             throw new AccessDeniedException();
         }
 
-        Long memberId = member.getMemberId();
+        CounselorItem counselorItem = counselorItemRepository.getReferenceById(reservationRepository.getReferenceById(reservationId).getCounselorItemId());
 
-        Reservation reservation = reservationRepository.findByMemberIdAndId(memberId, consultId);
+        Reservation reservation = reservationRepository.findByCounselorItemIdAndId(counselorItem.getCounselorItemId(), reservationId);
 
         if (reservation == null) {
             throw new ReservationNotFoundException();
