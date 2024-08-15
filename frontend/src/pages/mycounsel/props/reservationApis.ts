@@ -5,6 +5,9 @@ export const fetchReservation = async (): Promise<Reservation[]> => {
   const response = await axiosInstance({
     method: 'get',
     url: 'cm/reservation',
+    params: {
+      size: 100,
+    },
   });
   console.log(response.data.data);
   return response.data.data.map((item: Omit<Reservation, 'formatTime'>) => createReservation(item));
@@ -14,6 +17,9 @@ export const fetchCompletedReservation = async (): Promise<Reservation[]> => {
   const response = await axiosInstance({
     method: 'get',
     url: 'cm/consult',
+    params: {
+      size: 100,
+    },
   });
   return response.data.data.map((item: Omit<Reservation, 'formatTime'>) => createReservation(item));
 };

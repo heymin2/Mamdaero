@@ -30,6 +30,9 @@ const fetchAllCounselors = async (): Promise<Counselor[]> => {
   const response = await axiosInstance({
     method: 'get',
     url: 'p/counselor',
+    params: {
+      size: 100,
+    },
   });
   return response.data.content;
 };
