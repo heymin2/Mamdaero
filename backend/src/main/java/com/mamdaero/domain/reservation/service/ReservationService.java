@@ -261,14 +261,14 @@ public class ReservationService {
             throw new AccessDeniedException();
         }
 
-        Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+        CounselorItem counselorItem = counselorItemRepository.getReferenceById(reservationRepository.getReferenceById(reservationId).getCounselorItemId());
 
-        if (optionalReservation.isPresent()) {
-            Reservation reservation = optionalReservation.get();
+        Reservation reservation = reservationRepository.findByCounselorItemIdAndId(counselorItem.getCounselorItemId(), reservationId);
 
-            reservation.update();
-        } else {
+        if (reservation == null) {
             throw new ReservationNotFoundException();
         }
+
+        reservation.update();
     }
 }
