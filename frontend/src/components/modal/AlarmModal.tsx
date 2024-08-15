@@ -8,8 +8,6 @@ import {
   deleteAllNotifications,
   deleteNotification,
 } from '@/api/alarm';
-import useAuthStore from '@/stores/authStore';
-import ModalWrapper from './ModalWrapper';
 
 interface Notification {
   id: number;
@@ -20,13 +18,7 @@ interface Notification {
   eventSource: string;
 }
 
-interface AlarmModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
 const AlarmModal: React.FC = () => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const queryClient = useQueryClient();
 
   const {
@@ -53,8 +45,7 @@ const AlarmModal: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
     },
     onError: error => {
-      console.error('Error marking notification as read:', error);
-      // 여기에 사용자에게 오류를 알리는 로직을 추가할 수 있습니다.
+      alert('알람을 불러오는 동안 오류가 발생했습니다.');
     },
   });
 
