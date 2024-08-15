@@ -6,6 +6,7 @@ import DefaultProfile from '@/assets/DefaultProfile.jpg';
 import CounselorProfileCard from '@/components/card/CounselorProfileCard';
 import AlignDropdown from '@/components/dropdown/AlignDropdown';
 import { IoIosSearch } from 'react-icons/io';
+import { LoadingIndicator, ErrorMessage } from '@/components/StatusIndicators';
 
 interface Counselor {
   id: string;
@@ -87,8 +88,8 @@ const CounselorListPage: React.FC = () => {
     return result;
   }, [allCounselors, selectedOption1, selectedOption2, selectedOption3, searchTerm]);
 
-  if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>에러가 발생했습니다.</div>;
+  if (isLoading) return <LoadingIndicator />;
+  if (isError) return <ErrorMessage message="FAILED TO LOAD TEST" />;
 
   return (
     <div>
