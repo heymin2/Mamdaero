@@ -34,6 +34,7 @@ const EmotionDiaryPage: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const calendarRef = useRef<FullCalendar | null>(null);
 
+
   const { data: diaryList = [], isLoading: isDairyListLoading } = useGetEmotionDiaryList(
     date.year,
     date.month
@@ -176,6 +177,7 @@ const EmotionDiaryPage: React.FC = () => {
         <div className="w-2/5">
           <div className="card bg-base-100 shadow-xl p-4">
             <div className="card-body">
+
               {isAuthenticated ? (
                 <h2 className="card-title text-2xl font-bold mb-2">{name}님</h2>
               ) : (
