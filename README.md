@@ -94,13 +94,13 @@
 
 ### 내담자 시연
 
-https://github.com/user-attachments/assets/0e913845-414c-410f-add7-91b133065870
+https://youtu.be/KQKNCKPZwag
 
 ---
 
 ### 상담사 시연
 
-https://github.com/user-attachments/assets/28e03c19-2532-4916-bb93-ef307f217377
+https://youtu.be/koLzyPQCvDo
 
 ---
 
