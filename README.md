@@ -149,7 +149,7 @@ https://github.com/user-attachments/assets/28e03c19-2532-4916-bb93-ef307f217377
 
 ## ⌚ FIGMA
 
-![image (6)](https://github.com/user-attachments/assets/27880fa0-98d1-4969-8171-ab8db3ccc067)
+![image (8)](https://github.com/user-attachments/assets/dfd665f8-d101-4286-af57-3c565307b23a)
 
 # 🧳 컨벤션
 
